@@ -1,0 +1,118 @@
+//buildscript {
+//    repositories {
+//        maven { url 'http://download.crashlytics.com/maven' }
+//        mavenCentral()
+//    }
+//
+//    dependencies {
+//        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+//    }
+//}
+
+apply plugin: 'com.android.application'
+apply plugin: 'hugo'
+//apply plugin: 'crashlytics'
+apply plugin: 'monkey'
+
+def onCI = "CI".equals(System.getenv("SYSTEM_TYPE"))
+
+monkey {
+    failOnFailure = true
+    eventCount = 1000000
+    seed = new Random().nextInt()
+    teamCityLog = onCI
+}
+
+// Manifest Information
+def versionMajor = 0
+def versionMinor = 1
+def versionPatch = 0
+
+android {
+    compileSdkVersion 20
+    buildToolsVersion "20.0.0"
+
+    defaultConfig {
+        applicationId "com.volkhart.foodtruckfinder"
+        minSdkVersion 15
+        targetSdkVersion 20
+        versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+
+        resConfigs "en"
+        resConfigs "nodpi", "mdpi", "hdpi", "xhdpi", "xxhdpi", "xxxhdpi"
+    }
+
+    signingConfigs {
+        release {
+            storeFile file(FOOD_TRUCK_RELEASE_STORE_FILE)
+            storePassword FOOD_TRUCK_RELEASE_STORE_PASSWORD
+            keyAlias FOOD_TRUCK_RELEASE_KEY_ALIAS
+            keyPassword FOOD_TRUCK_RELEASE_KEY_PASSWORD
+        }
+        debug {
+            storeFile file("../config/debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+
+    buildTypes {
+        release {
+            testCoverageEnabled true
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            testCoverageEnabled true
+            versionNameSuffix ".debug"
+            applicationIdSuffix ".debug"
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    jacoco {
+        version = '0.7.0.201403182114'
+    }
+
+    dexOptions {
+        // preDexing gives no advantage on CI since we do a clean build
+        preDexLibraries = !onCI
+    }
+
+    lintOptions {
+        enable 'IconExpectedSize', 'StopShip', 'TypographyQuotes'
+        disable 'InvalidPackage'
+        abortOnError true
+        ignoreWarnings false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+}
+
+dependencies {
+    wearApp project(':wear')
+    compile 'com.google.android.gms:play-services-wearable:+'
+    compile 'com.jakewharton:butterknife:5.1.2'
+
+    compile 'com.squareup.picasso:picasso:2.3.4'
+    compile 'com.squareup.okhttp:okhttp:2.0.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
+    compile 'com.squareup.retrofit:retrofit:1.6.1'
+
+    compile 'com.crashlytics.android:crashlytics:1.1.11'
+    compile 'com.jakewharton.timber:timber:2.4.1'
+
+    compile 'com.volkhart:android-util:1.0.0-SNAPSHOT@aar'
+
+    androidTestCompile 'com.squareup.assertj:assertj-android:1.0.0'
+}
+
+repositories {
+    maven { url 'http://download.crashlytics.com/maven' }
+}
