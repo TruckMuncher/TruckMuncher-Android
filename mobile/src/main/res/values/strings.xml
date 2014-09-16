@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="title_activity_main">Food Truck Finder</string>
+    <string name="title_activity_main">Truck Muncher</string>
     <string name="title_activity_truck_details">Truck Details Activity</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>

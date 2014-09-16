@@ -33,7 +33,7 @@ android {
     buildToolsVersion "20.0.0"
 
     defaultConfig {
-        applicationId "com.volkhart.foodtruckfinder"
+        applicationId "com.truckmuncher.truckmuncher"
         minSdkVersion 15
         targetSdkVersion 20
         versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch

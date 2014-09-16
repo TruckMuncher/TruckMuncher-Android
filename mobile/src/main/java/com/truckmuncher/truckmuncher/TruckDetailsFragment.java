@@ -1,4 +1,4 @@
-package com.volkhart.foodtruckfinder;
+package com.truckmuncher.truckmuncher;
 
 import android.app.Fragment;
 import android.os.Bundle;
