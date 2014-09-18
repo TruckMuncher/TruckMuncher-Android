@@ -1,2 +1,3 @@
 include ':mobile'
 include ':wear'
+include ':facebook'
