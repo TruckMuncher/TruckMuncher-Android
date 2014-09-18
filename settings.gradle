@@ -1,3 +1,4 @@
 include ':mobile'
 include ':wear'
 include ':facebook'
+include ':AndroidSocialNetworks'

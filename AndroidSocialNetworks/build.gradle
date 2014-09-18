@@ -1,0 +1,30 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 20
+    buildToolsVersion "20.0.0"
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 20
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+}
+
+dependencies {
+    compile 'org.twitter4j:twitter4j-core:4.0.2'
+    compile 'com.google.android.gms:play-services:4.3.23@aar'
+    compile project(":facebook")
+
+    // TODO remove the LinkedIn dependency - we won't be using it
+    // TODO don't use jars for signpost - use compile 'oauth.signpost:signpost-commonshttp4:1.2.1.2'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
