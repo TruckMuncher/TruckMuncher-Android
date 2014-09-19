@@ -1,0 +1,22 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.truckmuncher.truckmuncher.LoginFragment">
+
+    <ImageButton
+        android:id="@+id/twitter_button"
+        android:layout_height="0px"
+        android:layout_width="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/twitter_icon" />
+
+    <TextView
+        android:id="@+id/twitter_status"
+        android:layout_height="0px"
+        android:layout_width="fill_parent"
+        android:layout_weight="1"
+        android:text="Signed out"/>
+
+</LinearLayout>

@@ -97,7 +97,7 @@ android {
 
 dependencies {
     wearApp project(':wear')
-    compile 'com.google.android.gms:play-services-wearable:+'
+//    compile 'com.google.android.gms:play-services-wearable:+'
     compile 'com.jakewharton:butterknife:5.1.2'
 
     compile 'com.squareup.picasso:picasso:2.3.4'
@@ -109,6 +109,8 @@ dependencies {
     compile 'com.jakewharton.timber:timber:2.4.1'
 
     compile 'com.volkhart:android-util:1.0.0-SNAPSHOT@aar'
+
+    compile project(":AndroidSocialNetworks")
 
     androidTestCompile 'com.squareup.assertj:assertj-android:1.0.0'
 }
