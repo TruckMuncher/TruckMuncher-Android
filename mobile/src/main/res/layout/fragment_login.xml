@@ -1,22 +1,58 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
     tools:context="com.truckmuncher.truckmuncher.LoginFragment">
 
-    <ImageButton
-        android:id="@+id/twitter_button"
-        android:layout_height="0px"
-        android:layout_width="wrap_content"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="0px"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:src="@drawable/twitter_icon" />
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/twitter_status"
-        android:layout_height="0px"
-        android:layout_width="fill_parent"
+        <ImageButton
+            android:id="@+id/twitter_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/twitter_icon" />
+
+        <TextView
+            android:id="@+id/twitter_status"
+            android:layout_width="wrap_content"
+            android:layout_height="0px"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:text="Signed out" />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="0px"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:text="Signed out"/>
+        android:orientation="vertical"
+        tools:context="com.truckmuncher.truckmuncher.LoginFragment">
 
+        <ImageButton
+            android:id="@+id/facebook_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/facebook_icon" />
+
+        <TextView
+            android:id="@+id/facebook_status"
+            android:layout_width="wrap_content"
+            android:layout_height="0px"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:text="Signed out" />
+
+    </LinearLayout>
 </LinearLayout>
