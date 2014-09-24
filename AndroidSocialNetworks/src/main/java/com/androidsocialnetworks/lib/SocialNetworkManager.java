@@ -1,15 +1,14 @@
 package com.androidsocialnetworks.lib;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.androidsocialnetworks.lib.impl.FacebookSocialNetwork;
 import com.androidsocialnetworks.lib.impl.GooglePlusSocialNetwork;
-import com.androidsocialnetworks.lib.impl.LinkedInSocialNetwork;
 import com.androidsocialnetworks.lib.impl.TwitterSocialNetwork;
 import com.facebook.internal.Utility;
 
@@ -24,9 +23,6 @@ public class SocialNetworkManager extends Fragment {
     private static final String TAG = SocialNetworkManager.class.getSimpleName();
     private static final String PARAM_TWITTER_KEY = "SocialNetworkManager.PARAM_TWITTER_KEY";
     private static final String PARAM_TWITTER_SECRET = "SocialNetworkManager.PARAM_TWITTER_SECRET";
-    private static final String PARAM_LINKEDIN_KEY = "SocialNetworkManager.PARAM_LINKEDIN_KEY";
-    private static final String PARAM_LINKEDIN_SECRET = "SocialNetworkManager.PARAM_LINKEDIN_SECRET";
-    private static final String PARAM_LINKEDIN_PERMISSIONS = "SocialNetworkManager.PARAM_LINKEDIN_PERMISSIONS";
     private static final String PARAM_FACEBOOK = "SocialNetworkManager.PARAM_FACEBOOK";
     private static final String PARAM_GOOGLE_PLUS = "SocialNetworkManager.PARAM_GOOGLE_PLUS";
 
@@ -45,21 +41,12 @@ public class SocialNetworkManager extends Fragment {
         final String paramTwitterKey = args.getString(PARAM_TWITTER_KEY);
         final String paramTwitterSecret = args.getString(PARAM_TWITTER_SECRET);
 
-        final String paramLinkedInKey = args.getString(PARAM_LINKEDIN_KEY);
-        final String paramLinkedInSecret = args.getString(PARAM_LINKEDIN_SECRET);
-        final String paramLinkedInPermissions = args.getString(PARAM_LINKEDIN_PERMISSIONS);
-
         final boolean paramFacebook = args.getBoolean(PARAM_FACEBOOK, false);
         final boolean paramGooglePlus = args.getBoolean(PARAM_GOOGLE_PLUS, false);
 
         if (!TextUtils.isEmpty(paramTwitterKey) || !TextUtils.isEmpty(paramTwitterKey)) {
             mSocialNetworksMap.put(TwitterSocialNetwork.ID,
                     new TwitterSocialNetwork(this, paramTwitterKey, paramTwitterSecret));
-        }
-
-        if (!TextUtils.isEmpty(paramLinkedInKey) || !TextUtils.isEmpty(paramLinkedInSecret)) {
-            mSocialNetworksMap.put(LinkedInSocialNetwork.ID,
-                    new LinkedInSocialNetwork(this, paramLinkedInKey, paramLinkedInSecret, paramLinkedInPermissions));
         }
 
         if (paramFacebook) {
@@ -158,14 +145,6 @@ public class SocialNetworkManager extends Fragment {
         return (TwitterSocialNetwork) mSocialNetworksMap.get(TwitterSocialNetwork.ID);
     }
 
-    public LinkedInSocialNetwork getLinkedInSocialNetwork() throws SocialNetworkException {
-        if (!mSocialNetworksMap.containsKey(LinkedInSocialNetwork.ID)) {
-            throw new SocialNetworkException("LinkedIn wasn't initialized...");
-        }
-
-        return (LinkedInSocialNetwork) mSocialNetworksMap.get(LinkedInSocialNetwork.ID);
-    }
-
     public FacebookSocialNetwork getFacebookSocialNetwork() throws SocialNetworkException {
         if (!mSocialNetworksMap.containsKey(FacebookSocialNetwork.ID)) {
             throw new IllegalStateException("Facebook wasn't initialized...");
@@ -212,7 +191,6 @@ public class SocialNetworkManager extends Fragment {
 
     public static class Builder {
         private String twitterConsumerKey, twitterConsumerSecret;
-        private String linkedInConsumerKey, linkedInConsumerSecret, linkedInPermissions;
         private boolean facebook;
         private boolean googlePlus;
 
@@ -229,13 +207,6 @@ public class SocialNetworkManager extends Fragment {
         public Builder twitter(String consumerKey, String consumerSecret) {
             twitterConsumerKey = consumerKey;
             twitterConsumerSecret = consumerSecret;
-            return this;
-        }
-
-        public Builder linkedIn(String consumerKey, String consumerSecret, String permissions) {
-            linkedInConsumerKey = consumerKey;
-            linkedInConsumerSecret = consumerSecret;
-            linkedInPermissions = permissions;
             return this;
         }
 
@@ -264,13 +235,6 @@ public class SocialNetworkManager extends Fragment {
             if (!TextUtils.isEmpty(twitterConsumerKey) && !TextUtils.isEmpty(twitterConsumerSecret)) {
                 args.putString(PARAM_TWITTER_KEY, twitterConsumerKey);
                 args.putString(PARAM_TWITTER_SECRET, twitterConsumerSecret);
-            }
-
-            if (!TextUtils.isEmpty(linkedInConsumerKey) && !TextUtils.isEmpty(linkedInConsumerSecret)
-                    && !TextUtils.isEmpty(linkedInPermissions)) {
-                args.putString(PARAM_LINKEDIN_KEY, linkedInConsumerKey);
-                args.putString(PARAM_LINKEDIN_SECRET, linkedInConsumerSecret);
-                args.putString(PARAM_LINKEDIN_PERMISSIONS, linkedInPermissions);
             }
 
             if (facebook) {

@@ -17,14 +17,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+
+    lintOptions {
+        disable 'InvalidPackage'
+    }
 }
 
 dependencies {
+    compile project(':facebook')
     compile 'org.twitter4j:twitter4j-core:4.0.2'
-    compile 'com.google.android.gms:play-services:4.3.23@aar'
-    compile project(":facebook")
-
-    // TODO remove the LinkedIn dependency - we won't be using it
-    // TODO don't use jars for signpost - use compile 'oauth.signpost:signpost-commonshttp4:1.2.1.2'
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.google.android.gms:play-services:4.3.23'
 }
