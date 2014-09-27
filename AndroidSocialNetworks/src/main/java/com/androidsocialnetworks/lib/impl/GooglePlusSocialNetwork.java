@@ -1,10 +1,10 @@
 package com.androidsocialnetworks.lib.impl;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.app.Fragment;
 import android.util.Log;
 
 import com.androidsocialnetworks.lib.AccessToken;
@@ -79,9 +79,8 @@ public class GooglePlusSocialNetwork extends SocialNetwork
         mConnectRequested = false;
 
         if (mGoogleApiClient.isConnected()) {
-			mSharedPreferences.edit().remove(SAVE_STATE_KEY_IS_CONNECTED)
-					.commit();
-			Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
+            mSharedPreferences.edit().remove(SAVE_STATE_KEY_IS_CONNECTED).apply();
+            Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
 			mGoogleApiClient.disconnect();
 			mGoogleApiClient.connect();
 
@@ -219,7 +218,7 @@ public class GooglePlusSocialNetwork extends SocialNetwork
         if (mConnectRequested) {
             if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
                 if (mLocalListeners.get(REQUEST_LOGIN) != null) {
-                    mSharedPreferences.edit().putBoolean(SAVE_STATE_KEY_IS_CONNECTED, true).commit();
+                    mSharedPreferences.edit().putBoolean(SAVE_STATE_KEY_IS_CONNECTED, true).apply();
                     ((OnLoginCompleteListener) mLocalListeners.get(REQUEST_LOGIN)).onLoginSuccess(getID());
                 }
 
