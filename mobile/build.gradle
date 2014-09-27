@@ -15,6 +15,12 @@ apply plugin: 'hugo'
 apply plugin: 'monkey'
 
 def onCI = "CI".equals(System.getenv("SYSTEM_TYPE"))
+def props = new Properties()
+file("twitter.properties").withInputStream {
+    stream -> props.load(stream)
+}
+def twitterKey = props.get("twitterKey")
+def twitterSecretKey = props.get("twitterSecretKey")
 
 monkey {
     failOnFailure = true
@@ -41,6 +47,9 @@ android {
 
         resConfigs "en"
         resConfigs "nodpi", "mdpi", "hdpi", "xhdpi", "xxhdpi", "xxxhdpi"
+
+        buildConfigField "String", "FOOD_TRUCK_TWITTER_KEY", "\"${twitterKey}\""
+        buildConfigField "String", "FOOD_TRUCK_TWITTER_SECRET_KEY", "\"${twitterSecretKey}\""
     }
 
     signingConfigs {
@@ -97,7 +106,8 @@ android {
 
 dependencies {
     wearApp project(':wear')
-//    compile 'com.google.android.gms:play-services-wearable:+'
+    compile project(':AndroidSocialNetworks')
+
     compile 'com.jakewharton:butterknife:5.1.2'
 
     compile 'com.squareup.picasso:picasso:2.3.4'
@@ -110,7 +120,6 @@ dependencies {
 
     compile 'com.volkhart:android-util:1.0.0-SNAPSHOT@aar'
 
-    compile project(":AndroidSocialNetworks")
 
     androidTestCompile 'com.squareup.assertj:assertj-android:1.0.0'
 }
