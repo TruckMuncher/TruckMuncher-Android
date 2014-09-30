@@ -41,20 +41,23 @@ android {
 
         resConfigs "en"
         resConfigs "nodpi", "mdpi", "hdpi", "xhdpi", "xxhdpi", "xxxhdpi"
+
+        buildConfigField "String", "TWITTER_API_KEY", "\"${TRUCK_MUNCHER_TWITTER_API_KEY}\""
+        buildConfigField "String", "TWITTER_API_SECRET", "\"${TRUCK_MUNCHER_TWITTER_API_SECRET}\""
     }
 
     signingConfigs {
         release {
-            storeFile file(FOOD_TRUCK_RELEASE_STORE_FILE)
-            storePassword FOOD_TRUCK_RELEASE_STORE_PASSWORD
-            keyAlias FOOD_TRUCK_RELEASE_KEY_ALIAS
-            keyPassword FOOD_TRUCK_RELEASE_KEY_PASSWORD
+            storeFile file(TRUCK_MUNCHER_RELEASE_STORE_FILE)
+            storePassword TRUCK_MUNCHER_RELEASE_STORE_PASSWORD
+            keyAlias TRUCK_MUNCHER_RELEASE_KEY_ALIAS
+            keyPassword TRUCK_MUNCHER_RELEASE_KEY_PASSWORD
         }
         debug {
-            storeFile file(FOOD_TRUCK_DEBUG_STORE_FILE)
-            storePassword FOOD_TRUCK_DEBUG_STORE_PASSWORD
-            keyAlias FOOD_TRUCK_DEBUG_KEY_ALIAS
-            keyPassword FOOD_TRUCK_DEBUG_KEY_PASSWORD
+            storeFile file(TRUCK_MUNCHER_DEBUG_STORE_FILE)
+            storePassword TRUCK_MUNCHER_DEBUG_STORE_PASSWORD
+            keyAlias TRUCK_MUNCHER_DEBUG_KEY_ALIAS
+            keyPassword TRUCK_MUNCHER_DEBUG_KEY_PASSWORD
         }
     }
 
@@ -64,6 +67,16 @@ android {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+
+//            def props = new Properties()
+//            file("twitter.properties").withInputStream {
+//                stream -> props.load(stream)
+//            }
+//            def twitterKey = props.get("twitterKey")
+//            def twitterSecretKey = props.get("twitterSecretKey")
+//
+//            buildConfigField "String", "TWITTER_API_KEY", "\"${twitterKey}\""
+//            buildConfigField "String", "TWITTER_API_SECRET", "\"${twitterSecretKey}\""
         }
         debug {
             testCoverageEnabled true
@@ -97,7 +110,8 @@ android {
 
 dependencies {
     wearApp project(':wear')
-    compile 'com.google.android.gms:play-services-wearable:+'
+    compile project(':AndroidSocialNetworks')
+
     compile 'com.jakewharton:butterknife:5.1.2'
 
     compile 'com.squareup.picasso:picasso:2.3.4'
@@ -109,6 +123,7 @@ dependencies {
     compile 'com.jakewharton.timber:timber:2.4.1'
 
     compile 'com.volkhart:android-util:1.0.0-SNAPSHOT@aar'
+
 
     androidTestCompile 'com.squareup.assertj:assertj-android:1.0.0'
 }
