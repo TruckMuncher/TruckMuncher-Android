@@ -20,18 +20,6 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
 
-
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-        <meta-data
-            android:name="com.google.android.maps.v2.API_KEY"
-            android:value="@string/google_maps_key" />
-
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="\ 691864144229001" />
-
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
@@ -42,13 +30,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-        <meta-data
-            android:name="com.google.android.maps.v2.API_KEY"
-            android:value="@string/google_maps_key" />
 
         <activity
             android:name=".TruckDetailsActivity"
@@ -69,5 +50,9 @@
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="2d3548a0b8747eb27b8284162847057e23ccae1f" />
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="\ 691864144229001" />
     </application>
 </manifest>

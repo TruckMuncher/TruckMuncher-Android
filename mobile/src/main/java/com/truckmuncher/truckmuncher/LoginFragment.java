@@ -19,7 +19,6 @@ public class LoginFragment extends Fragment
         implements SocialNetworkManager.OnInitializationCompleteListener, View.OnClickListener {
 
     public static final String SOCIAL_NETWORK_TAG = "MainActivity.SOCIAL_NETWORK_TAG";
-    private SocialNetworkManager socialNetworkManager;
     @InjectView(R.id.twitter_button)
     ImageButton twitterButton;
     @InjectView(R.id.facebook_button)
@@ -28,6 +27,7 @@ public class LoginFragment extends Fragment
     TextView twitterStatusView;
     @InjectView(R.id.facebook_status)
     TextView facebookStatusView;
+    private SocialNetworkManager socialNetworkManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,7 +37,7 @@ public class LoginFragment extends Fragment
 
         if (socialNetworkManager == null) {
             socialNetworkManager = SocialNetworkManager.Builder.from(getActivity())
-                    .twitter(BuildConfig.FOOD_TRUCK_TWITTER_KEY, BuildConfig.FOOD_TRUCK_TWITTER_SECRET_KEY)
+                    .twitter(BuildConfig.TWITTER_API_KEY, BuildConfig.TWITTER_API_SECRET)
                     .facebook()
                     .build();
             socialNetworkManager.setOnInitializationCompleteListener(this);
