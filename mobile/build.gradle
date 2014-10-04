@@ -67,16 +67,6 @@ android {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-
-//            def props = new Properties()
-//            file("twitter.properties").withInputStream {
-//                stream -> props.load(stream)
-//            }
-//            def twitterKey = props.get("twitterKey")
-//            def twitterSecretKey = props.get("twitterSecretKey")
-//
-//            buildConfigField "String", "TWITTER_API_KEY", "\"${twitterKey}\""
-//            buildConfigField "String", "TWITTER_API_SECRET", "\"${twitterSecretKey}\""
         }
         debug {
             testCoverageEnabled true
@@ -109,6 +99,7 @@ android {
 
     packagingOptions {
         exclude 'LICENSE.txt'
+        exclude 'META_INF/LICENSE.txt'
     }
 }
 

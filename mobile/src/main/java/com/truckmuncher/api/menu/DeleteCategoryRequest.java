@@ -5,20 +5,20 @@ package com.truckmuncher.api.menu;
 import com.squareup.wire.Message;
 import com.squareup.wire.ProtoField;
 
-import static com.squareup.wire.Message.Datatype.INT64;
+import static com.squareup.wire.Message.Datatype.STRING;
 import static com.squareup.wire.Message.Label.REQUIRED;
 
 public final class DeleteCategoryRequest extends Message {
 
-  public static final Long DEFAULT_CATEGORYID = 0L;
+  public static final String DEFAULT_CATEGORYID = "";
 
   /**
-   * Non-negative value. Suitable for unique identification.
+   * Suitable for unique identification.
    */
-  @ProtoField(tag = 1, type = INT64, label = REQUIRED)
-  public final Long categoryId;
+  @ProtoField(tag = 1, type = STRING, label = REQUIRED)
+  public final String categoryId;
 
-  public DeleteCategoryRequest(Long categoryId) {
+  public DeleteCategoryRequest(String categoryId) {
     this.categoryId = categoryId;
   }
 
@@ -42,7 +42,7 @@ public final class DeleteCategoryRequest extends Message {
 
   public static final class Builder extends Message.Builder<DeleteCategoryRequest> {
 
-    public Long categoryId;
+    public String categoryId;
 
     public Builder() {
     }
@@ -54,9 +54,9 @@ public final class DeleteCategoryRequest extends Message {
     }
 
     /**
-     * Non-negative value. Suitable for unique identification.
+     * Suitable for unique identification.
      */
-    public Builder categoryId(Long categoryId) {
+    public Builder categoryId(String categoryId) {
       this.categoryId = categoryId;
       return this;
     }

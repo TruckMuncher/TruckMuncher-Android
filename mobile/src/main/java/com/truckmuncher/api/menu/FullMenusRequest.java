@@ -14,106 +14,106 @@ import static com.squareup.wire.Message.Label.REQUIRED;
  */
 public final class FullMenusRequest extends Message {
 
-    public static final Double DEFAULT_LATITUDE = 0D;
-    public static final Double DEFAULT_LONGITUDE = 0D;
-    public static final Boolean DEFAULT_INCLUDEAVAILABILITY = false;
+  public static final Double DEFAULT_LATITUDE = 0D;
+  public static final Double DEFAULT_LONGITUDE = 0D;
+  public static final Boolean DEFAULT_INCLUDEAVAILABILITY = false;
+
+  /**
+   * Value in the range [-90, 90]
+   */
+  @ProtoField(tag = 1, type = DOUBLE, label = REQUIRED)
+  public final Double latitude;
+
+  /**
+   * Value in the range [-180, 180]
+   */
+  @ProtoField(tag = 2, type = DOUBLE, label = REQUIRED)
+  public final Double longitude;
+
+  /**
+   * If true, the response will include the availbility on the MenuItems
+   */
+  @ProtoField(tag = 3, type = BOOL)
+  public final Boolean includeAvailability;
+
+  public FullMenusRequest(Double latitude, Double longitude, Boolean includeAvailability) {
+    this.latitude = latitude;
+    this.longitude = longitude;
+    this.includeAvailability = includeAvailability;
+  }
+
+  private FullMenusRequest(Builder builder) {
+    this(builder.latitude, builder.longitude, builder.includeAvailability);
+    setBuilder(builder);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (other == this) return true;
+    if (!(other instanceof FullMenusRequest)) return false;
+    FullMenusRequest o = (FullMenusRequest) other;
+    return equals(latitude, o.latitude)
+        && equals(longitude, o.longitude)
+        && equals(includeAvailability, o.includeAvailability);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = hashCode;
+    if (result == 0) {
+      result = latitude != null ? latitude.hashCode() : 0;
+      result = result * 37 + (longitude != null ? longitude.hashCode() : 0);
+      result = result * 37 + (includeAvailability != null ? includeAvailability.hashCode() : 0);
+      hashCode = result;
+    }
+    return result;
+  }
+
+  public static final class Builder extends Message.Builder<FullMenusRequest> {
+
+    public Double latitude;
+    public Double longitude;
+    public Boolean includeAvailability;
+
+    public Builder() {
+    }
+
+    public Builder(FullMenusRequest message) {
+      super(message);
+      if (message == null) return;
+      this.latitude = message.latitude;
+      this.longitude = message.longitude;
+      this.includeAvailability = message.includeAvailability;
+    }
 
     /**
      * Value in the range [-90, 90]
      */
-    @ProtoField(tag = 1, type = DOUBLE, label = REQUIRED)
-    public final Double latitude;
+    public Builder latitude(Double latitude) {
+      this.latitude = latitude;
+      return this;
+    }
 
     /**
      * Value in the range [-180, 180]
      */
-    @ProtoField(tag = 2, type = DOUBLE, label = REQUIRED)
-    public final Double longitude;
+    public Builder longitude(Double longitude) {
+      this.longitude = longitude;
+      return this;
+    }
 
     /**
      * If true, the response will include the availbility on the MenuItems
      */
-    @ProtoField(tag = 3, type = BOOL)
-    public final Boolean includeAvailability;
-
-    public FullMenusRequest(Double latitude, Double longitude, Boolean includeAvailability) {
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.includeAvailability = includeAvailability;
-    }
-
-    private FullMenusRequest(Builder builder) {
-        this(builder.latitude, builder.longitude, builder.includeAvailability);
-        setBuilder(builder);
+    public Builder includeAvailability(Boolean includeAvailability) {
+      this.includeAvailability = includeAvailability;
+      return this;
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == this) return true;
-        if (!(other instanceof FullMenusRequest)) return false;
-        FullMenusRequest o = (FullMenusRequest) other;
-        return equals(latitude, o.latitude)
-                && equals(longitude, o.longitude)
-                && equals(includeAvailability, o.includeAvailability);
+    public FullMenusRequest build() {
+      checkRequiredFields();
+      return new FullMenusRequest(this);
     }
-
-    @Override
-    public int hashCode() {
-        int result = hashCode;
-        if (result == 0) {
-            result = latitude != null ? latitude.hashCode() : 0;
-            result = result * 37 + (longitude != null ? longitude.hashCode() : 0);
-            result = result * 37 + (includeAvailability != null ? includeAvailability.hashCode() : 0);
-            hashCode = result;
-        }
-        return result;
-    }
-
-    public static final class Builder extends Message.Builder<FullMenusRequest> {
-
-        public Double latitude;
-        public Double longitude;
-        public Boolean includeAvailability;
-
-        public Builder() {
-        }
-
-        public Builder(FullMenusRequest message) {
-            super(message);
-            if (message == null) return;
-            this.latitude = message.latitude;
-            this.longitude = message.longitude;
-            this.includeAvailability = message.includeAvailability;
-        }
-
-        /**
-         * Value in the range [-90, 90]
-         */
-        public Builder latitude(Double latitude) {
-            this.latitude = latitude;
-            return this;
-        }
-
-        /**
-         * Value in the range [-180, 180]
-         */
-        public Builder longitude(Double longitude) {
-            this.longitude = longitude;
-            return this;
-        }
-
-        /**
-         * If true, the response will include the availbility on the MenuItems
-         */
-        public Builder includeAvailability(Boolean includeAvailability) {
-            this.includeAvailability = includeAvailability;
-            return this;
-        }
-
-        @Override
-        public FullMenusRequest build() {
-            checkRequiredFields();
-            return new FullMenusRequest(this);
-        }
-    }
+  }
 }

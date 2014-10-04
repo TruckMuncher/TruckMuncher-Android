@@ -6,35 +6,35 @@ import com.squareup.wire.Message;
 
 public final class DeleteCategoryResponse extends Message {
 
-    public DeleteCategoryResponse() {
+  public DeleteCategoryResponse() {
+  }
+
+  private DeleteCategoryResponse(Builder builder) {
+    setBuilder(builder);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    return other instanceof DeleteCategoryResponse;
+  }
+
+  @Override
+  public int hashCode() {
+    return 0;
+  }
+
+  public static final class Builder extends Message.Builder<DeleteCategoryResponse> {
+
+    public Builder() {
     }
 
-    private DeleteCategoryResponse(Builder builder) {
-        setBuilder(builder);
+    public Builder(DeleteCategoryResponse message) {
+      super(message);
     }
 
     @Override
-    public boolean equals(Object other) {
-        return other instanceof DeleteCategoryResponse;
+    public DeleteCategoryResponse build() {
+      return new DeleteCategoryResponse(this);
     }
-
-    @Override
-    public int hashCode() {
-        return 0;
-    }
-
-    public static final class Builder extends Message.Builder<DeleteCategoryResponse> {
-
-        public Builder() {
-        }
-
-        public Builder(DeleteCategoryResponse message) {
-            super(message);
-        }
-
-        @Override
-        public DeleteCategoryResponse build() {
-            return new DeleteCategoryResponse(this);
-        }
-    }
+  }
 }

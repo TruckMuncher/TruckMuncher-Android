@@ -15,108 +15,108 @@ import static com.squareup.wire.Message.Label.REQUIRED;
  */
 public final class MenuItemAvailabilityDiffRequest extends Message {
 
-    public static final Double DEFAULT_LATITUDE = 0D;
-    public static final Double DEFAULT_LONGITUDE = 0D;
-    public static final Long DEFAULT_VERSION = 0L;
+  public static final Double DEFAULT_LATITUDE = 0D;
+  public static final Double DEFAULT_LONGITUDE = 0D;
+  public static final Long DEFAULT_VERSION = 0L;
+
+  /**
+   * Value in the range [-90, 90]
+   */
+  @ProtoField(tag = 1, type = DOUBLE, label = REQUIRED)
+  public final Double latitude;
+
+  /**
+   * Value in the range [-180, 180]
+   */
+  @ProtoField(tag = 2, type = DOUBLE, label = REQUIRED)
+  public final Double longitude;
+
+  /**
+   * The latest version of MenuItem availability that the client has. If 0 is specified, availability for every MenuItem is returned.
+   * A negative value will result in an error.
+   */
+  @ProtoField(tag = 3, type = INT64)
+  public final Long version;
+
+  public MenuItemAvailabilityDiffRequest(Double latitude, Double longitude, Long version) {
+    this.latitude = latitude;
+    this.longitude = longitude;
+    this.version = version;
+  }
+
+  private MenuItemAvailabilityDiffRequest(Builder builder) {
+    this(builder.latitude, builder.longitude, builder.version);
+    setBuilder(builder);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (other == this) return true;
+    if (!(other instanceof MenuItemAvailabilityDiffRequest)) return false;
+    MenuItemAvailabilityDiffRequest o = (MenuItemAvailabilityDiffRequest) other;
+    return equals(latitude, o.latitude)
+        && equals(longitude, o.longitude)
+        && equals(version, o.version);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = hashCode;
+    if (result == 0) {
+      result = latitude != null ? latitude.hashCode() : 0;
+      result = result * 37 + (longitude != null ? longitude.hashCode() : 0);
+      result = result * 37 + (version != null ? version.hashCode() : 0);
+      hashCode = result;
+    }
+    return result;
+  }
+
+  public static final class Builder extends Message.Builder<MenuItemAvailabilityDiffRequest> {
+
+    public Double latitude;
+    public Double longitude;
+    public Long version;
+
+    public Builder() {
+    }
+
+    public Builder(MenuItemAvailabilityDiffRequest message) {
+      super(message);
+      if (message == null) return;
+      this.latitude = message.latitude;
+      this.longitude = message.longitude;
+      this.version = message.version;
+    }
 
     /**
      * Value in the range [-90, 90]
      */
-    @ProtoField(tag = 1, type = DOUBLE, label = REQUIRED)
-    public final Double latitude;
+    public Builder latitude(Double latitude) {
+      this.latitude = latitude;
+      return this;
+    }
 
     /**
      * Value in the range [-180, 180]
      */
-    @ProtoField(tag = 2, type = DOUBLE, label = REQUIRED)
-    public final Double longitude;
+    public Builder longitude(Double longitude) {
+      this.longitude = longitude;
+      return this;
+    }
 
     /**
      * The latest version of MenuItem availability that the client has. If 0 is specified, availability for every MenuItem is returned.
      * A negative value will result in an error.
      */
-    @ProtoField(tag = 3, type = INT64)
-    public final Long version;
-
-    public MenuItemAvailabilityDiffRequest(Double latitude, Double longitude, Long version) {
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.version = version;
-    }
-
-    private MenuItemAvailabilityDiffRequest(Builder builder) {
-        this(builder.latitude, builder.longitude, builder.version);
-        setBuilder(builder);
+    public Builder version(Long version) {
+      this.version = version;
+      return this;
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == this) return true;
-        if (!(other instanceof MenuItemAvailabilityDiffRequest)) return false;
-        MenuItemAvailabilityDiffRequest o = (MenuItemAvailabilityDiffRequest) other;
-        return equals(latitude, o.latitude)
-                && equals(longitude, o.longitude)
-                && equals(version, o.version);
+    public MenuItemAvailabilityDiffRequest build() {
+      checkRequiredFields();
+      return new MenuItemAvailabilityDiffRequest(this);
     }
-
-    @Override
-    public int hashCode() {
-        int result = hashCode;
-        if (result == 0) {
-            result = latitude != null ? latitude.hashCode() : 0;
-            result = result * 37 + (longitude != null ? longitude.hashCode() : 0);
-            result = result * 37 + (version != null ? version.hashCode() : 0);
-            hashCode = result;
-        }
-        return result;
-    }
-
-    public static final class Builder extends Message.Builder<MenuItemAvailabilityDiffRequest> {
-
-        public Double latitude;
-        public Double longitude;
-        public Long version;
-
-        public Builder() {
-        }
-
-        public Builder(MenuItemAvailabilityDiffRequest message) {
-            super(message);
-            if (message == null) return;
-            this.latitude = message.latitude;
-            this.longitude = message.longitude;
-            this.version = message.version;
-        }
-
-        /**
-         * Value in the range [-90, 90]
-         */
-        public Builder latitude(Double latitude) {
-            this.latitude = latitude;
-            return this;
-        }
-
-        /**
-         * Value in the range [-180, 180]
-         */
-        public Builder longitude(Double longitude) {
-            this.longitude = longitude;
-            return this;
-        }
-
-        /**
-         * The latest version of MenuItem availability that the client has. If 0 is specified, availability for every MenuItem is returned.
-         * A negative value will result in an error.
-         */
-        public Builder version(Long version) {
-            this.version = version;
-            return this;
-        }
-
-        @Override
-        public MenuItemAvailabilityDiffRequest build() {
-            checkRequiredFields();
-            return new MenuItemAvailabilityDiffRequest(this);
-        }
-    }
+  }
 }

@@ -6,85 +6,85 @@ import com.squareup.wire.Message;
 import com.squareup.wire.ProtoField;
 
 import static com.squareup.wire.Message.Datatype.BOOL;
-import static com.squareup.wire.Message.Datatype.INT64;
+import static com.squareup.wire.Message.Datatype.STRING;
 import static com.squareup.wire.Message.Label.REQUIRED;
 
 public final class MenuItemAvailabilityDiff extends Message {
 
-    public static final Long DEFAULT_MENUITEMID = 0L;
-    public static final Boolean DEFAULT_ISAVAILABLE = false;
+  public static final String DEFAULT_MENUITEMID = "";
+  public static final Boolean DEFAULT_ISAVAILABLE = false;
+
+  /**
+   * Suitable for unique identification.
+   */
+  @ProtoField(tag = 1, type = STRING, label = REQUIRED)
+  public final String menuItemId;
+
+  @ProtoField(tag = 2, type = BOOL, label = REQUIRED)
+  public final Boolean isAvailable;
+
+  public MenuItemAvailabilityDiff(String menuItemId, Boolean isAvailable) {
+    this.menuItemId = menuItemId;
+    this.isAvailable = isAvailable;
+  }
+
+  private MenuItemAvailabilityDiff(Builder builder) {
+    this(builder.menuItemId, builder.isAvailable);
+    setBuilder(builder);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (other == this) return true;
+    if (!(other instanceof MenuItemAvailabilityDiff)) return false;
+    MenuItemAvailabilityDiff o = (MenuItemAvailabilityDiff) other;
+    return equals(menuItemId, o.menuItemId)
+        && equals(isAvailable, o.isAvailable);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = hashCode;
+    if (result == 0) {
+      result = menuItemId != null ? menuItemId.hashCode() : 0;
+      result = result * 37 + (isAvailable != null ? isAvailable.hashCode() : 0);
+      hashCode = result;
+    }
+    return result;
+  }
+
+  public static final class Builder extends Message.Builder<MenuItemAvailabilityDiff> {
+
+    public String menuItemId;
+    public Boolean isAvailable;
+
+    public Builder() {
+    }
+
+    public Builder(MenuItemAvailabilityDiff message) {
+      super(message);
+      if (message == null) return;
+      this.menuItemId = message.menuItemId;
+      this.isAvailable = message.isAvailable;
+    }
 
     /**
-     * Non-negative value. Suitable for unique identification.
+     * Suitable for unique identification.
      */
-    @ProtoField(tag = 1, type = INT64, label = REQUIRED)
-    public final Long menuItemId;
-
-    @ProtoField(tag = 2, type = BOOL, label = REQUIRED)
-    public final Boolean isAvailable;
-
-    public MenuItemAvailabilityDiff(Long menuItemId, Boolean isAvailable) {
-        this.menuItemId = menuItemId;
-        this.isAvailable = isAvailable;
+    public Builder menuItemId(String menuItemId) {
+      this.menuItemId = menuItemId;
+      return this;
     }
 
-    private MenuItemAvailabilityDiff(Builder builder) {
-        this(builder.menuItemId, builder.isAvailable);
-        setBuilder(builder);
+    public Builder isAvailable(Boolean isAvailable) {
+      this.isAvailable = isAvailable;
+      return this;
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == this) return true;
-        if (!(other instanceof MenuItemAvailabilityDiff)) return false;
-        MenuItemAvailabilityDiff o = (MenuItemAvailabilityDiff) other;
-        return equals(menuItemId, o.menuItemId)
-                && equals(isAvailable, o.isAvailable);
+    public MenuItemAvailabilityDiff build() {
+      checkRequiredFields();
+      return new MenuItemAvailabilityDiff(this);
     }
-
-    @Override
-    public int hashCode() {
-        int result = hashCode;
-        if (result == 0) {
-            result = menuItemId != null ? menuItemId.hashCode() : 0;
-            result = result * 37 + (isAvailable != null ? isAvailable.hashCode() : 0);
-            hashCode = result;
-        }
-        return result;
-    }
-
-    public static final class Builder extends Message.Builder<MenuItemAvailabilityDiff> {
-
-        public Long menuItemId;
-        public Boolean isAvailable;
-
-        public Builder() {
-        }
-
-        public Builder(MenuItemAvailabilityDiff message) {
-            super(message);
-            if (message == null) return;
-            this.menuItemId = message.menuItemId;
-            this.isAvailable = message.isAvailable;
-        }
-
-        /**
-         * Non-negative value. Suitable for unique identification.
-         */
-        public Builder menuItemId(Long menuItemId) {
-            this.menuItemId = menuItemId;
-            return this;
-        }
-
-        public Builder isAvailable(Boolean isAvailable) {
-            this.isAvailable = isAvailable;
-            return this;
-        }
-
-        @Override
-        public MenuItemAvailabilityDiff build() {
-            checkRequiredFields();
-            return new MenuItemAvailabilityDiff(this);
-        }
-    }
+  }
 }

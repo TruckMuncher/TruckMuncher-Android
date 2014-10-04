@@ -6,35 +6,35 @@ import com.squareup.wire.Message;
 
 public final class HealthRequest extends Message {
 
-    public HealthRequest() {
+  public HealthRequest() {
+  }
+
+  private HealthRequest(Builder builder) {
+    setBuilder(builder);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    return other instanceof HealthRequest;
+  }
+
+  @Override
+  public int hashCode() {
+    return 0;
+  }
+
+  public static final class Builder extends Message.Builder<HealthRequest> {
+
+    public Builder() {
     }
 
-    private HealthRequest(Builder builder) {
-        setBuilder(builder);
+    public Builder(HealthRequest message) {
+      super(message);
     }
 
     @Override
-    public boolean equals(Object other) {
-        return other instanceof HealthRequest;
+    public HealthRequest build() {
+      return new HealthRequest(this);
     }
-
-    @Override
-    public int hashCode() {
-        return 0;
-    }
-
-    public static final class Builder extends Message.Builder<HealthRequest> {
-
-        public Builder() {
-        }
-
-        public Builder(HealthRequest message) {
-            super(message);
-        }
-
-        @Override
-        public HealthRequest build() {
-            return new HealthRequest(this);
-        }
-    }
+  }
 }

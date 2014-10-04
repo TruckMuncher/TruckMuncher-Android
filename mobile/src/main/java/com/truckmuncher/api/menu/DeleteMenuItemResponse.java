@@ -6,35 +6,35 @@ import com.squareup.wire.Message;
 
 public final class DeleteMenuItemResponse extends Message {
 
-    public DeleteMenuItemResponse() {
+  public DeleteMenuItemResponse() {
+  }
+
+  private DeleteMenuItemResponse(Builder builder) {
+    setBuilder(builder);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    return other instanceof DeleteMenuItemResponse;
+  }
+
+  @Override
+  public int hashCode() {
+    return 0;
+  }
+
+  public static final class Builder extends Message.Builder<DeleteMenuItemResponse> {
+
+    public Builder() {
     }
 
-    private DeleteMenuItemResponse(Builder builder) {
-        setBuilder(builder);
+    public Builder(DeleteMenuItemResponse message) {
+      super(message);
     }
 
     @Override
-    public boolean equals(Object other) {
-        return other instanceof DeleteMenuItemResponse;
+    public DeleteMenuItemResponse build() {
+      return new DeleteMenuItemResponse(this);
     }
-
-    @Override
-    public int hashCode() {
-        return 0;
-    }
-
-    public static final class Builder extends Message.Builder<DeleteMenuItemResponse> {
-
-        public Builder() {
-        }
-
-        public Builder(DeleteMenuItemResponse message) {
-            super(message);
-        }
-
-        @Override
-        public DeleteMenuItemResponse build() {
-            return new DeleteMenuItemResponse(this);
-        }
-    }
+  }
 }

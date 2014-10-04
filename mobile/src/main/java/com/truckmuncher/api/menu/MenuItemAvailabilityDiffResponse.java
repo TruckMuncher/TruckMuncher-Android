@@ -4,7 +4,6 @@ package com.truckmuncher.api.menu;
 
 import com.squareup.wire.Message;
 import com.squareup.wire.ProtoField;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -14,86 +13,86 @@ import static com.squareup.wire.Message.Label.REQUIRED;
 
 public final class MenuItemAvailabilityDiffResponse extends Message {
 
-    public static final List<MenuItemAvailabilityDiff> DEFAULT_DIFF = Collections.emptyList();
-    public static final Long DEFAULT_VERSION = 0L;
+  public static final List<MenuItemAvailabilityDiff> DEFAULT_DIFF = Collections.emptyList();
+  public static final Long DEFAULT_VERSION = 0L;
+
+  /**
+   * The complete delta between the version of MenuItem availability specified in this response and the version specified in the request
+   */
+  @ProtoField(tag = 1, label = REPEATED)
+  public final List<MenuItemAvailabilityDiff> diff;
+
+  /**
+   * The latest version of MenuItem availibility
+   */
+  @ProtoField(tag = 2, type = INT64, label = REQUIRED)
+  public final Long version;
+
+  public MenuItemAvailabilityDiffResponse(List<MenuItemAvailabilityDiff> diff, Long version) {
+    this.diff = immutableCopyOf(diff);
+    this.version = version;
+  }
+
+  private MenuItemAvailabilityDiffResponse(Builder builder) {
+    this(builder.diff, builder.version);
+    setBuilder(builder);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (other == this) return true;
+    if (!(other instanceof MenuItemAvailabilityDiffResponse)) return false;
+    MenuItemAvailabilityDiffResponse o = (MenuItemAvailabilityDiffResponse) other;
+    return equals(diff, o.diff)
+        && equals(version, o.version);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = hashCode;
+    if (result == 0) {
+      result = diff != null ? diff.hashCode() : 1;
+      result = result * 37 + (version != null ? version.hashCode() : 0);
+      hashCode = result;
+    }
+    return result;
+  }
+
+  public static final class Builder extends Message.Builder<MenuItemAvailabilityDiffResponse> {
+
+    public List<MenuItemAvailabilityDiff> diff;
+    public Long version;
+
+    public Builder() {
+    }
+
+    public Builder(MenuItemAvailabilityDiffResponse message) {
+      super(message);
+      if (message == null) return;
+      this.diff = copyOf(message.diff);
+      this.version = message.version;
+    }
 
     /**
      * The complete delta between the version of MenuItem availability specified in this response and the version specified in the request
      */
-    @ProtoField(tag = 1, label = REPEATED)
-    public final List<MenuItemAvailabilityDiff> diff;
+    public Builder diff(List<MenuItemAvailabilityDiff> diff) {
+      this.diff = checkForNulls(diff);
+      return this;
+    }
 
     /**
      * The latest version of MenuItem availibility
      */
-    @ProtoField(tag = 2, type = INT64, label = REQUIRED)
-    public final Long version;
-
-    public MenuItemAvailabilityDiffResponse(List<MenuItemAvailabilityDiff> diff, Long version) {
-        this.diff = immutableCopyOf(diff);
-        this.version = version;
-    }
-
-    private MenuItemAvailabilityDiffResponse(Builder builder) {
-        this(builder.diff, builder.version);
-        setBuilder(builder);
+    public Builder version(Long version) {
+      this.version = version;
+      return this;
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == this) return true;
-        if (!(other instanceof MenuItemAvailabilityDiffResponse)) return false;
-        MenuItemAvailabilityDiffResponse o = (MenuItemAvailabilityDiffResponse) other;
-        return equals(diff, o.diff)
-                && equals(version, o.version);
+    public MenuItemAvailabilityDiffResponse build() {
+      checkRequiredFields();
+      return new MenuItemAvailabilityDiffResponse(this);
     }
-
-    @Override
-    public int hashCode() {
-        int result = hashCode;
-        if (result == 0) {
-            result = diff != null ? diff.hashCode() : 1;
-            result = result * 37 + (version != null ? version.hashCode() : 0);
-            hashCode = result;
-        }
-        return result;
-    }
-
-    public static final class Builder extends Message.Builder<MenuItemAvailabilityDiffResponse> {
-
-        public List<MenuItemAvailabilityDiff> diff;
-        public Long version;
-
-        public Builder() {
-        }
-
-        public Builder(MenuItemAvailabilityDiffResponse message) {
-            super(message);
-            if (message == null) return;
-            this.diff = copyOf(message.diff);
-            this.version = message.version;
-        }
-
-        /**
-         * The complete delta between the version of MenuItem availability specified in this response and the version specified in the request
-         */
-        public Builder diff(List<MenuItemAvailabilityDiff> diff) {
-            this.diff = checkForNulls(diff);
-            return this;
-        }
-
-        /**
-         * The latest version of MenuItem availibility
-         */
-        public Builder version(Long version) {
-            this.version = version;
-            return this;
-        }
-
-        @Override
-        public MenuItemAvailabilityDiffResponse build() {
-            checkRequiredFields();
-            return new MenuItemAvailabilityDiffResponse(this);
-        }
-    }
+  }
 }

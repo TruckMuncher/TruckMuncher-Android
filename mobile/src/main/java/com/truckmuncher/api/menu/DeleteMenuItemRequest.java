@@ -5,66 +5,66 @@ package com.truckmuncher.api.menu;
 import com.squareup.wire.Message;
 import com.squareup.wire.ProtoField;
 
-import static com.squareup.wire.Message.Datatype.INT64;
+import static com.squareup.wire.Message.Datatype.STRING;
 import static com.squareup.wire.Message.Label.REQUIRED;
 
 public final class DeleteMenuItemRequest extends Message {
 
-    public static final Long DEFAULT_MENUITEMID = 0L;
+  public static final String DEFAULT_MENUITEMID = "";
+
+  /**
+   * Suitable for unique identification.
+   */
+  @ProtoField(tag = 1, type = STRING, label = REQUIRED)
+  public final String menuItemId;
+
+  public DeleteMenuItemRequest(String menuItemId) {
+    this.menuItemId = menuItemId;
+  }
+
+  private DeleteMenuItemRequest(Builder builder) {
+    this(builder.menuItemId);
+    setBuilder(builder);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (other == this) return true;
+    if (!(other instanceof DeleteMenuItemRequest)) return false;
+    return equals(menuItemId, ((DeleteMenuItemRequest) other).menuItemId);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = hashCode;
+    return result != 0 ? result : (hashCode = menuItemId != null ? menuItemId.hashCode() : 0);
+  }
+
+  public static final class Builder extends Message.Builder<DeleteMenuItemRequest> {
+
+    public String menuItemId;
+
+    public Builder() {
+    }
+
+    public Builder(DeleteMenuItemRequest message) {
+      super(message);
+      if (message == null) return;
+      this.menuItemId = message.menuItemId;
+    }
 
     /**
-     * Non-negative value. Suitable for unique identification.
+     * Suitable for unique identification.
      */
-    @ProtoField(tag = 1, type = INT64, label = REQUIRED)
-    public final Long menuItemId;
-
-    public DeleteMenuItemRequest(Long menuItemId) {
-        this.menuItemId = menuItemId;
-    }
-
-    private DeleteMenuItemRequest(Builder builder) {
-        this(builder.menuItemId);
-        setBuilder(builder);
+    public Builder menuItemId(String menuItemId) {
+      this.menuItemId = menuItemId;
+      return this;
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == this) return true;
-        if (!(other instanceof DeleteMenuItemRequest)) return false;
-        return equals(menuItemId, ((DeleteMenuItemRequest) other).menuItemId);
+    public DeleteMenuItemRequest build() {
+      checkRequiredFields();
+      return new DeleteMenuItemRequest(this);
     }
-
-    @Override
-    public int hashCode() {
-        int result = hashCode;
-        return result != 0 ? result : (hashCode = menuItemId != null ? menuItemId.hashCode() : 0);
-    }
-
-    public static final class Builder extends Message.Builder<DeleteMenuItemRequest> {
-
-        public Long menuItemId;
-
-        public Builder() {
-        }
-
-        public Builder(DeleteMenuItemRequest message) {
-            super(message);
-            if (message == null) return;
-            this.menuItemId = message.menuItemId;
-        }
-
-        /**
-         * Non-negative value. Suitable for unique identification.
-         */
-        public Builder menuItemId(Long menuItemId) {
-            this.menuItemId = menuItemId;
-            return this;
-        }
-
-        @Override
-        public DeleteMenuItemRequest build() {
-            checkRequiredFields();
-            return new DeleteMenuItemRequest(this);
-        }
-    }
+  }
 }

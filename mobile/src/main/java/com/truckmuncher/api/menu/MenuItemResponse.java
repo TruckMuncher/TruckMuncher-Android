@@ -9,53 +9,53 @@ import static com.squareup.wire.Message.Label.REQUIRED;
 
 public final class MenuItemResponse extends Message {
 
-    @ProtoField(tag = 1, label = REQUIRED)
-    public final MenuItem menuItem;
+  @ProtoField(tag = 1, label = REQUIRED)
+  public final MenuItem menuItem;
 
-    public MenuItemResponse(MenuItem menuItem) {
-        this.menuItem = menuItem;
+  public MenuItemResponse(MenuItem menuItem) {
+    this.menuItem = menuItem;
+  }
+
+  private MenuItemResponse(Builder builder) {
+    this(builder.menuItem);
+    setBuilder(builder);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (other == this) return true;
+    if (!(other instanceof MenuItemResponse)) return false;
+    return equals(menuItem, ((MenuItemResponse) other).menuItem);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = hashCode;
+    return result != 0 ? result : (hashCode = menuItem != null ? menuItem.hashCode() : 0);
+  }
+
+  public static final class Builder extends Message.Builder<MenuItemResponse> {
+
+    public MenuItem menuItem;
+
+    public Builder() {
     }
 
-    private MenuItemResponse(Builder builder) {
-        this(builder.menuItem);
-        setBuilder(builder);
+    public Builder(MenuItemResponse message) {
+      super(message);
+      if (message == null) return;
+      this.menuItem = message.menuItem;
+    }
+
+    public Builder menuItem(MenuItem menuItem) {
+      this.menuItem = menuItem;
+      return this;
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == this) return true;
-        if (!(other instanceof MenuItemResponse)) return false;
-        return equals(menuItem, ((MenuItemResponse) other).menuItem);
+    public MenuItemResponse build() {
+      checkRequiredFields();
+      return new MenuItemResponse(this);
     }
-
-    @Override
-    public int hashCode() {
-        int result = hashCode;
-        return result != 0 ? result : (hashCode = menuItem != null ? menuItem.hashCode() : 0);
-    }
-
-    public static final class Builder extends Message.Builder<MenuItemResponse> {
-
-        public MenuItem menuItem;
-
-        public Builder() {
-        }
-
-        public Builder(MenuItemResponse message) {
-            super(message);
-            if (message == null) return;
-            this.menuItem = message.menuItem;
-        }
-
-        public Builder menuItem(MenuItem menuItem) {
-            this.menuItem = menuItem;
-            return this;
-        }
-
-        @Override
-        public MenuItemResponse build() {
-            checkRequiredFields();
-            return new MenuItemResponse(this);
-        }
-    }
+  }
 }

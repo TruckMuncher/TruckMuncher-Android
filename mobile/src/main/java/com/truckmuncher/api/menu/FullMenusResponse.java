@@ -4,11 +4,10 @@ package com.truckmuncher.api.menu;
 
 import com.squareup.wire.Message;
 import com.squareup.wire.ProtoField;
-
 import java.util.Collections;
 import java.util.List;
 
-import static com.squareup.wire.Message.Datatype.INT64;
+import static com.squareup.wire.Message.Datatype.STRING;
 import static com.squareup.wire.Message.Label.REPEATED;
 import static com.squareup.wire.Message.Label.REQUIRED;
 
@@ -17,154 +16,137 @@ import static com.squareup.wire.Message.Label.REQUIRED;
  */
 public final class FullMenusResponse extends Message {
 
-    public static final List<Menu> DEFAULT_MENU = Collections.emptyList();
+  public static final List<Menu> DEFAULT_MENU = Collections.emptyList();
 
-    @ProtoField(tag = 1, label = REPEATED)
-    public final List<Menu> menu;
+  @ProtoField(tag = 1, label = REPEATED)
+  public final List<Menu> menu;
 
-    public FullMenusResponse(List<Menu> menu) {
-        this.menu = immutableCopyOf(menu);
+  public FullMenusResponse(List<Menu> menu) {
+    this.menu = immutableCopyOf(menu);
+  }
+
+  private FullMenusResponse(Builder builder) {
+    this(builder.menu);
+    setBuilder(builder);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (other == this) return true;
+    if (!(other instanceof FullMenusResponse)) return false;
+    return equals(menu, ((FullMenusResponse) other).menu);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = hashCode;
+    return result != 0 ? result : (hashCode = menu != null ? menu.hashCode() : 1);
+  }
+
+  public static final class Builder extends Message.Builder<FullMenusResponse> {
+
+    public List<Menu> menu;
+
+    public Builder() {
     }
 
-    private FullMenusResponse(Builder builder) {
-        this(builder.menu);
-        setBuilder(builder);
+    public Builder(FullMenusResponse message) {
+      super(message);
+      if (message == null) return;
+      this.menu = copyOf(message.menu);
+    }
+
+    public Builder menu(List<Menu> menu) {
+      this.menu = checkForNulls(menu);
+      return this;
+    }
+
+    @Override
+    public FullMenusResponse build() {
+      return new FullMenusResponse(this);
+    }
+  }
+
+  /**
+   * Menu's are meta-objects used only for data transport
+   */
+  public static final class Menu extends Message {
+
+    public static final String DEFAULT_TRUCKID = "";
+    public static final List<Category> DEFAULT_CATEGORY = Collections.emptyList();
+
+    /**
+     * Suitable for unique identification.
+     */
+    @ProtoField(tag = 1, type = STRING, label = REQUIRED)
+    public final String truckId;
+
+    @ProtoField(tag = 2, label = REPEATED)
+    public final List<Category> category;
+
+    public Menu(String truckId, List<Category> category) {
+      this.truckId = truckId;
+      this.category = immutableCopyOf(category);
+    }
+
+    private Menu(Builder builder) {
+      this(builder.truckId, builder.category);
+      setBuilder(builder);
     }
 
     @Override
     public boolean equals(Object other) {
-        if (other == this) return true;
-        if (!(other instanceof FullMenusResponse)) return false;
-        return equals(menu, ((FullMenusResponse) other).menu);
+      if (other == this) return true;
+      if (!(other instanceof Menu)) return false;
+      Menu o = (Menu) other;
+      return equals(truckId, o.truckId)
+          && equals(category, o.category);
     }
 
     @Override
     public int hashCode() {
-        int result = hashCode;
-        return result != 0 ? result : (hashCode = menu != null ? menu.hashCode() : 1);
+      int result = hashCode;
+      if (result == 0) {
+        result = truckId != null ? truckId.hashCode() : 0;
+        result = result * 37 + (category != null ? category.hashCode() : 1);
+        hashCode = result;
+      }
+      return result;
     }
 
-    public static final class Builder extends Message.Builder<FullMenusResponse> {
+    public static final class Builder extends Message.Builder<Menu> {
 
-        public List<Menu> menu;
+      public String truckId;
+      public List<Category> category;
 
-        public Builder() {
-        }
+      public Builder() {
+      }
 
-        public Builder(FullMenusResponse message) {
-            super(message);
-            if (message == null) return;
-            this.menu = copyOf(message.menu);
-        }
+      public Builder(Menu message) {
+        super(message);
+        if (message == null) return;
+        this.truckId = message.truckId;
+        this.category = copyOf(message.category);
+      }
 
-        public Builder menu(List<Menu> menu) {
-            this.menu = checkForNulls(menu);
-            return this;
-        }
+      /**
+       * Suitable for unique identification.
+       */
+      public Builder truckId(String truckId) {
+        this.truckId = truckId;
+        return this;
+      }
 
-        @Override
-        public FullMenusResponse build() {
-            return new FullMenusResponse(this);
-        }
+      public Builder category(List<Category> category) {
+        this.category = checkForNulls(category);
+        return this;
+      }
+
+      @Override
+      public Menu build() {
+        checkRequiredFields();
+        return new Menu(this);
+      }
     }
-
-    public static final class Menu extends Message {
-
-        public static final Long DEFAULT_TRUCKID = 0L;
-        public static final Long DEFAULT_MENUID = 0L;
-        public static final List<Category> DEFAULT_CATEGORY = Collections.emptyList();
-
-        /**
-         * Non-negative value. Suitable for unique identification.
-         */
-        @ProtoField(tag = 1, type = INT64, label = REQUIRED)
-        public final Long truckId;
-
-        /**
-         * Non-negative value. Suitable for unique identification.
-         */
-        @ProtoField(tag = 2, type = INT64, label = REQUIRED)
-        public final Long menuId;
-
-        @ProtoField(tag = 3, label = REPEATED)
-        public final List<Category> category;
-
-        public Menu(Long truckId, Long menuId, List<Category> category) {
-            this.truckId = truckId;
-            this.menuId = menuId;
-            this.category = immutableCopyOf(category);
-        }
-
-        private Menu(Builder builder) {
-            this(builder.truckId, builder.menuId, builder.category);
-            setBuilder(builder);
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            if (other == this) return true;
-            if (!(other instanceof Menu)) return false;
-            Menu o = (Menu) other;
-            return equals(truckId, o.truckId)
-                    && equals(menuId, o.menuId)
-                    && equals(category, o.category);
-        }
-
-        @Override
-        public int hashCode() {
-            int result = hashCode;
-            if (result == 0) {
-                result = truckId != null ? truckId.hashCode() : 0;
-                result = result * 37 + (menuId != null ? menuId.hashCode() : 0);
-                result = result * 37 + (category != null ? category.hashCode() : 1);
-                hashCode = result;
-            }
-            return result;
-        }
-
-        public static final class Builder extends Message.Builder<Menu> {
-
-            public Long truckId;
-            public Long menuId;
-            public List<Category> category;
-
-            public Builder() {
-            }
-
-            public Builder(Menu message) {
-                super(message);
-                if (message == null) return;
-                this.truckId = message.truckId;
-                this.menuId = message.menuId;
-                this.category = copyOf(message.category);
-            }
-
-            /**
-             * Non-negative value. Suitable for unique identification.
-             */
-            public Builder truckId(Long truckId) {
-                this.truckId = truckId;
-                return this;
-            }
-
-            /**
-             * Non-negative value. Suitable for unique identification.
-             */
-            public Builder menuId(Long menuId) {
-                this.menuId = menuId;
-                return this;
-            }
-
-            public Builder category(List<Category> category) {
-                this.category = checkForNulls(category);
-                return this;
-            }
-
-            @Override
-            public Menu build() {
-                checkRequiredFields();
-                return new Menu(this);
-            }
-        }
-    }
+  }
 }
