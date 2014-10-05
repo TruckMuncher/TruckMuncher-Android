@@ -4,6 +4,7 @@ package com.truckmuncher.api.menu;
 
 import com.squareup.wire.Message;
 import com.squareup.wire.ProtoField;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -11,60 +12,60 @@ import static com.squareup.wire.Message.Label.REPEATED;
 
 public final class MenuAvailabilityRequest extends Message {
 
-  public static final List<MenuItemAvailabilityDiff> DEFAULT_DIFF = Collections.emptyList();
-
-  /**
-   * The changes that should be applied on the server.
-   */
-  @ProtoField(tag = 1, label = REPEATED)
-  public final List<MenuItemAvailabilityDiff> diff;
-
-  public MenuAvailabilityRequest(List<MenuItemAvailabilityDiff> diff) {
-    this.diff = immutableCopyOf(diff);
-  }
-
-  private MenuAvailabilityRequest(Builder builder) {
-    this(builder.diff);
-    setBuilder(builder);
-  }
-
-  @Override
-  public boolean equals(Object other) {
-    if (other == this) return true;
-    if (!(other instanceof MenuAvailabilityRequest)) return false;
-    return equals(diff, ((MenuAvailabilityRequest) other).diff);
-  }
-
-  @Override
-  public int hashCode() {
-    int result = hashCode;
-    return result != 0 ? result : (hashCode = diff != null ? diff.hashCode() : 1);
-  }
-
-  public static final class Builder extends Message.Builder<MenuAvailabilityRequest> {
-
-    public List<MenuItemAvailabilityDiff> diff;
-
-    public Builder() {
-    }
-
-    public Builder(MenuAvailabilityRequest message) {
-      super(message);
-      if (message == null) return;
-      this.diff = copyOf(message.diff);
-    }
+    public static final List<MenuItemAvailabilityDiff> DEFAULT_DIFFS = Collections.emptyList();
 
     /**
      * The changes that should be applied on the server.
      */
-    public Builder diff(List<MenuItemAvailabilityDiff> diff) {
-      this.diff = checkForNulls(diff);
-      return this;
+    @ProtoField(tag = 1, label = REPEATED)
+    public final List<MenuItemAvailabilityDiff> diffs;
+
+    public MenuAvailabilityRequest(List<MenuItemAvailabilityDiff> diffs) {
+        this.diffs = immutableCopyOf(diffs);
+    }
+
+    private MenuAvailabilityRequest(Builder builder) {
+        this(builder.diffs);
+        setBuilder(builder);
     }
 
     @Override
-    public MenuAvailabilityRequest build() {
-      return new MenuAvailabilityRequest(this);
+    public boolean equals(Object other) {
+        if (other == this) return true;
+        if (!(other instanceof MenuAvailabilityRequest)) return false;
+        return equals(diffs, ((MenuAvailabilityRequest) other).diffs);
     }
-  }
+
+    @Override
+    public int hashCode() {
+        int result = hashCode;
+        return result != 0 ? result : (hashCode = diffs != null ? diffs.hashCode() : 1);
+    }
+
+    public static final class Builder extends Message.Builder<MenuAvailabilityRequest> {
+
+        public List<MenuItemAvailabilityDiff> diffs;
+
+        public Builder() {
+        }
+
+        public Builder(MenuAvailabilityRequest message) {
+            super(message);
+            if (message == null) return;
+            this.diffs = copyOf(message.diffs);
+        }
+
+        /**
+         * The changes that should be applied on the server.
+         */
+        public Builder diffs(List<MenuItemAvailabilityDiff> diffs) {
+            this.diffs = checkForNulls(diffs);
+            return this;
+        }
+
+        @Override
+        public MenuAvailabilityRequest build() {
+            return new MenuAvailabilityRequest(this);
+        }
+    }
 }

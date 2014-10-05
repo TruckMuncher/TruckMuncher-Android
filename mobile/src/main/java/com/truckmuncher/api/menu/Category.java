@@ -4,6 +4,7 @@ package com.truckmuncher.api.menu;
 
 import com.squareup.wire.Message;
 import com.squareup.wire.ProtoField;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -14,128 +15,128 @@ import static com.squareup.wire.Message.Label.REQUIRED;
 
 public final class Category extends Message {
 
-  public static final String DEFAULT_ID = "";
-  public static final String DEFAULT_NAME = "";
-  public static final String DEFAULT_NOTES = "";
-  public static final Integer DEFAULT_ORDERINMENU = 0;
-  public static final List<MenuItem> DEFAULT_MENUITEM = Collections.emptyList();
-
-  /**
-   * Suitable for unique identification.
-   */
-  @ProtoField(tag = 1, type = STRING, label = REQUIRED)
-  public final String id;
-
-  @ProtoField(tag = 2, type = STRING)
-  public final String name;
-
-  /**
-   * Suitable for human consumption
-   */
-  @ProtoField(tag = 3, type = STRING)
-  public final String notes;
-
-  @ProtoField(tag = 4, type = INT32)
-  public final Integer orderInMenu;
-
-  @ProtoField(tag = 5, label = REPEATED)
-  public final List<MenuItem> menuItem;
-
-  public Category(String id, String name, String notes, Integer orderInMenu, List<MenuItem> menuItem) {
-    this.id = id;
-    this.name = name;
-    this.notes = notes;
-    this.orderInMenu = orderInMenu;
-    this.menuItem = immutableCopyOf(menuItem);
-  }
-
-  private Category(Builder builder) {
-    this(builder.id, builder.name, builder.notes, builder.orderInMenu, builder.menuItem);
-    setBuilder(builder);
-  }
-
-  @Override
-  public boolean equals(Object other) {
-    if (other == this) return true;
-    if (!(other instanceof Category)) return false;
-    Category o = (Category) other;
-    return equals(id, o.id)
-        && equals(name, o.name)
-        && equals(notes, o.notes)
-        && equals(orderInMenu, o.orderInMenu)
-        && equals(menuItem, o.menuItem);
-  }
-
-  @Override
-  public int hashCode() {
-    int result = hashCode;
-    if (result == 0) {
-      result = id != null ? id.hashCode() : 0;
-      result = result * 37 + (name != null ? name.hashCode() : 0);
-      result = result * 37 + (notes != null ? notes.hashCode() : 0);
-      result = result * 37 + (orderInMenu != null ? orderInMenu.hashCode() : 0);
-      result = result * 37 + (menuItem != null ? menuItem.hashCode() : 1);
-      hashCode = result;
-    }
-    return result;
-  }
-
-  public static final class Builder extends Message.Builder<Category> {
-
-    public String id;
-    public String name;
-    public String notes;
-    public Integer orderInMenu;
-    public List<MenuItem> menuItem;
-
-    public Builder() {
-    }
-
-    public Builder(Category message) {
-      super(message);
-      if (message == null) return;
-      this.id = message.id;
-      this.name = message.name;
-      this.notes = message.notes;
-      this.orderInMenu = message.orderInMenu;
-      this.menuItem = copyOf(message.menuItem);
-    }
+    public static final String DEFAULT_ID = "";
+    public static final String DEFAULT_NAME = "";
+    public static final String DEFAULT_NOTES = "";
+    public static final Integer DEFAULT_ORDERINMENU = 0;
+    public static final List<MenuItem> DEFAULT_MENUITEMS = Collections.emptyList();
 
     /**
      * Suitable for unique identification.
      */
-    public Builder id(String id) {
-      this.id = id;
-      return this;
-    }
+    @ProtoField(tag = 1, type = STRING, label = REQUIRED)
+    public final String id;
 
-    public Builder name(String name) {
-      this.name = name;
-      return this;
-    }
+    @ProtoField(tag = 2, type = STRING)
+    public final String name;
 
     /**
      * Suitable for human consumption
      */
-    public Builder notes(String notes) {
-      this.notes = notes;
-      return this;
+    @ProtoField(tag = 3, type = STRING)
+    public final String notes;
+
+    @ProtoField(tag = 4, type = INT32)
+    public final Integer orderInMenu;
+
+    @ProtoField(tag = 5, label = REPEATED)
+    public final List<MenuItem> menuItems;
+
+    public Category(String id, String name, String notes, Integer orderInMenu, List<MenuItem> menuItems) {
+        this.id = id;
+        this.name = name;
+        this.notes = notes;
+        this.orderInMenu = orderInMenu;
+        this.menuItems = immutableCopyOf(menuItems);
     }
 
-    public Builder orderInMenu(Integer orderInMenu) {
-      this.orderInMenu = orderInMenu;
-      return this;
-    }
-
-    public Builder menuItem(List<MenuItem> menuItem) {
-      this.menuItem = checkForNulls(menuItem);
-      return this;
+    private Category(Builder builder) {
+        this(builder.id, builder.name, builder.notes, builder.orderInMenu, builder.menuItems);
+        setBuilder(builder);
     }
 
     @Override
-    public Category build() {
-      checkRequiredFields();
-      return new Category(this);
+    public boolean equals(Object other) {
+        if (other == this) return true;
+        if (!(other instanceof Category)) return false;
+        Category o = (Category) other;
+        return equals(id, o.id)
+                && equals(name, o.name)
+                && equals(notes, o.notes)
+                && equals(orderInMenu, o.orderInMenu)
+                && equals(menuItems, o.menuItems);
     }
-  }
+
+    @Override
+    public int hashCode() {
+        int result = hashCode;
+        if (result == 0) {
+            result = id != null ? id.hashCode() : 0;
+            result = result * 37 + (name != null ? name.hashCode() : 0);
+            result = result * 37 + (notes != null ? notes.hashCode() : 0);
+            result = result * 37 + (orderInMenu != null ? orderInMenu.hashCode() : 0);
+            result = result * 37 + (menuItems != null ? menuItems.hashCode() : 1);
+            hashCode = result;
+        }
+        return result;
+    }
+
+    public static final class Builder extends Message.Builder<Category> {
+
+        public String id;
+        public String name;
+        public String notes;
+        public Integer orderInMenu;
+        public List<MenuItem> menuItems;
+
+        public Builder() {
+        }
+
+        public Builder(Category message) {
+            super(message);
+            if (message == null) return;
+            this.id = message.id;
+            this.name = message.name;
+            this.notes = message.notes;
+            this.orderInMenu = message.orderInMenu;
+            this.menuItems = copyOf(message.menuItems);
+        }
+
+        /**
+         * Suitable for unique identification.
+         */
+        public Builder id(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        /**
+         * Suitable for human consumption
+         */
+        public Builder notes(String notes) {
+            this.notes = notes;
+            return this;
+        }
+
+        public Builder orderInMenu(Integer orderInMenu) {
+            this.orderInMenu = orderInMenu;
+            return this;
+        }
+
+        public Builder menuItems(List<MenuItem> menuItems) {
+            this.menuItems = checkForNulls(menuItems);
+            return this;
+        }
+
+        @Override
+        public Category build() {
+            checkRequiredFields();
+            return new Category(this);
+        }
+    }
 }

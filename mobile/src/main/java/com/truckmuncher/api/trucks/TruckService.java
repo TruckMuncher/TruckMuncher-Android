@@ -11,60 +11,82 @@ import retrofit.http.POST;
  * TODO
  */
 public interface TruckService {
-  /**
-   * Get the locations of active food trucks in the Region in which the search is performed.
-   */
-  @POST("/com.truckmuncher.api.trucks.TruckService/getActiveTrucks")
-  ActiveTrucksResponse getActiveTrucks(@Body ActiveTrucksRequest request)
-      throws RetrofitError;
+    /**
+     * Get the locations of active food trucks in the Region in which the search is performed.
+     */
+    @POST("/com.truckmuncher.api.trucks.TruckService/getActiveTrucks")
+    ActiveTrucksResponse getActiveTrucks(@Body ActiveTrucksRequest request)
+            throws RetrofitError;
 
-  /**
-   * Get the locations of active food trucks in the Region in which the search is performed.
-   */
-  @POST("/com.truckmuncher.api.trucks.TruckService/getActiveTrucks")
-  void getActiveTrucks(@Body ActiveTrucksRequest request, Callback<ActiveTrucksResponse> callback);
-  /**
-   * Get the profiles of all the food trucks in the user's Region.
-   */
-  @POST("/com.truckmuncher.api.trucks.TruckService/getTruckProfiles")
-  TruckProfilesResponse getTruckProfiles(@Body TruckProfilesRequest request)
-      throws RetrofitError;
+    /**
+     * Get the locations of active food trucks in the Region in which the search is performed.
+     */
+    @POST("/com.truckmuncher.api.trucks.TruckService/getActiveTrucks")
+    void getActiveTrucks(@Body ActiveTrucksRequest request, Callback<ActiveTrucksResponse> callback);
 
-  /**
-   * Get the profiles of all the food trucks in the user's Region.
-   */
-  @POST("/com.truckmuncher.api.trucks.TruckService/getTruckProfiles")
-  void getTruckProfiles(@Body TruckProfilesRequest request, Callback<TruckProfilesResponse> callback);
-  /**
-   * Get the profiles of all the food trucks in the user's region.
-   *
-   * This call requires Vendor authorization
-   */
-  @POST("/com.truckmuncher.api.trucks.TruckService/modifyTruckProfile")
-  Truck modifyTruckProfile(@Body Truck request)
-      throws RetrofitError;
+    /**
+     * If a truck for the vendor does not exist, a new truck will be created.
+     * When using from a mobile app,
+     * <p/>
+     * This call requires Vendor authorization
+     */
+    @POST("/com.truckmuncher.api.trucks.TruckService/getTruckForVendor")
+    TruckForVendorResponse getTruckForVendor(@Body TruckForVendorRequest request)
+            throws RetrofitError;
 
-  /**
-   * Get the profiles of all the food trucks in the user's region.
-   *
-   * This call requires Vendor authorization
-   */
-  @POST("/com.truckmuncher.api.trucks.TruckService/modifyTruckProfile")
-  void modifyTruckProfile(@Body Truck request, Callback<Truck> callback);
-  /**
-   * Get the profiles of all the food trucks in the user's region.
-   *
-   * This call requires Vendor authorization
-   */
-  @POST("/com.truckmuncher.api.trucks.TruckService/modifyServingMode")
-  ServingModeResponse modifyServingMode(@Body ServingModeRequest request)
-      throws RetrofitError;
+    /**
+     * If a truck for the vendor does not exist, a new truck will be created.
+     * When using from a mobile app,
+     * <p/>
+     * This call requires Vendor authorization
+     */
+    @POST("/com.truckmuncher.api.trucks.TruckService/getTruckForVendor")
+    void getTruckForVendor(@Body TruckForVendorRequest request, Callback<TruckForVendorResponse> callback);
 
-  /**
-   * Get the profiles of all the food trucks in the user's region.
-   *
-   * This call requires Vendor authorization
-   */
-  @POST("/com.truckmuncher.api.trucks.TruckService/modifyServingMode")
-  void modifyServingMode(@Body ServingModeRequest request, Callback<ServingModeResponse> callback);
+    /**
+     * Get the profiles of all the food trucks in the user's Region.
+     */
+    @POST("/com.truckmuncher.api.trucks.TruckService/getTruckProfiles")
+    TruckProfilesResponse getTruckProfiles(@Body TruckProfilesRequest request)
+            throws RetrofitError;
+
+    /**
+     * Get the profiles of all the food trucks in the user's Region.
+     */
+    @POST("/com.truckmuncher.api.trucks.TruckService/getTruckProfiles")
+    void getTruckProfiles(@Body TruckProfilesRequest request, Callback<TruckProfilesResponse> callback);
+
+    /**
+     * Get the profiles of all the food trucks in the user's region.
+     * <p/>
+     * This call requires Vendor authorization
+     */
+    @POST("/com.truckmuncher.api.trucks.TruckService/modifyTruckProfile")
+    Truck modifyTruckProfile(@Body Truck request)
+            throws RetrofitError;
+
+    /**
+     * Get the profiles of all the food trucks in the user's region.
+     * <p/>
+     * This call requires Vendor authorization
+     */
+    @POST("/com.truckmuncher.api.trucks.TruckService/modifyTruckProfile")
+    void modifyTruckProfile(@Body Truck request, Callback<Truck> callback);
+
+    /**
+     * Get the profiles of all the food trucks in the user's region.
+     * <p/>
+     * This call requires Vendor authorization
+     */
+    @POST("/com.truckmuncher.api.trucks.TruckService/modifyServingMode")
+    ServingModeResponse modifyServingMode(@Body ServingModeRequest request)
+            throws RetrofitError;
+
+    /**
+     * Get the profiles of all the food trucks in the user's region.
+     * <p/>
+     * This call requires Vendor authorization
+     */
+    @POST("/com.truckmuncher.api.trucks.TruckService/modifyServingMode")
+    void modifyServingMode(@Body ServingModeRequest request, Callback<ServingModeResponse> callback);
 }
