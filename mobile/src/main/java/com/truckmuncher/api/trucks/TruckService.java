@@ -57,7 +57,7 @@ public interface TruckService {
     void getTruckProfiles(@Body TruckProfilesRequest request, Callback<TruckProfilesResponse> callback);
 
     /**
-     * Get the profiles of all the food trucks in the user's region.
+     * Use this to create or update a truck. Any data sent in the request will be used, even if no truck perviously existed.
      * <p/>
      * This call requires Vendor authorization
      */
@@ -66,7 +66,7 @@ public interface TruckService {
             throws RetrofitError;
 
     /**
-     * Get the profiles of all the food trucks in the user's region.
+     * Use this to create or update a truck. Any data sent in the request will be used, even if no truck perviously existed.
      * <p/>
      * This call requires Vendor authorization
      */
@@ -74,7 +74,7 @@ public interface TruckService {
     void modifyTruckProfile(@Body Truck request, Callback<Truck> callback);
 
     /**
-     * Get the profiles of all the food trucks in the user's region.
+     * Modify the serving mode for a truck.
      * <p/>
      * This call requires Vendor authorization
      */
@@ -83,10 +83,10 @@ public interface TruckService {
             throws RetrofitError;
 
     /**
-     * Get the profiles of all the food trucks in the user's region.
+     * Modify the serving mode for a truck.
      * <p/>
      * This call requires Vendor authorization
      */
     @POST("/com.truckmuncher.api.trucks.TruckService/modifyServingMode")
-    void modifyServingMode(@Body ServingModeRequest request, Callback<ServingModeResponse> callback);
+    void modifyServingMode(@Body ServingModeRequest request, Callback<ServingModeResponse>  callback);
 }
