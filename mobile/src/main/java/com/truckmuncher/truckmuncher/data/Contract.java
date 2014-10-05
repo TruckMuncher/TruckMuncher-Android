@@ -18,6 +18,7 @@ public class Contract {
     public static final String PATH_TRUCK = "truck";
     public static final String PATH_CATEGORY = "category";
     public static final String PATH_MENU_ITEM = "menu_item";
+    public static final String PATH_MENU = "menu";
 
     private static final String STRING_SEPARATOR = "__,__";
 
@@ -85,5 +86,19 @@ public class Contract {
         public static final String CONTENT_TYPE = CONTENT_TYPE_BASE + PATH_MENU_ITEM;
 
         public static final String CONTENT_ITEM_TYPE = CONTENT_ITEM_TYPE_BASE + PATH_MENU_ITEM;
+    }
+
+    public static final class MenuEntry implements BaseColumns {
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_MENU).build();
+        public static final String VIEW_NAME = "view_menu";
+
+        public static Uri buildMenuForTruck(String truckId) {
+            return CONTENT_URI.buildUpon().appendQueryParameter(TruckEntry.COLUMN_INTERNAL_ID, truckId).build();
+        }
+
+        public static final String CONTENT_TYPE = CONTENT_TYPE_BASE + PATH_MENU;
+
+        public static final String CONTENT_ITEM_TYPE = CONTENT_ITEM_TYPE_BASE + PATH_MENU;
     }
 }

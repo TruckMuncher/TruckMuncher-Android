@@ -22,6 +22,7 @@ public abstract class SqlOpenHelper extends SQLiteOpenHelper {
         TruckTable.onCreate(db);
         CategoryTable.onCreate(db);
         MenuItemTable.onCreate(db);
+        MenuView.onCreate(db);
     }
 
     @Override
@@ -29,6 +30,7 @@ public abstract class SqlOpenHelper extends SQLiteOpenHelper {
         TruckTable.onUpgrade(db, oldVersion, newVersion);
         CategoryTable.onUpgrade(db, oldVersion, newVersion);
         MenuItemTable.onUpgrade(db, oldVersion, newVersion);
+        MenuView.onUpgrade(db, oldVersion, newVersion);
     }
 
     private static class SqlOpenHelperImpl extends SqlOpenHelper {
