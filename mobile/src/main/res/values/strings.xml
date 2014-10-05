@@ -7,5 +7,7 @@
     <string name="action_vendor_mode">Vendor mode</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_vendor_home">Vendor Home Activity</string>
+    <string name="serving_mode">Serving Mode</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
