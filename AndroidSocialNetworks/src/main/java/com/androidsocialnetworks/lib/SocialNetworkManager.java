@@ -1,5 +1,6 @@
 package com.androidsocialnetworks.lib;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -25,9 +26,25 @@ public class SocialNetworkManager extends Fragment {
     private static final String PARAM_TWITTER_SECRET = "SocialNetworkManager.PARAM_TWITTER_SECRET";
     private static final String PARAM_FACEBOOK = "SocialNetworkManager.PARAM_FACEBOOK";
     private static final String PARAM_GOOGLE_PLUS = "SocialNetworkManager.PARAM_GOOGLE_PLUS";
+    private static final String SOCIAL_NETWORK_TAG = "SocialNetworkManager.SOCIAL_NETWORK_TAG";
 
     private Map<Integer, SocialNetwork> mSocialNetworksMap = new HashMap<Integer, SocialNetwork>();
     private OnInitializationCompleteListener mOnInitializationCompleteListener;
+
+    public static SocialNetworkManager getInstance(Activity context) {
+        SocialNetworkManager instance = (SocialNetworkManager) context.getFragmentManager()
+                .findFragmentByTag(SOCIAL_NETWORK_TAG);
+
+        if (instance == null) {
+            instance = SocialNetworkManager.Builder.from(context)
+                    .twitter(BuildConfig.TWITTER_API_KEY, BuildConfig.TWITTER_API_SECRET)
+                    .facebook()
+                    .build();
+            context.getFragmentManager().beginTransaction().add(instance, SOCIAL_NETWORK_TAG).commit();
+        }
+
+        return instance;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -185,11 +202,31 @@ public class SocialNetworkManager extends Fragment {
         mOnInitializationCompleteListener = onInitializationCompleteListener;
     }
 
+    public boolean needsLogin() {
+        boolean needsLogin = true;
+
+        for (SocialNetwork socialNetwork : mSocialNetworksMap.values()) {
+            if (socialNetwork.isConnected()) {
+                needsLogin = false;
+            }
+        }
+
+        return needsLogin;
+    }
+
+    public void logout() {
+        for (SocialNetwork socialNetwork : mSocialNetworksMap.values()) {
+            if (socialNetwork.isConnected()) {
+                socialNetwork.logout();
+            }
+        }
+    }
+
     public static interface OnInitializationCompleteListener {
         public void onSocialNetworkManagerInitialized();
     }
 
-    public static class Builder {
+    private static class Builder {
         private String twitterConsumerKey, twitterConsumerSecret;
         private boolean facebook;
         private boolean googlePlus;
@@ -200,18 +237,18 @@ public class SocialNetworkManager extends Fragment {
             mContext = context;
         }
 
-        public static Builder from(Context context) {
+        private static Builder from(Context context) {
             return new Builder(context);
         }
 
-        public Builder twitter(String consumerKey, String consumerSecret) {
+        private Builder twitter(String consumerKey, String consumerSecret) {
             twitterConsumerKey = consumerKey;
             twitterConsumerSecret = consumerSecret;
             return this;
         }
 
         // https://developers.facebook.com/docs/android/getting-started/
-        public Builder facebook() {
+        private Builder facebook() {
             String applicationID = Utility.getMetadataApplicationId(mContext);
 
             if (applicationID == null) {
@@ -224,12 +261,12 @@ public class SocialNetworkManager extends Fragment {
             return this;
         }
 
-        public Builder googlePlus() {
+        private Builder googlePlus() {
             googlePlus = true;
             return this;
         }
 
-        public SocialNetworkManager build() {
+        private SocialNetworkManager build() {
             Bundle args = new Bundle();
 
             if (!TextUtils.isEmpty(twitterConsumerKey) && !TextUtils.isEmpty(twitterConsumerSecret)) {

@@ -9,6 +9,9 @@ android {
         targetSdkVersion 20
         versionCode 1
         versionName "1.0"
+
+        buildConfigField "String", "TWITTER_API_KEY", "\"${TRUCK_MUNCHER_TWITTER_API_KEY}\""
+        buildConfigField "String", "TWITTER_API_SECRET", "\"${TRUCK_MUNCHER_TWITTER_API_SECRET}\""
     }
 
     buildTypes {

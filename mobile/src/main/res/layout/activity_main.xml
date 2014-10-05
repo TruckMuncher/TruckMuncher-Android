@@ -1,23 +1,7 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical">
-
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.MapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="0px"
-        android:layout_weight="3"
-        tools:context=".MainActivity" />
-
-    <fragment
-        android:id="@+id/truckDetailsFragment"
-        android:name="com.truckmuncher.truckmuncher.LoginFragment"
-        android:layout_width="match_parent"
-        android:layout_height="0px"
-        android:layout_weight="1"
-        tools:context=".TruckDetailsActivity" />
-</LinearLayout>
-
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:id="@+id/map"
+android:name="com.google.android.gms.maps.MapFragment"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context=".MainActivity" />

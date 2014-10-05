@@ -1,48 +1,36 @@
-package com.truckmuncher.truckmuncher;
+package com.truckmuncher.truckmuncher.login;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidsocialnetworks.lib.SocialNetworkManager;
 import com.androidsocialnetworks.lib.listener.OnLoginCompleteListener;
+import com.truckmuncher.truckmuncher.R;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import timber.log.Timber;
 
-public class LoginFragment extends Fragment
-        implements SocialNetworkManager.OnInitializationCompleteListener, View.OnClickListener {
+public class LoginFragment extends Fragment implements View.OnClickListener {
 
-    public static final String SOCIAL_NETWORK_TAG = "MainActivity.SOCIAL_NETWORK_TAG";
     @InjectView(R.id.twitter_button)
-    ImageButton twitterButton;
+    ImageView twitterButton;
     @InjectView(R.id.facebook_button)
-    ImageButton facebookButton;
-    @InjectView(R.id.twitter_status)
-    TextView twitterStatusView;
-    @InjectView(R.id.facebook_status)
-    TextView facebookStatusView;
+    ImageView facebookButton;
     private SocialNetworkManager socialNetworkManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        socialNetworkManager = (SocialNetworkManager) getFragmentManager().findFragmentByTag(SOCIAL_NETWORK_TAG);
-
-        if (socialNetworkManager == null) {
-            socialNetworkManager = SocialNetworkManager.Builder.from(getActivity())
-                    .twitter(BuildConfig.TWITTER_API_KEY, BuildConfig.TWITTER_API_SECRET)
-                    .facebook()
-                    .build();
-            socialNetworkManager.setOnInitializationCompleteListener(this);
-            getFragmentManager().beginTransaction().add(socialNetworkManager, SOCIAL_NETWORK_TAG).commit();
-        }
+        socialNetworkManager = SocialNetworkManager.getInstance(getActivity());
     }
 
     @Override
@@ -77,17 +65,11 @@ public class LoginFragment extends Fragment
         }
     }
 
-    @Override
-    public void onSocialNetworkManagerInitialized() {
-        updateTwitterStatus();
-        updateFacebookStatus();
-    }
-
     private void loginWithTwitter() {
         socialNetworkManager.getTwitterSocialNetwork().requestLogin(new OnLoginCompleteListener() {
             @Override
             public void onLoginSuccess(int i) {
-                updateTwitterStatus();
+                returnSuccessfulLogin();
             }
 
             @Override
@@ -101,7 +83,7 @@ public class LoginFragment extends Fragment
         socialNetworkManager.getFacebookSocialNetwork().requestLogin(new OnLoginCompleteListener() {
             @Override
             public void onLoginSuccess(int socialNetworkID) {
-                updateFacebookStatus();
+                returnSuccessfulLogin();
             }
 
             @Override
@@ -113,36 +95,10 @@ public class LoginFragment extends Fragment
 
     private void logOutOfTwitter() {
         socialNetworkManager.getTwitterSocialNetwork().logout();
-        updateTwitterStatus();
     }
 
     private void logOutOfFacebook() {
         socialNetworkManager.getFacebookSocialNetwork().logout();
-        updateFacebookStatus();
-    }
-
-    private void updateTwitterStatus() {
-        String message;
-
-        if (isLoggedInToTwitter()) {
-            message = "Signed in";
-        } else {
-            message = "Signed out";
-        }
-
-        twitterStatusView.setText(message);
-    }
-
-    private void updateFacebookStatus() {
-        String message;
-
-        if (isLoggedInToFacebook()) {
-            message = "Signed in";
-        } else {
-            message = "Signed out";
-        }
-
-        facebookStatusView.setText(message);
     }
 
     private boolean isLoggedInToTwitter() {
@@ -151,6 +107,14 @@ public class LoginFragment extends Fragment
 
     private boolean isLoggedInToFacebook() {
         return socialNetworkManager.getFacebookSocialNetwork().isConnected();
+    }
+
+    private void returnSuccessfulLogin() {
+        Activity activity = getActivity();
+        Intent returnIntent = new Intent();
+
+        activity.setResult(activity.RESULT_OK, returnIntent);
+        activity.finish();
     }
 
 }
