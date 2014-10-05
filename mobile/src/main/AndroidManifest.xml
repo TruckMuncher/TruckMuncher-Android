@@ -13,6 +13,10 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
+    <!-- Account Manager -->
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -55,6 +59,20 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.volkhart.foodtruckfinder.MainActivity" />
         </activity>
+        <activity android:name=".authentication.AuthenticatorActivity" />
+
+        <service
+            android:name=".authentication.AuthenticatorService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
 
         <meta-data
             android:name="com.google.android.gms.version"

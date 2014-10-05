@@ -8,6 +8,8 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_vendor_home">Vendor Home Activity</string>
     <string name="serving_mode">Serving Mode</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="auth_token_type">TruckMuncher</string>
+    <string name="auth_token_type_label">Full access to your TruckMuncher account\nYour social network credentials</string>
+    <string name="logout">Logout</string>
 
 </resources>

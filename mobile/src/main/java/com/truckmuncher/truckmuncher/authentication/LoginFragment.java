@@ -1,4 +1,4 @@
-package com.truckmuncher.truckmuncher.login;
+package com.truckmuncher.truckmuncher.authentication;
 
 import android.app.Activity;
 import android.app.Fragment;
