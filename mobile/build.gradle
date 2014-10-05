@@ -99,7 +99,7 @@ android {
 
     packagingOptions {
         exclude 'LICENSE.txt'
-        exclude 'META_INF/LICENSE.txt'
+        exclude 'META-INF/LICENSE.txt'
     }
 }
 
