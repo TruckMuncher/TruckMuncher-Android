@@ -1,11 +1,13 @@
 package com.truckmuncher.truckmuncher;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -15,7 +17,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.truckmuncher.truckmuncher.login.LoginActivity;
+import com.truckmuncher.truckmuncher.authentication.AccountGeneral;
+import com.truckmuncher.truckmuncher.authentication.AuthenticatorActivity;
 import com.truckmuncher.truckmuncher.vendor.VendorHomeActivity;
 
 public class MainActivity extends Activity implements GoogleMap.OnInfoWindowClickListener {
@@ -23,12 +26,27 @@ public class MainActivity extends Activity implements GoogleMap.OnInfoWindowClic
     private static final int REQUEST_LOGIN = 1;
 
     private GoogleMap map; // Might be null if Google Play services APK is not available.
+    private AccountManager accountManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpMapIfNeeded();
+
+        accountManager = AccountManager.get(this);
+
+        Account[] accounts = accountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
+
+        if (accounts.length > 0) {
+            String authToken = accountManager.peekAuthToken(accounts[0], AccountGeneral.getAuthTokenType(this));
+
+            // If we get an authToken the user is signed in and we can go straight to vendor mode
+            if (!TextUtils.isEmpty(authToken)) {
+                launchVendorMode(accounts[0].name);
+            }
+        }
+
     }
 
     @Override
@@ -46,7 +64,7 @@ public class MainActivity extends Activity implements GoogleMap.OnInfoWindowClic
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         if (item.getItemId() == R.id.action_vendor_mode) {
-            Intent intent = new Intent(this, LoginActivity.class);
+            Intent intent = new Intent(this, AuthenticatorActivity.class);
             startActivityForResult(intent, REQUEST_LOGIN);
 
             return true;
@@ -107,15 +125,19 @@ public class MainActivity extends Activity implements GoogleMap.OnInfoWindowClic
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_LOGIN) {
             if (resultCode == RESULT_OK) {
-                launchVendorMode();
+                Bundle extras = data.getExtras();
+
+                launchVendorMode(extras.getString(AccountManager.KEY_ACCOUNT_NAME));
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
-    private void launchVendorMode() {
+    private void launchVendorMode(String userName) {
         Intent intent = new Intent(this, VendorHomeActivity.class);
+        intent.putExtra(VendorHomeActivity.USERNAME, userName);
         startActivity(intent);
+        finish();
     }
 }

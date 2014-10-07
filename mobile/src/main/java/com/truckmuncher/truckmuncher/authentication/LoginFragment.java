@@ -9,21 +9,39 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.androidsocialnetworks.lib.AccessToken;
 import com.androidsocialnetworks.lib.SocialNetworkManager;
+import com.androidsocialnetworks.lib.SocialPerson;
 import com.androidsocialnetworks.lib.listener.OnLoginCompleteListener;
+import com.androidsocialnetworks.lib.listener.OnRequestSocialPersonCompleteListener;
 import com.truckmuncher.truckmuncher.R;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import timber.log.Timber;
 
-public class LoginFragment extends Fragment implements View.OnClickListener {
+public class LoginFragment extends Fragment {
+
+    public static final String SOCIAL_NETWORK_TAG = SocialNetworkManager.class.getSimpleName();
 
     @InjectView(R.id.twitter_button)
     ImageView twitterButton;
     @InjectView(R.id.facebook_button)
     ImageView facebookButton;
+
     private SocialNetworkManager socialNetworkManager;
+    private LoginSuccessCallback loginSuccessCallback;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            loginSuccessCallback = (LoginSuccessCallback) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Calling activity must implement " + LoginSuccessCallback.class.getName());
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,20 +52,25 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_login, container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.inject(this, view);
-
-        twitterButton.setOnClickListener(this);
-        facebookButton.setOnClickListener(this);
+        return view;
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        loginSuccessCallback = null;
+    }
+
+
+    @OnClick({R.id.twitter_button, R.id.facebook_button})
     public void onClick(View view) {
         if (view == twitterButton) {
             if (isLoggedInToTwitter()) {
@@ -67,13 +90,27 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private void loginWithTwitter() {
         socialNetworkManager.getTwitterSocialNetwork().requestLogin(new OnLoginCompleteListener() {
             @Override
-            public void onLoginSuccess(int i) {
-                returnSuccessfulLogin();
+            public void onLoginSuccess(int socialNetworkID) {
+                socialNetworkManager.getTwitterSocialNetwork().requestCurrentPerson(new OnRequestSocialPersonCompleteListener() {
+                    @Override
+                    public void onRequestSocialPersonSuccess(int socialNetworkID, SocialPerson socialPerson) {
+                        AccessToken accessToken = socialNetworkManager.getTwitterSocialNetwork().getAccessToken();
+                        // TODO extract the constant. Fragment is not a good place for it.
+                        String result = String.format("oauth_token=%s,oauth_secret=%s", accessToken.token, accessToken.secret);
+
+                        loginSuccessCallback.onLoginSuccess(socialPerson.name, result);
+                    }
+
+                    @Override
+                    public void onError(int socialNetworkID, String requestID, String errorMessage, Object data) {
+                        // TODO: handle
+                    }
+                });
             }
 
             @Override
-            public void onError(int i, String s, String s2, Object o) {
-                Timber.d("Login Fragment", "Login Failed");
+            public void onError(int socialNetworkID, String requestID, String errorMessage, Object data) {
+                Timber.e("Twitter login failed: %s", errorMessage);
             }
         });
     }
@@ -82,12 +119,24 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         socialNetworkManager.getFacebookSocialNetwork().requestLogin(new OnLoginCompleteListener() {
             @Override
             public void onLoginSuccess(int socialNetworkID) {
-                returnSuccessfulLogin();
+                socialNetworkManager.getFacebookSocialNetwork().requestCurrentPerson(new OnRequestSocialPersonCompleteListener() {
+                    @Override
+                    public void onRequestSocialPersonSuccess(int socialNetworkID, SocialPerson socialPerson) {
+                        String token = socialNetworkManager.getFacebookSocialNetwork().getAccessToken().token;
+                        // TODO extract the constant. Fragment is not a good place for it.
+                        loginSuccessCallback.onLoginSuccess(socialPerson.name, "access_token=" + token);
+                    }
+
+                    @Override
+                    public void onError(int socialNetworkID, String requestID, String errorMessage, Object data) {
+                        // TODO: handle
+                    }
+                });
             }
 
             @Override
             public void onError(int socialNetworkID, String requestID, String errorMessage, Object data) {
-                Timber.d("Login Fragment", "Facebook login failed: " + errorMessage);
+                Timber.e("Facebook login failed: %s", errorMessage);
             }
         });
     }
@@ -108,12 +157,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         return socialNetworkManager.getFacebookSocialNetwork().isConnected();
     }
 
-    private void returnSuccessfulLogin() {
-        Activity activity = getActivity();
-        Intent returnIntent = new Intent();
-
-        activity.setResult(activity.RESULT_OK, returnIntent);
-        activity.finish();
+    interface LoginSuccessCallback {
+        void onLoginSuccess(String userName, String authToken);
     }
-
 }

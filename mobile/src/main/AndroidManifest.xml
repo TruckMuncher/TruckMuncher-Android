@@ -16,6 +16,8 @@
     <!-- Account Manager -->
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
 
     <application
         android:name=".App"
@@ -36,15 +38,6 @@
         <activity
             android:name=".TruckDetailsActivity"
             android:label="@string/title_activity_truck_details"
-            android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.volkhart.foodtruckfinder.MainActivity" />
-        </activity>
-
-        <activity
-            android:name=".login.LoginActivity"
-            android:label="@string/title_activity_login" >
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
