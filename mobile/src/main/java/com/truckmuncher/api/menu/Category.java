@@ -11,7 +11,6 @@ import java.util.List;
 import static com.squareup.wire.Message.Datatype.INT32;
 import static com.squareup.wire.Message.Datatype.STRING;
 import static com.squareup.wire.Message.Label.REPEATED;
-import static com.squareup.wire.Message.Label.REQUIRED;
 
 public final class Category extends Message {
 
@@ -24,7 +23,7 @@ public final class Category extends Message {
     /**
      * Suitable for unique identification.
      */
-    @ProtoField(tag = 1, type = STRING, label = REQUIRED)
+    @ProtoField(tag = 1, type = STRING)
     public final String id;
 
     @ProtoField(tag = 2, type = STRING)
@@ -135,7 +134,6 @@ public final class Category extends Message {
 
         @Override
         public Category build() {
-            checkRequiredFields();
             return new Category(this);
         }
     }

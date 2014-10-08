@@ -4,6 +4,7 @@ package com.truckmuncher.api.menu;
 
 import com.squareup.wire.Message;
 import com.squareup.wire.ProtoField;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -25,9 +26,9 @@ public final class MenuItem extends Message {
   public static final Boolean DEFAULT_ISAVAILABLE = false;
 
   /**
-   * Suitable for unique identification. Use the default if unset.
+   * Suitable for unique identification.
    */
-  @ProtoField(tag = 1, type = STRING, label = REQUIRED)
+  @ProtoField(tag = 1, type = STRING)
   public final String id;
 
   @ProtoField(tag = 2, type = STRING, label = REQUIRED)
@@ -125,7 +126,7 @@ public final class MenuItem extends Message {
     }
 
     /**
-     * Suitable for unique identification. Use the default if unset.
+     * Suitable for unique identification.
      */
     public Builder id(String id) {
       this.id = id;
