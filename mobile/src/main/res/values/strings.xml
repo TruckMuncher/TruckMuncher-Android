@@ -11,5 +11,7 @@
     <string name="auth_token_type">TruckMuncher</string>
     <string name="auth_token_type_label">Full access to your TruckMuncher account\nYour social network credentials</string>
     <string name="logout">Logout</string>
+    <string name="twitter_token_format" formatted="false">oauth_token=%s,oauth_secret=%s</string>
+    <string name="facebook_token_format" formatted="false">access_token=%s</string>
 
 </resources>

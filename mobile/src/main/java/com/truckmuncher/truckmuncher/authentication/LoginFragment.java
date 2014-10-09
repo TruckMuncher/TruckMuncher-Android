@@ -2,7 +2,6 @@ package com.truckmuncher.truckmuncher.authentication;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,17 +72,11 @@ public class LoginFragment extends Fragment {
     @OnClick({R.id.twitter_button, R.id.facebook_button})
     public void onClick(View view) {
         if (view == twitterButton) {
-            if (isLoggedInToTwitter()) {
-                logOutOfTwitter();
-            } else {
-                loginWithTwitter();
-            }
+            logOutOfTwitter();
+            loginWithTwitter();
         } else if (view == facebookButton) {
-            if (isLoggedInToFacebook()) {
-                logOutOfFacebook();
-            } else {
-                loginWithFacebook();
-            }
+            logOutOfFacebook();
+            loginWithFacebook();
         }
     }
 
@@ -95,8 +88,8 @@ public class LoginFragment extends Fragment {
                     @Override
                     public void onRequestSocialPersonSuccess(int socialNetworkID, SocialPerson socialPerson) {
                         AccessToken accessToken = socialNetworkManager.getTwitterSocialNetwork().getAccessToken();
-                        // TODO extract the constant. Fragment is not a good place for it.
-                        String result = String.format("oauth_token=%s,oauth_secret=%s", accessToken.token, accessToken.secret);
+                        String result = String.format(getActivity()
+                                .getString(R.string.twitter_token_format), accessToken.token, accessToken.secret);
 
                         loginSuccessCallback.onLoginSuccess(socialPerson.name, result);
                     }
@@ -123,8 +116,9 @@ public class LoginFragment extends Fragment {
                     @Override
                     public void onRequestSocialPersonSuccess(int socialNetworkID, SocialPerson socialPerson) {
                         String token = socialNetworkManager.getFacebookSocialNetwork().getAccessToken().token;
-                        // TODO extract the constant. Fragment is not a good place for it.
-                        loginSuccessCallback.onLoginSuccess(socialPerson.name, "access_token=" + token);
+                        String result = String.format(getActivity().getString(R.string.facebook_token_format), token);
+
+                        loginSuccessCallback.onLoginSuccess(socialPerson.name, result);
                     }
 
                     @Override
@@ -147,14 +141,6 @@ public class LoginFragment extends Fragment {
 
     private void logOutOfFacebook() {
         socialNetworkManager.getFacebookSocialNetwork().logout();
-    }
-
-    private boolean isLoggedInToTwitter() {
-        return socialNetworkManager.getTwitterSocialNetwork().isConnected();
-    }
-
-    private boolean isLoggedInToFacebook() {
-        return socialNetworkManager.getFacebookSocialNetwork().isConnected();
     }
 
     interface LoginSuccessCallback {
