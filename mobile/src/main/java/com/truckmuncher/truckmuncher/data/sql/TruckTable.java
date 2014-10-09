@@ -31,7 +31,7 @@ public final class TruckTable {
         Timber.d("Creating database: %s", DATABASE_CREATE);
         db.execSQL(DATABASE_CREATE);
 
-        Timber.d("Creating index: %s", DATABASE_CREATE);
+        Timber.d("Creating index: %s", INDEX_CREATE);
         db.execSQL(INDEX_CREATE);
     }
 
