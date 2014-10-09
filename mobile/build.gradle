@@ -67,16 +67,6 @@ android {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-
-//            def props = new Properties()
-//            file("twitter.properties").withInputStream {
-//                stream -> props.load(stream)
-//            }
-//            def twitterKey = props.get("twitterKey")
-//            def twitterSecretKey = props.get("twitterSecretKey")
-//
-//            buildConfigField "String", "TWITTER_API_KEY", "\"${twitterKey}\""
-//            buildConfigField "String", "TWITTER_API_SECRET", "\"${twitterSecretKey}\""
         }
         debug {
             testCoverageEnabled true
@@ -106,26 +96,40 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
+
+    packagingOptions {
+        exclude 'LICENSE.txt'
+        exclude 'META-INF/LICENSE.txt'
+    }
 }
 
 dependencies {
     wearApp project(':wear')
+    compile 'com.android.support:support-v13:20.0.0'
+    compile 'com.google.android.gms:play-services:6.1.11'
     compile project(':AndroidSocialNetworks')
 
-    compile 'com.jakewharton:butterknife:5.1.2'
-
+    // Network and Data stack
     compile 'com.squareup.picasso:picasso:2.3.4'
     compile 'com.squareup.okhttp:okhttp:2.0.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
     compile 'com.squareup.retrofit:retrofit:1.6.1'
+    compile 'com.squareup.retrofit:converter-wire:1.6.1'
+    compile 'com.squareup.wire:wire-runtime:1.5.2'
+    compile 'com.squareup:tape:1.2.2'
 
+    // Logging
     compile 'com.crashlytics.android:crashlytics:1.1.11'
     compile 'com.jakewharton.timber:timber:2.4.1'
 
+    // UI Utils
     compile 'com.volkhart:android-util:1.0.0-SNAPSHOT@aar'
+    compile 'com.squareup.phrase:phrase:1.0.3'
+    compile 'com.jakewharton:butterknife:5.1.2'
 
 
     androidTestCompile 'com.squareup.assertj:assertj-android:1.0.0'
+    androidTestCompile 'com.jakewharton.espresso:espresso:1.1-r3'
 }
 
 repositories {

@@ -9,24 +9,22 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.squareup.wire.Message.Datatype.INT32;
-import static com.squareup.wire.Message.Datatype.INT64;
 import static com.squareup.wire.Message.Datatype.STRING;
 import static com.squareup.wire.Message.Label.REPEATED;
-import static com.squareup.wire.Message.Label.REQUIRED;
 
 public final class Category extends Message {
 
-    public static final Long DEFAULT_ID = 0L;
+    public static final String DEFAULT_ID = "";
     public static final String DEFAULT_NAME = "";
     public static final String DEFAULT_NOTES = "";
     public static final Integer DEFAULT_ORDERINMENU = 0;
-    public static final List<MenuItem> DEFAULT_MENUITEM = Collections.emptyList();
+    public static final List<MenuItem> DEFAULT_MENUITEMS = Collections.emptyList();
 
     /**
-     * Non-negative value. Suitable for unique identification.
+     * Suitable for unique identification.
      */
-    @ProtoField(tag = 1, type = INT64, label = REQUIRED)
-    public final Long id;
+    @ProtoField(tag = 1, type = STRING)
+    public final String id;
 
     @ProtoField(tag = 2, type = STRING)
     public final String name;
@@ -41,18 +39,18 @@ public final class Category extends Message {
     public final Integer orderInMenu;
 
     @ProtoField(tag = 5, label = REPEATED)
-    public final List<MenuItem> menuItem;
+    public final List<MenuItem> menuItems;
 
-    public Category(Long id, String name, String notes, Integer orderInMenu, List<MenuItem> menuItem) {
+    public Category(String id, String name, String notes, Integer orderInMenu, List<MenuItem> menuItems) {
         this.id = id;
         this.name = name;
         this.notes = notes;
         this.orderInMenu = orderInMenu;
-        this.menuItem = immutableCopyOf(menuItem);
+        this.menuItems = immutableCopyOf(menuItems);
     }
 
     private Category(Builder builder) {
-        this(builder.id, builder.name, builder.notes, builder.orderInMenu, builder.menuItem);
+        this(builder.id, builder.name, builder.notes, builder.orderInMenu, builder.menuItems);
         setBuilder(builder);
     }
 
@@ -65,7 +63,7 @@ public final class Category extends Message {
                 && equals(name, o.name)
                 && equals(notes, o.notes)
                 && equals(orderInMenu, o.orderInMenu)
-                && equals(menuItem, o.menuItem);
+                && equals(menuItems, o.menuItems);
     }
 
     @Override
@@ -76,7 +74,7 @@ public final class Category extends Message {
             result = result * 37 + (name != null ? name.hashCode() : 0);
             result = result * 37 + (notes != null ? notes.hashCode() : 0);
             result = result * 37 + (orderInMenu != null ? orderInMenu.hashCode() : 0);
-            result = result * 37 + (menuItem != null ? menuItem.hashCode() : 1);
+            result = result * 37 + (menuItems != null ? menuItems.hashCode() : 1);
             hashCode = result;
         }
         return result;
@@ -84,11 +82,11 @@ public final class Category extends Message {
 
     public static final class Builder extends Message.Builder<Category> {
 
-        public Long id;
+        public String id;
         public String name;
         public String notes;
         public Integer orderInMenu;
-        public List<MenuItem> menuItem;
+        public List<MenuItem> menuItems;
 
         public Builder() {
         }
@@ -100,13 +98,13 @@ public final class Category extends Message {
             this.name = message.name;
             this.notes = message.notes;
             this.orderInMenu = message.orderInMenu;
-            this.menuItem = copyOf(message.menuItem);
+            this.menuItems = copyOf(message.menuItems);
         }
 
         /**
-         * Non-negative value. Suitable for unique identification.
+         * Suitable for unique identification.
          */
-        public Builder id(Long id) {
+        public Builder id(String id) {
             this.id = id;
             return this;
         }
@@ -129,14 +127,13 @@ public final class Category extends Message {
             return this;
         }
 
-        public Builder menuItem(List<MenuItem> menuItem) {
-            this.menuItem = checkForNulls(menuItem);
+        public Builder menuItems(List<MenuItem> menuItems) {
+            this.menuItems = checkForNulls(menuItems);
             return this;
         }
 
         @Override
         public Category build() {
-            checkRequiredFields();
             return new Category(this);
         }
     }

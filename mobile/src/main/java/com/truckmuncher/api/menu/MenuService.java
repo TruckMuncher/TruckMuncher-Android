@@ -12,17 +12,17 @@ import retrofit.http.POST;
  */
 public interface MenuService {
     /**
-     * Get the changes in MenuItem availability since the last sync.
+     * Returns the full MenuItems availability for the entire region.
      */
-    @POST("/com.truckmuncher.api.menu.MenuService/getMenuItemAvailabilityDiff")
-    MenuItemAvailabilityDiffResponse getMenuItemAvailabilityDiff(@Body MenuItemAvailabilityDiffRequest request)
+    @POST("/com.truckmuncher.api.menu.MenuService/getMenuItemAvailability")
+    MenuItemAvailabilityResponse getMenuItemAvailability(@Body MenuItemAvailabilityRequest request)
             throws RetrofitError;
 
     /**
-     * Get the changes in MenuItem availability since the last sync.
+     * Returns the full MenuItems availability for the entire region.
      */
-    @POST("/com.truckmuncher.api.menu.MenuService/getMenuItemAvailabilityDiff")
-    void getMenuItemAvailabilityDiff(@Body MenuItemAvailabilityDiffRequest request, Callback<MenuItemAvailabilityDiffResponse> callback);
+    @POST("/com.truckmuncher.api.menu.MenuService/getMenuItemAvailability")
+    void getMenuItemAvailability(@Body MenuItemAvailabilityRequest request, Callback<MenuItemAvailabilityResponse> callback);
 
     /**
      * Get all of the menus in the user's region.
@@ -38,73 +38,32 @@ public interface MenuService {
     void getFullMenus(@Body FullMenusRequest request, Callback<FullMenusResponse> callback);
 
     /**
-     * Declare which MenuItems are changing in availability. This call will increment the version number of the MenuItem availability.
-     * This call does not provide any sort of versioning protection, and will simple apply the changes to the latest version available.
+     * Use this to get a single menu.
+     */
+    @POST("/com.truckmuncher.api.menu.MenuService/getMenu")
+    MenuResponse getMenu(@Body MenuRequest request)
+            throws RetrofitError;
+
+    /**
+     * Use this to get a single menu.
+     */
+    @POST("/com.truckmuncher.api.menu.MenuService/getMenu")
+    void getMenu(@Body MenuRequest request, Callback<MenuResponse> callback);
+
+    /**
+     * Declare which MenuItems are changing in availability.
      * <p/>
      * This call requires Vendor authorization
      */
-    @POST("/com.truckmuncher.api.menu.MenuService/modifyMenuAvailability")
-    MenuAvailabilityResponse modifyMenuAvailability(@Body MenuAvailabilityRequest request)
+    @POST("/com.truckmuncher.api.menu.MenuService/modifyMenuItemAvailability")
+    ModifyMenuItemAvailabilityResponse modifyMenuItemAvailability(@Body ModifyMenuItemAvailabilityRequest request)
             throws RetrofitError;
 
     /**
-     * Declare which MenuItems are changing in availability. This call will increment the version number of the MenuItem availability.
-     * This call does not provide any sort of versioning protection, and will simple apply the changes to the latest version available.
+     * Declare which MenuItems are changing in availability.
      * <p/>
      * This call requires Vendor authorization
      */
-    @POST("/com.truckmuncher.api.menu.MenuService/modifyMenuAvailability")
-    void modifyMenuAvailability(@Body MenuAvailabilityRequest request, Callback<MenuAvailabilityResponse> callback);
-
-    /**
-     * This call requires Vendor authorization
-     */
-    @POST("/com.truckmuncher.api.menu.MenuService/modifyMenuItem")
-    MenuItemResponse modifyMenuItem(@Body MenuItemRequest request)
-            throws RetrofitError;
-
-    /**
-     * This call requires Vendor authorization
-     */
-    @POST("/com.truckmuncher.api.menu.MenuService/modifyMenuItem")
-    void modifyMenuItem(@Body MenuItemRequest request, Callback<MenuItemResponse> callback);
-
-    /**
-     * This call requires Vendor authorization
-     */
-    @POST("/com.truckmuncher.api.menu.MenuService/deleteMenuItem")
-    DeleteMenuItemResponse deleteMenuItem(@Body DeleteMenuItemRequest request)
-            throws RetrofitError;
-
-    /**
-     * This call requires Vendor authorization
-     */
-    @POST("/com.truckmuncher.api.menu.MenuService/deleteMenuItem")
-    void deleteMenuItem(@Body DeleteMenuItemRequest request, Callback<DeleteMenuItemResponse> callback);
-
-    /**
-     * This call requires Vendor authorization
-     */
-    @POST("/com.truckmuncher.api.menu.MenuService/modifyCategory")
-    CategoryResponse modifyCategory(@Body CategoryRequest request)
-            throws RetrofitError;
-
-    /**
-     * This call requires Vendor authorization
-     */
-    @POST("/com.truckmuncher.api.menu.MenuService/modifyCategory")
-    void modifyCategory(@Body CategoryRequest request, Callback<CategoryResponse> callback);
-
-    /**
-     * This call requires Vendor authorization
-     */
-    @POST("/com.truckmuncher.api.menu.MenuService/deleteCategory")
-    DeleteCategoryResponse deleteCategory(@Body DeleteCategoryRequest request)
-            throws RetrofitError;
-
-    /**
-     * This call requires Vendor authorization
-     */
-    @POST("/com.truckmuncher.api.menu.MenuService/deleteCategory")
-    void deleteCategory(@Body DeleteCategoryRequest request, Callback<DeleteCategoryResponse> callback);
+    @POST("/com.truckmuncher.api.menu.MenuService/modifyMenuItemAvailability")
+    void modifyMenuItemAvailability(@Body ModifyMenuItemAvailabilityRequest request, Callback<ModifyMenuItemAvailabilityResponse> callback);
 }

@@ -10,21 +10,21 @@ import java.util.List;
 
 import static com.squareup.wire.Message.Label.REPEATED;
 
-public final class MenuAvailabilityRequest extends Message {
+public final class ModifyMenuItemAvailabilityRequest extends Message {
 
-    public static final List<MenuItemAvailabilityDiff> DEFAULT_DIFF = Collections.emptyList();
+    public static final List<MenuItemAvailability> DEFAULT_DIFF = Collections.emptyList();
 
     /**
      * The changes that should be applied on the server.
      */
     @ProtoField(tag = 1, label = REPEATED)
-    public final List<MenuItemAvailabilityDiff> diff;
+    public final List<MenuItemAvailability> diff;
 
-    public MenuAvailabilityRequest(List<MenuItemAvailabilityDiff> diff) {
+    public ModifyMenuItemAvailabilityRequest(List<MenuItemAvailability> diff) {
         this.diff = immutableCopyOf(diff);
     }
 
-    private MenuAvailabilityRequest(Builder builder) {
+    private ModifyMenuItemAvailabilityRequest(Builder builder) {
         this(builder.diff);
         setBuilder(builder);
     }
@@ -32,8 +32,8 @@ public final class MenuAvailabilityRequest extends Message {
     @Override
     public boolean equals(Object other) {
         if (other == this) return true;
-        if (!(other instanceof MenuAvailabilityRequest)) return false;
-        return equals(diff, ((MenuAvailabilityRequest) other).diff);
+        if (!(other instanceof ModifyMenuItemAvailabilityRequest)) return false;
+        return equals(diff, ((ModifyMenuItemAvailabilityRequest) other).diff);
     }
 
     @Override
@@ -42,14 +42,14 @@ public final class MenuAvailabilityRequest extends Message {
         return result != 0 ? result : (hashCode = diff != null ? diff.hashCode() : 1);
     }
 
-    public static final class Builder extends Message.Builder<MenuAvailabilityRequest> {
+    public static final class Builder extends Message.Builder<ModifyMenuItemAvailabilityRequest> {
 
-        public List<MenuItemAvailabilityDiff> diff;
+        public List<MenuItemAvailability> diff;
 
         public Builder() {
         }
 
-        public Builder(MenuAvailabilityRequest message) {
+        public Builder(ModifyMenuItemAvailabilityRequest message) {
             super(message);
             if (message == null) return;
             this.diff = copyOf(message.diff);
@@ -58,14 +58,14 @@ public final class MenuAvailabilityRequest extends Message {
         /**
          * The changes that should be applied on the server.
          */
-        public Builder diff(List<MenuItemAvailabilityDiff> diff) {
+        public Builder diff(List<MenuItemAvailability> diff) {
             this.diff = checkForNulls(diff);
             return this;
         }
 
         @Override
-        public MenuAvailabilityRequest build() {
-            return new MenuAvailabilityRequest(this);
+        public ModifyMenuItemAvailabilityRequest build() {
+            return new ModifyMenuItemAvailabilityRequest(this);
         }
     }
 }

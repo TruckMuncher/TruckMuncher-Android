@@ -4,171 +4,170 @@ package com.truckmuncher.api.trucks;
 
 import com.squareup.wire.Message;
 import com.squareup.wire.ProtoField;
-
 import java.util.Collections;
 import java.util.List;
 
 import static com.squareup.wire.Message.Datatype.DOUBLE;
-import static com.squareup.wire.Message.Datatype.INT64;
+import static com.squareup.wire.Message.Datatype.STRING;
 import static com.squareup.wire.Message.Label.REPEATED;
 import static com.squareup.wire.Message.Label.REQUIRED;
 
 public final class ActiveTrucksResponse extends Message {
 
-    public static final List<Truck> DEFAULT_TRUCK = Collections.emptyList();
+  public static final List<Truck> DEFAULT_TRUCK = Collections.emptyList();
 
-    @ProtoField(tag = 1, label = REPEATED)
-    public final List<Truck> truck;
+  @ProtoField(tag = 1, label = REPEATED)
+  public final List<Truck> truck;
 
-    public ActiveTrucksResponse(List<Truck> truck) {
-        this.truck = immutableCopyOf(truck);
+  public ActiveTrucksResponse(List<Truck> truck) {
+    this.truck = immutableCopyOf(truck);
+  }
+
+  private ActiveTrucksResponse(Builder builder) {
+    this(builder.truck);
+    setBuilder(builder);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (other == this) return true;
+    if (!(other instanceof ActiveTrucksResponse)) return false;
+    return equals(truck, ((ActiveTrucksResponse) other).truck);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = hashCode;
+    return result != 0 ? result : (hashCode = truck != null ? truck.hashCode() : 1);
+  }
+
+  public static final class Builder extends Message.Builder<ActiveTrucksResponse> {
+
+    public List<Truck> truck;
+
+    public Builder() {
     }
 
-    private ActiveTrucksResponse(Builder builder) {
-        this(builder.truck);
-        setBuilder(builder);
+    public Builder(ActiveTrucksResponse message) {
+      super(message);
+      if (message == null) return;
+      this.truck = copyOf(message.truck);
+    }
+
+    public Builder truck(List<Truck> truck) {
+      this.truck = checkForNulls(truck);
+      return this;
+    }
+
+    @Override
+    public ActiveTrucksResponse build() {
+      return new ActiveTrucksResponse(this);
+    }
+  }
+
+  public static final class Truck extends Message {
+
+    public static final String DEFAULT_ID = "";
+    public static final Double DEFAULT_LATITUDE = 0D;
+    public static final Double DEFAULT_LONGITUDE = 0D;
+
+    /**
+     * Suitable for unique identification.
+     */
+    @ProtoField(tag = 1, type = STRING, label = REQUIRED)
+    public final String id;
+
+    /**
+     * Value in the range [-90, 90]
+     */
+    @ProtoField(tag = 2, type = DOUBLE, label = REQUIRED)
+    public final Double latitude;
+
+    /**
+     * Value in the range [-180, 180]
+     */
+    @ProtoField(tag = 3, type = DOUBLE, label = REQUIRED)
+    public final Double longitude;
+
+    public Truck(String id, Double latitude, Double longitude) {
+      this.id = id;
+      this.latitude = latitude;
+      this.longitude = longitude;
+    }
+
+    private Truck(Builder builder) {
+      this(builder.id, builder.latitude, builder.longitude);
+      setBuilder(builder);
     }
 
     @Override
     public boolean equals(Object other) {
-        if (other == this) return true;
-        if (!(other instanceof ActiveTrucksResponse)) return false;
-        return equals(truck, ((ActiveTrucksResponse) other).truck);
+      if (other == this) return true;
+      if (!(other instanceof Truck)) return false;
+      Truck o = (Truck) other;
+      return equals(id, o.id)
+          && equals(latitude, o.latitude)
+          && equals(longitude, o.longitude);
     }
 
     @Override
     public int hashCode() {
-        int result = hashCode;
-        return result != 0 ? result : (hashCode = truck != null ? truck.hashCode() : 1);
+      int result = hashCode;
+      if (result == 0) {
+        result = id != null ? id.hashCode() : 0;
+        result = result * 37 + (latitude != null ? latitude.hashCode() : 0);
+        result = result * 37 + (longitude != null ? longitude.hashCode() : 0);
+        hashCode = result;
+      }
+      return result;
     }
 
-    public static final class Builder extends Message.Builder<ActiveTrucksResponse> {
+    public static final class Builder extends Message.Builder<Truck> {
 
-        public List<Truck> truck;
+      public String id;
+      public Double latitude;
+      public Double longitude;
 
-        public Builder() {
-        }
+      public Builder() {
+      }
 
-        public Builder(ActiveTrucksResponse message) {
-            super(message);
-            if (message == null) return;
-            this.truck = copyOf(message.truck);
-        }
+      public Builder(Truck message) {
+        super(message);
+        if (message == null) return;
+        this.id = message.id;
+        this.latitude = message.latitude;
+        this.longitude = message.longitude;
+      }
 
-        public Builder truck(List<Truck> truck) {
-            this.truck = checkForNulls(truck);
-            return this;
-        }
+      /**
+       * Suitable for unique identification.
+       */
+      public Builder id(String id) {
+        this.id = id;
+        return this;
+      }
 
-        @Override
-        public ActiveTrucksResponse build() {
-            return new ActiveTrucksResponse(this);
-        }
+      /**
+       * Value in the range [-90, 90]
+       */
+      public Builder latitude(Double latitude) {
+        this.latitude = latitude;
+        return this;
+      }
+
+      /**
+       * Value in the range [-180, 180]
+       */
+      public Builder longitude(Double longitude) {
+        this.longitude = longitude;
+        return this;
+      }
+
+      @Override
+      public Truck build() {
+        checkRequiredFields();
+        return new Truck(this);
+      }
     }
-
-    public static final class Truck extends Message {
-
-        public static final Long DEFAULT_ID = 0L;
-        public static final Double DEFAULT_LATITUDE = 0D;
-        public static final Double DEFAULT_LONGITUDE = 0D;
-
-        /**
-         * Non-negative value. Suitable for unique identification.
-         */
-        @ProtoField(tag = 1, type = INT64, label = REQUIRED)
-        public final Long id;
-
-        /**
-         * Value in the range [-90, 90]
-         */
-        @ProtoField(tag = 2, type = DOUBLE, label = REQUIRED)
-        public final Double latitude;
-
-        /**
-         * Value in the range [-180, 180]
-         */
-        @ProtoField(tag = 3, type = DOUBLE, label = REQUIRED)
-        public final Double longitude;
-
-        public Truck(Long id, Double latitude, Double longitude) {
-            this.id = id;
-            this.latitude = latitude;
-            this.longitude = longitude;
-        }
-
-        private Truck(Builder builder) {
-            this(builder.id, builder.latitude, builder.longitude);
-            setBuilder(builder);
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            if (other == this) return true;
-            if (!(other instanceof Truck)) return false;
-            Truck o = (Truck) other;
-            return equals(id, o.id)
-                    && equals(latitude, o.latitude)
-                    && equals(longitude, o.longitude);
-        }
-
-        @Override
-        public int hashCode() {
-            int result = hashCode;
-            if (result == 0) {
-                result = id != null ? id.hashCode() : 0;
-                result = result * 37 + (latitude != null ? latitude.hashCode() : 0);
-                result = result * 37 + (longitude != null ? longitude.hashCode() : 0);
-                hashCode = result;
-            }
-            return result;
-        }
-
-        public static final class Builder extends Message.Builder<Truck> {
-
-            public Long id;
-            public Double latitude;
-            public Double longitude;
-
-            public Builder() {
-            }
-
-            public Builder(Truck message) {
-                super(message);
-                if (message == null) return;
-                this.id = message.id;
-                this.latitude = message.latitude;
-                this.longitude = message.longitude;
-            }
-
-            /**
-             * Non-negative value. Suitable for unique identification.
-             */
-            public Builder id(Long id) {
-                this.id = id;
-                return this;
-            }
-
-            /**
-             * Value in the range [-90, 90]
-             */
-            public Builder latitude(Double latitude) {
-                this.latitude = latitude;
-                return this;
-            }
-
-            /**
-             * Value in the range [-180, 180]
-             */
-            public Builder longitude(Double longitude) {
-                this.longitude = longitude;
-                return this;
-            }
-
-            @Override
-            public Truck build() {
-                checkRequiredFields();
-                return new Truck(this);
-            }
-        }
-    }
+  }
 }

@@ -8,121 +8,118 @@ import com.squareup.wire.ProtoField;
 import java.util.Collections;
 import java.util.List;
 
-import static com.squareup.wire.Message.Datatype.INT64;
 import static com.squareup.wire.Message.Datatype.STRING;
 import static com.squareup.wire.Message.Label.REPEATED;
-import static com.squareup.wire.Message.Label.REQUIRED;
 
 public final class Truck extends Message {
 
-    public static final Long DEFAULT_ID = -1L;
-    public static final String DEFAULT_NAME = "";
-    public static final String DEFAULT_IMAGEURL = "";
-    public static final List<String> DEFAULT_KEYWORD = Collections.emptyList();
+  public static final String DEFAULT_ID = "";
+  public static final String DEFAULT_NAME = "";
+  public static final String DEFAULT_IMAGEURL = "";
+  public static final List<String> DEFAULT_KEYWORDS = Collections.emptyList();
+
+  /**
+   * Suitable for unique identification. Will always be set on a response from the API.
+   */
+  @ProtoField(tag = 1, type = STRING)
+  public final String id;
+
+  @ProtoField(tag = 2, type = STRING)
+  public final String name;
+
+  @ProtoField(tag = 3, type = STRING)
+  public final String imageUrl;
+
+  /**
+   * These are likely going to be the cuisines the truck targets, but might also be something like "soup", "panini", or "vegan"
+   */
+  @ProtoField(tag = 4, type = STRING, label = REPEATED)
+  public final List<String> keywords;
+
+  public Truck(String id, String name, String imageUrl, List<String> keywords) {
+    this.id = id;
+    this.name = name;
+    this.imageUrl = imageUrl;
+    this.keywords = immutableCopyOf(keywords);
+  }
+
+  private Truck(Builder builder) {
+    this(builder.id, builder.name, builder.imageUrl, builder.keywords);
+    setBuilder(builder);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (other == this) return true;
+    if (!(other instanceof Truck)) return false;
+    Truck o = (Truck) other;
+    return equals(id, o.id)
+        && equals(name, o.name)
+        && equals(imageUrl, o.imageUrl)
+        && equals(keywords, o.keywords);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = hashCode;
+    if (result == 0) {
+      result = id != null ? id.hashCode() : 0;
+      result = result * 37 + (name != null ? name.hashCode() : 0);
+      result = result * 37 + (imageUrl != null ? imageUrl.hashCode() : 0);
+      result = result * 37 + (keywords != null ? keywords.hashCode() : 1);
+      hashCode = result;
+    }
+    return result;
+  }
+
+  public static final class Builder extends Message.Builder<Truck> {
+
+    public String id;
+    public String name;
+    public String imageUrl;
+    public List<String> keywords;
+
+    public Builder() {
+    }
+
+    public Builder(Truck message) {
+      super(message);
+      if (message == null) return;
+      this.id = message.id;
+      this.name = message.name;
+      this.imageUrl = message.imageUrl;
+      this.keywords = copyOf(message.keywords);
+    }
 
     /**
-     * Non-negative value. Suitable for unique identification.
+     * Suitable for unique identification. Will always be set on a response from the API.
      */
-    @ProtoField(tag = 1, type = INT64, label = REQUIRED)
-    public final Long id;
+    public Builder id(String id) {
+      this.id = id;
+      return this;
+    }
 
-    @ProtoField(tag = 2, type = STRING)
-    public final String name;
+    public Builder name(String name) {
+      this.name = name;
+      return this;
+    }
 
-    @ProtoField(tag = 3, type = STRING)
-    public final String imageUrl;
+    public Builder imageUrl(String imageUrl) {
+      this.imageUrl = imageUrl;
+      return this;
+    }
 
     /**
      * These are likely going to be the cuisines the truck targets, but might also be something like "soup", "panini", or "vegan"
      */
-    @ProtoField(tag = 4, type = STRING, label = REPEATED)
-    public final List<String> keyword;
-
-    public Truck(Long id, String name, String imageUrl, List<String> keyword) {
-        this.id = id;
-        this.name = name;
-        this.imageUrl = imageUrl;
-        this.keyword = immutableCopyOf(keyword);
-    }
-
-    private Truck(Builder builder) {
-        this(builder.id, builder.name, builder.imageUrl, builder.keyword);
-        setBuilder(builder);
+    public Builder keywords(List<String> keywords) {
+      this.keywords = checkForNulls(keywords);
+      return this;
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == this) return true;
-        if (!(other instanceof Truck)) return false;
-        Truck o = (Truck) other;
-        return equals(id, o.id)
-                && equals(name, o.name)
-                && equals(imageUrl, o.imageUrl)
-                && equals(keyword, o.keyword);
+    public Truck build() {
+      return new Truck(this);
     }
-
-    @Override
-    public int hashCode() {
-        int result = hashCode;
-        if (result == 0) {
-            result = id != null ? id.hashCode() : 0;
-            result = result * 37 + (name != null ? name.hashCode() : 0);
-            result = result * 37 + (imageUrl != null ? imageUrl.hashCode() : 0);
-            result = result * 37 + (keyword != null ? keyword.hashCode() : 1);
-            hashCode = result;
-        }
-        return result;
-    }
-
-    public static final class Builder extends Message.Builder<Truck> {
-
-        public Long id;
-        public String name;
-        public String imageUrl;
-        public List<String> keyword;
-
-        public Builder() {
-        }
-
-        public Builder(Truck message) {
-            super(message);
-            if (message == null) return;
-            this.id = message.id;
-            this.name = message.name;
-            this.imageUrl = message.imageUrl;
-            this.keyword = copyOf(message.keyword);
-        }
-
-        /**
-         * Non-negative value. Suitable for unique identification.
-         */
-        public Builder id(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder imageUrl(String imageUrl) {
-            this.imageUrl = imageUrl;
-            return this;
-        }
-
-        /**
-         * These are likely going to be the cuisines the truck targets, but might also be something like "soup", "panini", or "vegan"
-         */
-        public Builder keyword(List<String> keyword) {
-            this.keyword = checkForNulls(keyword);
-            return this;
-        }
-
-        @Override
-        public Truck build() {
-            checkRequiredFields();
-            return new Truck(this);
-        }
-    }
+  }
 }

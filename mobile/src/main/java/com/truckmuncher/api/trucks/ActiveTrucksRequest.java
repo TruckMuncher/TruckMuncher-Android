@@ -27,7 +27,7 @@ public final class ActiveTrucksRequest extends Message {
     @ProtoField(tag = 2, type = DOUBLE, label = REQUIRED)
     public final Double longitude;
 
-    @ProtoField(tag = 4, type = STRING)
+    @ProtoField(tag = 3, type = STRING)
     public final String searchQuery;
 
     public ActiveTrucksRequest(Double latitude, Double longitude, String searchQuery) {

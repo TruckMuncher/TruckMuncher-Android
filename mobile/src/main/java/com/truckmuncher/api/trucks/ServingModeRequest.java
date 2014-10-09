@@ -7,125 +7,125 @@ import com.squareup.wire.ProtoField;
 
 import static com.squareup.wire.Message.Datatype.BOOL;
 import static com.squareup.wire.Message.Datatype.DOUBLE;
-import static com.squareup.wire.Message.Datatype.INT64;
+import static com.squareup.wire.Message.Datatype.STRING;
 import static com.squareup.wire.Message.Label.REQUIRED;
 
 public final class ServingModeRequest extends Message {
 
-    public static final Long DEFAULT_TRUCKID = 0L;
-    public static final Boolean DEFAULT_ISINSERVINGMODE = false;
-    public static final Double DEFAULT_TRUCKLATITUDE = 0D;
-    public static final Double DEFAULT_TRUCKLONGITUDE = 0D;
+  public static final String DEFAULT_TRUCKID = "";
+  public static final Boolean DEFAULT_ISINSERVINGMODE = false;
+  public static final Double DEFAULT_TRUCKLATITUDE = 0D;
+  public static final Double DEFAULT_TRUCKLONGITUDE = 0D;
+
+  /**
+   * Suitable for unique identification.
+   */
+  @ProtoField(tag = 1, type = STRING, label = REQUIRED)
+  public final String truckId;
+
+  @ProtoField(tag = 2, type = BOOL, label = REQUIRED)
+  public final Boolean isInServingMode;
+
+  /**
+   * Value in the range [-90, 90]
+   */
+  @ProtoField(tag = 3, type = DOUBLE)
+  public final Double truckLatitude;
+
+  /**
+   * Value in the range [-180, 180]
+   */
+  @ProtoField(tag = 4, type = DOUBLE)
+  public final Double truckLongitude;
+
+  public ServingModeRequest(String truckId, Boolean isInServingMode, Double truckLatitude, Double truckLongitude) {
+    this.truckId = truckId;
+    this.isInServingMode = isInServingMode;
+    this.truckLatitude = truckLatitude;
+    this.truckLongitude = truckLongitude;
+  }
+
+  private ServingModeRequest(Builder builder) {
+    this(builder.truckId, builder.isInServingMode, builder.truckLatitude, builder.truckLongitude);
+    setBuilder(builder);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (other == this) return true;
+    if (!(other instanceof ServingModeRequest)) return false;
+    ServingModeRequest o = (ServingModeRequest) other;
+    return equals(truckId, o.truckId)
+        && equals(isInServingMode, o.isInServingMode)
+        && equals(truckLatitude, o.truckLatitude)
+        && equals(truckLongitude, o.truckLongitude);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = hashCode;
+    if (result == 0) {
+      result = truckId != null ? truckId.hashCode() : 0;
+      result = result * 37 + (isInServingMode != null ? isInServingMode.hashCode() : 0);
+      result = result * 37 + (truckLatitude != null ? truckLatitude.hashCode() : 0);
+      result = result * 37 + (truckLongitude != null ? truckLongitude.hashCode() : 0);
+      hashCode = result;
+    }
+    return result;
+  }
+
+  public static final class Builder extends Message.Builder<ServingModeRequest> {
+
+    public String truckId;
+    public Boolean isInServingMode;
+    public Double truckLatitude;
+    public Double truckLongitude;
+
+    public Builder() {
+    }
+
+    public Builder(ServingModeRequest message) {
+      super(message);
+      if (message == null) return;
+      this.truckId = message.truckId;
+      this.isInServingMode = message.isInServingMode;
+      this.truckLatitude = message.truckLatitude;
+      this.truckLongitude = message.truckLongitude;
+    }
 
     /**
-     * Non-negative value. Suitable for unique identification.
+     * Suitable for unique identification.
      */
-    @ProtoField(tag = 1, type = INT64, label = REQUIRED)
-    public final Long truckId;
+    public Builder truckId(String truckId) {
+      this.truckId = truckId;
+      return this;
+    }
 
-    @ProtoField(tag = 2, type = BOOL, label = REQUIRED)
-    public final Boolean isInServingMode;
+    public Builder isInServingMode(Boolean isInServingMode) {
+      this.isInServingMode = isInServingMode;
+      return this;
+    }
 
     /**
      * Value in the range [-90, 90]
      */
-    @ProtoField(tag = 3, type = DOUBLE)
-    public final Double truckLatitude;
+    public Builder truckLatitude(Double truckLatitude) {
+      this.truckLatitude = truckLatitude;
+      return this;
+    }
 
     /**
      * Value in the range [-180, 180]
      */
-    @ProtoField(tag = 4, type = DOUBLE)
-    public final Double truckLongitude;
-
-    public ServingModeRequest(Long truckId, Boolean isInServingMode, Double truckLatitude, Double truckLongitude) {
-        this.truckId = truckId;
-        this.isInServingMode = isInServingMode;
-        this.truckLatitude = truckLatitude;
-        this.truckLongitude = truckLongitude;
-    }
-
-    private ServingModeRequest(Builder builder) {
-        this(builder.truckId, builder.isInServingMode, builder.truckLatitude, builder.truckLongitude);
-        setBuilder(builder);
+    public Builder truckLongitude(Double truckLongitude) {
+      this.truckLongitude = truckLongitude;
+      return this;
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == this) return true;
-        if (!(other instanceof ServingModeRequest)) return false;
-        ServingModeRequest o = (ServingModeRequest) other;
-        return equals(truckId, o.truckId)
-                && equals(isInServingMode, o.isInServingMode)
-                && equals(truckLatitude, o.truckLatitude)
-                && equals(truckLongitude, o.truckLongitude);
+    public ServingModeRequest build() {
+      checkRequiredFields();
+      return new ServingModeRequest(this);
     }
-
-    @Override
-    public int hashCode() {
-        int result = hashCode;
-        if (result == 0) {
-            result = truckId != null ? truckId.hashCode() : 0;
-            result = result * 37 + (isInServingMode != null ? isInServingMode.hashCode() : 0);
-            result = result * 37 + (truckLatitude != null ? truckLatitude.hashCode() : 0);
-            result = result * 37 + (truckLongitude != null ? truckLongitude.hashCode() : 0);
-            hashCode = result;
-        }
-        return result;
-    }
-
-    public static final class Builder extends Message.Builder<ServingModeRequest> {
-
-        public Long truckId;
-        public Boolean isInServingMode;
-        public Double truckLatitude;
-        public Double truckLongitude;
-
-        public Builder() {
-        }
-
-        public Builder(ServingModeRequest message) {
-            super(message);
-            if (message == null) return;
-            this.truckId = message.truckId;
-            this.isInServingMode = message.isInServingMode;
-            this.truckLatitude = message.truckLatitude;
-            this.truckLongitude = message.truckLongitude;
-        }
-
-        /**
-         * Non-negative value. Suitable for unique identification.
-         */
-        public Builder truckId(Long truckId) {
-            this.truckId = truckId;
-            return this;
-        }
-
-        public Builder isInServingMode(Boolean isInServingMode) {
-            this.isInServingMode = isInServingMode;
-            return this;
-        }
-
-        /**
-         * Value in the range [-90, 90]
-         */
-        public Builder truckLatitude(Double truckLatitude) {
-            this.truckLatitude = truckLatitude;
-            return this;
-        }
-
-        /**
-         * Value in the range [-180, 180]
-         */
-        public Builder truckLongitude(Double truckLongitude) {
-            this.truckLongitude = truckLongitude;
-            return this;
-        }
-
-        @Override
-        public ServingModeRequest build() {
-            checkRequiredFields();
-            return new ServingModeRequest(this);
-        }
-    }
+  }
 }

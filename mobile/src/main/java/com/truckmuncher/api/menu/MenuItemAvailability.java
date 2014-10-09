@@ -6,29 +6,29 @@ import com.squareup.wire.Message;
 import com.squareup.wire.ProtoField;
 
 import static com.squareup.wire.Message.Datatype.BOOL;
-import static com.squareup.wire.Message.Datatype.INT64;
+import static com.squareup.wire.Message.Datatype.STRING;
 import static com.squareup.wire.Message.Label.REQUIRED;
 
-public final class MenuItemAvailabilityDiff extends Message {
+public final class MenuItemAvailability extends Message {
 
-    public static final Long DEFAULT_MENUITEMID = 0L;
+    public static final String DEFAULT_MENUITEMID = "";
     public static final Boolean DEFAULT_ISAVAILABLE = false;
 
     /**
-     * Non-negative value. Suitable for unique identification.
+     * Suitable for unique identification.
      */
-    @ProtoField(tag = 1, type = INT64, label = REQUIRED)
-    public final Long menuItemId;
+    @ProtoField(tag = 1, type = STRING, label = REQUIRED)
+    public final String menuItemId;
 
     @ProtoField(tag = 2, type = BOOL, label = REQUIRED)
     public final Boolean isAvailable;
 
-    public MenuItemAvailabilityDiff(Long menuItemId, Boolean isAvailable) {
+    public MenuItemAvailability(String menuItemId, Boolean isAvailable) {
         this.menuItemId = menuItemId;
         this.isAvailable = isAvailable;
     }
 
-    private MenuItemAvailabilityDiff(Builder builder) {
+    private MenuItemAvailability(Builder builder) {
         this(builder.menuItemId, builder.isAvailable);
         setBuilder(builder);
     }
@@ -36,8 +36,8 @@ public final class MenuItemAvailabilityDiff extends Message {
     @Override
     public boolean equals(Object other) {
         if (other == this) return true;
-        if (!(other instanceof MenuItemAvailabilityDiff)) return false;
-        MenuItemAvailabilityDiff o = (MenuItemAvailabilityDiff) other;
+        if (!(other instanceof MenuItemAvailability)) return false;
+        MenuItemAvailability o = (MenuItemAvailability) other;
         return equals(menuItemId, o.menuItemId)
                 && equals(isAvailable, o.isAvailable);
     }
@@ -53,15 +53,15 @@ public final class MenuItemAvailabilityDiff extends Message {
         return result;
     }
 
-    public static final class Builder extends Message.Builder<MenuItemAvailabilityDiff> {
+    public static final class Builder extends Message.Builder<MenuItemAvailability> {
 
-        public Long menuItemId;
+        public String menuItemId;
         public Boolean isAvailable;
 
         public Builder() {
         }
 
-        public Builder(MenuItemAvailabilityDiff message) {
+        public Builder(MenuItemAvailability message) {
             super(message);
             if (message == null) return;
             this.menuItemId = message.menuItemId;
@@ -69,9 +69,9 @@ public final class MenuItemAvailabilityDiff extends Message {
         }
 
         /**
-         * Non-negative value. Suitable for unique identification.
+         * Suitable for unique identification.
          */
-        public Builder menuItemId(Long menuItemId) {
+        public Builder menuItemId(String menuItemId) {
             this.menuItemId = menuItemId;
             return this;
         }
@@ -82,9 +82,9 @@ public final class MenuItemAvailabilityDiff extends Message {
         }
 
         @Override
-        public MenuItemAvailabilityDiff build() {
+        public MenuItemAvailability build() {
             checkRequiredFields();
-            return new MenuItemAvailabilityDiff(this);
+            return new MenuItemAvailability(this);
         }
     }
 }

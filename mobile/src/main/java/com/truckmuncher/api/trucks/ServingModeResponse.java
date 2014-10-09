@@ -6,35 +6,35 @@ import com.squareup.wire.Message;
 
 public final class ServingModeResponse extends Message {
 
-    public ServingModeResponse() {
+  public ServingModeResponse() {
+  }
+
+  private ServingModeResponse(Builder builder) {
+    setBuilder(builder);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    return other instanceof ServingModeResponse;
+  }
+
+  @Override
+  public int hashCode() {
+    return 0;
+  }
+
+  public static final class Builder extends Message.Builder<ServingModeResponse> {
+
+    public Builder() {
     }
 
-    private ServingModeResponse(Builder builder) {
-        setBuilder(builder);
+    public Builder(ServingModeResponse message) {
+      super(message);
     }
 
     @Override
-    public boolean equals(Object other) {
-        return other instanceof ServingModeResponse;
+    public ServingModeResponse build() {
+      return new ServingModeResponse(this);
     }
-
-    @Override
-    public int hashCode() {
-        return 0;
-    }
-
-    public static final class Builder extends Message.Builder<ServingModeResponse> {
-
-        public Builder() {
-        }
-
-        public Builder(ServingModeResponse message) {
-            super(message);
-        }
-
-        @Override
-        public ServingModeResponse build() {
-            return new ServingModeResponse(this);
-        }
-    }
+  }
 }
