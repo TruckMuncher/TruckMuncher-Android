@@ -38,21 +38,17 @@ public interface MenuService {
     void getFullMenus(@Body FullMenusRequest request, Callback<FullMenusResponse> callback);
 
     /**
-     * Use this to get the menu that a vendor should see when editing their own menu.
-     * <p/>
-     * This call requires Vendor authorization
+     * Use this to get a single menu.
      */
-    @POST("/com.truckmuncher.api.menu.MenuService/getVendorMenu")
-    VendorMenuResponse getVendorMenu(@Body VendorMenuRequest request)
+    @POST("/com.truckmuncher.api.menu.MenuService/getMenu")
+    MenuResponse getMenu(@Body MenuRequest request)
             throws RetrofitError;
 
     /**
-     * Use this to get the menu that a vendor should see when editing their own menu.
-     * <p/>
-     * This call requires Vendor authorization
+     * Use this to get a single menu.
      */
-    @POST("/com.truckmuncher.api.menu.MenuService/getVendorMenu")
-    void getVendorMenu(@Body VendorMenuRequest request, Callback<VendorMenuResponse> callback);
+    @POST("/com.truckmuncher.api.menu.MenuService/getMenu")
+    void getMenu(@Body MenuRequest request, Callback<MenuResponse> callback);
 
     /**
      * Declare which MenuItems are changing in availability.
