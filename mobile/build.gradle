@@ -37,7 +37,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 20
         versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
-        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+        testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
 
         resConfigs "en"
         resConfigs "nodpi", "mdpi", "hdpi", "xhdpi", "xxhdpi", "xxxhdpi"
@@ -76,8 +76,19 @@ android {
         }
     }
 
+    productFlavors {
+        production {
+            buildConfigField "String", "API_ENDPOINT", "\"https://api.truckmuncher.com:8443\""
+            versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+        }
+        devMarius {
+            buildConfigField "String", "API_ENDPOINT", "\"https://Marius-MBA:8443\""
+            versionName "${versionMajor}.${versionMinor}.${versionPatch}.dev"
+        }
+    }
+
     jacoco {
-        version = '0.7.0.201403182114'
+        version = '0.7.2.201409121644'
     }
 
     dexOptions {
@@ -129,7 +140,7 @@ dependencies {
 
 
     androidTestCompile 'com.squareup.assertj:assertj-android:1.0.0'
-    androidTestCompile 'com.jakewharton.espresso:espresso:1.1-r3'
+    compile 'com.jakewharton.espresso:espresso:1.1-r3'
 }
 
 repositories {
