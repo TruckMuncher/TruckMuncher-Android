@@ -124,15 +124,18 @@ public class VendorHomeFragment extends Fragment
         String provider = locationManager.getBestProvider(locationProviderCriteria, true);
 
         currentLocation = locationManager.getLastKnownLocation(provider);
-        LatLng center = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        map.addMarker(new MarkerOptions().position(center)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(center);
-        map.moveCamera(cameraUpdate);
-        map.moveCamera(CameraUpdateFactory.zoomTo(14));
 
-        vendorLocationTextView.setText(getLocationAddress(currentLocation));
-        new GetAddressTask(getActivity()).execute(currentLocation);
+        if (currentLocation != null) {
+            LatLng center = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+            map.addMarker(new MarkerOptions().position(center)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(center);
+            map.moveCamera(cameraUpdate);
+            map.moveCamera(CameraUpdateFactory.zoomTo(14));
+
+            vendorLocationTextView.setText(getLocationAddress(currentLocation));
+            new GetAddressTask(getActivity()).execute(currentLocation);
+        }
     }
 
     private String getLocationAddress(Location location) {

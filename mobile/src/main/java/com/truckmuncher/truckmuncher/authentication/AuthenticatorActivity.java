@@ -15,15 +15,12 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     public final static String ARG_AUTH_TYPE = "auth_type";
     public final static String ARG_IS_ADDING_NEW_ACCOUNT = "is_adding_account";
 
-    private static final int AUTHORIZATION_CODE = 1;
-
     private AccountManager accountManager;
-    private Account[] accounts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_authenticator);
+        getFragmentManager().beginTransaction().add(android.R.id.content, new LoginFragment()).commit();
 
         accountManager = AccountManager.get(this);
     }

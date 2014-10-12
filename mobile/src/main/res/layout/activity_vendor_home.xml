@@ -1,6 +1,22 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:name="com.truckmuncher.truckmuncher.vendor.VendorHomeFragment"
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".VendorHomeActivity" />
+    android:layout_height="match_parent">
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/vendor_map"
+        android:name="com.google.android.gms.maps.MapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="vendor.VendorHomeActivity" />
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/vendor_home_fragment"
+        android:name="com.truckmuncher.truckmuncher.vendor.VendorHomeFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="vendor.VendorHomeActivity" />
+
+</FrameLayout>

@@ -3,15 +3,9 @@ package com.truckmuncher.truckmuncher.vendor;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -20,15 +14,6 @@ import com.truckmuncher.truckmuncher.MainActivity;
 import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.authentication.AccountGeneral;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-
-import timber.log.Timber;
-
-/**
- * Created by nockertsb on 10/5/2014.
- */
 public class VendorHomeActivity extends Activity {
 
     public static final String USERNAME = "VendorHomeActivity.username";
@@ -59,6 +44,7 @@ public class VendorHomeActivity extends Activity {
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         if (item.getItemId() == R.id.action_logout) {
             doLogout();
+            return true;
         }
 
         return super.onMenuItemSelected(featureId, item);

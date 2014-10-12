@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="twitter_token_format" formatted="false" translatable="false">oauth_token=%1$s,oauth_secret=%2$ss</string>
+    <string name="facebook_token_format" formatted="false" translatable="false">access_token=%s</string>
+</resources>

@@ -22,15 +22,16 @@ import timber.log.Timber;
 
 public class LoginFragment extends Fragment {
 
-    public static final String SOCIAL_NETWORK_TAG = SocialNetworkManager.class.getSimpleName();
+    private SocialNetworkManager socialNetworkManager;
+    private LoginSuccessCallback loginSuccessCallback;
 
     @InjectView(R.id.twitter_button)
     ImageView twitterButton;
+
     @InjectView(R.id.facebook_button)
     ImageView facebookButton;
 
-    private SocialNetworkManager socialNetworkManager;
-    private LoginSuccessCallback loginSuccessCallback;
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -71,10 +72,10 @@ public class LoginFragment extends Fragment {
 
     @OnClick({R.id.twitter_button, R.id.facebook_button})
     public void onClick(View view) {
-        if (view == twitterButton) {
+        if (view.getId() == R.id.twitter_button) {
             logOutOfTwitter();
             loginWithTwitter();
-        } else if (view == facebookButton) {
+        } else if (view.getId() == R.id.facebook_button) {
             logOutOfFacebook();
             loginWithFacebook();
         }
@@ -88,15 +89,22 @@ public class LoginFragment extends Fragment {
                     @Override
                     public void onRequestSocialPersonSuccess(int socialNetworkID, SocialPerson socialPerson) {
                         AccessToken accessToken = socialNetworkManager.getTwitterSocialNetwork().getAccessToken();
-                        String result = String.format(getActivity()
-                                .getString(R.string.twitter_token_format), accessToken.token, accessToken.secret);
+                        String result = String.format(getString(R.string.twitter_token_format), accessToken.token, accessToken.secret);
 
                         loginSuccessCallback.onLoginSuccess(socialPerson.name, result);
                     }
 
                     @Override
                     public void onError(int socialNetworkID, String requestID, String errorMessage, Object data) {
-                        // TODO: handle
+                        // Something went wrong trying to retrieve the person's Twitter info. We
+                        // can still log them in, but we don't have their name or account info.
+                        Timber.w("Retreival of Twitter account information failed with the following" +
+                                "error %s", errorMessage);
+
+                        String token = socialNetworkManager.getFacebookSocialNetwork().getAccessToken().token;
+                        String result = String.format(getString(R.string.facebook_token_format), token);
+
+                        loginSuccessCallback.onLoginSuccess(getString(R.string.twitter), result);
                     }
                 });
             }
@@ -116,14 +124,22 @@ public class LoginFragment extends Fragment {
                     @Override
                     public void onRequestSocialPersonSuccess(int socialNetworkID, SocialPerson socialPerson) {
                         String token = socialNetworkManager.getFacebookSocialNetwork().getAccessToken().token;
-                        String result = String.format(getActivity().getString(R.string.facebook_token_format), token);
+                        String result = String.format(getString(R.string.facebook_token_format), token);
 
                         loginSuccessCallback.onLoginSuccess(socialPerson.name, result);
                     }
 
                     @Override
                     public void onError(int socialNetworkID, String requestID, String errorMessage, Object data) {
-                        // TODO: handle
+                        // Something went wrong trying to retrieve the person's Twitter info. We
+                        // can still log them in, but we don't have their name or account info.
+                        Timber.w("Retrieval of Facebook account information failed with the following" +
+                                "error %s", errorMessage);
+
+                        String token = socialNetworkManager.getFacebookSocialNetwork().getAccessToken().token;
+                        String result = String.format(getString(R.string.facebook_token_format), token);
+
+                        loginSuccessCallback.onLoginSuccess(getString(R.string.facebook), result);
                     }
                 });
             }

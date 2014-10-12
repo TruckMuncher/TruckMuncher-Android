@@ -64,6 +64,7 @@ public class MainActivity extends Activity implements GoogleMap.OnInfoWindowClic
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         if (item.getItemId() == R.id.action_vendor_mode) {
+            // TODO: @marius said this was wrong :(
             Intent intent = new Intent(this, AuthenticatorActivity.class);
             startActivityForResult(intent, REQUEST_LOGIN);
 
