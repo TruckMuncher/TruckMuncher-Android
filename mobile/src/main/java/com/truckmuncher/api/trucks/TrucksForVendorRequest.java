@@ -4,18 +4,18 @@ package com.truckmuncher.api.trucks;
 
 import com.squareup.wire.Message;
 
-public final class TruckForVendorRequest extends Message {
+public final class TrucksForVendorRequest extends Message {
 
-    public TruckForVendorRequest() {
+    public TrucksForVendorRequest() {
     }
 
-    private TruckForVendorRequest(Builder builder) {
+    private TrucksForVendorRequest(Builder builder) {
         setBuilder(builder);
     }
 
     @Override
     public boolean equals(Object other) {
-        return other instanceof TruckForVendorRequest;
+        return other instanceof TrucksForVendorRequest;
     }
 
     @Override
@@ -23,18 +23,18 @@ public final class TruckForVendorRequest extends Message {
         return 0;
     }
 
-    public static final class Builder extends Message.Builder<TruckForVendorRequest> {
+    public static final class Builder extends Message.Builder<TrucksForVendorRequest> {
 
         public Builder() {
         }
 
-        public Builder(TruckForVendorRequest message) {
+        public Builder(TrucksForVendorRequest message) {
             super(message);
         }
 
         @Override
-        public TruckForVendorRequest build() {
-            return new TruckForVendorRequest(this);
+        public TrucksForVendorRequest build() {
+            return new TrucksForVendorRequest(this);
         }
     }
 }

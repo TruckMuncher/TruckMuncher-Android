@@ -4,12 +4,12 @@ package com.truckmuncher.api.trucks;
 
 import com.squareup.wire.Message;
 import com.squareup.wire.ProtoField;
+
 import java.util.Collections;
 import java.util.List;
 
 import static com.squareup.wire.Message.Datatype.STRING;
 import static com.squareup.wire.Message.Label.REPEATED;
-import static com.squareup.wire.Message.Label.REQUIRED;
 
 public final class Truck extends Message {
 
@@ -19,9 +19,9 @@ public final class Truck extends Message {
   public static final List<String> DEFAULT_KEYWORDS = Collections.emptyList();
 
   /**
-   * Suitable for unique identification.
+   * Suitable for unique identification. Will always be set on a response from the API.
    */
-  @ProtoField(tag = 1, type = STRING, label = REQUIRED)
+  @ProtoField(tag = 1, type = STRING)
   public final String id;
 
   @ProtoField(tag = 2, type = STRING)
@@ -92,7 +92,7 @@ public final class Truck extends Message {
     }
 
     /**
-     * Suitable for unique identification.
+     * Suitable for unique identification. Will always be set on a response from the API.
      */
     public Builder id(String id) {
       this.id = id;
@@ -119,7 +119,6 @@ public final class Truck extends Message {
 
     @Override
     public Truck build() {
-      checkRequiredFields();
       return new Truck(this);
     }
   }

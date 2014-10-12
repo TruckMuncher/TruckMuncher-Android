@@ -5,32 +5,37 @@ package com.truckmuncher.api.trucks;
 import com.squareup.wire.Message;
 import com.squareup.wire.ProtoField;
 
+import java.util.Collections;
+import java.util.List;
+
 import static com.squareup.wire.Message.Datatype.BOOL;
+import static com.squareup.wire.Message.Label.REPEATED;
 import static com.squareup.wire.Message.Label.REQUIRED;
 
 /**
- * The included truck will always have a valid id.
+ * The included trucks will always have a valid id.
  */
-public final class TruckForVendorResponse extends Message {
+public final class TrucksForVendorResponse extends Message {
 
+    public static final List<Truck> DEFAULT_TRUCK = Collections.emptyList();
     public static final Boolean DEFAULT_ISNEW = true;
 
-    @ProtoField(tag = 1, label = REQUIRED)
-    public final Truck truck;
+    @ProtoField(tag = 1, label = REPEATED)
+    public final List<Truck> truck;
 
     /**
      * If true, then a new Truck was created during this request. On native apps, this will need to be handled.
-     * if false, the truck previously existed.
+     * If false, the trucks previously existed.
      */
     @ProtoField(tag = 2, type = BOOL, label = REQUIRED)
     public final Boolean isNew;
 
-    public TruckForVendorResponse(Truck truck, Boolean isNew) {
-        this.truck = truck;
+    public TrucksForVendorResponse(List<Truck> truck, Boolean isNew) {
+        this.truck = immutableCopyOf(truck);
         this.isNew = isNew;
     }
 
-    private TruckForVendorResponse(Builder builder) {
+    private TrucksForVendorResponse(Builder builder) {
         this(builder.truck, builder.isNew);
         setBuilder(builder);
     }
@@ -38,8 +43,8 @@ public final class TruckForVendorResponse extends Message {
     @Override
     public boolean equals(Object other) {
         if (other == this) return true;
-        if (!(other instanceof TruckForVendorResponse)) return false;
-        TruckForVendorResponse o = (TruckForVendorResponse) other;
+        if (!(other instanceof TrucksForVendorResponse)) return false;
+        TrucksForVendorResponse o = (TrucksForVendorResponse) other;
         return equals(truck, o.truck)
                 && equals(isNew, o.isNew);
     }
@@ -48,36 +53,36 @@ public final class TruckForVendorResponse extends Message {
     public int hashCode() {
         int result = hashCode;
         if (result == 0) {
-            result = truck != null ? truck.hashCode() : 0;
+            result = truck != null ? truck.hashCode() : 1;
             result = result * 37 + (isNew != null ? isNew.hashCode() : 0);
             hashCode = result;
         }
         return result;
     }
 
-    public static final class Builder extends Message.Builder<TruckForVendorResponse> {
+    public static final class Builder extends Message.Builder<TrucksForVendorResponse> {
 
-        public Truck truck;
+        public List<Truck> truck;
         public Boolean isNew;
 
         public Builder() {
         }
 
-        public Builder(TruckForVendorResponse message) {
+        public Builder(TrucksForVendorResponse message) {
             super(message);
             if (message == null) return;
-            this.truck = message.truck;
+            this.truck = copyOf(message.truck);
             this.isNew = message.isNew;
         }
 
-        public Builder truck(Truck truck) {
-            this.truck = truck;
+        public Builder truck(List<Truck> truck) {
+            this.truck = checkForNulls(truck);
             return this;
         }
 
         /**
          * If true, then a new Truck was created during this request. On native apps, this will need to be handled.
-         * if false, the truck previously existed.
+         * If false, the trucks previously existed.
          */
         public Builder isNew(Boolean isNew) {
             this.isNew = isNew;
@@ -85,9 +90,9 @@ public final class TruckForVendorResponse extends Message {
         }
 
         @Override
-        public TruckForVendorResponse build() {
+        public TrucksForVendorResponse build() {
             checkRequiredFields();
-            return new TruckForVendorResponse(this);
+            return new TrucksForVendorResponse(this);
         }
     }
 }

@@ -26,22 +26,22 @@ public interface TruckService {
 
     /**
      * If a truck for the vendor does not exist, a new truck will be created.
-     * When using from a mobile app,
+     * When using from a native app, check the response and handle the case of an incomplete truck.
      * <p/>
      * This call requires Vendor authorization
      */
-    @POST("/com.truckmuncher.api.trucks.TruckService/getTruckForVendor")
-    TruckForVendorResponse getTruckForVendor(@Body TruckForVendorRequest request)
+    @POST("/com.truckmuncher.api.trucks.TruckService/getTrucksForVendor")
+    TrucksForVendorResponse getTrucksForVendor(@Body TrucksForVendorRequest request)
             throws RetrofitError;
 
     /**
      * If a truck for the vendor does not exist, a new truck will be created.
-     * When using from a mobile app,
+     * When using from a native app, check the response and handle the case of an incomplete truck.
      * <p/>
      * This call requires Vendor authorization
      */
-    @POST("/com.truckmuncher.api.trucks.TruckService/getTruckForVendor")
-    void getTruckForVendor(@Body TruckForVendorRequest request, Callback<TruckForVendorResponse> callback);
+    @POST("/com.truckmuncher.api.trucks.TruckService/getTrucksForVendor")
+    void getTrucksForVendor(@Body TrucksForVendorRequest request, Callback<TrucksForVendorResponse> callback);
 
     /**
      * Get the profiles of all the food trucks in the user's Region.
@@ -57,7 +57,7 @@ public interface TruckService {
     void getTruckProfiles(@Body TruckProfilesRequest request, Callback<TruckProfilesResponse> callback);
 
     /**
-     * Get the profiles of all the food trucks in the user's region.
+     * Use this to create or update a truck. Any data sent in the request will be used, even if the truck did not previously exist.
      * <p/>
      * This call requires Vendor authorization
      */
@@ -66,7 +66,7 @@ public interface TruckService {
             throws RetrofitError;
 
     /**
-     * Get the profiles of all the food trucks in the user's region.
+     * Use this to create or update a truck. Any data sent in the request will be used, even if the truck did not previously exist.
      * <p/>
      * This call requires Vendor authorization
      */
@@ -74,7 +74,7 @@ public interface TruckService {
     void modifyTruckProfile(@Body Truck request, Callback<Truck> callback);
 
     /**
-     * Get the profiles of all the food trucks in the user's region.
+     * Modify the serving mode for a truck.
      * <p/>
      * This call requires Vendor authorization
      */
@@ -83,7 +83,7 @@ public interface TruckService {
             throws RetrofitError;
 
     /**
-     * Get the profiles of all the food trucks in the user's region.
+     * Modify the serving mode for a truck.
      * <p/>
      * This call requires Vendor authorization
      */
