@@ -20,7 +20,7 @@ public class MainScreenRobot extends ScreenRobot {
     }
 
     public MainScreenRobot verifyTitle() {
-        onView(withId(Ids.title())).check(matches(withText(R.string.title_activity_main)));
+        onView(withId(Ids.title())).check(matches(withText(R.string.app_name)));
         return this;
     }
 }
