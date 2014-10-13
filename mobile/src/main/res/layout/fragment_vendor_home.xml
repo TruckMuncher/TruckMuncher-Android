@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/vendor_location"
+        style="@style/ServingModeSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_gravity="top"
+        android:background="@color/serving_mode_off"
+        android:gravity="center"/>
+
+    <Switch
+        android:id="@+id/serving_mode"
+        style="@style/ServingModeSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_gravity="bottom"
+        android:background="@color/serving_mode_off"
+        android:checked="false"
+        android:gravity="center"
+        android:text="@string/serving_mode" />
+</FrameLayout>

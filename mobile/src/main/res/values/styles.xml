@@ -5,4 +5,13 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="ServingModeSwitch">
+        <item name="android:textColor">
+            @android:color/white
+        </item>
+        <item name="android:textSize">
+            @dimen/serving_mode_switch_text_size
+        </item>
+    </style>
+
 </resources>
