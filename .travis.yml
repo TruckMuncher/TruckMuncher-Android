@@ -6,9 +6,9 @@ env:
 
     # Run against v15 & v19 on both ARMv7 and x86 platforms
     # Except travis is still flaky so for now only run against 1 target
-    # - ANDROID_TARGET=android-19  ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-19  ANDROID_ABI=armeabi-v7a
     # - ANDROID_TARGET=android-15  ANDROID_ABI=armeabi-v7a
-    - ANDROID_TARGET=android-19  ANDROID_ABI=x86
+    # - ANDROID_TARGET=android-19  ANDROID_ABI=x86
     # - ANDROID_TARGET=android-15  ANDROID_ABI=x86
 
 android:
@@ -27,9 +27,9 @@ android:
     - extra-android-m2repository
 
     # Specify all the emulator targets we'll need
-    # - sys-img-armeabi-v7a-android-19
+    - sys-img-armeabi-v7a-android-19
     # - sys-img-armeabi-v7a-android-15
-    - sys-img-x86-android-19
+    # - sys-img-x86-android-19
     # - sys-img-x86-android-15
 
 script:
