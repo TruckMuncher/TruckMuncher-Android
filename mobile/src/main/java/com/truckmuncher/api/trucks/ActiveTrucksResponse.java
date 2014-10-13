@@ -14,17 +14,17 @@ import static com.squareup.wire.Message.Label.REQUIRED;
 
 public final class ActiveTrucksResponse extends Message {
 
-  public static final List<Truck> DEFAULT_TRUCK = Collections.emptyList();
+  public static final List<Truck> DEFAULT_TRUCKS = Collections.emptyList();
 
   @ProtoField(tag = 1, label = REPEATED)
-  public final List<Truck> truck;
+  public final List<Truck> trucks;
 
-  public ActiveTrucksResponse(List<Truck> truck) {
-    this.truck = immutableCopyOf(truck);
+  public ActiveTrucksResponse(List<Truck> trucks) {
+    this.trucks = immutableCopyOf(trucks);
   }
 
   private ActiveTrucksResponse(Builder builder) {
-    this(builder.truck);
+    this(builder.trucks);
     setBuilder(builder);
   }
 
@@ -32,18 +32,18 @@ public final class ActiveTrucksResponse extends Message {
   public boolean equals(Object other) {
     if (other == this) return true;
     if (!(other instanceof ActiveTrucksResponse)) return false;
-    return equals(truck, ((ActiveTrucksResponse) other).truck);
+    return equals(trucks, ((ActiveTrucksResponse) other).trucks);
   }
 
   @Override
   public int hashCode() {
     int result = hashCode;
-    return result != 0 ? result : (hashCode = truck != null ? truck.hashCode() : 1);
+    return result != 0 ? result : (hashCode = trucks != null ? trucks.hashCode() : 1);
   }
 
   public static final class Builder extends Message.Builder<ActiveTrucksResponse> {
 
-    public List<Truck> truck;
+    public List<Truck> trucks;
 
     public Builder() {
     }
@@ -51,11 +51,11 @@ public final class ActiveTrucksResponse extends Message {
     public Builder(ActiveTrucksResponse message) {
       super(message);
       if (message == null) return;
-      this.truck = copyOf(message.truck);
+      this.trucks = copyOf(message.trucks);
     }
 
-    public Builder truck(List<Truck> truck) {
-      this.truck = checkForNulls(truck);
+    public Builder trucks(List<Truck> trucks) {
+      this.trucks = checkForNulls(trucks);
       return this;
     }
 

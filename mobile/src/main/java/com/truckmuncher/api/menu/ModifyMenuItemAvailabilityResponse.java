@@ -6,35 +6,35 @@ import com.squareup.wire.Message;
 
 public final class ModifyMenuItemAvailabilityResponse extends Message {
 
-    public ModifyMenuItemAvailabilityResponse() {
+  public ModifyMenuItemAvailabilityResponse() {
+  }
+
+  private ModifyMenuItemAvailabilityResponse(Builder builder) {
+    setBuilder(builder);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    return other instanceof ModifyMenuItemAvailabilityResponse;
+  }
+
+  @Override
+  public int hashCode() {
+    return 0;
+  }
+
+  public static final class Builder extends Message.Builder<ModifyMenuItemAvailabilityResponse> {
+
+    public Builder() {
     }
 
-    private ModifyMenuItemAvailabilityResponse(Builder builder) {
-        setBuilder(builder);
+    public Builder(ModifyMenuItemAvailabilityResponse message) {
+      super(message);
     }
 
     @Override
-    public boolean equals(Object other) {
-        return other instanceof ModifyMenuItemAvailabilityResponse;
+    public ModifyMenuItemAvailabilityResponse build() {
+      return new ModifyMenuItemAvailabilityResponse(this);
     }
-
-    @Override
-    public int hashCode() {
-        return 0;
-    }
-
-    public static final class Builder extends Message.Builder<ModifyMenuItemAvailabilityResponse> {
-
-        public Builder() {
-        }
-
-        public Builder(ModifyMenuItemAvailabilityResponse message) {
-            super(message);
-        }
-
-        @Override
-        public ModifyMenuItemAvailabilityResponse build() {
-            return new ModifyMenuItemAvailabilityResponse(this);
-        }
-    }
+  }
 }

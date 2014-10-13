@@ -4,7 +4,6 @@ package com.truckmuncher.api.trucks;
 
 import com.squareup.wire.Message;
 import com.squareup.wire.ProtoField;
-
 import java.util.Collections;
 import java.util.List;
 
