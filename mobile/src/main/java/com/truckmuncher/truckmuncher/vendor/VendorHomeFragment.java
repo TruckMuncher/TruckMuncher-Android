@@ -10,12 +10,12 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -33,13 +33,10 @@ import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnCheckedChanged;
 import timber.log.Timber;
 
-public class VendorHomeFragment extends Fragment
-        implements CompoundButton.OnCheckedChangeListener, LocationListener {
-
-    @InjectView(R.id.serving_mode)
-    Switch servingModeSwitch;
+public class VendorHomeFragment extends Fragment implements LocationListener {
 
     @InjectView(R.id.vendor_location)
     TextView vendorLocationTextView;
@@ -51,17 +48,19 @@ public class VendorHomeFragment extends Fragment
     private Location currentLocation;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_vendor_home, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
 
         map = ((MapFragment) getFragmentManager().findFragmentById(R.id.vendor_map)).getMap();
-        ButterKnife.inject(this, view);
-        servingModeSwitch.setOnCheckedChangeListener(this);
+        int mapPaddingTop = getResources().getDimensionPixelOffset(R.dimen.vendor_hud_top_height);
+        int mapPaddingBottom = getResources().getDimensionPixelOffset(R.dimen.vendor_hud_bottom_height);
+        map.setPadding(0, mapPaddingTop, 0, mapPaddingBottom);
 
         setUpLocationManager();
         updateLocation();
@@ -81,11 +80,18 @@ public class VendorHomeFragment extends Fragment
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-        int color = checked ? R.color.serving_mode_on : R.color.serving_mode_off;
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
+    }
 
-        servingModeSwitch.setBackgroundResource(color);
-        vendorLocationTextView.setBackgroundResource(color);
+    @OnCheckedChanged(R.id.serving_mode)
+    void onServingModeToggled(CompoundButton servingModeSwitch, boolean isChecked) {
+        int color = isChecked ? R.color.serving_mode_on : R.color.serving_mode_off;
+        int resolvedColor = getResources().getColor(color);
+
+        servingModeSwitch.setBackgroundColor(resolvedColor);
+        vendorLocationTextView.setBackgroundColor(resolvedColor);
     }
 
     @Override
@@ -168,16 +174,16 @@ public class VendorHomeFragment extends Fragment
          * @return A string containing the address of the current
          * location, or an empty string if no address can be found,
          * or an error message
-         * @params params One or more Location objects
+         * @param params One or more Location objects
          */
         @Override
-        protected String doInBackground(Location... params) {
+        protected String doInBackground(@NonNull Location... params) {
             Geocoder geocoder =
                     new Geocoder(mContext, Locale.getDefault());
             // Get the current location from the input parameter list
             Location loc = params[0];
             // Create a list to contain the result address
-            List<Address> addresses = null;
+            List<Address> addresses;
             try {
                 /*
                  * Return 1 address.
@@ -204,7 +210,7 @@ public class VendorHomeFragment extends Fragment
                  * Format the first line of address (if available),
                  * city, and country name.
                  */
-                String addressText = String.format(
+                return String.format(
                         "%s, %s, %s",
                         // If there's a street address, add it
                         address.getMaxAddressLineIndex() > 0 ? address.getAddressLine(0) : "",
@@ -212,8 +218,6 @@ public class VendorHomeFragment extends Fragment
                         address.getLocality(),
                         // The country of the address
                         address.getCountryName());
-                // Return the text
-                return addressText;
             } else {
                 return "No address found";
             }
@@ -226,7 +230,7 @@ public class VendorHomeFragment extends Fragment
          * lookup failed, display the error message.
          */
         @Override
-        protected void onPostExecute(String address) {
+        protected void onPostExecute(@NonNull String address) {
             vendorLocationTextView.setText(address);
         }
     }

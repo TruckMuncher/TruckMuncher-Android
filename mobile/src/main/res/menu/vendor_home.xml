@@ -5,5 +5,5 @@
         android:id="@+id/action_logout"
         android:orderInCategory="50"
         android:showAsAction="never"
-        android:title="@string/logout" />
+        android:title="@string/action_logout" />
 </menu>

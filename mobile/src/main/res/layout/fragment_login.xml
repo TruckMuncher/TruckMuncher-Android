@@ -5,34 +5,36 @@
     android:paddingRight="16dp">
 
     <ImageView
+        android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight=".2"
-        android:src="@drawable/placeholder_logo"
         android:layout_above="@+id/twitter_button"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="54dp"
-        android:id="@+id/imageView" />
+        android:importantForAccessibility="no"
+        android:src="@drawable/placeholder_logo" />
 
     <ImageView
         android:id="@+id/twitter_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:src="@drawable/twitter_login"
-        android:layout_marginBottom="8dp"
         android:layout_above="@+id/facebook_button"
         android:layout_alignLeft="@+id/facebook_button"
-        android:layout_alignStart="@+id/facebook_button" />
+        android:layout_alignStart="@+id/facebook_button"
+        android:layout_gravity="center_vertical"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="@string/access_twitter_login"
+        android:src="@drawable/twitter_login" />
 
     <ImageView
         android:id="@+id/facebook_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:src="@drawable/facebook_login"
-        android:layout_marginBottom="133dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginBottom="133dp"
+        android:contentDescription="@string/access_facebook_login"
+        android:src="@drawable/facebook_login" />
 
 </RelativeLayout>

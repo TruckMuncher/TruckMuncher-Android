@@ -5,20 +5,18 @@
 
     <TextView
         android:id="@+id/vendor_location"
-        style="@style/ServingModeSwitch"
+        style="@style/VendorHud"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="@dimen/vendor_hud_top_height"
         android:layout_gravity="top"
-        android:background="@color/serving_mode_off"
-        android:gravity="center"/>
+        android:gravity="center" />
 
     <Switch
         android:id="@+id/serving_mode"
-        style="@style/ServingModeSwitch"
+        style="@style/VendorHud"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="@dimen/vendor_hud_bottom_height"
         android:layout_gravity="bottom"
-        android:background="@color/serving_mode_off"
         android:checked="false"
         android:gravity="center"
         android:text="@string/serving_mode" />

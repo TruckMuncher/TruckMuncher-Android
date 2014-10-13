@@ -3,10 +3,10 @@ package com.truckmuncher.truckmuncher.authentication;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.androidsocialnetworks.lib.AccessToken;
 import com.androidsocialnetworks.lib.SocialNetworkManager;
@@ -16,7 +16,6 @@ import com.androidsocialnetworks.lib.listener.OnRequestSocialPersonCompleteListe
 import com.truckmuncher.truckmuncher.R;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
@@ -24,14 +23,6 @@ public class LoginFragment extends Fragment {
 
     private SocialNetworkManager socialNetworkManager;
     private LoginSuccessCallback loginSuccessCallback;
-
-    @InjectView(R.id.twitter_button)
-    ImageView twitterButton;
-
-    @InjectView(R.id.facebook_button)
-    ImageView facebookButton;
-
-
 
     @Override
     public void onAttach(Activity activity) {
@@ -51,7 +42,7 @@ public class LoginFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.inject(this, view);
         return view;

@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/fake_backgorund_header"
+        android:background="@color/fake_background_header"
         android:orientation="horizontal">
 
         <ImageView
@@ -52,7 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
-        android:background="@color/fake_backgorund_menu">
+        android:background="@color/fake_background_menu">
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -156,6 +156,7 @@
                     android:text="$4.50"
                     android:textAppearance="?android:attr/textAppearanceLargeInverse" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
@@ -178,6 +179,7 @@
                     android:text="$4.25"
                     android:textAppearance="?android:attr/textAppearanceLargeInverse" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
@@ -200,6 +202,7 @@
                     android:text="$4.75"
                     android:textAppearance="?android:attr/textAppearanceLargeInverse" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
@@ -222,6 +225,7 @@
                     android:text="$4.50"
                     android:textAppearance="?android:attr/textAppearanceLargeInverse" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
@@ -244,6 +248,7 @@
                     android:text="$5.00"
                     android:textAppearance="?android:attr/textAppearanceLargeInverse" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
@@ -275,6 +280,7 @@
                 android:text="Chips"
                 android:textAppearance="?android:attr/textAppearanceLargeInverse"
                 android:textColor="@color/fake_light_gray" />
+
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
@@ -297,6 +303,7 @@
                     android:text="$2.00"
                     android:textAppearance="?android:attr/textAppearanceLargeInverse" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
@@ -319,6 +326,7 @@
                     android:text="$2.00"
                     android:textAppearance="?android:attr/textAppearanceLargeInverse" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
