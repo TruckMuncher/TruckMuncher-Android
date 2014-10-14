@@ -143,6 +143,9 @@ dependencies {
 
     androidTestCompile 'com.squareup.assertj:assertj-android:1.0.0'
     androidTestCompile 'com.jakewharton.espresso:espresso:1.1-r3'
+    androidTestCompile('com.squareup.okhttp:mockwebserver:2.0.0') {
+        exclude group: 'com.squareup.okhttp', module: 'okhttp'
+    }
 }
 
 repositories {
