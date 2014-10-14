@@ -4,6 +4,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -11,11 +12,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.androidsocialnetworks.lib.SocialNetworkManager;
+import com.google.android.gms.maps.model.LatLng;
 import com.truckmuncher.truckmuncher.MainActivity;
 import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.authentication.AccountGeneral;
+import com.truckmuncher.truckmuncher.data.VendorTrucksService;
 
-public class VendorHomeActivity extends Activity {
+public class VendorHomeActivity extends Activity implements VendorMapFragment.OnMapLocationChangedListener {
 
     public static final String USERNAME = "VendorHomeActivity.username";
 
@@ -25,6 +28,9 @@ public class VendorHomeActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vendor_home);
+
+        // Kick off a refresh of the vendor data
+        startService(new Intent(this, VendorTrucksService.class));
 
         accountManager = AccountManager.get(this);
 
@@ -72,5 +78,17 @@ public class VendorHomeActivity extends Activity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onMapLocationChanged(LatLng latLng) {
+        VendorHomeFragment fragment = (VendorHomeFragment) getFragmentManager().findFragmentById(R.id.vendor_home_fragment);
+
+        if (fragment != null) {
+            Location location = new Location("");
+            location.setLatitude(latLng.latitude);
+            location.setLongitude(latLng.longitude);
+            fragment.onLocationUpdate(location);
+        }
     }
 }
