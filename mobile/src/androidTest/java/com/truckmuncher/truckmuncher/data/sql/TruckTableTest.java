@@ -24,6 +24,11 @@ public class TruckTableTest {
         values.put(TruckEntry.COLUMN_NAME, "TestTruck1");
         values.put(TruckEntry.COLUMN_IMAGE_URL, "http://api.truckmuncher.com/images/test");
         values.put(TruckEntry.COLUMN_KEYWORDS, "vegan, hot dog, lunch");
+        values.put(TruckEntry.COLUMN_IS_SELECTED_TRUCK, true);
+        values.put(TruckEntry.COLUMN_OWNED_BY_CURRENT_USER, true);
+        values.put(TruckEntry.COLUMN_IS_SERVING, false);
+        values.put(TruckEntry.COLUMN_LATITUDE, 88.43);
+        values.put(TruckEntry.COLUMN_LONGITUDE, -180.53);
 
         Assertions.assertThat(db.insert(TruckEntry.TABLE_NAME, null, values)).isEqualTo(1);
         return internalId;

@@ -11,7 +11,7 @@ import java.util.List;
 public class Contract {
 
     public static final String CONTENT_AUTHORITY = BuildConfig.PACKAGE_NAME;
-    public static final Uri BASE_CONTENT_URI = Uri.parse("content__//" + CONTENT_AUTHORITY);
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     protected static final String CONTENT_TYPE_BASE = "vnd.android.cursor.dir/" + CONTENT_AUTHORITY + "/";
     protected static final String CONTENT_ITEM_TYPE_BASE = "vnd.android.cursor.item/" + CONTENT_AUTHORITY + "/";
 
@@ -20,7 +20,7 @@ public class Contract {
     public static final String PATH_MENU_ITEM = "menu_item";
     public static final String PATH_MENU = "menu";
 
-    private static final String STRING_SEPARATOR = "__,__";
+    private static final String STRING_SEPARATOR = ",";
 
     private Contract() {
         // No instances
@@ -49,6 +49,23 @@ public class Contract {
         public static final String COLUMN_NAME = TABLE_NAME + "__name";
         public static final String COLUMN_IMAGE_URL = TABLE_NAME + "__image_url";
         public static final String COLUMN_KEYWORDS = TABLE_NAME + "__keywords";
+        public static final String COLUMN_IS_SELECTED_TRUCK = TABLE_NAME + "__is_selected";
+        public static final String COLUMN_OWNED_BY_CURRENT_USER = TABLE_NAME + "__owned_by_current_user";
+        public static final String COLUMN_IS_SERVING = TABLE_NAME + "__is_serving";
+        public static final String COLUMN_LATITUDE = TABLE_NAME + "__latitude";
+        public static final String COLUMN_LONGITUDE = TABLE_NAME + "__longitude";
+
+        public static Uri buildSingleTruck(String internalId) {
+            return CONTENT_URI.buildUpon().appendQueryParameter(COLUMN_INTERNAL_ID, internalId).build();
+        }
+
+        public static String getInternalIdFromUri(Uri uri) {
+            String internalId = uri.getQueryParameter(COLUMN_INTERNAL_ID);
+            if (internalId == null) {
+                throw new IllegalArgumentException("Uri didn't include an internal id.");
+            }
+            return internalId;
+        }
 
         public static final String CONTENT_TYPE = CONTENT_TYPE_BASE + PATH_TRUCK;
 
