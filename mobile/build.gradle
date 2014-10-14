@@ -124,8 +124,8 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.3.4'
     compile 'com.squareup.okhttp:okhttp:2.0.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
-    compile 'com.squareup.retrofit:retrofit:1.6.1'
-    compile 'com.squareup.retrofit:converter-wire:1.6.1'
+    compile 'com.squareup.retrofit:retrofit:1.7.0'
+    compile 'com.squareup.retrofit:converter-wire:1.7.0'
     compile 'com.squareup.wire:wire-runtime:1.5.2'
     compile 'com.squareup:tape:1.2.2'
 
@@ -138,9 +138,11 @@ dependencies {
     compile 'com.squareup.phrase:phrase:1.0.3'
     compile 'com.jakewharton:butterknife:5.1.2'
 
+    debugCompile 'com.squareup.retrofit:retrofit-mock:1.7.0'
+
 
     androidTestCompile 'com.squareup.assertj:assertj-android:1.0.0'
-    compile 'com.jakewharton.espresso:espresso:1.1-r3'
+    androidTestCompile 'com.jakewharton.espresso:espresso:1.1-r3'
 }
 
 repositories {
