@@ -191,9 +191,11 @@ public class VendorMapFragment extends Fragment implements GoogleApiClient.Conne
     public void onConnected(Bundle bundle) {
         if (!useMapLocation) {
             Location myLocation = LocationServices.FusedLocationApi.getLastLocation(apiClient);
-            LatLng latLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-            mapView.getMap().animateCamera(CameraUpdateFactory.newLatLng(latLng));
-            onMapLocationChangedListener.onMapLocationChanged(latLng);
+            if (myLocation != null) {
+                LatLng latLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+                mapView.getMap().animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                onMapLocationChangedListener.onMapLocationChanged(latLng);
+            }
         }
 
         LocationRequest request = new LocationRequest()
