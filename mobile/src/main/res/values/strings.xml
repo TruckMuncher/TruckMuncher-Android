@@ -9,6 +9,7 @@
     <string name="action_settings">Settings</string>
     <string name="action_vendor_mode">Vendor mode</string>
     <string name="action_logout">Logout</string>
+    <string name="action_menu">Edit menu</string>
 
     <!-- Accessibility -->
     <string name="access_facebook_login">Login using Facebook</string>
