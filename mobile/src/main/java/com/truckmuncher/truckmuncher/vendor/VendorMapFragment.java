@@ -18,6 +18,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -193,6 +194,7 @@ public class VendorMapFragment extends Fragment implements GoogleApiClient.Conne
             Location myLocation = LocationServices.FusedLocationApi.getLastLocation(apiClient);
             if (myLocation != null) {
                 LatLng latLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+                MapsInitializer.initialize(getActivity());
                 mapView.getMap().animateCamera(CameraUpdateFactory.newLatLng(latLng));
                 onMapLocationChangedListener.onMapLocationChanged(latLng);
             }

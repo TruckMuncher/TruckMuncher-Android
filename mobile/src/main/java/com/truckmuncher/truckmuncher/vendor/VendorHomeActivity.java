@@ -3,6 +3,7 @@ package com.truckmuncher.truckmuncher.vendor;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -16,7 +17,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.truckmuncher.truckmuncher.MainActivity;
 import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.authentication.AccountGeneral;
-import com.truckmuncher.truckmuncher.data.VendorTrucksService;
+import com.truckmuncher.truckmuncher.vendor.menuadmin.MenuAdminFragment;
 
 public class VendorHomeActivity extends Activity implements VendorMapFragment.OnMapLocationChangedListener {
 
@@ -51,6 +52,14 @@ public class VendorHomeActivity extends Activity implements VendorMapFragment.On
     public boolean onMenuItemSelected(int featureId, @NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_logout) {
             doLogout();
+            return true;
+        } else if (item.getItemId() == R.id.action_menu) {
+            getFragmentManager().beginTransaction()
+                    // FIXME Need to use a real truck id, not a mock one
+                    .add(android.R.id.content, MenuAdminFragment.newInstance("Truck1"), MenuAdminFragment.TAG)
+                    .addToBackStack(null)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commit();
             return true;
         }
 

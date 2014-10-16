@@ -1,7 +1,11 @@
 package com.truckmuncher.truckmuncher.data.sql;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+
+import com.volkhart.androidutil.data.QueryArgs;
 
 import timber.log.Timber;
 
@@ -26,7 +30,8 @@ public final class TruckTable {
                 + TruckEntry.COLUMN_OWNED_BY_CURRENT_USER + " integer default 0, "
                 + TruckEntry.COLUMN_IS_SERVING + " integer default 0, "
                 + TruckEntry.COLUMN_LATITUDE + " real, "
-                + TruckEntry.COLUMN_LONGITUDE + " real"
+                + TruckEntry.COLUMN_LONGITUDE + " real, "
+                + TruckEntry.COLUMN_IS_DIRTY + " integer default 0"
                 + ");";
 
         String INDEX_CREATE = "create index "
@@ -60,5 +65,15 @@ public final class TruckTable {
             db.endTransaction();
         }
         return returnCount;
+    }
+
+    public static int updateMany(SQLiteDatabase db, Uri uri, ContentValues values) {
+        QueryArgs args = new QueryArgs(uri);
+        return db.update(TruckEntry.TABLE_NAME, values, args.selection, args.selectionArgs);
+    }
+
+    public static Cursor queryMany(SQLiteDatabase db, Uri uri, String[] projection) {
+        QueryArgs args = new QueryArgs(uri);
+        return db.query(TruckEntry.TABLE_NAME, projection, args.selection, args.selectionArgs, null, null, null);
     }
 }

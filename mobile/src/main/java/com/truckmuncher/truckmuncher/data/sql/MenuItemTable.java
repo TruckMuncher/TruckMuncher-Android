@@ -31,6 +31,7 @@ public final class MenuItemTable {
                 + MenuItemEntry.COLUMN_TAGS + " text, "
                 + MenuItemEntry.COLUMN_ORDER_IN_CATEGORY + " integer, "
                 + MenuItemEntry.COLUMN_CATEGORY_ID + " text, "
+                + MenuItemEntry.COLUMN_IS_DIRTY + " integer default 0, "
                 + "foreign key(" + MenuItemEntry.COLUMN_CATEGORY_ID + ") "
                 + "references " + CategoryEntry.TABLE_NAME + "(" + CategoryEntry.COLUMN_INTERNAL_ID + ")"
                 + ");";

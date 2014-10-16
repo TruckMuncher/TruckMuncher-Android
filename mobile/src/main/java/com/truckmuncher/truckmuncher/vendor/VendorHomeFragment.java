@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.content.AsyncQueryHandler;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -19,7 +18,7 @@ import android.widget.TextView;
 
 import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.data.Contract;
-import com.truckmuncher.truckmuncher.data.ServingModeService;
+import com.truckmuncher.truckmuncher.data.SimpleAsyncQueryHandler;
 
 import java.io.IOException;
 import java.util.List;
@@ -65,16 +64,11 @@ public class VendorHomeFragment extends Fragment {
         ContentValues values = new ContentValues();
         values.put(Contract.TruckEntry.COLUMN_LATITUDE, currentLocation.getLatitude());
         values.put(Contract.TruckEntry.COLUMN_LONGITUDE, currentLocation.getLongitude());
-        AsyncQueryHandler handler = new AsyncQueryHandler(getActivity().getContentResolver()) {
-
-            @Override
-            protected void onUpdateComplete(int token, Object cookie, int result) {
-                Intent intent = new Intent(getActivity(), ServingModeService.class);
-                intent.setData(null);   // FIXME needs a valid truck uri
-                getActivity().startService(intent);
-            }
-        };
-        handler.startUpdate(0, null, Contract.TruckEntry.CONTENT_URI, values, null, null);
+        values.put(Contract.TruckEntry.COLUMN_IS_SERVING, isChecked);
+        values.put(Contract.TruckEntry.COLUMN_IS_DIRTY, true);
+        AsyncQueryHandler handler = new SimpleAsyncQueryHandler(getActivity().getContentResolver());
+        // FIXME Need to use a real truck id, not a mock one
+        handler.startUpdate(0, null, Contract.buildNeedsSync(Contract.TruckEntry.buildSingleTruck("Truck1")), values, null, null);
     }
 
     public void onLocationUpdate(Location location) {

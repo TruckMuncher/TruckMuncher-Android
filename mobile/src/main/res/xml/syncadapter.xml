@@ -4,4 +4,5 @@
     android:allowParallelSyncs="false"
     android:contentAuthority="@string/package_name"
     android:isAlwaysSyncable="true"
+    android:supportsUploading="true"
     android:userVisible="false" />

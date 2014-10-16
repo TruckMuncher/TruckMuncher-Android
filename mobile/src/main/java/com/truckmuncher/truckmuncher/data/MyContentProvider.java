@@ -2,6 +2,7 @@ package com.truckmuncher.truckmuncher.data;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,10 +11,12 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.truckmuncher.truckmuncher.LoggerStarter;
+import com.truckmuncher.truckmuncher.data.sql.CategoryTable;
 import com.truckmuncher.truckmuncher.data.sql.MenuItemTable;
 import com.truckmuncher.truckmuncher.data.sql.MenuView;
 import com.truckmuncher.truckmuncher.data.sql.SqlOpenHelper;
 import com.truckmuncher.truckmuncher.data.sql.TruckTable;
+import com.truckmuncher.truckmuncher.menu.MenuUpdateService;
 
 import timber.log.Timber;
 
@@ -70,8 +73,20 @@ public class MyContentProvider extends ContentProvider {
         SQLiteDatabase db = database.getReadableDatabase();
         final Cursor retCursor;
         switch (uriMatcher.match(uri)) {
+            case MENU_ITEM_ALL:
+                retCursor = MenuItemTable.queryMany(db, uri, projection);
+                break;
+            case TRUCK_ALL:
+                retCursor = TruckTable.queryMany(db, uri, projection);
+                break;
             case MENU:
-                retCursor = MenuView.queryMany(db, uri, projection);
+                Uri sanitized = Contract.sanitize(uri);
+                retCursor = MenuView.queryMany(db, sanitized, projection);
+
+                // TODO replace with a push notification to spawn this sync
+                if (Contract.needsSync(uri)) {
+                    getContext().startService(new Intent(getContext(), MenuUpdateService.class));
+                }
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
@@ -103,17 +118,51 @@ public class MyContentProvider extends ContentProvider {
 
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
-        return null;
+        SQLiteDatabase db = database.getWritableDatabase();
+        Uri returnUri;
+        switch (uriMatcher.match(uri)) {
+            default:
+                throw new UnsupportedOperationException("Not yet implemented. Uri: " + uri.toString());
+        }
+//        if (!Contract.suppressNotify(uri)) {
+//            getContext().getContentResolver().notifyChange(uri, null, Contract.needsSync(uri));
+//        }
+//        return returnUri;
     }
 
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase db = database.getWritableDatabase();
+        int rowsDeleted;
+        switch (uriMatcher.match(uri)) {
+            default:
+                throw new UnsupportedOperationException("Not yet implemented. Uri: " + uri.toString());
+        }
+        // Because a null deletes all rows
+//        if (selection == null || rowsDeleted != 0 && !Contract.suppressNotify(uri)) {
+//            getContext().getContentResolver().notifyChange(uri, null, Contract.needsSync(uri));
+//        }
+//        return rowsDeleted;
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        boolean suppressNotify = Contract.suppressNotify(uri);
+        boolean needsSync = Contract.needsSync(uri);
+        uri = Contract.sanitize(uri);
+        SQLiteDatabase db = database.getWritableDatabase();
+        int rowsUpdated;
+        switch (uriMatcher.match(uri)) {
+            case TRUCK_ALL:
+                rowsUpdated = TruckTable.updateMany(db, uri, values);
+                break;
+            default:
+                throw new UnsupportedOperationException("Not yet implemented. Uri: " + uri.toString());
+        }
+        if (rowsUpdated != 0 && !suppressNotify) {
+            getContext().getContentResolver().notifyChange(uri, null, needsSync);
+        }
+        return rowsUpdated;
     }
 
     @Override
@@ -124,15 +173,18 @@ public class MyContentProvider extends ContentProvider {
             case MENU_ITEM_ALL:
                 returnCount = MenuItemTable.bulkInsert(db, values);
                 break;
+            case CATEGORY_ALL:
+                returnCount = CategoryTable.bulkInsert(db, values);
+                break;
             case TRUCK_ALL:
                 returnCount = TruckTable.bulkInsert(db, values);
                 break;
             default:
-                Timber.w("Attempting a bulk insert for an unsupported URI. Falling back to normal inserts...");
+                Timber.w("Attempting a bulk insert for an unsupported URI, %s. Falling back to normal inserts...", uri);
                 returnCount = super.bulkInsert(uri, values);
         }
-        if (returnCount > 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+        if (returnCount > 0 && !Contract.suppressNotify(uri)) {
+            getContext().getContentResolver().notifyChange(uri, null, Contract.needsSync(uri));
         }
         return returnCount;
     }
