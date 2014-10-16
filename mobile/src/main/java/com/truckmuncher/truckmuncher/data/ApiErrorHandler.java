@@ -1,6 +1,6 @@
 package com.truckmuncher.truckmuncher.data;
 
-import com.truckmuncher.api.Error;
+import com.truckmuncher.api.exceptions.Error;
 
 import retrofit.ErrorHandler;
 import retrofit.RetrofitError;
@@ -17,7 +17,7 @@ public class ApiErrorHandler implements ErrorHandler {
             // TODO Logout and make the re-authenticate
             return null;
         } else {
-            Error apiError = (Error) cause.getBodyAs(com.truckmuncher.api.Error.class.getComponentType());
+            Error apiError = (Error) cause.getBodyAs(Error.class.getComponentType());
             Timber.e(cause, "Error during network request. Error code: %d", apiError.internalCode);
             return new ApiException(apiError.userMessage, cause);
         }
