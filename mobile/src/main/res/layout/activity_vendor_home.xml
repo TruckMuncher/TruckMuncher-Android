@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/vendor_map"
-        android:name="com.google.android.gms.maps.MapFragment"
+        android:name="com.truckmuncher.truckmuncher.vendor.VendorMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="vendor.VendorHomeActivity" />
