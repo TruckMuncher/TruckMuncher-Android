@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 
-import com.truckmuncher.api.Error;
+import com.truckmuncher.api.exceptions.Error;
 import com.truckmuncher.api.trucks.ServingModeRequest;
 import com.truckmuncher.api.trucks.ServingModeResponse;
 
@@ -53,7 +53,7 @@ public class ServingModeService extends IntentService {
                 if (error.getKind() == RetrofitError.Kind.NETWORK) {
                     Timber.e("Experienced a network error: %s", error.getMessage());
                 } else {
-                    Error apiError = (Error) error.getBodyAs(com.truckmuncher.api.Error.class.getComponentType());
+                    Error apiError = (Error) error.getBodyAs(com.truckmuncher.api.exceptions.Error.class.getComponentType());
                     Timber.e("Got an error while updating the serving mode for truck id=%s. Error code: %d", request.truckId, apiError.internalCode);
                     // TODO notify the user that the request failed
                 }
