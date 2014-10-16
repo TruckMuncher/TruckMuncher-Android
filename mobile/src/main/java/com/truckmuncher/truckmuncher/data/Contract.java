@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class Contract {
+public final class Contract {
 
-    public static final String CONTENT_AUTHORITY = BuildConfig.PACKAGE_NAME;
+    public static final String CONTENT_AUTHORITY = BuildConfig.APPLICATION_ID;
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     protected static final String CONTENT_TYPE_BASE = "vnd.android.cursor.dir/" + CONTENT_AUTHORITY + "/";
     protected static final String CONTENT_ITEM_TYPE_BASE = "vnd.android.cursor.item/" + CONTENT_AUTHORITY + "/";
@@ -45,6 +45,11 @@ public class Contract {
         return Arrays.asList(string.split(STRING_SEPARATOR));
     }
 
+    /**
+     * If used, the resulting Uri will have it's data synced to the network.
+     *
+     * @param uri to sync
+     */
     public static Uri buildNeedsSync(Uri uri) {
         return uri.buildUpon().appendQueryParameter(PARAM_NEEDS_SYNC, "true").build();
     }
@@ -54,6 +59,9 @@ public class Contract {
         return needsSync != null && Boolean.parseBoolean(needsSync);
     }
 
+    /**
+     * If used, the resulting Uri will not have it's listeners notified when new data is available.
+     */
     public static Uri buildSuppressNotify(Uri uri) {
         return uri.buildUpon().appendQueryParameter(PARAM_NOTIFY, "false").build();
     }
@@ -63,6 +71,10 @@ public class Contract {
         return suppress != null && Boolean.parseBoolean(suppress);
     }
 
+    /**
+     * Removes all directives from the provided Uri which do not pertain to data persistence.
+     * For example, whether the data should sync to network or if listeners should be notified.
+     */
     public static Uri sanitize(Uri uri) {
         Uri.Builder builder = new Uri.Builder()
                 .scheme(uri.getScheme())
