@@ -5,7 +5,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.truckmuncher.api.Error;
+import com.truckmuncher.api.exceptions.Error;
 import com.truckmuncher.api.trucks.Truck;
 import com.truckmuncher.api.trucks.TrucksForVendorRequest;
 import com.truckmuncher.api.trucks.TrucksForVendorResponse;
@@ -58,7 +58,7 @@ public class VendorTrucksService extends IntentService {
                     Timber.e("Experienced a network error: %s", error.getMessage());
                     errorIntent.putExtra(ARG_MESSAGE, getString(R.string.error_network));
                 } else {
-                    com.truckmuncher.api.Error apiError = (Error) error.getBodyAs(com.truckmuncher.api.Error.class.getComponentType());
+                    com.truckmuncher.api.exceptions.Error apiError = (Error) error.getBodyAs(com.truckmuncher.api.exceptions.Error.class.getComponentType());
                     Timber.e("Got an error while getting trucks for vendor. Error code: %d", apiError.internalCode);
                     errorIntent.putExtra(ARG_MESSAGE, apiError.userMessage);
                 }
