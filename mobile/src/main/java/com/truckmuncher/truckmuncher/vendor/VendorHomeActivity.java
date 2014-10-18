@@ -2,11 +2,10 @@ package com.truckmuncher.truckmuncher.vendor;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +17,7 @@ import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.authentication.AccountGeneral;
 import com.truckmuncher.truckmuncher.data.VendorTrucksService;
 
-public class VendorHomeActivity extends Activity implements VendorMapFragment.OnMapLocationChangedListener {
+public class VendorHomeActivity extends ActionBarActivity implements VendorMapFragment.OnMapLocationChangedListener {
 
     public static final String USERNAME = "VendorHomeActivity.username";
 
@@ -48,13 +47,13 @@ public class VendorHomeActivity extends Activity implements VendorMapFragment.On
     }
 
     @Override
-    public boolean onMenuItemSelected(int featureId, @NonNull MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_logout) {
             doLogout();
             return true;
         }
 
-        return super.onMenuItemSelected(featureId, item);
+        return super.onOptionsItemSelected(item);
     }
 
     private void doLogout() {
