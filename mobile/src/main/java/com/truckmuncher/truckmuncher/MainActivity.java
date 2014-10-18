@@ -2,9 +2,9 @@ package com.truckmuncher.truckmuncher;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,7 +21,7 @@ import com.truckmuncher.truckmuncher.authentication.AccountGeneral;
 import com.truckmuncher.truckmuncher.authentication.AuthenticatorActivity;
 import com.truckmuncher.truckmuncher.vendor.VendorHomeActivity;
 
-public class MainActivity extends Activity implements GoogleMap.OnInfoWindowClickListener {
+public class MainActivity extends ActionBarActivity implements GoogleMap.OnInfoWindowClickListener {
 
     private static final int REQUEST_LOGIN = 1;
 
@@ -46,7 +46,6 @@ public class MainActivity extends Activity implements GoogleMap.OnInfoWindowClic
                 launchVendorMode(accounts[0].name);
             }
         }
-
     }
 
     @Override
@@ -62,7 +61,7 @@ public class MainActivity extends Activity implements GoogleMap.OnInfoWindowClic
     }
 
     @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_vendor_mode) {
             // TODO: @marius said this was wrong :(
             Intent intent = new Intent(this, AuthenticatorActivity.class);
@@ -70,7 +69,7 @@ public class MainActivity extends Activity implements GoogleMap.OnInfoWindowClic
 
             return true;
         } else {
-            return super.onMenuItemSelected(featureId, item);
+            return super.onOptionsItemSelected(item);
         }
     }
 
