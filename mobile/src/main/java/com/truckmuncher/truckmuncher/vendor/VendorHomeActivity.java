@@ -53,7 +53,7 @@ public class VendorHomeActivity extends ActionBarActivity implements VendorMapFr
             doLogout();
             return true;
         } else if (item.getItemId() == R.id.action_menu) {
-            getFragmentManager().beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     // FIXME Need to use a real truck id, not a mock one
                     .add(android.R.id.content, MenuAdminFragment.newInstance("Truck1"), MenuAdminFragment.TAG)
                     .addToBackStack(null)
@@ -90,7 +90,7 @@ public class VendorHomeActivity extends ActionBarActivity implements VendorMapFr
 
     @Override
     public void onMapLocationChanged(LatLng latLng) {
-        VendorHomeFragment fragment = (VendorHomeFragment) getFragmentManager().findFragmentById(R.id.vendor_home_fragment);
+        VendorHomeFragment fragment = (VendorHomeFragment) getSupportFragmentManager().findFragmentById(R.id.vendor_home_fragment);
 
         if (fragment != null) {
             Location location = new Location("");
