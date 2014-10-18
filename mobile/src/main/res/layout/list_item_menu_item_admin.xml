@@ -30,7 +30,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         tools:text="$4.25" />
 
-    <Switch
+    <android.support.v7.widget.SwitchCompat
         android:id="@+id/isAvailableSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
