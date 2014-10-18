@@ -5,6 +5,8 @@
         <item name="colorPrimary">@color/pink</item>
         <item name="colorPrimaryDark">@color/pink_dark</item>
         <item name="colorAccent">@color/mold</item>
+
+        <item name="android:fastScrollThumbDrawable">@drawable/fastscroll_thumb</item>
     </style>
 
     <style name="VendorHud">
