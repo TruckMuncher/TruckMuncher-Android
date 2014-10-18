@@ -3,10 +3,10 @@ package com.truckmuncher.truckmuncher.vendor.menuadmin;
 import android.content.Context;
 import android.database.CharArrayBuffer;
 import android.database.Cursor;
+import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.squareup.phrase.Phrase;
@@ -121,7 +121,7 @@ public class MenuAdminAdapter extends SectionCursorAdapter {
         @InjectView(R.id.price)
         TextView price;
         @InjectView(R.id.isAvailableSwitch)
-        Switch isAvailable;
+        SwitchCompat isAvailable;
         CharArrayBuffer nameBuffer = new CharArrayBuffer(128);
 
         private ViewHolder(View view) {
