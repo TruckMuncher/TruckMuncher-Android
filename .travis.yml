@@ -6,8 +6,9 @@ env:
 
     # Run against v15 & v19 on both ARMv7 and x86 platforms
     # Except travis is still flaky so for now only run against 1 target
+    - ANDROID_TARGET=android-15  ANDROID_ABI=armeabi-v7a
     - ANDROID_TARGET=android-19  ANDROID_ABI=armeabi-v7a
-    # - ANDROID_TARGET=android-15  ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-21  ANDROID_ABI=armeabi-v7a
     # - ANDROID_TARGET=android-19  ANDROID_ABI=x86
     # - ANDROID_TARGET=android-15  ANDROID_ABI=x86
 
@@ -17,18 +18,22 @@ android:
     # All the build system components should be at the latest version
     - tools
     - platform-tools
-    - build-tools-20.0.0
-    - android-20
+    - build-tools-21.0.1
+    - android-21
 
     # The libraries we can't get from Maven Central or similar
     - extra-android-support
     - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
+    - addon-google_apis-google-15
+    - addon-google_apis-google-19
+    - addon-google_apis-google-21
 
     # Specify all the emulator targets we'll need
+    - sys-img-armeabi-v7a-android-15
     - sys-img-armeabi-v7a-android-19
-    # - sys-img-armeabi-v7a-android-15
+    - sys-img-armeabi-v7a-android-21
     # - sys-img-x86-android-19
     # - sys-img-x86-android-15
 
@@ -36,10 +41,13 @@ script:
   - ./gradlew build connectedCheck  # run tests and lint
 
 # Emulator Management: Create, Start and Wait
-before_script:
-
-  # Use the matrix values to set up the AVDs
+before_install:
   - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
   - emulator -avd test -no-skin -no-audio -no-window &
-  - android-wait-for-emulator
+
+before_script:
+  - ./scripts/wait_for_emulator.sh
   - adb shell input keyevent 82 &
+
+notifications:
+  email: false

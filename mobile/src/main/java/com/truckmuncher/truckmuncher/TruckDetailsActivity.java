@@ -1,11 +1,11 @@
 package com.truckmuncher.truckmuncher;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class TruckDetailsActivity extends Activity {
+public class TruckDetailsActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

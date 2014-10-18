@@ -11,7 +11,7 @@
         android:layout_gravity="top"
         android:gravity="center" />
 
-    <Switch
+    <android.support.v7.widget.SwitchCompat
         android:id="@+id/serving_mode"
         style="@style/VendorHud"
         android:layout_width="match_parent"
