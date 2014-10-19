@@ -1,5 +1,6 @@
 package com.truckmuncher.truckmuncher.vendor;
 
+import android.app.Activity;
 import android.content.AsyncQueryHandler;
 import android.content.ContentValues;
 import android.content.Context;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.truckmuncher.truckmuncher.R;
@@ -34,7 +36,22 @@ public class VendorHomeFragment extends Fragment {
     @InjectView(R.id.vendor_location)
     TextView vendorLocationTextView;
 
+    @InjectView(R.id.vendor_map_marker)
+    ImageView vendorMapMarker;
+
     private Location currentLocation;
+
+    private OnServingModeChanged onServingModeChanged;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            onServingModeChanged = (OnServingModeChanged) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Calling activity must implement " + OnServingModeChanged.class.getName());
+        }
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,10 +73,12 @@ public class VendorHomeFragment extends Fragment {
     @OnCheckedChanged(R.id.serving_mode)
     void onServingModeToggled(CompoundButton servingModeSwitch, boolean isChecked) {
         int color = isChecked ? R.color.serving_mode_on : R.color.serving_mode_off;
+        int marker = isChecked ? R.drawable.map_marker_blue : R.drawable.map_marker_gray;
         int resolvedColor = getResources().getColor(color);
 
         servingModeSwitch.setBackgroundColor(resolvedColor);
         vendorLocationTextView.setBackgroundColor(resolvedColor);
+        vendorMapMarker.setImageDrawable(getResources().getDrawable(marker));
 
         ContentValues values = new ContentValues();
         values.put(Contract.TruckEntry.COLUMN_LATITUDE, currentLocation.getLatitude());
@@ -69,6 +88,8 @@ public class VendorHomeFragment extends Fragment {
         AsyncQueryHandler handler = new SimpleAsyncQueryHandler(getActivity().getContentResolver());
         // FIXME Need to use a real truck id, not a mock one
         handler.startUpdate(0, null, Contract.buildNeedsSync(Contract.TruckEntry.buildSingleTruck("Truck1")), values, null, null);
+
+        onServingModeChanged.onServingModeChanged(isChecked);
     }
 
     public void onLocationUpdate(Location location) {
@@ -164,5 +185,9 @@ public class VendorHomeFragment extends Fragment {
             context = null;    // Don't leak a context reference
             fragment = null;
         }
+    }
+
+    interface OnServingModeChanged {
+        void onServingModeChanged(boolean enabled);
     }
 }
