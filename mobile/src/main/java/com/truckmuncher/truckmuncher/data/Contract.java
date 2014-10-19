@@ -68,7 +68,7 @@ public final class Contract {
 
     public static boolean suppressNotify(Uri uri) {
         String suppress = uri.getQueryParameter(PARAM_NOTIFY);
-        return suppress != null && Boolean.parseBoolean(suppress);
+        return suppress != null && !Boolean.parseBoolean(suppress);
     }
 
     /**

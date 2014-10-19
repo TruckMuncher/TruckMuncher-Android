@@ -14,7 +14,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.truckmuncher.api.exceptions.Error;
 import com.truckmuncher.api.menu.Category;
 import com.truckmuncher.api.menu.FullMenusRequest;
 import com.truckmuncher.api.menu.FullMenusResponse;
@@ -155,12 +154,9 @@ public class MenuUpdateService extends Service implements GoogleApiClient.Connec
 
             @Override
             public void failure(RetrofitError error) {
-                if (error.getKind() == RetrofitError.Kind.NETWORK) {
-                    Timber.e("Experienced a network error: %s", error.getMessage());
-                } else {
-                    Error apiError = (Error) error.getBodyAs(Error.class.getComponentType());
-                    Timber.e("Got an error while getting full menus. Error code: %d", apiError.internalCode);
-                }
+
+                // All logging has already been performed at this point.
+                Timber.e("Got an error while getting full menus.");
                 stopSelf();
             }
         });

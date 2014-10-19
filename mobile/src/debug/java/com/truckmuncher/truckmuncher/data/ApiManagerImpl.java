@@ -22,8 +22,8 @@ public class ApiManagerImpl extends ApiManager {
     }
 
     @Override
-    protected RestAdapter.Builder configureRestAdapter(OkHttpClient client) {
-        return super.configureRestAdapter(client)
+    protected RestAdapter.Builder configureRestAdapter(Context context, OkHttpClient client) {
+        return super.configureRestAdapter(context, client)
                 .setLogLevel(RestAdapter.LogLevel.FULL);
     }
 
