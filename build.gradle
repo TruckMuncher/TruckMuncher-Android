@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.12.2'
+        classpath 'com.android.tools.build:gradle:0.13.3'
 
         // Compile-time debugging code injections
         classpath 'com.jakewharton.hugo:hugo-plugin:1.1.0'

@@ -19,6 +19,9 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
 
+    <!-- Sync Framework -->
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -81,17 +84,18 @@
                 android:resource="@xml/syncadapter" />
         </service>
         <service
-            android:name=".data.ServingModeService"
+            android:name=".vendor.VendorTrucksService"
             android:exported="false" />
         <service
-            android:name=".data.VendorTrucksService"
+            android:name=".menu.MenuUpdateService"
             android:exported="false" />
 
         <provider
             android:name=".data.MyContentProvider"
             android:authorities="@string/package_name"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false"
+            android:syncable="true" />
 
         <meta-data
             android:name="com.google.android.gms.version"

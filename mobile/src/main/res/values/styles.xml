@@ -1,14 +1,28 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/pink</item>
+        <item name="colorPrimaryDark">@color/pink_dark</item>
+        <item name="colorAccent">@color/mold</item>
+
+        <item name="android:fastScrollThumbDrawable">@drawable/fastscroll_thumb</item>
     </style>
 
     <style name="VendorHud">
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">@dimen/vendor_hud_text_size</item>
         <item name="android:background">@color/serving_mode_off</item>
+    </style>
+
+    <style name="TextAppearance" parent="android:TextAppearance" />
+
+    <style name="TextAppearance.ListItemLine1">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TextAppearance.ListItemLine2">
+        <item name="android:textSize">14sp</item>
     </style>
 
 </resources>

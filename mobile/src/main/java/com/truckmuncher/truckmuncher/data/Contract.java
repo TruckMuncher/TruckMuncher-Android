@@ -7,10 +7,12 @@ import com.truckmuncher.truckmuncher.BuildConfig;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
-public class Contract {
+public final class Contract {
 
-    public static final String CONTENT_AUTHORITY = BuildConfig.PACKAGE_NAME;
+    public static final String CONTENT_AUTHORITY = BuildConfig.APPLICATION_ID;
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     protected static final String CONTENT_TYPE_BASE = "vnd.android.cursor.dir/" + CONTENT_AUTHORITY + "/";
     protected static final String CONTENT_ITEM_TYPE_BASE = "vnd.android.cursor.item/" + CONTENT_AUTHORITY + "/";
@@ -21,6 +23,8 @@ public class Contract {
     public static final String PATH_MENU = "menu";
 
     private static final String STRING_SEPARATOR = ",";
+    private static final String PARAM_NEEDS_SYNC = "needs_sync";
+    private static final String PARAM_NOTIFY = "notify";
 
     private Contract() {
         // No instances
@@ -41,6 +45,53 @@ public class Contract {
         return Arrays.asList(string.split(STRING_SEPARATOR));
     }
 
+    /**
+     * If used, the resulting Uri will have it's data synced to the network.
+     *
+     * @param uri to sync
+     */
+    public static Uri buildNeedsSync(Uri uri) {
+        return uri.buildUpon().appendQueryParameter(PARAM_NEEDS_SYNC, "true").build();
+    }
+
+    public static boolean needsSync(Uri uri) {
+        String needsSync = uri.getQueryParameter(PARAM_NEEDS_SYNC);
+        return needsSync != null && Boolean.parseBoolean(needsSync);
+    }
+
+    /**
+     * If used, the resulting Uri will not have it's listeners notified when new data is available.
+     */
+    public static Uri buildSuppressNotify(Uri uri) {
+        return uri.buildUpon().appendQueryParameter(PARAM_NOTIFY, "false").build();
+    }
+
+    public static boolean suppressNotify(Uri uri) {
+        String suppress = uri.getQueryParameter(PARAM_NOTIFY);
+        return suppress != null && Boolean.parseBoolean(suppress);
+    }
+
+    /**
+     * Removes all directives from the provided Uri which do not pertain to data persistence.
+     * For example, whether the data should sync to network or if listeners should be notified.
+     */
+    public static Uri sanitize(Uri uri) {
+        Uri.Builder builder = new Uri.Builder()
+                .scheme(uri.getScheme())
+                .authority(uri.getAuthority())
+                .path(uri.getPath());
+
+        Set<String> privateParams = new TreeSet<>();
+        privateParams.add(PARAM_NEEDS_SYNC);
+        privateParams.add(PARAM_NOTIFY);
+        for (String param : uri.getQueryParameterNames()) {
+            if (!privateParams.contains(param)) {
+                builder.appendQueryParameter(param, uri.getQueryParameter(param));
+            }
+        }
+        return builder.build();
+    }
+
     public static final class TruckEntry implements BaseColumns {
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TRUCK).build();
@@ -54,6 +105,7 @@ public class Contract {
         public static final String COLUMN_IS_SERVING = TABLE_NAME + "__is_serving";
         public static final String COLUMN_LATITUDE = TABLE_NAME + "__latitude";
         public static final String COLUMN_LONGITUDE = TABLE_NAME + "__longitude";
+        public static final String COLUMN_IS_DIRTY = TABLE_NAME + "__is_dirty";
 
         public static Uri buildSingleTruck(String internalId) {
             return CONTENT_URI.buildUpon().appendQueryParameter(COLUMN_INTERNAL_ID, internalId).build();
@@ -65,6 +117,10 @@ public class Contract {
                 throw new IllegalArgumentException("Uri didn't include an internal id.");
             }
             return internalId;
+        }
+
+        public static Uri buildDirty() {
+            return CONTENT_URI.buildUpon().appendQueryParameter(COLUMN_IS_DIRTY, "1").build();
         }
 
         public static final String CONTENT_TYPE = CONTENT_TYPE_BASE + PATH_TRUCK;
@@ -99,6 +155,11 @@ public class Contract {
         public static final String COLUMN_TAGS = TABLE_NAME + "__tags";
         public static final String COLUMN_ORDER_IN_CATEGORY = TABLE_NAME + "__order_in_category";
         public static final String COLUMN_CATEGORY_ID = TABLE_NAME + "__category_id";
+        public static final String COLUMN_IS_DIRTY = TABLE_NAME + "__is_dirty";
+
+        public static Uri buildDirty() {
+            return CONTENT_URI.buildUpon().appendQueryParameter(COLUMN_IS_DIRTY, "1").build();
+        }
 
         public static final String CONTENT_TYPE = CONTENT_TYPE_BASE + PATH_MENU_ITEM;
 

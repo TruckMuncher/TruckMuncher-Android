@@ -29,13 +29,13 @@ def versionMinor = 1
 def versionPatch = 0
 
 android {
-    compileSdkVersion 20
-    buildToolsVersion "20.0.0"
+    compileSdkVersion 21
+    buildToolsVersion "21.0.1"
 
     defaultConfig {
         applicationId "com.truckmuncher.truckmuncher"
         minSdkVersion 15
-        targetSdkVersion 20
+        targetSdkVersion 21
         versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
         testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
 
@@ -63,13 +63,13 @@ android {
 
     buildTypes {
         release {
-            testCoverageEnabled true
+//            testCoverageEnabled true
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
         debug {
-            testCoverageEnabled true
+//            testCoverageEnabled true
             versionNameSuffix ".debug"
             applicationIdSuffix ".debug"
             signingConfig signingConfigs.debug
@@ -116,7 +116,7 @@ android {
 
 dependencies {
     wearApp project(':wear')
-    compile 'com.android.support:support-v13:20.0.0'
+    compile 'com.android.support:appcompat-v7:21.0.0'
     compile 'com.google.android.gms:play-services:6.1.11'
     compile project(':AndroidSocialNetworks')
 
@@ -136,6 +136,9 @@ dependencies {
     compile 'com.volkhart:android-util:1.0.0-SNAPSHOT@aar'
     compile 'com.squareup.phrase:phrase:1.0.3'
     compile 'com.jakewharton:butterknife:5.1.2'
+
+    // UI Components
+    compile 'com.twotoasters.SectionCursorAdapter:library:1.0.1'
 
     debugCompile 'com.squareup.retrofit:retrofit-mock:1.7.0'
 

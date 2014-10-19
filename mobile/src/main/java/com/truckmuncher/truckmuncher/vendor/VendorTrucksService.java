@@ -1,4 +1,4 @@
-package com.truckmuncher.truckmuncher.data;
+package com.truckmuncher.truckmuncher.vendor;
 
 import android.app.IntentService;
 import android.content.ContentValues;
@@ -10,6 +10,8 @@ import com.truckmuncher.api.trucks.Truck;
 import com.truckmuncher.api.trucks.TrucksForVendorRequest;
 import com.truckmuncher.api.trucks.TrucksForVendorResponse;
 import com.truckmuncher.truckmuncher.R;
+import com.truckmuncher.truckmuncher.data.ApiManager;
+import com.truckmuncher.truckmuncher.data.Contract;
 
 import java.util.List;
 

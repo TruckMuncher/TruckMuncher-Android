@@ -79,7 +79,8 @@ public abstract class ApiManager implements ComponentCallbacks2 {
                 .setRequestInterceptor(new ApiRequestInterceptor())
                 .setConverter(new WireConverter())
                 .setEndpoint(BuildConfig.API_ENDPOINT)
-                .setClient(new OkClient(client));
+                .setClient(new OkClient(client))
+                .setErrorHandler(new ApiErrorHandler());
     }
 
     protected TruckService getTruckService() {

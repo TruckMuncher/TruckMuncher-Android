@@ -3,10 +3,11 @@ package com.truckmuncher.truckmuncher.authentication;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.truckmuncher.truckmuncher.R;
+import com.truckmuncher.truckmuncher.data.Contract;
 
 public class AuthenticatorActivity extends AccountAuthenticatorActivity
         implements LoginFragment.LoginSuccessCallback {
@@ -35,6 +36,10 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         result.putString(AccountManager.KEY_AUTHTOKEN, authToken);
 
         Account account = new Account(userName, AccountGeneral.ACCOUNT_TYPE);
+
+        // Setup the account to be syncable
+        ContentResolver.setSyncAutomatically(account, Contract.CONTENT_AUTHORITY, true);
+        ContentResolver.setIsSyncable(account, Contract.CONTENT_AUTHORITY, 1);
 
         accountManager.addAccountExplicitly(account, null, null);
         accountManager.setAuthToken(account, AccountGeneral.getAuthTokenType(this), authToken);

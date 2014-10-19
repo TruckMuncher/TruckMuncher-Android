@@ -1,5 +1,6 @@
 package com.truckmuncher.truckmuncher.data.sql;
 
+import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 
 import timber.log.Timber;
@@ -33,5 +34,22 @@ public final class CategoryTable {
 
     public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+    }
+
+    public static int bulkInsert(SQLiteDatabase db, ContentValues[] contentValues) {
+        int returnCount = 0;
+        db.beginTransaction();
+        try {
+            for (ContentValues values : contentValues) {
+                long rowId = db.replace(CategoryEntry.TABLE_NAME, null, values);
+                if (rowId != -1) {
+                    returnCount++;
+                }
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+        return returnCount;
     }
 }

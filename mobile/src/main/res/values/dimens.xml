@@ -6,4 +6,7 @@
     <dimen name="vendor_hud_bottom_height">48dp</dimen>
     <dimen name="vendor_hud_top_height">48dp</dimen>
     <dimen name="vendor_hud_text_size">24sp</dimen>
+
+    <dimen name="list_item_two_line_height">72dp</dimen>
+    <dimen name="list_item_text_padding">16dp</dimen>
 </resources>

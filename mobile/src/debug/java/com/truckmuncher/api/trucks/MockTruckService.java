@@ -60,7 +60,7 @@ public class MockTruckService implements TruckService {
 
     @Override
     public ServingModeResponse modifyServingMode(@Body ServingModeRequest request) throws RetrofitError {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return new ServingModeResponse();
     }
 
     @Override

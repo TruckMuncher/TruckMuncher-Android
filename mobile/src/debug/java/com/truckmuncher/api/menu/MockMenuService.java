@@ -22,7 +22,8 @@ public class MockMenuService implements MenuService {
 
     @Override
     public FullMenusResponse getFullMenus(@Body FullMenusRequest request) throws RetrofitError {
-        throw new UnsupportedOperationException("Not yet implemented");
+        MenuResponse response = getMenu(null);
+        return new FullMenusResponse(Arrays.asList(response.menu));
     }
 
     @Override
@@ -37,10 +38,10 @@ public class MockMenuService implements MenuService {
             List<MenuItem> menuItems = new ArrayList<>();
             for (int i = 0; i < 10; i++) {
                 MenuItem item = new MenuItem.Builder()
-                        .id("MenuItem + i")
-                        .name("MenuItem" + i)
+                        .id("MenuItem" + j + "_" + i)
+                        .name("MenuItem" + j + "_" + i)
                         .price(i / 2f)
-                        .notes("MenuItem" + i)
+                        .notes("MenuItem" + j + "_" + i)
                         .tags(Arrays.asList("Tag1", "Tag2", "Tag3"))
                         .orderInCategory(i)
                         .isAvailable(i % 2 == 0)
@@ -68,7 +69,7 @@ public class MockMenuService implements MenuService {
 
     @Override
     public ModifyMenuItemAvailabilityResponse modifyMenuItemAvailability(@Body ModifyMenuItemAvailabilityRequest request) throws RetrofitError {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return new ModifyMenuItemAvailabilityResponse();
     }
 
     @Override

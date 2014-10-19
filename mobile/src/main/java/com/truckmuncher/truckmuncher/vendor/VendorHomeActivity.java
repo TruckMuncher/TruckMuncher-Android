@@ -2,11 +2,11 @@ package com.truckmuncher.truckmuncher.vendor;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,9 +16,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.truckmuncher.truckmuncher.MainActivity;
 import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.authentication.AccountGeneral;
-import com.truckmuncher.truckmuncher.data.VendorTrucksService;
+import com.truckmuncher.truckmuncher.vendor.menuadmin.MenuAdminFragment;
 
-public class VendorHomeActivity extends Activity implements VendorMapFragment.OnMapLocationChangedListener {
+public class VendorHomeActivity extends ActionBarActivity implements VendorMapFragment.OnMapLocationChangedListener {
 
     public static final String USERNAME = "VendorHomeActivity.username";
 
@@ -48,13 +48,21 @@ public class VendorHomeActivity extends Activity implements VendorMapFragment.On
     }
 
     @Override
-    public boolean onMenuItemSelected(int featureId, @NonNull MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_logout) {
             doLogout();
             return true;
+        } else if (item.getItemId() == R.id.action_menu) {
+            getSupportFragmentManager().beginTransaction()
+                    // FIXME Need to use a real truck id, not a mock one
+                    .add(android.R.id.content, MenuAdminFragment.newInstance("Truck1"), MenuAdminFragment.TAG)
+                    .addToBackStack(null)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commit();
+            return true;
         }
 
-        return super.onMenuItemSelected(featureId, item);
+        return super.onOptionsItemSelected(item);
     }
 
     private void doLogout() {
@@ -82,7 +90,7 @@ public class VendorHomeActivity extends Activity implements VendorMapFragment.On
 
     @Override
     public void onMapLocationChanged(LatLng latLng) {
-        VendorHomeFragment fragment = (VendorHomeFragment) getFragmentManager().findFragmentById(R.id.vendor_home_fragment);
+        VendorHomeFragment fragment = (VendorHomeFragment) getSupportFragmentManager().findFragmentById(R.id.vendor_home_fragment);
 
         if (fragment != null) {
             Location location = new Location("");
