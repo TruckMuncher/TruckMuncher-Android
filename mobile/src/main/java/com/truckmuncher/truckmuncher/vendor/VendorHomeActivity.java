@@ -109,8 +109,7 @@ public class VendorHomeActivity extends ActionBarActivity implements
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-
-                    fragment.setMapGesturesEnabled(!enabled);
+                    fragment.setMapControlsEnabled(!enabled);
                 }
             });
         }

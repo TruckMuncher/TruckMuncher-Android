@@ -37,6 +37,7 @@ public class VendorMapFragment extends Fragment implements GoogleApiClient.Conne
     private boolean useMapLocation;
     private OnMapLocationChangedListener onMapLocationChangedListener;
     private GoogleApiClient apiClient;
+    private LocationRequest request;
 
     @Override
     public void onAttach(Activity activity) {
@@ -183,7 +184,7 @@ public class VendorMapFragment extends Fragment implements GoogleApiClient.Conne
             }
         }
 
-        LocationRequest request = new LocationRequest()
+        request = new LocationRequest()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(5000);
         LocationServices.FusedLocationApi.requestLocationUpdates(apiClient, request, this);
@@ -208,10 +209,16 @@ public class VendorMapFragment extends Fragment implements GoogleApiClient.Conne
         // TODO Consider handling
     }
 
-    public void setMapGesturesEnabled(boolean enabled) {
+    public void setMapControlsEnabled(boolean enabled) {
         UiSettings settings = mapView.getMap().getUiSettings();
         settings.setScrollGesturesEnabled(enabled);
         settings.setMyLocationButtonEnabled(enabled);
+
+        if (enabled) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(apiClient, request, this);
+        } else {
+            LocationServices.FusedLocationApi.removeLocationUpdates(apiClient, this);
+        }
 
     }
 
