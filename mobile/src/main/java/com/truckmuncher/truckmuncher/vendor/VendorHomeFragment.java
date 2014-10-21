@@ -14,6 +14,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,6 +40,9 @@ public class VendorHomeFragment extends Fragment {
 
     @InjectView(R.id.vendor_map_marker)
     ImageView vendorMapMarker;
+
+    @InjectView(R.id.vendor_map_marker_pulse)
+    ImageView vendorMarkerPulse;
 
     private Location currentLocation;
 
@@ -80,6 +85,8 @@ public class VendorHomeFragment extends Fragment {
         vendorLocationTextView.setBackgroundColor(resolvedColor);
         vendorMapMarker.setImageDrawable(getResources().getDrawable(marker));
 
+        updateAnimation(isChecked);
+
         ContentValues values = new ContentValues();
         values.put(Contract.TruckEntry.COLUMN_LATITUDE, currentLocation.getLatitude());
         values.put(Contract.TruckEntry.COLUMN_LONGITUDE, currentLocation.getLongitude());
@@ -95,6 +102,18 @@ public class VendorHomeFragment extends Fragment {
     public void onLocationUpdate(Location location) {
         currentLocation = location;
         new GetAddressTask(this, vendorLocationTextView).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, location);
+    }
+
+    private void updateAnimation(boolean servingModeEnabled) {
+        if (servingModeEnabled) {
+            Animation pulse = AnimationUtils.loadAnimation(getActivity(), R.anim.pulse);
+
+            vendorMarkerPulse.startAnimation(pulse);
+            vendorMarkerPulse.setVisibility(View.VISIBLE);
+        } else {
+            vendorMarkerPulse.clearAnimation();
+            vendorMarkerPulse.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -152,18 +171,8 @@ public class VendorHomeFragment extends Fragment {
             if (addresses != null && addresses.size() > 0) {
                 // Get the first address
                 Address address = addresses.get(0);
-                /*
-                 * Format the first line of address (if available),
-                 * city, and country name.
-                 */
-                return String.format(
-                        "%s, %s, %s",
-                        // If there's a street address, add it
-                        address.getMaxAddressLineIndex() > 0 ? address.getAddressLine(0) : "",
-                        // Locality is usually a city
-                        address.getLocality(),
-                        // The country of the address
-                        address.getCountryName());
+
+                return address.getMaxAddressLineIndex() > 0 ? address.getAddressLine(0) : "";
             } else {
                 return "Unable to geocode an address";
             }

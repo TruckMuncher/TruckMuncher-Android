@@ -29,6 +29,16 @@
         android:layout_marginBottom="-5dp"
         android:src="@drawable/map_marker_gray" />
 
+    <ImageView
+        android:id="@+id/vendor_map_marker_pulse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/plain_circle"
+        android:layout_above="@+id/fakeView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-30dp"
+        android:visibility="invisible"/>
+
     <android.support.v7.widget.SwitchCompat
         android:id="@+id/serving_mode"
         style="@style/VendorHud"
