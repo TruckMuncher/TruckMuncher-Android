@@ -76,9 +76,8 @@ public class VendorMapFragment extends Fragment implements GoogleApiClient.Conne
         final GoogleMap map = mapView.getMap();
 
         // Configure map
-        int mapPaddingTop = getResources().getDimensionPixelOffset(R.dimen.vendor_hud_top_height);
         int mapPaddingBottom = getResources().getDimensionPixelOffset(R.dimen.vendor_hud_bottom_height);
-        map.setPadding(0, mapPaddingTop, 0, mapPaddingBottom);
+        map.setPadding(0, 0, 0, mapPaddingBottom);
         map.setMyLocationEnabled(true);
 
         map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {

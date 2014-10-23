@@ -20,7 +20,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="-5dp"
         android:src="@drawable/map_marker_gray"
-        android:contentDescription="@string/vendor_marker_description"/>
+        android:contentDescription="@string/access_vendor_marker_description"/>
 
     <ImageView
         android:id="@+id/vendor_map_marker_pulse"
@@ -31,7 +31,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="-100dp"
         android:visibility="invisible"
-        android:contentDescription="@string/vendor_marker_animation_description"/>
+        android:importantForAccessibility="no"/>
 
     <android.support.v7.widget.SwitchCompat
         android:id="@+id/serving_mode"
