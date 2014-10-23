@@ -1,9 +1,9 @@
 package com.truckmuncher.truckmuncher.vendor.menuadmin;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
@@ -68,14 +68,9 @@ public class MenuAdminFragment extends ListFragment implements LoaderManager.Loa
             contentValues[i] = values;
             i++;
         }
-        new AsyncTask<ContentValues, Void, Void>() {
-
-            @Override
-            protected Void doInBackground(ContentValues... params) {
-                getActivity().getContentResolver().bulkInsert(Contract.buildNeedsSync(Contract.MenuItemEntry.CONTENT_URI), params);
-                return null;
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, contentValues);
+        Intent intent = new Intent(getActivity(), InsertMenuItemDiffService.class);
+        intent.putExtra(InsertMenuItemDiffService.ARG_VALUES, contentValues);
+        getActivity().startService(intent);
     }
 
     @Override

@@ -32,7 +32,7 @@ public class ApiErrorHandlerTest extends AndroidTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        errorHandler = new ApiErrorHandler(getContext());
+        errorHandler = new ApiErrorHandler(mContext);
     }
 
     public void testNetworkError() {
@@ -40,7 +40,7 @@ public class ApiErrorHandlerTest extends AndroidTestCase {
         ApiException exception = errorHandler.handleError(error);
 
         assertThat(exception).isNotNull();
-        assertThat(exception.getMessage()).isEqualTo(getContext().getString(R.string.error_network));
+        assertThat(exception.getMessage()).isEqualTo(mContext.getString(R.string.error_network));
         assertThat(exception.getCause()).isEqualTo(error);
     }
 

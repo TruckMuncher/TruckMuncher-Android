@@ -33,9 +33,7 @@ public class MyContentProvider extends ContentProvider {
 
     private static final int TRUCK_SINGLE = 1;
     private static final int TRUCK_ALL = 2;
-    private static final int CATEGORY_SINGLE = 3;
     private static final int CATEGORY_ALL = 4;
-    private static final int MENU_ITEM_SINGLE = 5;
     private static final int MENU_ITEM_ALL = 6;
     private static final int MENU = 7;
     private static final UriMatcher uriMatcher = buildUriMatcher();
@@ -46,13 +44,11 @@ public class MyContentProvider extends ContentProvider {
         UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         String authority = CONTENT_AUTHORITY;
 
-        matcher.addURI(authority, PATH_TRUCK + "/#", TRUCK_SINGLE);
         matcher.addURI(authority, PATH_TRUCK, TRUCK_ALL);
+        matcher.addURI(authority, PATH_TRUCK + "/*", TRUCK_SINGLE);
 
-        matcher.addURI(authority, PATH_CATEGORY + "/#", CATEGORY_SINGLE);
         matcher.addURI(authority, PATH_CATEGORY, CATEGORY_ALL);
 
-        matcher.addURI(authority, PATH_MENU_ITEM + "/#", MENU_ITEM_SINGLE);
         matcher.addURI(authority, PATH_MENU_ITEM, MENU_ITEM_ALL);
 
         matcher.addURI(authority, PATH_MENU, MENU);
@@ -79,6 +75,9 @@ public class MyContentProvider extends ContentProvider {
             case TRUCK_ALL:
                 retCursor = TruckTable.queryMany(db, uri, projection);
                 break;
+            case TRUCK_SINGLE:
+                retCursor = TruckTable.querySingle(db, uri, projection);
+                break;
             case MENU:
                 Uri sanitized = Contract.sanitize(uri);
                 retCursor = MenuView.queryMany(db, sanitized, projection);
@@ -103,12 +102,8 @@ public class MyContentProvider extends ContentProvider {
                 return TruckEntry.CONTENT_ITEM_TYPE;
             case TRUCK_ALL:
                 return TruckEntry.CONTENT_TYPE;
-            case CATEGORY_SINGLE:
-                return CategoryEntry.CONTENT_ITEM_TYPE;
             case CATEGORY_ALL:
                 return CategoryEntry.CONTENT_TYPE;
-            case MENU_ITEM_SINGLE:
-                return MenuItemEntry.CONTENT_ITEM_TYPE;
             case MENU_ITEM_ALL:
                 return MenuItemEntry.CONTENT_TYPE;
             default:
@@ -116,6 +111,9 @@ public class MyContentProvider extends ContentProvider {
         }
     }
 
+    /**
+     * @return null if the insert failed. Otherwise the same uri as was provided.
+     */
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
         SQLiteDatabase db = database.getWritableDatabase();
@@ -132,17 +130,27 @@ public class MyContentProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
+        boolean suppressNotify = Contract.suppressNotify(uri);
+        boolean needsSync = Contract.needsSync(uri);
+        uri = Contract.sanitize(uri);
         SQLiteDatabase db = database.getWritableDatabase();
         int rowsDeleted;
         switch (uriMatcher.match(uri)) {
+            case TRUCK_ALL:
+                rowsDeleted = TruckTable.deleteMany(db, uri);
+                break;
+            case TRUCK_SINGLE:
+                rowsDeleted = TruckTable.deleteSingle(db, uri);
+                break;
             default:
                 throw new UnsupportedOperationException("Not yet implemented. Uri: " + uri.toString());
         }
+
         // Because a null deletes all rows
-//        if (selection == null || rowsDeleted != 0 && !Contract.suppressNotify(uri)) {
-//            getContext().getContentResolver().notifyChange(uri, null, Contract.needsSync(uri));
-//        }
-//        return rowsDeleted;
+        if (selection == null || rowsDeleted != 0 && !suppressNotify) {
+            getContext().getContentResolver().notifyChange(uri, null, needsSync);
+        }
+        return rowsDeleted;
     }
 
     @Override
@@ -156,9 +164,14 @@ public class MyContentProvider extends ContentProvider {
             case TRUCK_ALL:
                 rowsUpdated = TruckTable.updateMany(db, uri, values);
                 break;
+            case TRUCK_SINGLE:
+                rowsUpdated = TruckTable.updateSingle(db, uri, values);
+                break;
             default:
-                throw new UnsupportedOperationException("Not yet implemented. Uri: " + uri.toString());
+                throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
+        Timber.d("Rows updated: %d", rowsUpdated);
+        Timber.d("Suppressing notify: %b", suppressNotify);
         if (rowsUpdated != 0 && !suppressNotify) {
             getContext().getContentResolver().notifyChange(uri, null, needsSync);
         }

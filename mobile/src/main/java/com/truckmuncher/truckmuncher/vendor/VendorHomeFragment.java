@@ -31,6 +31,8 @@ import timber.log.Timber;
 
 public class VendorHomeFragment extends Fragment {
 
+    private static final String ARG_CURRENT_LOCATION = "current_location";
+
     @InjectView(R.id.vendor_location)
     TextView vendorLocationTextView;
 
@@ -45,6 +47,16 @@ public class VendorHomeFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
+
+        if (savedInstanceState != null) {
+            currentLocation = savedInstanceState.getParcelable(ARG_CURRENT_LOCATION);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(ARG_CURRENT_LOCATION, currentLocation);
     }
 
     @Override
@@ -68,7 +80,7 @@ public class VendorHomeFragment extends Fragment {
         values.put(Contract.TruckEntry.COLUMN_IS_DIRTY, true);
         AsyncQueryHandler handler = new SimpleAsyncQueryHandler(getActivity().getContentResolver());
         // FIXME Need to use a real truck id, not a mock one
-        handler.startUpdate(0, null, Contract.buildNeedsSync(Contract.TruckEntry.buildSingleTruck("Truck1")), values, null, null);
+        handler.startUpdate(0, null, Contract.buildNeedsSync(Contract.TruckEntry.buildSingleTruck("de513002-5a44-11e4-aa15-123b93f75cba")), values, null, null);
     }
 
     public void onLocationUpdate(Location location) {

@@ -6,6 +6,7 @@ import java.security.SecureRandom;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import retrofit.RequestInterceptor;
@@ -18,7 +19,7 @@ public class ApiRequestInterceptor implements RequestInterceptor {
 
     public ApiRequestInterceptor() {
         PRNGFixes.apply();  // Fix SecureRandom so we can generate nonces
-        formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
         generator = new SecureRandom();
     }
