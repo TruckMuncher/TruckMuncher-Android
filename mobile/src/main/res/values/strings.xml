@@ -20,5 +20,7 @@
 
     <!-- Errors -->
     <string name="error_network">Oops, something went wrong. Please check your network connection and try again.</string>
+    <string name="vendor_marker_description">Indicates the current location of the vendor on the map.</string>
+    <string name="vendor_marker_animation_description">Serving mode animation.</string>
 
 </resources>

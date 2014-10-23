@@ -19,7 +19,7 @@ import com.truckmuncher.truckmuncher.authentication.AccountGeneral;
 import com.truckmuncher.truckmuncher.vendor.menuadmin.MenuAdminFragment;
 
 public class VendorHomeActivity extends ActionBarActivity implements
-        VendorMapFragment.OnMapLocationChangedListener, VendorHomeFragment.OnServingModeChanged {
+        VendorMapFragment.OnMapLocationChangedListener, VendorHomeFragment.OnServingModeChangedListener {
 
     public static final String USERNAME = "VendorHomeActivity.username";
 
@@ -105,13 +105,11 @@ public class VendorHomeActivity extends ActionBarActivity implements
     public void onServingModeChanged(final boolean enabled) {
         final VendorMapFragment fragment = (VendorMapFragment) getSupportFragmentManager().findFragmentById(R.id.vendor_map_fragment);
 
-        if (fragment != null) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    fragment.setMapControlsEnabled(!enabled);
-                }
-            });
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                fragment.setMapControlsEnabled(!enabled);
+            }
+        });
     }
 }
