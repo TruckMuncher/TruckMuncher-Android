@@ -1,23 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/vendor_location"
-        style="@style/VendorHud"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/vendor_hud_top_height"
-        android:layout_gravity="top"
-        android:gravity="center" />
+    <!--This is just used as a reference point for the ImageView below. -->
+    <View
+        android:id="@+id/fakeView"
+        android:layout_width="20dp"
+        android:layout_height="1px"
+        android:layout_centerInParent="true"
+        android:background="#00FFFFFF"
+        android:importantForAccessibility="no"/>
+
+    <ImageView
+        android:id="@+id/vendor_map_marker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/fakeView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-5dp"
+        android:src="@drawable/map_marker_gray"
+        android:contentDescription="@string/access_vendor_marker_description"/>
+
+    <ImageView
+        android:id="@+id/vendor_map_marker_pulse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/serving_mode_indicator"
+        android:layout_above="@+id/fakeView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-100dp"
+        android:visibility="invisible"
+        android:importantForAccessibility="no"/>
 
     <android.support.v7.widget.SwitchCompat
         android:id="@+id/serving_mode"
         style="@style/VendorHud"
         android:layout_width="match_parent"
         android:layout_height="@dimen/vendor_hud_bottom_height"
-        android:layout_gravity="bottom"
         android:checked="false"
         android:gravity="center"
-        android:text="@string/serving_mode" />
-</FrameLayout>
+        android:text="@string/serving_mode"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+</RelativeLayout>

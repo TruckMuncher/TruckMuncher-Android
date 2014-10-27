@@ -3,10 +3,9 @@
     <color name="pink">#e91e63</color>
     <color name="pink_dark">#c2185b</color>
     <color name="mold">#009688</color>
+    <color name="mold_light">#88009688</color>
     <color name="fake_background_header">#351C75</color>
     <color name="fake_background_menu">#333333</color>
     <color name="fake_green">#009E0F</color>
     <color name="fake_light_gray">#999999</color>
-    <color name="serving_mode_on">#AA0066CC</color>
-    <color name="serving_mode_off">#AA4A4A4A</color>
 </resources>

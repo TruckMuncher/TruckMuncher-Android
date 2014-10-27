@@ -19,9 +19,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.truckmuncher.truckmuncher.R;
 
 import butterknife.ButterKnife;
@@ -38,6 +37,7 @@ public class VendorMapFragment extends Fragment implements GoogleApiClient.Conne
     private boolean useMapLocation;
     private OnMapLocationChangedListener onMapLocationChangedListener;
     private GoogleApiClient apiClient;
+    private LocationRequest request;
 
     @Override
     public void onAttach(Activity activity) {
@@ -76,9 +76,8 @@ public class VendorMapFragment extends Fragment implements GoogleApiClient.Conne
         final GoogleMap map = mapView.getMap();
 
         // Configure map
-        int mapPaddingTop = getResources().getDimensionPixelOffset(R.dimen.vendor_hud_top_height);
         int mapPaddingBottom = getResources().getDimensionPixelOffset(R.dimen.vendor_hud_bottom_height);
-        map.setPadding(0, mapPaddingTop, 0, mapPaddingBottom);
+        map.setPadding(0, 0, 0, mapPaddingBottom);
         map.setMyLocationEnabled(true);
 
         map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
@@ -87,22 +86,6 @@ public class VendorMapFragment extends Fragment implements GoogleApiClient.Conne
                 useMapLocation = false;
                 map.clear();
                 return false;
-            }
-        });
-
-        map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-            @Override
-            public void onCameraChange(CameraPosition cameraPosition) {
-                if (useMapLocation) {
-                    LatLng latLng = cameraPosition.target;
-                    Location location = new Location("");
-                    location.setLatitude(latLng.latitude);
-                    location.setLongitude(latLng.longitude);
-
-                    // TODO this implementation of the pin is janky. We should have a static icon centered over the map so that it's smoother
-                    map.clear();
-                    map.addMarker(new MarkerOptions().position(latLng));
-                }
             }
         });
 
@@ -200,7 +183,7 @@ public class VendorMapFragment extends Fragment implements GoogleApiClient.Conne
             }
         }
 
-        LocationRequest request = new LocationRequest()
+        request = new LocationRequest()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(5000);
         LocationServices.FusedLocationApi.requestLocationUpdates(apiClient, request, this);
@@ -223,6 +206,19 @@ public class VendorMapFragment extends Fragment implements GoogleApiClient.Conne
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         // TODO Consider handling
+    }
+
+    public void setMapControlsEnabled(boolean enabled) {
+        UiSettings settings = mapView.getMap().getUiSettings();
+        settings.setScrollGesturesEnabled(enabled);
+        settings.setMyLocationButtonEnabled(enabled);
+
+        if (enabled) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(apiClient, request, this);
+        } else {
+            LocationServices.FusedLocationApi.removeLocationUpdates(apiClient, this);
+        }
+
     }
 
     interface OnMapLocationChangedListener {

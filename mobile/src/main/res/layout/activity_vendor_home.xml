@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <fragment
-        android:id="@+id/vendor_map"
+        android:id="@+id/vendor_map_fragment"
         android:name="com.truckmuncher.truckmuncher.vendor.VendorMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
