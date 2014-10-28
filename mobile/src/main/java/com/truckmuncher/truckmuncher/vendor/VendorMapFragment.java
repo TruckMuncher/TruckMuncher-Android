@@ -124,7 +124,9 @@ public class VendorMapFragment extends Fragment implements GoogleApiClient.Conne
     @Override
     public void onStop() {
         super.onStop();
-        LocationServices.FusedLocationApi.removeLocationUpdates(apiClient, this);
+        if (apiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(apiClient, this);
+        }
         apiClient.disconnect();
     }
 
