@@ -18,7 +18,8 @@ import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.authentication.AccountGeneral;
 import com.truckmuncher.truckmuncher.vendor.menuadmin.MenuAdminFragment;
 
-public class VendorHomeActivity extends ActionBarActivity implements VendorMapFragment.OnMapLocationChangedListener {
+public class VendorHomeActivity extends ActionBarActivity implements
+        VendorMapFragment.OnMapLocationChangedListener, VendorHomeFragment.OnServingModeChangedListener {
 
     public static final String USERNAME = "VendorHomeActivity.username";
 
@@ -98,5 +99,17 @@ public class VendorHomeActivity extends ActionBarActivity implements VendorMapFr
             location.setLongitude(latLng.longitude);
             fragment.onLocationUpdate(location);
         }
+    }
+
+    @Override
+    public void onServingModeChanged(final boolean enabled) {
+        final VendorMapFragment fragment = (VendorMapFragment) getSupportFragmentManager().findFragmentById(R.id.vendor_map_fragment);
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                fragment.setMapControlsEnabled(!enabled);
+            }
+        });
     }
 }
