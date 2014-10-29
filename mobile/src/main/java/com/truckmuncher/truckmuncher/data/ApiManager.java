@@ -35,7 +35,7 @@ public abstract class ApiManager implements ComponentCallbacks2 {
         configureHttpCache(context, client);
         configureSslSocketFactory(client);
         configureHostnameVerifier(client);
-        adapter = configureRestAdapter(client).build();
+        adapter = configureRestAdapter(context, client).build();
 
         context.registerComponentCallbacks(this);
     }
@@ -74,13 +74,13 @@ public abstract class ApiManager implements ComponentCallbacks2 {
         }
     }
 
-    protected RestAdapter.Builder configureRestAdapter(OkHttpClient client) {
+    protected RestAdapter.Builder configureRestAdapter(Context context, OkHttpClient client) {
         return new RestAdapter.Builder()
                 .setRequestInterceptor(new ApiRequestInterceptor())
                 .setConverter(new WireConverter())
                 .setEndpoint(BuildConfig.API_ENDPOINT)
                 .setClient(new OkClient(client))
-                .setErrorHandler(new ApiErrorHandler());
+                .setErrorHandler(new ApiErrorHandler(context));
     }
 
     protected TruckService getTruckService() {
@@ -98,15 +98,11 @@ public abstract class ApiManager implements ComponentCallbacks2 {
     }
 
     protected void reset() {
-        adapter = null;
         truckService = null;
         menuService = null;
     }
 
     protected RestAdapter getAdapter() {
-        if (adapter == null) {
-            adapter = configureRestAdapter(client).build();
-        }
         return adapter;
     }
 

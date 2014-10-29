@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.widget.CompoundButton;
@@ -26,6 +25,8 @@ import butterknife.OnCheckedChanged;
 
 public class VendorHomeFragment extends Fragment {
 
+    private static final String ARG_CURRENT_LOCATION = "current_location";
+
     @InjectView(R.id.vendor_map_marker)
     ImageView vendorMapMarker;
 
@@ -33,7 +34,6 @@ public class VendorHomeFragment extends Fragment {
     ImageView vendorMarkerPulse;
 
     private Location currentLocation;
-
     private OnServingModeChangedListener onServingModeChangedListener;
 
     @Override
@@ -55,12 +55,28 @@ public class VendorHomeFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
+
+        if (savedInstanceState != null) {
+            currentLocation = savedInstanceState.getParcelable(ARG_CURRENT_LOCATION);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(ARG_CURRENT_LOCATION, currentLocation);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        onServingModeChangedListener = null;
     }
 
     @OnCheckedChanged(R.id.serving_mode)
@@ -78,7 +94,7 @@ public class VendorHomeFragment extends Fragment {
         values.put(Contract.TruckEntry.COLUMN_IS_DIRTY, true);
         AsyncQueryHandler handler = new SimpleAsyncQueryHandler(getActivity().getContentResolver());
         // FIXME Need to use a real truck id, not a mock one
-        handler.startUpdate(0, null, Contract.buildNeedsSync(Contract.TruckEntry.buildSingleTruck("Truck1")), values, null, null);
+        handler.startUpdate(0, null, Contract.buildNeedsSync(Contract.TruckEntry.buildSingleTruck("de513002-5a44-11e4-aa15-123b93f75cba")), values, null, null);
 
         onServingModeChangedListener.onServingModeChanged(isChecked);
     }

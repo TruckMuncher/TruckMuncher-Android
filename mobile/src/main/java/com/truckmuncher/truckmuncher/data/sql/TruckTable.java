@@ -76,4 +76,27 @@ public final class TruckTable {
         QueryArgs args = new QueryArgs(uri);
         return db.query(TruckEntry.TABLE_NAME, projection, args.selection, args.selectionArgs, null, null, null);
     }
+
+    public static int deleteMany(SQLiteDatabase db, Uri uri) {
+        QueryArgs args = new QueryArgs(uri);
+        return db.delete(TruckEntry.TABLE_NAME, args.selection, args.selectionArgs);
+    }
+
+    public static Cursor querySingle(SQLiteDatabase db, Uri uri, String[] projection) {
+        String selection = TruckEntry.COLUMN_INTERNAL_ID + "=?";
+        String[] selectionArgs = new String[]{TruckEntry.getInternalIdFromUri(uri)};
+        return db.query(TruckEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, null);
+    }
+
+    public static int updateSingle(SQLiteDatabase db, Uri uri, ContentValues values) {
+        String selection = TruckEntry.COLUMN_INTERNAL_ID + "=?";
+        String[] selectionArgs = new String[]{TruckEntry.getInternalIdFromUri(uri)};
+        return db.update(TruckEntry.TABLE_NAME, values, selection, selectionArgs);
+    }
+
+    public static int deleteSingle(SQLiteDatabase db, Uri uri) {
+        String selection = TruckEntry.COLUMN_INTERNAL_ID + "=?";
+        String[] selectionArgs = new String[]{TruckEntry.getInternalIdFromUri(uri)};
+        return db.delete(TruckEntry.TABLE_NAME, selection, selectionArgs);
+    }
 }

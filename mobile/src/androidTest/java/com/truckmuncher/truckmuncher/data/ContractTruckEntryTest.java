@@ -27,4 +27,13 @@ public class ContractTruckEntryTest extends TestCase {
             // No-op
         }
     }
+
+    public void testBuildSingleTruckThrowsOnInvalidId() {
+        try {
+            TruckEntry.buildSingleTruck("not_uuid");
+            failBecauseExceptionWasNotThrown(IllegalArgumentException.class);
+        } catch (IllegalArgumentException e) {
+            // No-op
+        }
+    }
 }

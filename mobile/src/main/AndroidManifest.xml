@@ -89,6 +89,9 @@
         <service
             android:name=".menu.MenuUpdateService"
             android:exported="false" />
+        <service
+            android:name=".vendor.menuadmin.InsertMenuItemDiffService"
+            android:exported="false" />
 
         <provider
             android:name=".data.MyContentProvider"

@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.UUID;
 
 public final class Contract {
 
@@ -68,7 +69,7 @@ public final class Contract {
 
     public static boolean suppressNotify(Uri uri) {
         String suppress = uri.getQueryParameter(PARAM_NOTIFY);
-        return suppress != null && Boolean.parseBoolean(suppress);
+        return suppress != null && !Boolean.parseBoolean(suppress);
     }
 
     /**
@@ -108,14 +109,19 @@ public final class Contract {
         public static final String COLUMN_IS_DIRTY = TABLE_NAME + "__is_dirty";
 
         public static Uri buildSingleTruck(String internalId) {
-            return CONTENT_URI.buildUpon().appendQueryParameter(COLUMN_INTERNAL_ID, internalId).build();
+            // Do this to make sure it's actually an ID. Will throw if not correctly formatted
+            UUID.fromString(internalId);
+            return CONTENT_URI.buildUpon().appendPath(internalId).build();
         }
 
         public static String getInternalIdFromUri(Uri uri) {
-            String internalId = uri.getQueryParameter(COLUMN_INTERNAL_ID);
+            String internalId = uri.getLastPathSegment();
             if (internalId == null) {
                 throw new IllegalArgumentException("Uri didn't include an internal id.");
             }
+
+            // Do this to make sure it's actually the ID. Will throw if not correctly formatted
+            UUID.fromString(internalId);
             return internalId;
         }
 
@@ -139,8 +145,6 @@ public final class Contract {
         public static final String COLUMN_TRUCK_ID = TABLE_NAME + "__truck_id";
 
         public static final String CONTENT_TYPE = CONTENT_TYPE_BASE + PATH_CATEGORY;
-
-        public static final String CONTENT_ITEM_TYPE = CONTENT_ITEM_TYPE_BASE + PATH_CATEGORY;
     }
 
     public static final class MenuItemEntry implements BaseColumns {
@@ -162,8 +166,6 @@ public final class Contract {
         }
 
         public static final String CONTENT_TYPE = CONTENT_TYPE_BASE + PATH_MENU_ITEM;
-
-        public static final String CONTENT_ITEM_TYPE = CONTENT_ITEM_TYPE_BASE + PATH_MENU_ITEM;
     }
 
     public static final class MenuEntry implements BaseColumns {
@@ -174,9 +176,5 @@ public final class Contract {
         public static Uri buildMenuForTruck(String truckId) {
             return CONTENT_URI.buildUpon().appendQueryParameter(TruckEntry.COLUMN_INTERNAL_ID, truckId).build();
         }
-
-        public static final String CONTENT_TYPE = CONTENT_TYPE_BASE + PATH_MENU;
-
-        public static final String CONTENT_ITEM_TYPE = CONTENT_ITEM_TYPE_BASE + PATH_MENU;
     }
 }
