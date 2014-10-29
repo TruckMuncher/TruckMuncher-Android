@@ -3,6 +3,8 @@ package com.truckmuncher.truckmuncher.data;
 import android.support.annotation.NonNull;
 import android.test.AndroidTestCase;
 
+import com.truckmuncher.api.auth.AuthRequest;
+import com.truckmuncher.api.auth.AuthService;
 import com.truckmuncher.api.exceptions.Error;
 import com.truckmuncher.api.menu.FullMenusResponse;
 import com.truckmuncher.truckmuncher.R;
@@ -93,6 +95,56 @@ public class ApiErrorHandlerTest extends AndroidTestCase {
         } catch (ApiException e) {
             assertThat(e.getMessage()).isEqualTo(userMessage);
             assertThat(e.getCause()).isNotNull();
+        }
+    }
+
+    public void testUnauthorizedOnAuthRouteThrowsCorrectException() {
+        AuthService service = new RestAdapter.Builder()
+                .setEndpoint("http://example.com")
+                .setClient(new Client() {
+                    @Override
+                    public Response execute(Request request) throws IOException {
+                        Error apiError = new Error("1234", "Invalid social credentials");
+                        TypedInput input = new TypedByteArray("application/x-protobuf", apiError.toByteArray());
+                        return new Response("", 401, "invalid request", Collections.<Header>emptyList(), input);
+                    }
+                })
+                .setErrorHandler(errorHandler)
+                .setExecutors(new SynchronousExecutor(), new SynchronousExecutor())
+                .setConverter(new WireConverter())
+                .build()
+                .create(AuthService.class);
+
+        try {
+            service.getAuth(new AuthRequest());
+            failBecauseExceptionWasNotThrown(SocialCredentialsException.class);
+        } catch (SocialCredentialsException e) {
+            // No-op
+        }
+    }
+
+    public void testUnauthorizedOnNonAuthRouteThrowsCorrectException() {
+        TestClient client = new RestAdapter.Builder()
+                .setEndpoint("http://example.com")
+                .setClient(new Client() {
+                    @Override
+                    public Response execute(Request request) throws IOException {
+                        Error apiError = new Error("1234", "Invalid social credentials");
+                        TypedInput input = new TypedByteArray("application/x-protobuf", apiError.toByteArray());
+                        return new Response("", 401, "invalid request", Collections.<Header>emptyList(), input);
+                    }
+                })
+                .setErrorHandler(errorHandler)
+                .setExecutors(new SynchronousExecutor(), new SynchronousExecutor())
+                .setConverter(new WireConverter())
+                .build()
+                .create(TestClient.class);
+
+        try {
+            client.getFullMenus();
+            failBecauseExceptionWasNotThrown(ExpiredSessionException.class);
+        } catch (ExpiredSessionException e) {
+            // No-op
         }
     }
 
