@@ -1,5 +1,6 @@
 package com.truckmuncher.truckmuncher.data;
 
+import android.accounts.Account;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -10,6 +11,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.truckmuncher.api.menu.MenuService;
 import com.truckmuncher.api.trucks.TruckService;
 import com.truckmuncher.truckmuncher.BuildConfig;
+import com.truckmuncher.truckmuncher.authentication.AccountGeneral;
 
 import java.io.File;
 import java.io.IOException;
@@ -75,8 +77,9 @@ public abstract class ApiManager implements ComponentCallbacks2 {
     }
 
     protected RestAdapter.Builder configureRestAdapter(Context context, OkHttpClient client) {
+        Account account = AccountGeneral.getStoredAccount(context);
         return new RestAdapter.Builder()
-                .setRequestInterceptor(new ApiRequestInterceptor())
+                .setRequestInterceptor(new ApiRequestInterceptor(context, account))
                 .setConverter(new WireConverter())
                 .setEndpoint(BuildConfig.API_ENDPOINT)
                 .setClient(new OkClient(client))

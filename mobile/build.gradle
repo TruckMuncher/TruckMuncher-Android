@@ -130,6 +130,7 @@ dependencies {
     compile 'com.squareup.retrofit:retrofit:1.7.0'
     compile 'com.squareup.retrofit:converter-wire:1.7.0'
     compile 'com.squareup.wire:wire-runtime:1.5.2'
+    compile 'info.metadude.android:typed-preferences:2.0.0'
 
     // Logging
     compile 'com.crashlytics.android:crashlytics:1.1.11'

@@ -35,7 +35,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         result.putString(AccountManager.KEY_ACCOUNT_TYPE, AccountGeneral.ACCOUNT_TYPE);
         result.putString(AccountManager.KEY_AUTHTOKEN, authToken);
 
-        Account account = new Account(userName, AccountGeneral.ACCOUNT_TYPE);
+        AccountGeneral.setAccountName(this, userName);
+        Account account = AccountGeneral.getAccount(userName);
 
         // Setup the account to be syncable
         ContentResolver.setSyncAutomatically(account, Contract.CONTENT_AUTHORITY, true);
