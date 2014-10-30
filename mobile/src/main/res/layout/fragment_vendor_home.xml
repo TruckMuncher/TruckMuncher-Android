@@ -9,7 +9,7 @@
         android:layout_width="20dp"
         android:layout_height="1px"
         android:layout_centerInParent="true"
-        android:background="#00FFFFFF"
+        android:background="@android:color/transparent"
         android:importantForAccessibility="no"/>
 
     <ImageView
@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/fakeView"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="-5dp"
+        android:layout_marginBottom="@dimen/vendor_hud_bottom_height_half"
         android:src="@drawable/map_marker_gray"
         android:contentDescription="@string/access_vendor_marker_description"/>
 
@@ -27,11 +27,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/serving_mode_indicator"
-        android:layout_above="@+id/fakeView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="-100dp"
         android:visibility="invisible"
-        android:importantForAccessibility="no"/>
+        android:importantForAccessibility="no"
+        android:layout_alignBottom="@+id/vendor_map_marker"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-100dp" />
 
     <android.support.v7.widget.SwitchCompat
         android:id="@+id/serving_mode"

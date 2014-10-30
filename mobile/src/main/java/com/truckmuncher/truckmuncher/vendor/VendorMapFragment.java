@@ -62,6 +62,8 @@ public class VendorMapFragment extends Fragment implements GoogleApiClient.Conne
             mapView.onCreate(null);
         }
 
+        mapView.getMap().getUiSettings().setTiltGesturesEnabled(false);
+
         apiClient = new GoogleApiClient.Builder(getActivity(), this, this)
                 .addApi(LocationServices.API)
                 .build();
@@ -213,7 +215,10 @@ public class VendorMapFragment extends Fragment implements GoogleApiClient.Conne
     public void setMapControlsEnabled(boolean enabled) {
         UiSettings settings = mapView.getMap().getUiSettings();
         settings.setScrollGesturesEnabled(enabled);
+        settings.setZoomControlsEnabled(enabled);
+        settings.setZoomGesturesEnabled(enabled);
         settings.setMyLocationButtonEnabled(enabled);
+        settings.setRotateGesturesEnabled(enabled);
 
         if (enabled) {
             LocationServices.FusedLocationApi.requestLocationUpdates(apiClient, request, this);
