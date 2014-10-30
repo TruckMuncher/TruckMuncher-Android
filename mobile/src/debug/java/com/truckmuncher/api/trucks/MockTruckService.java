@@ -11,16 +11,7 @@ public class MockTruckService implements TruckService {
 
     @Override
     public ActiveTrucksResponse getActiveTrucks(@Body ActiveTrucksRequest request) throws RetrofitError {
-        List<ActiveTrucksResponse.Truck> trucks = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            ActiveTrucksResponse.Truck truck = new ActiveTrucksResponse.Truck.Builder()
-                    .id("Truck" + i)
-                    .latitude(getRandomLatitude())
-                    .longitude(getRandomLongitude())
-                    .build();
-            trucks.add(truck);
-        }
-        return new ActiveTrucksResponse(trucks);
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
@@ -75,27 +66,5 @@ public class MockTruckService implements TruckService {
     @Override
     public void modifyServingMode(@Body ServingModeRequest request, Callback<ServingModeResponse> callback) {
         callback.success(modifyServingMode(request), null);
-    }
-
-    /**
-     * Generates a random latitude between 43.03 and 43.05 (somewhere in Milwaukee).
-     * @return A random latitude between 43.03 and 43.05 (somewhere in Milwaukee).
-     */
-    private double getRandomLatitude() {
-        double base = 43.03;
-        double offset = Math.random() * 0.02;
-
-        return base + offset;
-    }
-
-    /**
-     * Generates a random longitude between -87.90 and -87.92 (somewhere in Milwaukee).
-     * @return A random longitude between -87.90 and -87.92 (somewhere in Milwaukee).
-     */
-    private double getRandomLongitude() {
-        double base = -87.92;
-        double offset = Math.random() * 0.02;
-
-        return base + offset;
     }
 }

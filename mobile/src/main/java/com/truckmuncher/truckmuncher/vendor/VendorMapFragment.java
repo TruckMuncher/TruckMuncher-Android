@@ -213,7 +213,6 @@ public class VendorMapFragment extends Fragment implements GoogleApiClient.Conne
     public void setMapControlsEnabled(boolean enabled) {
         UiSettings settings = mapView.getMap().getUiSettings();
         settings.setScrollGesturesEnabled(enabled);
-        settings.setRotateGesturesEnabled(enabled);
         settings.setMyLocationButtonEnabled(enabled);
 
         if (enabled) {
