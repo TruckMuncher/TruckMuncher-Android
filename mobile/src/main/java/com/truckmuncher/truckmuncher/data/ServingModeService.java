@@ -1,11 +1,13 @@
 package com.truckmuncher.truckmuncher.data;
 
+import android.accounts.AccountManager;
 import android.app.IntentService;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 
 import com.truckmuncher.api.trucks.ServingModeRequest;
+import com.truckmuncher.truckmuncher.authentication.AccountGeneral;
 
 import timber.log.Timber;
 
@@ -38,13 +40,20 @@ public class ServingModeService extends IntentService {
                 .truckLongitude(cursor.getDouble(TruckQuery.LONGITUDE))
                 .build();
 
+
+        cursor.close();
+
         try {
             ApiManager.getTruckService(this).modifyServingMode(request);
-        } catch (ApiException e) {
+        } catch (ExpiredSessionException ese) {
+
+        } catch (SocialCredentialsException sce) {
+            AccountManager manager = AccountManager.get(this);
+            manager.getAuthToken(AccountGeneral.getStoredAccount(this), AccountGeneral.getAuthTokenType(this), null, true, null, null);
+        } catch (ApiException ae) {
             Timber.e("Got an error while updating the serving mode for truck id=%s.", request.truckId);
             // TODO notify the user that the request failed
         }
-        cursor.close();
     }
 
     interface TruckQuery {
