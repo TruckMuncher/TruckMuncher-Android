@@ -68,7 +68,24 @@ public class SyncAdapterTest extends InstrumentationTestCase {
         testServer.shutdown();
     }
 
-    public void testSync() throws RemoteException, IOException, InterruptedException {
+    public void testSyncTruckServingModeNoDirty() {
+        testProvider.enqueue(new VerifiableContentProvider.QueryEvent() {
+            @Override
+            public Cursor onQuery(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+                return new MatrixCursor(projection);
+            }
+        });
+
+        // If there are no results, the method should short circuit and no updates will happen.
+        // If an update does happen, the test will fail.
+        testProvider.verify();
+    }
+
+    public void testSyncTruckServingModeHandlesNetworkFailure() {
+        // TODO Create this test
+    }
+
+    public void testSyncTruckServingModeSuccess() throws RemoteException, IOException, InterruptedException {
 
         // Test data
         final String truckId = UUID.randomUUID().toString();

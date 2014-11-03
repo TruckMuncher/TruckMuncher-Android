@@ -25,8 +25,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
-
 import static com.truckmuncher.truckmuncher.data.Contract.MenuItemEntry;
 import static com.truckmuncher.truckmuncher.data.Contract.TruckEntry;
 
@@ -123,17 +121,15 @@ public final class SyncAdapter extends AbstractThreadedSyncAdapter {
                 // Since we're clearing an internal state, don't notify listeners
                 Uri uri = Contract.buildSuppressNotify(TruckEntry.buildSingleTruck(request.truckId));
                 provider.update(uri, values, null, null);
-                Timber.d("updated");
             } catch (ApiException e) {
                 // Error has already been logged. If it was network, let the framework handle it.
                 // If it was a server error, we either handle it elsewhere or a repeat request won't make a difference.
-                Timber.d("error");
             }
         } while (cursor.moveToNext());
         cursor.close();
     }
 
-    private interface MenuItemAvailabilityQuery {
+    interface MenuItemAvailabilityQuery {
         static final String[] PROJECTION = new String[]{
                 MenuItemEntry.COLUMN_INTERNAL_ID,
                 MenuItemEntry.COLUMN_IS_AVAILABLE
