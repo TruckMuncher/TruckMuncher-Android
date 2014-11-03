@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.test.mock.MockContentProvider;
 
+import org.assertj.android.api.Assertions;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,6 +52,13 @@ public class VerifiableContentProvider extends MockContentProvider {
         DeleteEvent event = deleteEvents.poll();
         assertThat(event).isNotNull();
         return event.onDelete(uri, selection, selectionArgs);
+    }
+
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        BulkInsertEvent event = bulkInsertEvents.poll();
+        assertThat(event).isNotNull();
+        return event.onBulkInsert(uri, values);
     }
 
     public VerifiableContentProvider enqueue(UpdateEvent event) {
@@ -98,7 +107,7 @@ public class VerifiableContentProvider extends MockContentProvider {
 
     public VerifiableContentProvider assertThatCursorsAreClosed() {
         for (Cursor cursor : expiredCursors) {
-            assertThat(cursor.isClosed()).isTrue();
+            Assertions.assertThat(cursor).isClosed();
         }
         return this;
     }
