@@ -19,6 +19,7 @@ public class VerifiableContentProvider extends MockContentProvider {
     private final Queue<QueryEvent> queryEvents = new LinkedList<>();
     private final Queue<InsertEvent> insertEvents = new LinkedList<>();
     private final Queue<DeleteEvent> deleteEvents = new LinkedList<>();
+    private final Queue<BulkInsertEvent> bulkInsertEvents = new LinkedList<>();
     private final List<Cursor> expiredCursors = new ArrayList<>();
 
     @Override
@@ -71,17 +72,35 @@ public class VerifiableContentProvider extends MockContentProvider {
         return this;
     }
 
-    public void assertThatQueuesAreEmpty() {
-        assertThat(updateEvents).isEmpty();
-        assertThat(queryEvents).isEmpty();
-        assertThat(insertEvents).isEmpty();
-        assertThat(deleteEvents).isEmpty();
+    public VerifiableContentProvider enqueue(BulkInsertEvent event) {
+        bulkInsertEvents.add(event);
+        return this;
     }
 
-    public void assertThatCursorsAreClosed() {
+    public VerifiableContentProvider assertThatQueuesAreEmpty() {
+        assertThat(updateEvents)
+                .overridingErrorMessage("One or more UpdateEvents are still queued")
+                .isEmpty();
+        assertThat(queryEvents)
+                .overridingErrorMessage("One or more QueryEvents are still queued")
+                .isEmpty();
+        assertThat(insertEvents)
+                .overridingErrorMessage("One or more InsertEvents are still queued")
+                .isEmpty();
+        assertThat(deleteEvents)
+                .overridingErrorMessage("One or more DeleteEvents are still queued")
+                .isEmpty();
+        assertThat(bulkInsertEvents)
+                .overridingErrorMessage("One or more BulkInsertEvents are still queued")
+                .isEmpty();
+        return this;
+    }
+
+    public VerifiableContentProvider assertThatCursorsAreClosed() {
         for (Cursor cursor : expiredCursors) {
             assertThat(cursor.isClosed()).isTrue();
         }
+        return this;
     }
 
     public interface UpdateEvent {
@@ -99,5 +118,9 @@ public class VerifiableContentProvider extends MockContentProvider {
 
     public interface DeleteEvent {
         int onDelete(@NonNull Uri uri, String selection, String[] selectionArgs);
+    }
+
+    public interface BulkInsertEvent {
+        int onBulkInsert(Uri uri, @NonNull ContentValues[] values);
     }
 }
