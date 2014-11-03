@@ -3,6 +3,7 @@ package com.truckmuncher.truckmuncher.test.data;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.test.mock.MockContentProvider;
 
 import java.util.LinkedList;
@@ -65,6 +66,9 @@ public class VerifiableContentProvider extends MockContentProvider {
         return this;
     }
 
+    /**
+     * Checks that there are no more queued events.
+     */
     public void verify() {
         assertThat(updateEvents).isEmpty();
         assertThat(queryEvents).isEmpty();
@@ -77,14 +81,15 @@ public class VerifiableContentProvider extends MockContentProvider {
     }
 
     public interface QueryEvent {
-        Cursor onQuery(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder);
+        @NonNull
+        Cursor onQuery(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder);
     }
 
     public interface InsertEvent {
-        Uri onInsert(Uri uri, ContentValues values);
+        Uri onInsert(@NonNull Uri uri, ContentValues values);
     }
 
     public interface DeleteEvent {
-        int onDelete(Uri uri, String selection, String[] selectionArgs);
+        int onDelete(@NonNull Uri uri, String selection, String[] selectionArgs);
     }
 }
