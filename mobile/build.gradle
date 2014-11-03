@@ -30,7 +30,7 @@ def versionPatch = 0
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "21.0.1"
+    buildToolsVersion "21.0.2"
 
     defaultConfig {
         applicationId "com.truckmuncher.truckmuncher"
@@ -125,11 +125,8 @@ dependencies {
 
     // Network and Data stack
     compile 'com.squareup.picasso:picasso:2.3.4'
-    compile 'com.squareup.okhttp:okhttp:2.0.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
-    compile 'com.squareup.retrofit:retrofit:1.7.0'
     compile 'com.squareup.retrofit:converter-wire:1.7.0'
-    compile 'com.squareup.wire:wire-runtime:1.5.2'
 
     // Logging
     compile 'com.crashlytics.android:crashlytics:1.1.11'
@@ -138,7 +135,7 @@ dependencies {
     // UI Utils
     compile 'com.volkhart:android-util:1.0.0-SNAPSHOT@aar'
     compile 'com.squareup.phrase:phrase:1.0.3'
-    compile 'com.jakewharton:butterknife:5.1.2'
+    compile 'com.jakewharton:butterknife:6.0.0'
 
     // UI Components
     compile 'com.twotoasters.SectionCursorAdapter:library:1.0.1'
