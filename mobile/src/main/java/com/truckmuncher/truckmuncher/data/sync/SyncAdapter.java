@@ -12,14 +12,20 @@ import android.os.Bundle;
 import android.os.RemoteException;
 
 import com.truckmuncher.api.menu.MenuItemAvailability;
+import com.truckmuncher.api.menu.MenuService;
 import com.truckmuncher.api.menu.ModifyMenuItemAvailabilityRequest;
 import com.truckmuncher.api.trucks.ServingModeRequest;
+import com.truckmuncher.api.trucks.TruckService;
+import com.truckmuncher.truckmuncher.App;
 import com.truckmuncher.truckmuncher.data.ApiException;
-import com.truckmuncher.truckmuncher.data.ApiManager;
 import com.truckmuncher.truckmuncher.data.Contract;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import timber.log.Timber;
 
 import static com.truckmuncher.truckmuncher.data.Contract.MenuItemEntry;
 import static com.truckmuncher.truckmuncher.data.Contract.TruckEntry;
@@ -27,10 +33,15 @@ import static com.truckmuncher.truckmuncher.data.Contract.TruckEntry;
 public final class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private final Context context;
+    @Inject
+    TruckService truckService;
+    @Inject
+    MenuService menuService;
 
     public SyncAdapter(Context context, boolean autoInitialize, boolean allowParallelSyncs) {
         super(context, autoInitialize, allowParallelSyncs);
         this.context = context;
+        App.inject(context, this);
     }
 
     @Override
@@ -66,7 +77,7 @@ public final class SyncAdapter extends AbstractThreadedSyncAdapter {
         // Setup and run the request synchronously
         ModifyMenuItemAvailabilityRequest request = new ModifyMenuItemAvailabilityRequest(diff);
         try {
-            ApiManager.getMenuService(context).modifyMenuItemAvailability(request);
+            menuService.modifyMenuItemAvailability(request);
 
             // On a successful response, clear the dirty state, but only for values we synced. User might have changed others in the mean time.
             ContentValues[] contentValues = new ContentValues[diff.size()];
@@ -87,7 +98,7 @@ public final class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    private void syncTruckServingMode(ContentProviderClient provider) throws RemoteException {
+    void syncTruckServingMode(ContentProviderClient provider) throws RemoteException {
         Cursor cursor = provider.query(TruckEntry.buildDirty(), TruckServingModeQuery.PROJECTION, null, null, null);
         if (!cursor.moveToFirst()) {
             // Cursor is empty. Probably already synced this.
@@ -103,7 +114,7 @@ public final class SyncAdapter extends AbstractThreadedSyncAdapter {
                     .build();
 
             try {
-                ApiManager.getTruckService(context).modifyServingMode(request);
+                truckService.modifyServingMode(request);
 
                 // Clear the dirty state
                 ContentValues values = new ContentValues();
@@ -112,9 +123,11 @@ public final class SyncAdapter extends AbstractThreadedSyncAdapter {
                 // Since we're clearing an internal state, don't notify listeners
                 Uri uri = Contract.buildSuppressNotify(TruckEntry.buildSingleTruck(request.truckId));
                 provider.update(uri, values, null, null);
+                Timber.d("updated");
             } catch (ApiException e) {
-                // Error has already been logged. If it was network, Let the framework handle it.
+                // Error has already been logged. If it was network, let the framework handle it.
                 // If it was a server error, we either handle it elsewhere or a repeat request won't make a difference.
+                Timber.d("error");
             }
         } while (cursor.moveToNext());
         cursor.close();

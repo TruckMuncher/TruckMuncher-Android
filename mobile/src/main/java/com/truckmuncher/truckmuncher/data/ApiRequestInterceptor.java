@@ -13,6 +13,9 @@ import retrofit.RequestInterceptor;
 
 public class ApiRequestInterceptor implements RequestInterceptor {
 
+    public static final String HEADER_NONCE = "X-Nonce";
+    public static final String HEADER_TIMESTAMP = "X-Timestamp";
+
     private final DateFormat formatter;
     private final SecureRandom generator;
     private final byte[] bytes = new byte[32];
@@ -26,9 +29,9 @@ public class ApiRequestInterceptor implements RequestInterceptor {
 
     @Override
     public void intercept(RequestFacade request) {
-        request.addHeader("X-Timestamp", formatter.format(new Date()));
+        request.addHeader(HEADER_TIMESTAMP, formatter.format(new Date()));
         generator.nextBytes(bytes);
         String nonce = Base64.encodeToString(bytes, Base64.DEFAULT);
-        request.addHeader("X-Nonce", nonce);
+        request.addHeader(HEADER_NONCE, nonce);
     }
 }
