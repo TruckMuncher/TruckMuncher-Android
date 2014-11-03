@@ -6,7 +6,9 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.test.mock.MockContentProvider;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,12 +19,15 @@ public class VerifiableContentProvider extends MockContentProvider {
     private final Queue<QueryEvent> queryEvents = new LinkedList<>();
     private final Queue<InsertEvent> insertEvents = new LinkedList<>();
     private final Queue<DeleteEvent> deleteEvents = new LinkedList<>();
+    private final List<Cursor> expiredCursors = new ArrayList<>();
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         QueryEvent event = queryEvents.poll();
         assertThat(event).isNotNull();
-        return event.onQuery(uri, projection, selection, selectionArgs, sortOrder);
+        Cursor cursor = event.onQuery(uri, projection, selection, selectionArgs, sortOrder);
+        expiredCursors.add(cursor);
+        return cursor;
     }
 
     @Override
@@ -66,14 +71,17 @@ public class VerifiableContentProvider extends MockContentProvider {
         return this;
     }
 
-    /**
-     * Checks that there are no more queued events.
-     */
-    public void verify() {
+    public void assertThatQueuesAreEmpty() {
         assertThat(updateEvents).isEmpty();
         assertThat(queryEvents).isEmpty();
         assertThat(insertEvents).isEmpty();
         assertThat(deleteEvents).isEmpty();
+    }
+
+    public void assertThatCursorsAreClosed() {
+        for (Cursor cursor : expiredCursors) {
+            assertThat(cursor.isClosed()).isTrue();
+        }
     }
 
     public interface UpdateEvent {
