@@ -4,10 +4,10 @@ env:
     - SYSTEM_TYPE="CI"  # Environment variable for a performance optimization during compile
   matrix:
 
-    - ANDROID_TARGET=android-15  ANDROID_ABI=armeabi-v7a
-    - ANDROID_TARGET=android-19  ANDROID_ABI=armeabi-v7a
-    - ANDROID_TARGET=android-21  ANDROID_ABI=armeabi-v7a
-    # - ANDROID_TARGET=android-19  ANDROID_ABI=x86
+    - ANDROID_TARGET=android-15  ANDROID_ABI=armeabi-v7a ANDROID_ADDON=addon-google_apis-google-15 ANDROID_SYS_IMG=sys-img-armeabi-v7a-android-15
+    - ANDROID_TARGET=android-19  ANDROID_ABI=armeabi-v7a ANDROID_ADDON=addon-google_apis-google-19 ANDROID_SYS_IMG=sys-img-armeabi-v7a-android-19
+    - ANDROID_TARGET=android-21  ANDROID_ABI=armeabi-v7a ANDROID_ADDON=addon-google_apis-google-21 ANDROID_SYS_IMG=sys-img-armeabi-v7a-android-21
+    # - ANDROID_TARGET=android-19  ANDROID_ABI=x86 ANDROID_ADDON=addon-google_apis-google-19 ANDROID_SYS_IMG=sys-img-x86-android-19
     # - ANDROID_TARGET=android-15  ANDROID_ABI=x86
 
 android:
@@ -24,19 +24,13 @@ android:
     - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
-    - addon-google_apis-google-15
-    - addon-google_apis-google-19
-    - addon-google_apis-google-21
+    - $ANDROID_ADDON
 
     # Specify all the emulator targets we'll need
-    - sys-img-armeabi-v7a-android-15
-    - sys-img-armeabi-v7a-android-19
-    - sys-img-armeabi-v7a-android-21
-    # - sys-img-x86-android-19
-    # - sys-img-x86-android-15
+    - $ANDROID_SYS_IMG
 
 script:
-  - ./gradlew build connectedCheck  # run tests and lint
+  - ./gradlew clean build connectedCheck  # run tests and lint
 
 # Emulator Management: Create, Start and Wait
 before_script:
