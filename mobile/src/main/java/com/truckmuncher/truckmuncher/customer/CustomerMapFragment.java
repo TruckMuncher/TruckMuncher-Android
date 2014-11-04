@@ -24,7 +24,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.ClusterRenderer;
@@ -41,7 +40,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class CustomerMapFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener, GoogleMap.OnMarkerClickListener,
+        GoogleApiClient.OnConnectionFailedListener, LocationListener,
         ClusterManager.OnClusterClickListener<TruckCluster>, LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String ARG_MAP_STATE = "map_state";
@@ -78,7 +77,6 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
         GoogleMap map = mapView.getMap();
 
         map.setMyLocationEnabled(true);
-        map.setOnMarkerClickListener(this);
 
         setUpClusterer();
 
@@ -98,15 +96,15 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        apiClient.connect();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         mapView.onResume();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        apiClient.connect();
     }
 
     @Override
@@ -148,12 +146,12 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
 
     @Override
     public void onConnected(Bundle bundle) {
-            Location myLocation = LocationServices.FusedLocationApi.getLastLocation(apiClient);
-            if (myLocation != null) {
-                LatLng latLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-                MapsInitializer.initialize(getActivity());
-                mapView.getMap().animateCamera(CameraUpdateFactory.newLatLng(latLng));
-            }
+        Location myLocation = LocationServices.FusedLocationApi.getLastLocation(apiClient);
+        if (myLocation != null) {
+            LatLng latLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+            MapsInitializer.initialize(getActivity());
+            mapView.getMap().animateCamera(CameraUpdateFactory.newLatLng(latLng));
+        }
 
         LocationRequest request = new LocationRequest()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
@@ -184,20 +182,10 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
         // TODO Consider handling
     }
 
-    private void loadActiveTrucks() {
-        // Kick off a refresh of the vendor data
-        Intent intent = new Intent(getActivity(), ActiveTrucksService.class);
-        intent.putExtra(ActiveTrucksService.ARG_LATITUDE, currentLocation.latitude);
-        intent.putExtra(ActiveTrucksService.ARG_LONGITUDE, currentLocation.longitude);
-        getActivity().startService(intent);
-    }
-
-
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         // Uri for trucks that are currently in serving mode
-        Uri uri = Contract.TruckEntry.CONTENT_URI.buildUpon()
-                .appendQueryParameter(Contract.TruckEntry.COLUMN_IS_SERVING, "1").build();
+        Uri uri = Contract.TruckEntry.buildServingTrucks();
 
         return CursorLoaderFactory.create(getActivity(), uri, ActiveTrucksQuery.PROJECTION);
     }
@@ -217,7 +205,7 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
             LatLng location = new LatLng(cursor.getDouble(ActiveTrucksQuery.LATITUDE),
                     cursor.getDouble(ActiveTrucksQuery.LONGITUDE));
 
-            markers.add(createTruckMarker(location));
+            markers.add(new TruckCluster(truck, location));
         }
 
 
@@ -227,12 +215,7 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
-    }
-
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-        return false;
+        // No-op
     }
 
     @Override
@@ -259,13 +242,12 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
         map.setOnMarkerClickListener(clusterManager);
     }
 
-    private TruckCluster createTruckMarker(LatLng location) {
-        return new TruckCluster(location.latitude, location.longitude);
-    }
-
-    public interface OnTruckMarkerSelectedListener {
-
-        public void onTruckMarkerSelected();
+    private void loadActiveTrucks() {
+        // Kick off a refresh of the vendor data
+        Intent intent = new Intent(getActivity(), ActiveTrucksService.class);
+        intent.putExtra(ActiveTrucksService.ARG_LATITUDE, currentLocation.latitude);
+        intent.putExtra(ActiveTrucksService.ARG_LONGITUDE, currentLocation.longitude);
+        getActivity().startService(intent);
     }
 
     public interface ActiveTrucksQuery {

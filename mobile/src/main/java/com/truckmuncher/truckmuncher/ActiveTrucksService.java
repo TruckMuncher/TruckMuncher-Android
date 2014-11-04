@@ -8,6 +8,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.google.android.gms.maps.model.LatLng;
 import com.truckmuncher.api.trucks.ActiveTrucksRequest;
 import com.truckmuncher.api.trucks.ActiveTrucksResponse;
+import com.truckmuncher.truckmuncher.data.ApiException;
 import com.truckmuncher.truckmuncher.data.ApiManager;
 import com.truckmuncher.truckmuncher.data.Contract;
 
@@ -42,38 +43,27 @@ public class ActiveTrucksService extends IntentService {
 
         ActiveTrucksRequest request = new ActiveTrucksRequest(latitude, longitude, searchQuery);
 
-        ApiManager.getTruckService(this).getActiveTrucks(request, new Callback<ActiveTrucksResponse>() {
-            @Override
-            public void success(ActiveTrucksResponse activeTrucksResponse, Response response) {
-                List<ActiveTrucksResponse.Truck> trucks = activeTrucksResponse.trucks;
-                ContentValues[] contentValues = new ContentValues[trucks.size()];
-                for (int i = 0, max = trucks.size(); i < max; i++) {
-                    ActiveTrucksResponse.Truck truck = trucks.get(i);
-                    ContentValues values = new ContentValues();
-                    values.put(Contract.TruckEntry.COLUMN_INTERNAL_ID, truck.id);
-                    values.put(Contract.TruckEntry.COLUMN_LATITUDE, truck.latitude);
-                    values.put(Contract.TruckEntry.COLUMN_LONGITUDE, truck.longitude);
-                    values.put(Contract.TruckEntry.COLUMN_IS_SERVING, 1);
-                    contentValues[i] = values;
-                }
+        try {
+            ActiveTrucksResponse response = ApiManager.getTruckService(this).getActiveTrucks(request);
 
-                getContentResolver().bulkInsert(Contract.TruckEntry.CONTENT_URI, contentValues);
+            List<ActiveTrucksResponse.Truck> trucks = response.trucks;
+            ContentValues[] contentValues = new ContentValues[trucks.size()];
+            for (int i = 0, max = trucks.size(); i < max; i++) {
+                ActiveTrucksResponse.Truck truck = trucks.get(i);
+                ContentValues values = new ContentValues();
+                values.put(Contract.TruckEntry.COLUMN_INTERNAL_ID, truck.id);
+                values.put(Contract.TruckEntry.COLUMN_LATITUDE, truck.latitude);
+                values.put(Contract.TruckEntry.COLUMN_LONGITUDE, truck.longitude);
+                values.put(Contract.TruckEntry.COLUMN_IS_SERVING, 1);
+                contentValues[i] = values;
             }
 
-            @Override
-            public void failure(RetrofitError error) {
-                Intent errorIntent = new Intent();
-
-                if (error.getKind() == RetrofitError.Kind.NETWORK) {
-                    Timber.e("Experienced a network error: %s", error.getMessage());
-                    errorIntent.putExtra(ARG_MESSAGE, getString(R.string.error_network));
-                } else {
-                    com.truckmuncher.api.exceptions.Error apiError = (com.truckmuncher.api.exceptions.Error) error.getBodyAs(com.truckmuncher.api.exceptions.Error.class.getComponentType());
-                    Timber.e("Got an error while getting active trucks. Error code: %d", apiError.internalCode);
-                    errorIntent.putExtra(ARG_MESSAGE, apiError.userMessage);
-                }
-                LocalBroadcastManager.getInstance(ActiveTrucksService.this).sendBroadcast(errorIntent);
-            }
-        });
+            getContentResolver().bulkInsert(Contract.TruckEntry.CONTENT_URI, contentValues);
+        } catch (ApiException e) {
+            Timber.e("Got an error while getting active trucks.");
+            Intent errorIntent = new Intent();
+            errorIntent.putExtra(ARG_MESSAGE, e.getMessage());
+            LocalBroadcastManager.getInstance(ActiveTrucksService.this).sendBroadcast(errorIntent);
+        }
     }
 }
