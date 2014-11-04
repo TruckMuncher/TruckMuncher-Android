@@ -6,13 +6,16 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.truckmuncher.api.trucks.Truck;
+import com.truckmuncher.api.trucks.TruckService;
 import com.truckmuncher.api.trucks.TrucksForVendorRequest;
 import com.truckmuncher.api.trucks.TrucksForVendorResponse;
+import com.truckmuncher.truckmuncher.App;
 import com.truckmuncher.truckmuncher.data.ApiException;
-import com.truckmuncher.truckmuncher.data.ApiManager;
 import com.truckmuncher.truckmuncher.data.Contract;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import timber.log.Timber;
 
@@ -20,14 +23,18 @@ public class VendorTrucksService extends IntentService {
 
     public static final String ARG_MESSAGE = "user_message";
 
+    @Inject
+    TruckService truckService;
+
     public VendorTrucksService() {
         super(VendorTrucksService.class.getSimpleName());
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        App.inject(this, this);
         try {
-            TrucksForVendorResponse response = ApiManager.getTruckService(this).getTrucksForVendor(new TrucksForVendorRequest());
+            TrucksForVendorResponse response = truckService.getTrucksForVendor(new TrucksForVendorRequest());
 
             List<Truck> trucks = response.trucks;
             ContentValues[] contentValues = new ContentValues[trucks.size()];
