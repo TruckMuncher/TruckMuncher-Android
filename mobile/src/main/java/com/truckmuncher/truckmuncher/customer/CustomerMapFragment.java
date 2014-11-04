@@ -79,14 +79,6 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
         map.setMyLocationEnabled(true);
 
         setUpClusterer();
-
-        Location myLocation = map.getMyLocation();
-        if (myLocation != null) {
-            currentLocation = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-            map.animateCamera(CameraUpdateFactory.newLatLng(currentLocation));
-
-            loadActiveTrucks();
-        }
     }
 
     @Override
