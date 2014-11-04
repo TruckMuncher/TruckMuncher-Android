@@ -68,7 +68,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
         testServer.shutdown();
     }
 
-    public void testSyncTruckServingModeNoDirty() {
+    public void testSyncTruckServingModeNoDirty() throws RemoteException {
         testProvider.enqueue(new VerifiableContentProvider.QueryEvent() {
             @Override
             public Cursor onQuery(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
@@ -76,9 +76,14 @@ public class SyncAdapterTest extends InstrumentationTestCase {
             }
         });
 
+        // Run the sync manually
+        ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckEntry.CONTENT_URI);
+        adapter.syncTruckServingMode(client);
+
         // If there are no results, the method should short circuit and no updates will happen.
         // If an update does happen, the test will fail.
-        testProvider.verify();
+        testProvider.assertThatQueuesAreEmpty();
+        testProvider.assertThatCursorsAreClosed();
     }
 
     public void testSyncTruckServingModeHandlesNetworkFailure() {
@@ -143,6 +148,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
         assertThat(receivedRequest.truckLatitude).isEqualTo(latitude);
         assertThat(receivedRequest.truckLongitude).isEqualTo(longitude);
 
-        testProvider.verify();
+        testProvider.assertThatQueuesAreEmpty();
+        testProvider.assertThatCursorsAreClosed();
     }
 }
