@@ -53,7 +53,7 @@ public final class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    private void syncMenuItemAvailability(ContentProviderClient provider) throws RemoteException {
+    void syncMenuItemAvailability(ContentProviderClient provider) throws RemoteException {
         Cursor cursor = provider.query(MenuItemEntry.buildDirty(), MenuItemAvailabilityQuery.PROJECTION, null, null, null);
         if (!cursor.moveToFirst()) {
             // Cursor is empty. Probably already synced this.
@@ -66,7 +66,7 @@ public final class SyncAdapter extends AbstractThreadedSyncAdapter {
         do {
             diff.add(
                     new MenuItemAvailability.Builder()
-                            .menuItemId(cursor.getString(MenuItemAvailabilityQuery.ID))
+                            .menuItemId(cursor.getString(MenuItemAvailabilityQuery.INTERNAL_ID))
                             .isAvailable(cursor.getInt(MenuItemAvailabilityQuery.IS_AVAILABLE) == 1)
                             .build()
             );
@@ -136,7 +136,7 @@ public final class SyncAdapter extends AbstractThreadedSyncAdapter {
                 MenuItemEntry.COLUMN_INTERNAL_ID,
                 MenuItemEntry.COLUMN_IS_AVAILABLE
         };
-        static final int ID = 0;
+        static final int INTERNAL_ID = 0;
         static final int IS_AVAILABLE = 1;
     }
 
