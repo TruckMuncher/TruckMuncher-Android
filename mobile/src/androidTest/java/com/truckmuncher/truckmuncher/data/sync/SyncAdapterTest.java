@@ -75,10 +75,6 @@ public class SyncAdapterTest extends InstrumentationTestCase {
         testServer.shutdown();
     }
 
-    public void testOnPerformSyncCallsThroughToAllSyncMethods() {
-        // TODO write this test
-    }
-
     public void testSyncMenuItemAvailabilityNoDirtyRecords() throws RemoteException {
         testProvider.enqueue(new VerifiableContentProvider.QueryEvent() {
             @NonNull
@@ -174,8 +170,41 @@ public class SyncAdapterTest extends InstrumentationTestCase {
         testProvider.assertThatCursorsAreClosed();
     }
 
-    public void testSyncMenuItemAvailabilityNetworkFailure() {
-        // TODO create this test
+    public void testSyncMenuItemAvailabilityNetworkFailure() throws RemoteException {
+
+        // Test values
+        final String menuItemId = UUID.randomUUID().toString();
+
+        testProvider.enqueue(new VerifiableContentProvider.QueryEvent() {
+            @NonNull
+            @Override
+            public Cursor onQuery(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+                assertThat(uri).isEqualTo(Contract.MenuItemEntry.buildDirty());
+
+                MatrixCursor cursor = new MatrixCursor(projection);
+
+                Object[] row = new Object[projection.length];
+                row[SyncAdapter.MenuItemAvailabilityQuery.INTERNAL_ID] = menuItemId;
+                row[SyncAdapter.MenuItemAvailabilityQuery.IS_AVAILABLE] = 1;
+                cursor.addRow(row);
+
+                return cursor;
+            }
+        });
+
+        // Setup the web server with the network calls we are expecting.
+        MockResponse errorResponse = new MockResponse()
+                .setStatus("400")
+                .setHeader("Content-Type", "application/x-protobuf")
+                .setBody(new Error("1234", "Mock message").toByteArray());
+        testServer.enqueue(errorResponse);
+
+        // Run the sync manually
+        ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckEntry.CONTENT_URI);
+        adapter.syncMenuItemAvailability(client);
+
+        testProvider.assertThatQueuesAreEmpty();
+        testProvider.assertThatCursorsAreClosed();
     }
 
     public void testSyncTruckServingModeNoDirtyRecords() throws RemoteException {

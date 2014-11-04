@@ -30,7 +30,6 @@ import static com.truckmuncher.truckmuncher.data.Contract.TruckEntry;
 
 public final class SyncAdapter extends AbstractThreadedSyncAdapter {
 
-    private final Context context;
     @Inject
     TruckService truckService;
     @Inject
@@ -38,7 +37,6 @@ public final class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     public SyncAdapter(Context context, boolean autoInitialize, boolean allowParallelSyncs) {
         super(context, autoInitialize, allowParallelSyncs);
-        this.context = context;
         App.inject(context, this);
     }
 
