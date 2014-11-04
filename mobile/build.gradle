@@ -63,13 +63,13 @@ android {
 
     buildTypes {
         release {
-//            testCoverageEnabled true
+            testCoverageEnabled false   // Incompatible with Dagger
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
         debug {
-//            testCoverageEnabled true
+            testCoverageEnabled false   // Incompatible with Dagger
             versionNameSuffix ".debug"
             applicationIdSuffix ".debug"
             signingConfig signingConfigs.debug
@@ -146,10 +146,10 @@ dependencies {
     debugCompile 'com.squareup.retrofit:retrofit-mock:1.7.0'
 
 
-    androidTestCompile('com.squareup.assertj:assertj-android:1.0.0') {
+    androidTestCompile 'com.squareup.assertj:assertj-android:1.0.0'
+    androidTestCompile('com.jakewharton.espresso:espresso:1.1-r3') {
         exclude group: 'com.squareup.dagger'
     }
-    androidTestCompile 'com.jakewharton.espresso:espresso:1.1-r3'
     androidTestCompile('com.squareup.okhttp:mockwebserver:2.0.0') {
         exclude group: 'com.squareup.okhttp', module: 'okhttp'
     }
