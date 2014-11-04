@@ -57,6 +57,7 @@ public final class SyncAdapter extends AbstractThreadedSyncAdapter {
         Cursor cursor = provider.query(MenuItemEntry.buildDirty(), MenuItemAvailabilityQuery.PROJECTION, null, null, null);
         if (!cursor.moveToFirst()) {
             // Cursor is empty. Probably already synced this.
+            cursor.close();
             return;
         }
 
@@ -100,6 +101,7 @@ public final class SyncAdapter extends AbstractThreadedSyncAdapter {
         Cursor cursor = provider.query(TruckEntry.buildDirty(), TruckServingModeQuery.PROJECTION, null, null, null);
         if (!cursor.moveToFirst()) {
             // Cursor is empty. Probably already synced this.
+            cursor.close();
             return;
         }
 

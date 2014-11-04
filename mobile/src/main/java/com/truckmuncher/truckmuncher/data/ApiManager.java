@@ -35,7 +35,7 @@ public final class ApiManager {
         return shim.menuService;
     }
 
-    static final class Shim {
+    public static final class Shim {
         @Inject
         TruckService truckService;
         @Inject

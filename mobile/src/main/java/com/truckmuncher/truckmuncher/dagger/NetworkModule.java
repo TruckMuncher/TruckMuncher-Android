@@ -8,6 +8,7 @@ import com.truckmuncher.api.menu.MenuService;
 import com.truckmuncher.api.trucks.TruckService;
 import com.truckmuncher.truckmuncher.BuildConfig;
 import com.truckmuncher.truckmuncher.data.ApiErrorHandler;
+import com.truckmuncher.truckmuncher.data.ApiManager;
 import com.truckmuncher.truckmuncher.data.ApiRequestInterceptor;
 import com.truckmuncher.truckmuncher.data.sync.SyncAdapter;
 
@@ -24,6 +25,7 @@ import retrofit.converter.WireConverter;
 import timber.log.Timber;
 
 @Module(injects = {
+        ApiManager.Shim.class,
         SyncAdapter.class
 })
 public class NetworkModule {
