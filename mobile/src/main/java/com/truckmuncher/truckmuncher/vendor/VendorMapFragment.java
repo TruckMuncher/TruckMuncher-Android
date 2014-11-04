@@ -62,8 +62,6 @@ public class VendorMapFragment extends Fragment implements GoogleApiClient.Conne
             mapView.onCreate(null);
         }
 
-        mapView.getMap().getUiSettings().setTiltGesturesEnabled(false);
-
         apiClient = new GoogleApiClient.Builder(getActivity(), this, this)
                 .addApi(LocationServices.API)
                 .build();
