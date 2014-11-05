@@ -1,28 +1,21 @@
 package com.truckmuncher.truckmuncher.authentication;
 
 import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.text.TextUtils;
+import android.support.annotation.Nullable;
 
 import com.truckmuncher.truckmuncher.BuildConfig;
 import com.truckmuncher.truckmuncher.R;
-
-import info.metadude.android.typedpreferences.StringPreference;
 
 public final class AccountGeneral {
 
     public static final String ACCOUNT_TYPE = BuildConfig.APPLICATION_ID;
     public static final String USER_DATA_SESSION = "session_token";
-    private static final String PREF_ACCOUNT_NAME = "account_name";
+    public static final String AUTH_TOKEN_TYPE = "TruckMuncher";    // Only have 1 security level
 
     private AccountGeneral() {
         // No instances
-    }
-
-    public static String getAuthTokenType(Context context) {
-        return context.getString(R.string.auth_token_type);
     }
 
     public static String getAuthTokenTypeLabel(Context context) {
@@ -30,28 +23,17 @@ public final class AccountGeneral {
     }
 
     /**
-     * Stores the given account name for use with {@link #getStoredAccount(android.content.Context)}
+     * @return An account for a stored username. Null if none has been stored
      */
-    public static void setAccountName(Context context, String userName) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        new StringPreference(prefs, PREF_ACCOUNT_NAME).set(userName);
-    }
-
-    private static String getAccountName(Context context) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return new StringPreference(prefs, PREF_ACCOUNT_NAME).get();
-    }
-
-    /**
-     * @return An account for a stored username
-     * @throws java.lang.IllegalStateException if no account name is stored
-     */
+    @Nullable
     public static Account getStoredAccount(Context context) {
-        String accountName = getAccountName(context);
-        if (TextUtils.isEmpty(accountName)) {
-            throw new IllegalStateException("An account name has not yet been stored");
+        AccountManager manager = AccountManager.get(context);
+        Account[] accounts = manager.getAccountsByType(ACCOUNT_TYPE);
+        if (accounts.length > 0) {
+            return accounts[0];
+        } else {
+            return null;
         }
-        return getAccount(accountName);
     }
 
     /**

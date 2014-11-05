@@ -24,6 +24,7 @@ import com.truckmuncher.api.trucks.ServingModeRequest;
 import com.truckmuncher.api.trucks.ServingModeResponse;
 import com.truckmuncher.truckmuncher.dagger.LocalNetworkModule;
 import com.truckmuncher.truckmuncher.dagger.NetworkModule;
+import com.truckmuncher.truckmuncher.dagger.TestUserModule;
 import com.truckmuncher.truckmuncher.data.Contract;
 import com.truckmuncher.truckmuncher.test.asserts.Assertions;
 import com.truckmuncher.truckmuncher.test.data.VerifiableContentProvider;
@@ -65,7 +66,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
          * Disallow parallel syncs
          */
         adapter = new SyncAdapter(testContext, false, false);
-        ObjectGraph graph = ObjectGraph.create(new NetworkModule(testContext), new LocalNetworkModule(testServer));
+        ObjectGraph graph = ObjectGraph.create(new NetworkModule(testContext), new LocalNetworkModule(testServer), new TestUserModule());
         graph.inject(adapter);
     }
 

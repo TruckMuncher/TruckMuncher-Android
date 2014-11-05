@@ -35,7 +35,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         result.putString(AccountManager.KEY_ACCOUNT_TYPE, AccountGeneral.ACCOUNT_TYPE);
         result.putString(AccountManager.KEY_AUTHTOKEN, authToken);
 
-        AccountGeneral.setAccountName(this, userName);
         Account account = AccountGeneral.getAccount(userName);
 
         // Setup the account to be syncable
@@ -43,7 +42,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         ContentResolver.setIsSyncable(account, Contract.CONTENT_AUTHORITY, 1);
 
         accountManager.addAccountExplicitly(account, null, null);
-        accountManager.setAuthToken(account, AccountGeneral.getAuthTokenType(this), authToken);
+        accountManager.setAuthToken(account, AccountGeneral.AUTH_TOKEN_TYPE, authToken);
 
         intent.putExtras(result);
         setAccountAuthenticatorResult(result);

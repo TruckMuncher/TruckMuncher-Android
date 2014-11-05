@@ -19,9 +19,9 @@ import retrofit.RequestInterceptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ApiRequestInterceptorTest extends AndroidTestCase {
+public class AuthRequestInterceptorTest extends AndroidTestCase {
 
-    ApiRequestInterceptor interceptor;
+    RequestInterceptor interceptor;
     Account account;
     AccountManager accountManager;
 
@@ -33,7 +33,7 @@ public class ApiRequestInterceptorTest extends AndroidTestCase {
         accountManager = AccountManager.get(getContext());
         accountManager.addAccountExplicitly(account, null, null);
 
-        interceptor = new ApiRequestInterceptor(getContext(), account);
+        interceptor = new AuthRequestInterceptor(getContext(), account);
     }
 
     @Override
@@ -46,8 +46,8 @@ public class ApiRequestInterceptorTest extends AndroidTestCase {
     public void testTimeStampHeaderIsAdded() {
         StubFacade facade = new StubFacade();
         interceptor.intercept(facade);
-        assertThat(facade.headers).containsKey("X-Timestamp");
-        String value = facade.headers.get("X-Timestamp");
+        assertThat(facade.headers).containsKey(ApiRequestInterceptor.HEADER_TIMESTAMP);
+        String value = facade.headers.get(ApiRequestInterceptor.HEADER_TIMESTAMP);
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         try {
             format.parse(value);
@@ -59,28 +59,20 @@ public class ApiRequestInterceptorTest extends AndroidTestCase {
     public void testNonceHeaderIsAdded() {
         StubFacade facade = new StubFacade();
         interceptor.intercept(facade);
-        assertThat(facade.headers).containsKey("X-Nonce");
-        String value = facade.headers.get("X-Nonce");
+        assertThat(facade.headers).containsKey(ApiRequestInterceptor.HEADER_NONCE);
+        String value = facade.headers.get(ApiRequestInterceptor.HEADER_NONCE);
         assertThat(Base64.decode(value, Base64.DEFAULT)).hasSize(32);
     }
 
     public void testAuthorizationHeaderIsAdded() {
-        String session = UUID.randomUUID().toString();
-        accountManager.setUserData(account, AccountGeneral.USER_DATA_SESSION, session);
+        String authToken = UUID.randomUUID().toString();
+        accountManager.setAuthToken(account, AccountGeneral.AUTH_TOKEN_TYPE, authToken);
 
         StubFacade facade = new StubFacade();
         interceptor.intercept(facade);
-        assertThat(facade.headers).containsKey("Authorization");
-        String value = facade.headers.get("Authorization");
-        assertThat(value).isEqualTo("session_token=" + session);
-    }
-
-    public void testAuthorizationHeaderWorksOnEmptySession() {
-        StubFacade facade = new StubFacade();
-        interceptor.intercept(facade);
-        assertThat(facade.headers).containsKey("Authorization");
-        String value = facade.headers.get("Authorization");
-        assertThat(value).isEqualTo("session_token=null");
+        assertThat(facade.headers).containsKey(ApiRequestInterceptor.HEADER_AUTHORIZATION);
+        String value = facade.headers.get(ApiRequestInterceptor.HEADER_AUTHORIZATION);
+        assertThat(value).isEqualTo(authToken);
     }
 
     private class StubFacade implements RequestInterceptor.RequestFacade {
