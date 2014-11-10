@@ -36,4 +36,13 @@ public class ContractTruckEntryTest extends TestCase {
             // No-op
         }
     }
+
+    public void testBuildServingtrucksUri() {
+        Uri uri = TruckEntry.buildServingTrucks();
+
+        String parameter = uri.getQueryParameter(TruckEntry.COLUMN_IS_SERVING);
+
+        assertThat(uri.getPath()).isEqualTo("/" + Contract.PATH_TRUCK);
+        assertThat(parameter).isEqualTo("1");
+    }
 }

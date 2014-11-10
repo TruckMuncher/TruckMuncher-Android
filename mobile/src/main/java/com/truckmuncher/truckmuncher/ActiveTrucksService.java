@@ -37,9 +37,13 @@ public class ActiveTrucksService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        latitude = intent.getDoubleExtra(ARG_LATITUDE, 0.0);
-        longitude = intent.getDoubleExtra(ARG_LONGITUDE, 0.0);
+        latitude = intent.getDoubleExtra(ARG_LATITUDE, Double.MAX_VALUE);
+        longitude = intent.getDoubleExtra(ARG_LONGITUDE, Double.MAX_VALUE);
         searchQuery = intent.getStringExtra(ARG_SEARCH_QUERY);
+
+        if (latitude == Double.MAX_VALUE || longitude == Double.MAX_VALUE) {
+            throw new IllegalArgumentException("Latitude and/or longitude not provided");
+        }
 
         ActiveTrucksRequest request = new ActiveTrucksRequest(latitude, longitude, searchQuery);
 

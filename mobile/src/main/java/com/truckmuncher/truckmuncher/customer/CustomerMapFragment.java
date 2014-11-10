@@ -48,9 +48,9 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
     @InjectView(R.id.customer_map)
     MapView mapView;
 
-    private GoogleApiClient apiClient;
-    private LatLng currentLocation;
-    private ClusterManager<TruckCluster> clusterManager;
+    GoogleApiClient apiClient;
+    LatLng currentLocation;
+    ClusterManager<TruckCluster> clusterManager;
 
     @Nullable
     @Override
@@ -76,9 +76,10 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
     public void onViewCreated(View view, Bundle savedInstanceState) {
         GoogleMap map = mapView.getMap();
 
-        map.setMyLocationEnabled(true);
-
-        setUpClusterer();
+        if (map != null) {
+            map.setMyLocationEnabled(true);
+            setUpClusterer();
+        }
     }
 
     @Override
@@ -200,9 +201,10 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
             markers.add(new TruckCluster(truck, location));
         }
 
-
-        clusterManager.clearItems();
-        clusterManager.addItems(markers);
+        if (clusterManager != null) {
+            clusterManager.clearItems();
+            clusterManager.addItems(markers);
+        }
     }
 
     @Override
