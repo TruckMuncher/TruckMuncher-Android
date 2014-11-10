@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -51,6 +52,13 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
     GoogleApiClient apiClient;
     LatLng currentLocation;
     ClusterManager<TruckCluster> clusterManager;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        MapsInitializer.initialize(getActivity().getApplicationContext());
+    }
 
     @Nullable
     @Override
