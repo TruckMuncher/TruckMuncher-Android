@@ -1,16 +1,15 @@
 package com.truckmuncher.truckmuncher.test.robots;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.truckmuncher.truckmuncher.R;
-import com.truckmuncher.truckmuncher.test.Ids;
 
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
-import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
-import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
+import static org.assertj.android.api.Assertions.assertThat;
 
 public class MainScreenRobot extends ScreenRobot {
     public MainScreenRobot launchVendorMode(Context context) {
@@ -19,8 +18,8 @@ public class MainScreenRobot extends ScreenRobot {
         return this;
     }
 
-    public MainScreenRobot verifyTitle() {
-        onView(withId(Ids.title())).check(matches(withText(R.string.app_name)));
+    public MainScreenRobot verifyTitle(Activity activity) {
+        assertThat(activity).hasTitle(R.string.app_name);
         return this;
     }
 }
