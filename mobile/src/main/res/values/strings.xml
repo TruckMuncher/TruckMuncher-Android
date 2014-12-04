@@ -21,5 +21,7 @@
 
     <!-- Errors -->
     <string name="error_network">Oops, something went wrong. Please check your network connection and try again.</string>
+    <string name="search_title">search</string>
+    <string name="search_hint">Search for trucks</string>
 
 </resources>
