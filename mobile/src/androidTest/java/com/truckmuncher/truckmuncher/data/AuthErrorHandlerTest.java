@@ -3,6 +3,8 @@ package com.truckmuncher.truckmuncher.data;
 import android.support.annotation.NonNull;
 import android.test.AndroidTestCase;
 
+import com.truckmuncher.api.auth.AuthRequest;
+import com.truckmuncher.api.auth.AuthService;
 import com.truckmuncher.api.exceptions.Error;
 import com.truckmuncher.api.menu.FullMenusResponse;
 import com.truckmuncher.truckmuncher.R;
@@ -25,14 +27,14 @@ import retrofit.mime.TypedInput;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
-public class ApiErrorHandlerTest extends AndroidTestCase {
+public class AuthErrorHandlerTest extends AndroidTestCase {
 
     ApiErrorHandler errorHandler;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        errorHandler = new ApiErrorHandler(mContext);
+        errorHandler = new AuthErrorHandler(mContext);
     }
 
     public void testNetworkError() {
@@ -96,8 +98,8 @@ public class ApiErrorHandlerTest extends AndroidTestCase {
         }
     }
 
-    public void testUnauthorizedOnNonAuthRouteThrowsCorrectException() {
-        TestClient client = new RestAdapter.Builder()
+    public void testUnauthorizedOnAuthRouteThrowsCorrectException() {
+        AuthService service = new RestAdapter.Builder()
                 .setEndpoint("http://example.com")
                 .setClient(new Client() {
                     @Override
@@ -111,12 +113,12 @@ public class ApiErrorHandlerTest extends AndroidTestCase {
                 .setExecutors(new SynchronousExecutor(), new SynchronousExecutor())
                 .setConverter(new WireConverter())
                 .build()
-                .create(TestClient.class);
+                .create(AuthService.class);
 
         try {
-            client.getFullMenus();
-            failBecauseExceptionWasNotThrown(ExpiredSessionException.class);
-        } catch (ExpiredSessionException e) {
+            service.getAuth(new AuthRequest());
+            failBecauseExceptionWasNotThrown(SocialCredentialsException.class);
+        } catch (SocialCredentialsException e) {
             // No-op
         }
     }

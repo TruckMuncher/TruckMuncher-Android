@@ -41,7 +41,7 @@ public class AccountGeneralTest extends AndroidTestCase {
                 .overridingErrorMessage("%d accounts were not deleted", latch.getCount())
                 .isZero();
 
-        assertThat(AccountGeneral.getStoredAccount(getContext())).isNull();
+        assertThat(AccountGeneral.getStoredAccount(manager)).isNull();
     }
 
     public void testGetStoredAccountReturnsCorrectAccount() {
@@ -49,7 +49,7 @@ public class AccountGeneralTest extends AndroidTestCase {
         AccountManager manager = AccountManager.get(getContext());
         manager.addAccountExplicitly(account, null, null);
 
-        assertThat(AccountGeneral.getStoredAccount(getContext()))
+        assertThat(AccountGeneral.getStoredAccount(manager))
                 .isEqualTo(account);
     }
 }

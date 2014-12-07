@@ -17,6 +17,7 @@ import javax.net.ssl.X509TrustManager;
 import dagger.Module;
 import dagger.Provides;
 import retrofit.RestAdapter;
+import timber.log.Timber;
 
 @Module(overrides = true, library = true, complete = false)
 public class DebugNetworkModule {
@@ -32,8 +33,7 @@ public class DebugNetworkModule {
             TrustManager[] trustAllCerts = new TrustManager[]{
                     new X509TrustManager() {
                         public X509Certificate[] getAcceptedIssuers() {
-                            X509Certificate[] myTrustedAnchors = new X509Certificate[0];
-                            return myTrustedAnchors;
+                            return new X509Certificate[0];
                         }
 
                         @Override
@@ -51,6 +51,7 @@ public class DebugNetworkModule {
             client.setSslSocketFactory(sc.getSocketFactory());
             client.setHostnameVerifier(new AllowAllHostnameVerifier());
         } catch (Exception e) {
+            Timber.e(e, "Couldn't configure SSL");
         }
     }
 

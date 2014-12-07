@@ -1,5 +1,6 @@
 package com.truckmuncher.truckmuncher.vendor;
 
+import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.IntentService;
 import android.content.ContentValues;
@@ -35,6 +36,8 @@ public class VendorTrucksService extends IntentService {
     TruckService truckService;
     @Inject
     AuthService authService;
+    @Inject
+    AccountManager accountManager;
 
     public VendorTrucksService() {
         super(VendorTrucksService.class.getSimpleName());
@@ -63,8 +66,9 @@ public class VendorTrucksService extends IntentService {
         } catch (SocialCredentialsException sce) {
             // TODO Implement
             throw new UnsupportedOperationException("not yet implemented");
-//            AccountManager.get(this).getAuthToken(
-//                    AccountGeneral.getStoredAccount(this),
+//            Account account = AccountGeneral.getStoredAccount(accountManager);
+//            accountManager.getAuthToken(
+//                    account,
 //                    AccountGeneral.AUTH_TOKEN_TYPE,
 //                    null,
 //                    true,
@@ -73,7 +77,8 @@ public class VendorTrucksService extends IntentService {
 //            );
         } catch (ExpiredSessionException ese) {
             AuthResponse response = authService.getAuth(new AuthRequest());
-            AccountManager.get(this).setUserData(AccountGeneral.getStoredAccount(this), AuthenticatedRequestInterceptor.SESSION_TOKEN, response.sessionToken);
+            Account account = AccountGeneral.getStoredAccount(accountManager);
+            accountManager.setUserData(account, AuthenticatedRequestInterceptor.SESSION_TOKEN, response.sessionToken);
             startService(intent);   // Start self
         } catch (ApiException e) {
             Timber.e("Got an error while getting trucks for vendor.");
