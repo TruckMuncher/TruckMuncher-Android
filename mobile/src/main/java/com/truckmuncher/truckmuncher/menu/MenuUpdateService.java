@@ -19,11 +19,14 @@ import com.truckmuncher.api.menu.FullMenusRequest;
 import com.truckmuncher.api.menu.FullMenusResponse;
 import com.truckmuncher.api.menu.Menu;
 import com.truckmuncher.api.menu.MenuItem;
-import com.truckmuncher.truckmuncher.data.ApiManager;
+import com.truckmuncher.api.menu.MenuService;
+import com.truckmuncher.truckmuncher.App;
 import com.truckmuncher.truckmuncher.data.Contract;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -32,11 +35,15 @@ import timber.log.Timber;
 
 public class MenuUpdateService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
+    @Inject
+    MenuService menuService;
+
     private GoogleApiClient apiClient;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        App.inject(this, this);
         apiClient = new GoogleApiClient.Builder(this, this, this)
                 .addApi(LocationServices.API)
                 .build();
@@ -91,7 +98,7 @@ public class MenuUpdateService extends Service implements GoogleApiClient.Connec
                 .latitude(location.getLatitude())
                 .longitude(location.getLongitude())
                 .build();
-        ApiManager.getMenuService(this).getFullMenus(request, new Callback<FullMenusResponse>() {
+        menuService.getFullMenus(request, new Callback<FullMenusResponse>() {
             @Override
             public void success(final FullMenusResponse fullMenusResponse, Response response) {
 

@@ -11,7 +11,8 @@
         android:layout_height="match_parent"
         map:cameraTargetLat="43.039691"
         map:cameraTargetLng="-87.905903"
-        map:cameraZoom="14" />
+        map:cameraZoom="14"
+        map:uiTiltGestures="false"/>
 
     <View
         android:id="@+id/mapGlass"

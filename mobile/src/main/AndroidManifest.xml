@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.truckmuncher.truckmuncher">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -60,8 +61,9 @@
         <service
             android:name=".authentication.AuthenticatorService"
             android:enabled="true"
-            android:exported="true">
-            <intent-filter>
+            android:exported="true"
+            tools:ignore="ExportedService">
+        <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
 
@@ -74,8 +76,9 @@
             android:name=".data.sync.SyncService"
             android:enabled="true"
             android:exported="true"
-            android:process=":sync">
-            <intent-filter>
+            android:process=":sync"
+            tools:ignore="ExportedService">
+        <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>
 

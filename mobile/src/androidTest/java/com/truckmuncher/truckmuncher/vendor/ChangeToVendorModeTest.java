@@ -25,7 +25,9 @@ public class ChangeToVendorModeTest extends ActivityInstrumentationTestCase2<Mai
 
     public void testLaunchVendorMode() {
         withRobot(MainScreenRobot.class)
-                .verifyTitle()
+                .verifyTitle(getActivity())
+
+                        // TODO we need to figure out how to reset the app state, specifically whether or not we're logged in or not, between tests.
                 .launchVendorMode(context);
     }
 }
