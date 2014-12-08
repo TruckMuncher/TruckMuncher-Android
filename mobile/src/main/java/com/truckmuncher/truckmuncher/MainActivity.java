@@ -33,6 +33,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnInfoW
 
     private GoogleMap map; // Might be null if Google Play services APK is not available.
     private AccountManager accountManager;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +68,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnInfoW
         getMenuInflater().inflate(R.menu.main, menu);
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search));
+        searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
         return super.onCreateOptionsMenu(menu);
@@ -101,12 +102,16 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnInfoW
      * @param intent An intent that was passed to this activity that should be handled.
      */
     private void handleIntent(Intent intent) {
-        if (Intent.ACTION_SEARCH.equals(intent.getAction()) ||
-                SearchIntents.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
+        String query = intent.getStringExtra(SearchManager.QUERY);
 
-            // TODO: Send search request to API.
-            Toast.makeText(this, "You searched " + query, Toast.LENGTH_LONG).show();
+        switch (intent.getAction()) {
+            case SearchIntents.ACTION_SEARCH:
+                searchView.setIconified(false);
+                searchView.setQuery(query, true);
+                break;
+            case Intent.ACTION_SEARCH:
+                // TODO: Send search request to API.
+                Toast.makeText(this, "You searched " + query, Toast.LENGTH_LONG).show();
         }
     }
 
