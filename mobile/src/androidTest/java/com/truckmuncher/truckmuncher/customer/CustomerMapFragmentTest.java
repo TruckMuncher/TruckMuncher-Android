@@ -10,6 +10,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.truckmuncher.truckmuncher.MainActivity;
 import com.truckmuncher.truckmuncher.R;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class CustomerMapFragmentTest extends ActivityInstrumentationTestCase2<MainActivity> {
 
     private ActionBarActivity activity;
@@ -26,7 +28,6 @@ public class CustomerMapFragmentTest extends ActivityInstrumentationTestCase2<Ma
 
     public void testCanRotate() {
         try {
-            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             Instrumentation.ActivityMonitor monitor =
                     new Instrumentation.ActivityMonitor(MainActivity.class.getName(), null, false);
             getInstrumentation().addMonitor(monitor);
@@ -41,7 +42,7 @@ public class CustomerMapFragmentTest extends ActivityInstrumentationTestCase2<Ma
         CustomerMapFragment mapFragment = (CustomerMapFragment) activity.getSupportFragmentManager()
                 .findFragmentById(R.id.customer_map_fragment);
 
-        assertTrue("API client didn't connect.", mapFragment.apiClient.isConnected());
+        assertThat(mapFragment.apiClient.isConnected()).isTrue();
     }
 
     public void testApiClientDisconnected() {
@@ -53,6 +54,6 @@ public class CustomerMapFragmentTest extends ActivityInstrumentationTestCase2<Ma
         getInstrumentation().callActivityOnStop(activity);
         getInstrumentation().waitForIdleSync();
 
-        assertTrue("API client Still connected after parent activity finished.", !apiClient.isConnected());
+        assertThat(apiClient.isConnected()).isFalse();
     }
 }
