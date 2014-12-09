@@ -26,9 +26,8 @@ public final class AccountGeneral {
      * @return An account for a stored username. Null if none has been stored
      */
     @Nullable
-    public static Account getStoredAccount(Context context) {
-        AccountManager manager = AccountManager.get(context);
-        Account[] accounts = manager.getAccountsByType(ACCOUNT_TYPE);
+    public static Account getStoredAccount(AccountManager accountManager) {
+        Account[] accounts = accountManager.getAccountsByType(ACCOUNT_TYPE);
         if (accounts.length > 0) {
             return accounts[0];
         } else {

@@ -1,6 +1,7 @@
 package com.truckmuncher.truckmuncher.dagger;
 
 import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Context;
 
 import com.truckmuncher.truckmuncher.authentication.AccountGeneral;
@@ -18,7 +19,12 @@ public class UserModule {
     }
 
     @Provides
-    public Account provideAccount() {
-        return AccountGeneral.getStoredAccount(appContext);
+    public Account provideAccount(AccountManager accountManager) {
+        return AccountGeneral.getStoredAccount(accountManager);
+    }
+
+    @Provides
+    public AccountManager provideAccountManager() {
+        return AccountManager.get(appContext);
     }
 }

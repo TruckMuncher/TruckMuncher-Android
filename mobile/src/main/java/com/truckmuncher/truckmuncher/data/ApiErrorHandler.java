@@ -11,8 +11,6 @@ import timber.log.Timber;
 
 public class ApiErrorHandler implements ErrorHandler {
 
-    private static final String AUTH_PATH = "/com.truckmuncher.api.auth.AuthService/getAuth";
-
     private final Context context;
 
     public ApiErrorHandler(Context context) {
@@ -34,16 +32,13 @@ public class ApiErrorHandler implements ErrorHandler {
             Timber.e(cause, "Error during network request. No response given.");
         }
 
+        return customHandleError(message, cause);
+    }
+
+    protected ApiException customHandleError(String message, RetrofitError cause) {
         if (cause.getResponse().getStatus() == 401) {
-            if (cause.getUrl().endsWith(AUTH_PATH)) {
-
-                // Need to log in again
-                return new SocialCredentialsException(message, cause);
-            } else {
-
-                // Refresh the session
-                return new ExpiredSessionException(message, cause);
-            }
+            // Refresh the session
+            return new ExpiredSessionException(message, cause);
         } else {
             return new ApiException(message, cause);
         }

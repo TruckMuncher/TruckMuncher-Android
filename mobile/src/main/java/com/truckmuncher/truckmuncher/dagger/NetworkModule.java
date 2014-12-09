@@ -11,6 +11,7 @@ import com.truckmuncher.api.trucks.TruckService;
 import com.truckmuncher.truckmuncher.ActiveTrucksService;
 import com.truckmuncher.truckmuncher.BuildConfig;
 import com.truckmuncher.truckmuncher.data.ApiErrorHandler;
+import com.truckmuncher.truckmuncher.data.AuthErrorHandler;
 import com.truckmuncher.truckmuncher.data.AuthRequestInterceptor;
 import com.truckmuncher.truckmuncher.data.AuthenticatedRequestInterceptor;
 import com.truckmuncher.truckmuncher.data.PRNGFixes;
@@ -98,6 +99,7 @@ public class NetworkModule {
     @Provides
     public AuthService provideAuthService(RestAdapter.Builder builder, Account account) {
         builder.setLogLevel(RestAdapter.LogLevel.FULL)
+                .setErrorHandler(new AuthErrorHandler(appContext))
                 .setRequestInterceptor(new AuthRequestInterceptor(appContext, account));
         return builder.build().create(AuthService.class);
     }

@@ -12,6 +12,8 @@ import android.text.TextUtils;
 
 public class Authenticator extends AbstractAccountAuthenticator {
 
+    public static final String ARG_NEEDS_SYNC = "needs_sync";
+
     private final Context context;
 
     public Authenticator(Context context) {
