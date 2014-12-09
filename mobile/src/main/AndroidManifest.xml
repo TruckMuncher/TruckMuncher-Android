@@ -96,6 +96,9 @@
                 android:resource="@xml/syncadapter" />
         </service>
         <service
+            android:name=".ActiveTrucksService"
+            android:exported="false" />
+        <service
             android:name=".vendor.VendorTrucksService"
             android:exported="false" />
         <service

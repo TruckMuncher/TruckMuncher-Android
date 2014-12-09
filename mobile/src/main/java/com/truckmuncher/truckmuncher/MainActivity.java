@@ -15,33 +15,22 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.gms.actions.SearchIntents;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.truckmuncher.truckmuncher.authentication.AccountGeneral;
 import com.truckmuncher.truckmuncher.authentication.AuthenticatorActivity;
 import com.truckmuncher.truckmuncher.vendor.VendorHomeActivity;
 
-public class MainActivity extends ActionBarActivity implements GoogleMap.OnInfoWindowClickListener {
+public class MainActivity extends ActionBarActivity {
 
     private static final int REQUEST_LOGIN = 1;
 
-    private GoogleMap map; // Might be null if Google Play services APK is not available.
-    private AccountManager accountManager;
     private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setUpMapIfNeeded();
 
-        accountManager = AccountManager.get(this);
+        AccountManager accountManager = AccountManager.get(this);
 
         Account[] accounts = accountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
 
@@ -55,12 +44,6 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnInfoW
         }
 
         handleIntent(getIntent());
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setUpMapIfNeeded();
     }
 
     @Override
@@ -113,54 +96,6 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnInfoW
                 // TODO: Send search request to API.
                 Toast.makeText(this, "You searched " + query, Toast.LENGTH_LONG).show();
         }
-    }
-
-    /**
-     * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
-     * installed) and the map has not already been instantiated.. This will ensure that we only ever
-     * call {@link #setUpMap()} once when {@link #map} is not null.
-     * <p/>
-     * If it isn't installed {@link SupportMapFragment} (and
-     * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
-     * install/update the Google Play services APK on their device.
-     * <p/>
-     * A user can return to this FragmentActivity after following the prompt and correctly
-     * installing/updating/enabling the Google Play services. Since the FragmentActivity may not
-     * have been completely destroyed during this process (it is likely that it would only be
-     * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
-     * method in {@link #onResume()} to guarantee that it will be called.
-     */
-    private void setUpMapIfNeeded() {
-        // Do a null check to confirm that we have not already instantiated the map.
-        if (map == null) {
-            // Try to obtain the map from the SupportMapFragment.
-            map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-            // Check if we were successful in obtaining the map.
-            if (map != null) {
-                setUpMap();
-            }
-        }
-    }
-
-    /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
-     * <p/>
-     * This should only be called once and when we are sure that {@link #map} is not null.
-     */
-    private void setUpMap() {
-        LatLng center = new LatLng(43.039148, -87.901762);
-        map.addMarker(new MarkerOptions().position(center).title("American Euros"));
-        map.setOnInfoWindowClickListener(this);
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(center);
-        map.moveCamera(cameraUpdate);
-        map.moveCamera(CameraUpdateFactory.zoomTo(14));
-    }
-
-    @Override
-    public void onInfoWindowClick(Marker marker) {
-        Intent intent = new Intent(this, TruckDetailsActivity.class);
-        startActivity(intent);
     }
 
     @Override
