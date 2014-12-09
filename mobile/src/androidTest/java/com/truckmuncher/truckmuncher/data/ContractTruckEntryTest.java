@@ -37,7 +37,7 @@ public class ContractTruckEntryTest extends TestCase {
         }
     }
 
-    public void testBuildServingtrucksUri() {
+    public void testBuildServingTrucksUri() {
         Uri uri = TruckEntry.buildServingTrucks();
 
         String parameter = uri.getQueryParameter(TruckEntry.COLUMN_IS_SERVING);
