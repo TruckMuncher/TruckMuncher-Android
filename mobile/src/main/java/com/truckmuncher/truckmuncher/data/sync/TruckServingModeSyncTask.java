@@ -28,6 +28,7 @@ public final class TruckServingModeSyncTask extends SyncTask {
     protected ApiResult sync(SyncResult syncResult) throws RemoteException {
         Cursor cursor = provider.query(Contract.TruckEntry.buildDirty(), TruckServingModeQuery.PROJECTION, null, null, null);
         if (!cursor.moveToFirst()) {
+
             // Cursor is empty. Probably already synced this.
             cursor.close();
             return ApiResult.OK;
@@ -56,7 +57,18 @@ public final class TruckServingModeSyncTask extends SyncTask {
             } catch (ApiException e) {
                 ApiResult result = apiExceptionResolver.resolve(e);
 
-                handleApiException(e, syncResult);
+                // Need to use the most recoverable result
+                if (result == ApiResult.SHOULD_RETRY || retVal == ApiResult.SHOULD_RETRY) {
+                    retVal = ApiResult.SHOULD_RETRY;
+                } else if (result == ApiResult.TEMPORARY_ERROR || retVal == ApiResult.TEMPORARY_ERROR) {
+                    retVal = ApiResult.TEMPORARY_ERROR;
+                } else if (result == ApiResult.NEEDS_USER_INPUT || retVal == ApiResult.NEEDS_USER_INPUT) {
+                    retVal = ApiResult.NEEDS_USER_INPUT;
+                } else if (result == ApiResult.PERMANENT_ERROR || retVal == ApiResult.PERMANENT_ERROR) {
+                    retVal = ApiResult.PERMANENT_ERROR;
+                } else {
+                    retVal = result;
+                }
             }
         } while (cursor.moveToNext());
         cursor.close();
