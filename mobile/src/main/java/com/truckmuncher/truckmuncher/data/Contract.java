@@ -114,6 +114,11 @@ public final class Contract {
             return CONTENT_URI.buildUpon().appendPath(internalId).build();
         }
 
+        public static Uri buildServingTrucks() {
+            return Contract.TruckEntry.CONTENT_URI.buildUpon()
+                    .appendQueryParameter(Contract.TruckEntry.COLUMN_IS_SERVING, "1").build();
+        }
+
         public static String getInternalIdFromUri(Uri uri) {
             String internalId = uri.getLastPathSegment();
             if (internalId == null) {
