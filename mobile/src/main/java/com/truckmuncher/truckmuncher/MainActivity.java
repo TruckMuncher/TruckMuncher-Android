@@ -12,11 +12,11 @@ import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.google.android.gms.actions.SearchIntents;
 import com.truckmuncher.truckmuncher.authentication.AccountGeneral;
 import com.truckmuncher.truckmuncher.authentication.AuthenticatorActivity;
+import com.truckmuncher.truckmuncher.customer.CustomerMapFragment;
 import com.truckmuncher.truckmuncher.vendor.VendorHomeActivity;
 
 public class MainActivity extends ActionBarActivity {
@@ -24,6 +24,8 @@ public class MainActivity extends ActionBarActivity {
     private static final int REQUEST_LOGIN = 1;
 
     private SearchView searchView;
+
+    private String lastQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +52,20 @@ public class MainActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
 
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        final SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                Intent searchIntent = new Intent(Intent.ACTION_SEARCH);
+                searchIntent.putExtra(SearchManager.QUERY, (String) null);
+
+                handleIntent(searchIntent);
+
+                return false;
+            }
+        });
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -88,13 +101,24 @@ public class MainActivity extends ActionBarActivity {
         String query = intent.getStringExtra(SearchManager.QUERY);
 
         switch (intent.getAction()) {
+            // Google Now search
             case SearchIntents.ACTION_SEARCH:
                 searchView.setIconified(false);
                 searchView.setQuery(query, true);
                 break;
+            // Action bar search
             case Intent.ACTION_SEARCH:
-                // TODO: Send search request to API.
-                Toast.makeText(this, "You searched " + query, Toast.LENGTH_LONG).show();
+                boolean repeatQuery = query == null ? lastQuery == null : query.equals(lastQuery);
+
+                // Don't need to redo the search if it's the same as last time
+                if (!repeatQuery) {
+                    CustomerMapFragment mapFragment = (CustomerMapFragment)
+                            getSupportFragmentManager().findFragmentById(R.id.customer_map_fragment);
+
+                    mapFragment.loadActiveTrucks(query);
+
+                    lastQuery = query;
+                }
         }
     }
 
