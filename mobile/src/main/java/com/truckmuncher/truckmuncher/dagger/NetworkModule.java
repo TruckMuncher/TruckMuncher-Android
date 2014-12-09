@@ -6,6 +6,7 @@ import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 import com.truckmuncher.api.menu.MenuService;
 import com.truckmuncher.api.trucks.TruckService;
+import com.truckmuncher.truckmuncher.ActiveTrucksService;
 import com.truckmuncher.truckmuncher.BuildConfig;
 import com.truckmuncher.truckmuncher.data.ApiErrorHandler;
 import com.truckmuncher.truckmuncher.data.ApiRequestInterceptor;
@@ -28,7 +29,8 @@ import timber.log.Timber;
 @Module(injects = {
         MenuUpdateService.class,
         SyncAdapter.class,
-        VendorTrucksService.class
+        VendorTrucksService.class,
+        ActiveTrucksService.class
 })
 public class NetworkModule {
 
