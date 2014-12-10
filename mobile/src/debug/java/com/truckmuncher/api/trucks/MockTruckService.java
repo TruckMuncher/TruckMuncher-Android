@@ -12,7 +12,8 @@ public class MockTruckService implements TruckService {
     @Override
     public ActiveTrucksResponse getActiveTrucks(@Body ActiveTrucksRequest request) throws RetrofitError {
         List<ActiveTrucksResponse.Truck> trucks = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        int numTrucks = request.searchQuery == null ? 10 : 5;
+        for (int i = 0; i < numTrucks; i++) {
             ActiveTrucksResponse.Truck truck = new ActiveTrucksResponse.Truck.Builder()
                     .id("Truck" + i)
                     .latitude(getRandomLatitude())

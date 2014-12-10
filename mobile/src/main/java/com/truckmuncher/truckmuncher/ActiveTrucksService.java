@@ -28,10 +28,6 @@ public class ActiveTrucksService extends IntentService {
     @Inject
     TruckService truckService;
 
-    private double latitude;
-    private double longitude;
-    private String searchQuery;
-
     public ActiveTrucksService() {
         super(ActiveTrucksService.class.getSimpleName());
     }
@@ -40,9 +36,9 @@ public class ActiveTrucksService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         App.inject(this, this);
 
-        latitude = intent.getDoubleExtra(ARG_LATITUDE, Double.MAX_VALUE);
-        longitude = intent.getDoubleExtra(ARG_LONGITUDE, Double.MAX_VALUE);
-        searchQuery = intent.getStringExtra(ARG_SEARCH_QUERY);
+        double latitude = intent.getDoubleExtra(ARG_LATITUDE, Double.MAX_VALUE);
+        double longitude = intent.getDoubleExtra(ARG_LONGITUDE, Double.MAX_VALUE);
+        String searchQuery = intent.getStringExtra(ARG_SEARCH_QUERY);
 
         if (latitude == Double.MAX_VALUE || longitude == Double.MAX_VALUE) {
             throw new IllegalArgumentException("Latitude and/or longitude not provided");
