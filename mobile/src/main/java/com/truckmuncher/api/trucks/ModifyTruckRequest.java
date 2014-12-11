@@ -10,11 +10,10 @@ import java.util.List;
 import static com.squareup.wire.Message.Datatype.STRING;
 import static com.squareup.wire.Message.Label.REPEATED;
 
-public final class Truck extends Message {
+public final class ModifyTruckRequest extends Message {
 
   public static final String DEFAULT_ID = "";
   public static final String DEFAULT_NAME = "";
-  public static final String DEFAULT_IMAGEURL = "";
   public static final List<String> DEFAULT_KEYWORDS = Collections.emptyList();
   public static final String DEFAULT_PRIMARYCOLOR = "";
   public static final String DEFAULT_SECONDARYCOLOR = "";
@@ -28,49 +27,44 @@ public final class Truck extends Message {
   @ProtoField(tag = 2, type = STRING)
   public final String name;
 
-  @ProtoField(tag = 3, type = STRING)
-  public final String imageUrl;
-
   /**
    * These are likely going to be the cuisines the truck targets, but might also be something like "soup", "panini", or "vegan"
    */
-  @ProtoField(tag = 4, type = STRING, label = REPEATED)
+  @ProtoField(tag = 3, type = STRING, label = REPEATED)
   public final List<String> keywords;
 
   /**
    * Hex code in the format of #RRGGBB
    */
-  @ProtoField(tag = 5, type = STRING)
+  @ProtoField(tag = 4, type = STRING)
   public final String primaryColor;
 
   /**
    * Hex code in the format of #RRGGBB
    */
-  @ProtoField(tag = 6, type = STRING)
+  @ProtoField(tag = 5, type = STRING)
   public final String secondaryColor;
 
-  public Truck(String id, String name, String imageUrl, List<String> keywords, String primaryColor, String secondaryColor) {
+  public ModifyTruckRequest(String id, String name, List<String> keywords, String primaryColor, String secondaryColor) {
     this.id = id;
     this.name = name;
-    this.imageUrl = imageUrl;
     this.keywords = immutableCopyOf(keywords);
     this.primaryColor = primaryColor;
     this.secondaryColor = secondaryColor;
   }
 
-  private Truck(Builder builder) {
-    this(builder.id, builder.name, builder.imageUrl, builder.keywords, builder.primaryColor, builder.secondaryColor);
+  private ModifyTruckRequest(Builder builder) {
+    this(builder.id, builder.name, builder.keywords, builder.primaryColor, builder.secondaryColor);
     setBuilder(builder);
   }
 
   @Override
   public boolean equals(Object other) {
     if (other == this) return true;
-    if (!(other instanceof Truck)) return false;
-    Truck o = (Truck) other;
+    if (!(other instanceof ModifyTruckRequest)) return false;
+    ModifyTruckRequest o = (ModifyTruckRequest) other;
     return equals(id, o.id)
         && equals(name, o.name)
-        && equals(imageUrl, o.imageUrl)
         && equals(keywords, o.keywords)
         && equals(primaryColor, o.primaryColor)
         && equals(secondaryColor, o.secondaryColor);
@@ -82,7 +76,6 @@ public final class Truck extends Message {
     if (result == 0) {
       result = id != null ? id.hashCode() : 0;
       result = result * 37 + (name != null ? name.hashCode() : 0);
-      result = result * 37 + (imageUrl != null ? imageUrl.hashCode() : 0);
       result = result * 37 + (keywords != null ? keywords.hashCode() : 1);
       result = result * 37 + (primaryColor != null ? primaryColor.hashCode() : 0);
       result = result * 37 + (secondaryColor != null ? secondaryColor.hashCode() : 0);
@@ -91,11 +84,10 @@ public final class Truck extends Message {
     return result;
   }
 
-  public static final class Builder extends Message.Builder<Truck> {
+  public static final class Builder extends Message.Builder<ModifyTruckRequest> {
 
     public String id;
     public String name;
-    public String imageUrl;
     public List<String> keywords;
     public String primaryColor;
     public String secondaryColor;
@@ -103,12 +95,11 @@ public final class Truck extends Message {
     public Builder() {
     }
 
-    public Builder(Truck message) {
+    public Builder(ModifyTruckRequest message) {
       super(message);
       if (message == null) return;
       this.id = message.id;
       this.name = message.name;
-      this.imageUrl = message.imageUrl;
       this.keywords = copyOf(message.keywords);
       this.primaryColor = message.primaryColor;
       this.secondaryColor = message.secondaryColor;
@@ -124,11 +115,6 @@ public final class Truck extends Message {
 
     public Builder name(String name) {
       this.name = name;
-      return this;
-    }
-
-    public Builder imageUrl(String imageUrl) {
-      this.imageUrl = imageUrl;
       return this;
     }
 
@@ -157,8 +143,8 @@ public final class Truck extends Message {
     }
 
     @Override
-    public Truck build() {
-      return new Truck(this);
+    public ModifyTruckRequest build() {
+      return new ModifyTruckRequest(this);
     }
   }
 }
