@@ -51,6 +51,7 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
     GoogleApiClient apiClient;
     LatLng currentLocation;
     ClusterManager<TruckCluster> clusterManager;
+    private ClusterRenderer<TruckCluster> renderer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,6 +72,8 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
         } else {
             mapView.onCreate(null);
         }
+
+        mapView.getMap().getUiSettings().setZoomControlsEnabled(true);
 
         apiClient = new GoogleApiClient.Builder(getActivity(), this, this)
                 .addApi(LocationServices.API)
@@ -173,7 +176,7 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
         currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
         if (trucksNeedLoading) {
-            loadActiveTrucks();
+            loadActiveTrucks(null);
         }
     }
 
@@ -211,6 +214,7 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
         if (clusterManager != null) {
             clusterManager.clearItems();
             clusterManager.addItems(markers);
+            clusterManager.setRenderer(renderer);
         }
     }
 
@@ -224,8 +228,17 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
         float currentZoom = mapView.getMap().getCameraPosition().zoom;
         mapView.getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(cluster.getPosition(), currentZoom + 1));
 
-        // true to prevent the default behavior from occuring
+        // true to prevent the default behavior from occurring
         return true;
+    }
+
+    public void loadActiveTrucks(String searchQuery) {
+        // Kick off a refresh of the vendor data
+        Intent intent = new Intent(getActivity(), ActiveTrucksService.class);
+        intent.putExtra(ActiveTrucksService.ARG_LATITUDE, currentLocation.latitude);
+        intent.putExtra(ActiveTrucksService.ARG_LONGITUDE, currentLocation.longitude);
+        intent.putExtra(ActiveTrucksService.ARG_SEARCH_QUERY, searchQuery);
+        getActivity().startService(intent);
     }
 
     private void setUpClusterer() {
@@ -233,7 +246,7 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
         // Initialize the manager with the context and the map.
         clusterManager = new ClusterManager<>(getActivity(), map);
 
-        ClusterRenderer<TruckCluster> renderer = new TruckClusterRenderer<>(getActivity(), map, clusterManager);
+        renderer = new TruckClusterRenderer<>(getActivity(), map, clusterManager);
         clusterManager.setRenderer(renderer);
 
         clusterManager.setOnClusterClickListener(this);
@@ -241,14 +254,6 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
         // Point the map's listeners at the listeners implemented by the cluster manager.
         map.setOnCameraChangeListener(clusterManager);
         map.setOnMarkerClickListener(clusterManager);
-    }
-
-    private void loadActiveTrucks() {
-        // Kick off a refresh of the vendor data
-        Intent intent = new Intent(getActivity(), ActiveTrucksService.class);
-        intent.putExtra(ActiveTrucksService.ARG_LATITUDE, currentLocation.latitude);
-        intent.putExtra(ActiveTrucksService.ARG_LONGITUDE, currentLocation.longitude);
-        getActivity().startService(intent);
     }
 
     public interface ActiveTrucksQuery {
