@@ -72,7 +72,7 @@ public class AuthenticatedRequestInterceptorTest extends AndroidTestCase {
         interceptor.intercept(facade);
         assertThat(facade.headers).containsKey(ApiRequestInterceptor.HEADER_AUTHORIZATION);
         String value = facade.headers.get(ApiRequestInterceptor.HEADER_AUTHORIZATION);
-        assertThat(value).isEqualTo("session_token=" + session);
+        assertThat(value).isEqualTo(AuthenticatedRequestInterceptor.SESSION_TOKEN + "=" + session);
     }
 
     public void testAuthorizationHeaderWorksOnEmptySession() {
