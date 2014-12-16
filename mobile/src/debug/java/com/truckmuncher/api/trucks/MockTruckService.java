@@ -1,6 +1,7 @@
 package com.truckmuncher.api.trucks;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit.Callback;
@@ -37,6 +38,9 @@ public class MockTruckService implements TruckService {
                     .id("Truck" + i)
                     .imageUrl("http://api.truckmuncher.com/images/truck/" + i)
                     .name("Truck" + i)
+                    .keywords(Arrays.asList("These", "Are", "Keywords"))
+                    .primaryColor("#0000FF")
+                    .secondaryColor("#FF0000")
                     .build();
             trucks.add(truck);
         }
@@ -50,7 +54,19 @@ public class MockTruckService implements TruckService {
 
     @Override
     public TruckProfilesResponse getTruckProfiles(@Body TruckProfilesRequest request) throws RetrofitError {
-        throw new UnsupportedOperationException("Not yet implemented");
+        List<Truck> trucks = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            Truck truck = new Truck.Builder()
+                    .id("Truck" + i)
+                    .imageUrl("http://api.truckmuncher.com/images/truck/" + i)
+                    .name("Truck" + i)
+                    .keywords(Arrays.asList("These", "Are", "Keywords"))
+                    .primaryColor("#0000FF")
+                    .secondaryColor("#FF0000")
+                    .build();
+            trucks.add(truck);
+        }
+        return new TruckProfilesResponse(trucks);
     }
 
     @Override
@@ -59,12 +75,12 @@ public class MockTruckService implements TruckService {
     }
 
     @Override
-    public Truck modifyTruckProfile(@Body Truck request) throws RetrofitError {
+    public Truck modifyTruckProfile(@Body ModifyTruckRequest request) throws RetrofitError {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
-    public void modifyTruckProfile(@Body Truck request, Callback<Truck> callback) {
+    public void modifyTruckProfile(@Body ModifyTruckRequest request, Callback<Truck> callback) {
         callback.success(modifyTruckProfile(request), null);
     }
 
