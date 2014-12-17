@@ -1,8 +1,11 @@
 package com.truckmuncher.truckmuncher.data.sync;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.ContentProviderClient;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SyncResult;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
@@ -16,14 +19,17 @@ import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
 import com.squareup.wire.Wire;
+import com.truckmuncher.api.auth.AuthResponse;
 import com.truckmuncher.api.exceptions.Error;
 import com.truckmuncher.api.menu.MenuItemAvailability;
 import com.truckmuncher.api.menu.ModifyMenuItemAvailabilityRequest;
 import com.truckmuncher.api.menu.ModifyMenuItemAvailabilityResponse;
 import com.truckmuncher.api.trucks.ServingModeRequest;
 import com.truckmuncher.api.trucks.ServingModeResponse;
+import com.truckmuncher.truckmuncher.authentication.AccountGeneral;
 import com.truckmuncher.truckmuncher.dagger.LocalNetworkModule;
 import com.truckmuncher.truckmuncher.dagger.NetworkModule;
+import com.truckmuncher.truckmuncher.dagger.TestUserModule;
 import com.truckmuncher.truckmuncher.data.Contract;
 import com.truckmuncher.truckmuncher.test.asserts.Assertions;
 import com.truckmuncher.truckmuncher.test.data.VerifiableContentProvider;
@@ -36,6 +42,8 @@ import java.util.UUID;
 import dagger.ObjectGraph;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class SyncAdapterTest extends InstrumentationTestCase {
 
@@ -65,7 +73,10 @@ public class SyncAdapterTest extends InstrumentationTestCase {
          * Disallow parallel syncs
          */
         adapter = new SyncAdapter(testContext, false, false);
-        ObjectGraph graph = ObjectGraph.create(new NetworkModule(testContext), new LocalNetworkModule(testServer));
+
+        AccountManager accountManager = mock(AccountManager.class);
+        when(accountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE)).thenReturn(new Account[]{TestUserModule.ACCOUNT});
+        ObjectGraph graph = ObjectGraph.create(new NetworkModule(testContext), new LocalNetworkModule(testContext, testServer), new TestUserModule(accountManager));
         graph.inject(adapter);
     }
 
@@ -86,7 +97,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
 
         // Run the sync manually
         ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckEntry.CONTENT_URI);
-        adapter.syncMenuItemAvailability(client);
+        adapter.syncMenuItemAvailability(client, new SyncResult());
 
         // If there are no results, the method should short circuit and no updates will happen.
         // If an update does happen, the test will fail.
@@ -151,7 +162,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
 
         // Run the sync manually
         ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckEntry.CONTENT_URI);
-        adapter.syncMenuItemAvailability(client);
+        adapter.syncMenuItemAvailability(client, new SyncResult());
 
         // Confirm the request was as expected
         RecordedRequest request = testServer.takeRequest();
@@ -194,14 +205,99 @@ public class SyncAdapterTest extends InstrumentationTestCase {
 
         // Setup the web server with the network calls we are expecting.
         MockResponse errorResponse = new MockResponse()
-                .setStatus("400")
+                .setResponseCode(400)
                 .setHeader("Content-Type", "application/x-protobuf")
                 .setBody(new Error("1234", "Mock message").toByteArray());
         testServer.enqueue(errorResponse);
 
         // Run the sync manually
         ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckEntry.CONTENT_URI);
-        adapter.syncMenuItemAvailability(client);
+        adapter.syncMenuItemAvailability(client, new SyncResult());
+
+        testProvider.assertThatQueuesAreEmpty();
+        testProvider.assertThatCursorsAreClosed();
+    }
+
+    public void testSyncMenuItemAvailabilityExpiredSession() throws RemoteException {
+
+        // Test values
+        final String menuItemId = UUID.randomUUID().toString();
+
+        testProvider.enqueue(new VerifiableContentProvider.QueryEvent() {
+            @NonNull
+            @Override
+            public Cursor onQuery(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+                assertThat(uri).isEqualTo(Contract.MenuItemEntry.buildDirty());
+
+                MatrixCursor cursor = new MatrixCursor(projection);
+
+                Object[] row = new Object[projection.length];
+                row[SyncAdapter.MenuItemAvailabilityQuery.INTERNAL_ID] = menuItemId;
+                row[SyncAdapter.MenuItemAvailabilityQuery.IS_AVAILABLE] = 1;
+                cursor.addRow(row);
+
+                return cursor;
+            }
+        });
+
+        // Setup the web server with the network calls we are expecting.
+        MockResponse errorResponse = new MockResponse()
+                .setResponseCode(401)
+                .setHeader("Content-Type", "application/x-protobuf")
+                .setBody(new Error("1234", "Expired session").toByteArray());
+        testServer.enqueue(errorResponse);
+        MockResponse authResponse = new MockResponse()
+                .setResponseCode(200)
+                .setHeader("Content-Type", "application/x-protobuf")
+                .setBody(new AuthResponse("", "", UUID.randomUUID().toString()).toByteArray());
+        testServer.enqueue(authResponse);
+
+        // Run the sync manually
+        ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckEntry.CONTENT_URI);
+        SyncResult result = new SyncResult();
+        adapter.syncMenuItemAvailability(client, result);
+
+        assertThat(result.fullSyncRequested).isTrue();
+
+        testProvider.assertThatQueuesAreEmpty();
+        testProvider.assertThatCursorsAreClosed();
+    }
+
+    public void testSyncMenuItemAvailabilityInvalidSocialCreds() throws RemoteException {
+
+        // Test values
+        final String menuItemId = UUID.randomUUID().toString();
+
+        testProvider.enqueue(new VerifiableContentProvider.QueryEvent() {
+            @NonNull
+            @Override
+            public Cursor onQuery(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+                assertThat(uri).isEqualTo(Contract.MenuItemEntry.buildDirty());
+
+                MatrixCursor cursor = new MatrixCursor(projection);
+
+                Object[] row = new Object[projection.length];
+                row[SyncAdapter.MenuItemAvailabilityQuery.INTERNAL_ID] = menuItemId;
+                row[SyncAdapter.MenuItemAvailabilityQuery.IS_AVAILABLE] = 1;
+                cursor.addRow(row);
+
+                return cursor;
+            }
+        });
+
+        // Setup the web server with the network calls we are expecting.
+        MockResponse errorResponse = new MockResponse()
+                .setResponseCode(401)
+                .setHeader("Content-Type", "application/x-protobuf")
+                .setBody(new Error("1234", "Expired session").toByteArray());
+        testServer.enqueue(errorResponse);
+
+        // Run the sync manually
+        ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckEntry.CONTENT_URI);
+        SyncResult result = new SyncResult();
+        adapter.syncMenuItemAvailability(client, result);
+
+        assertThat(result.tooManyRetries).isTrue();
 
         testProvider.assertThatQueuesAreEmpty();
         testProvider.assertThatCursorsAreClosed();
@@ -218,7 +314,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
 
         // Run the sync manually
         ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckEntry.CONTENT_URI);
-        adapter.syncTruckServingMode(client);
+        adapter.syncTruckServingMode(client, new SyncResult());
 
         // If there are no results, the method should short circuit and no updates will happen.
         // If an update does happen, the test will fail.
@@ -271,7 +367,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
 
         // Run the sync manually
         ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckEntry.CONTENT_URI);
-        adapter.syncTruckServingMode(client);
+        adapter.syncTruckServingMode(client, new SyncResult());
 
         // Confirm the request was as expected
         RecordedRequest request = testServer.takeRequest();
@@ -336,7 +432,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
 
         // Setup the web server with the network calls we are expecting.
         MockResponse errorResponse = new MockResponse()
-                .setStatus("400")
+                .setResponseCode(400)
                 .setHeader("Content-Type", "application/x-protobuf")
                 .setBody(new Error("1234", "Mock message").toByteArray());
         MockResponse mockResponse = new MockResponse()
@@ -347,7 +443,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
 
         // Run the sync manually
         ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckEntry.CONTENT_URI);
-        adapter.syncTruckServingMode(client);
+        adapter.syncTruckServingMode(client, new SyncResult());
 
         testProvider.assertThatQueuesAreEmpty();
         testProvider.assertThatCursorsAreClosed();
