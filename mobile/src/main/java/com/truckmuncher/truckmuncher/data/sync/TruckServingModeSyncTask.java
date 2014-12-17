@@ -10,7 +10,11 @@ import android.os.RemoteException;
 import com.truckmuncher.api.trucks.ServingModeRequest;
 import com.truckmuncher.api.trucks.TruckService;
 import com.truckmuncher.truckmuncher.data.ApiException;
-import com.truckmuncher.truckmuncher.data.Contract;
+import com.truckmuncher.truckmuncher.data.sql.SelectionQueryBuilder;
+
+import static com.truckmuncher.truckmuncher.data.Contract.TruckCombo;
+import static com.truckmuncher.truckmuncher.data.Contract.TruckStateEntry;
+import static com.truckmuncher.truckmuncher.data.Contract.buildSuppressNotify;
 
 public final class TruckServingModeSyncTask extends SyncTask {
 
@@ -26,7 +30,8 @@ public final class TruckServingModeSyncTask extends SyncTask {
 
     @Override
     protected ApiResult sync(SyncResult syncResult) throws RemoteException {
-        Cursor cursor = provider.query(Contract.TruckEntry.buildDirty(), TruckServingModeQuery.PROJECTION, null, null, null);
+        SelectionQueryBuilder query = TruckCombo.buildDirty();
+        Cursor cursor = provider.query(TruckCombo.CONTENT_URI, TruckServingModeQuery.PROJECTION, query.toString(), query.getArgsArray(), null);
         if (!cursor.moveToFirst()) {
 
             // Cursor is empty. Probably already synced this.
@@ -49,11 +54,12 @@ public final class TruckServingModeSyncTask extends SyncTask {
 
                 // Clear the dirty state
                 ContentValues values = new ContentValues();
-                values.put(Contract.TruckEntry.COLUMN_IS_DIRTY, false);
+                values.put(TruckStateEntry.COLUMN_IS_DIRTY, false);
 
                 // Since we're clearing an internal state, don't notify listeners
-                Uri uri = Contract.buildSuppressNotify(Contract.TruckEntry.buildSingleTruck(request.truckId));
-                provider.update(uri, values, null, null);
+                Uri uri = buildSuppressNotify(TruckStateEntry.CONTENT_URI);
+                SelectionQueryBuilder selection = TruckCombo.buildSingleTruck(request.truckId);
+                provider.update(uri, values, selection.toString(), selection.getArgsArray());
             } catch (ApiException e) {
                 ApiResult result = apiExceptionResolver.resolve(e);
 
@@ -77,10 +83,10 @@ public final class TruckServingModeSyncTask extends SyncTask {
 
     interface TruckServingModeQuery {
         static final String[] PROJECTION = new String[]{
-                Contract.TruckEntry.COLUMN_INTERNAL_ID,
-                Contract.TruckEntry.COLUMN_IS_SERVING,
-                Contract.TruckEntry.COLUMN_LATITUDE,
-                Contract.TruckEntry.COLUMN_LONGITUDE
+                TruckCombo.COLUMN_INTERNAL_ID,
+                TruckCombo.COLUMN_IS_SERVING,
+                TruckCombo.COLUMN_LATITUDE,
+                TruckCombo.COLUMN_LONGITUDE
         };
         static final int INTERNAL_ID = 0;
         static final int IS_SERVING = 1;
