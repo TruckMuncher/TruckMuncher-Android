@@ -43,6 +43,9 @@ public class MyContentProvider extends ContentProvider {
     private static final int TRUCK_STATE = 9;
     private static final UriMatcher uriMatcher = buildUriMatcher();
 
+    // TODO this is not OK. We need push messages
+    private static boolean hasSyncedAlreadyThisSession = false;
+
     private SQLiteOpenHelper database;
 
     private static UriMatcher buildUriMatcher() {
@@ -87,8 +90,9 @@ public class MyContentProvider extends ContentProvider {
                 retCursor = MenuView.queryMany(db, sanitized, projection);
 
                 // TODO replace with a push notification to spawn this sync
-                if (needsSync(uri)) {
+                if (needsSync(uri) && !hasSyncedAlreadyThisSession) {
                     getContext().startService(new Intent(getContext(), MenuUpdateService.class));
+                    hasSyncedAlreadyThisSession = true;
                 }
                 break;
             default:

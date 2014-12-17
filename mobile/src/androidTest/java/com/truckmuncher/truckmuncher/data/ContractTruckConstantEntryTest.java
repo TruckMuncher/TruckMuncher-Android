@@ -2,6 +2,8 @@ package com.truckmuncher.truckmuncher.data;
 
 import android.net.Uri;
 
+import com.truckmuncher.truckmuncher.data.sql.SelectionQueryBuilder;
+
 import junit.framework.TestCase;
 
 import java.util.UUID;
@@ -9,13 +11,13 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
-public class ContractTruckConstantEntryTest extends TestCase {
+public class ContractTruckEntryTest extends TestCase {
 
     public void testSingleTruckConversion() {
         String internalId = UUID.randomUUID().toString();
-        Uri uri = Contract.TruckConstantEntry.buildSingleTruck(internalId);
+        SelectionQueryBuilder query = Contract.TruckEntry.buildSingleTruck(internalId);
 
-        assertThat(Contract.TruckConstantEntry.getInternalIdFromUri(uri)).isEqualTo(internalId);
+        assertThat(Contract.TruckEntry.getInternalIdFromUri(uri)).isEqualTo(internalId);
     }
 
     public void testGetInternalIdThrowsOnInvalidUri() {
