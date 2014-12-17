@@ -1,11 +1,10 @@
 package com.truckmuncher.truckmuncher.customer;
 
 import android.database.Cursor;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import static com.truckmuncher.truckmuncher.data.Contract.TruckEntry;
+import static com.truckmuncher.truckmuncher.data.Contract.TruckCombo;
 
 public class CursorFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 
@@ -17,7 +16,7 @@ public class CursorFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
     }
 
     @Override
-    public Fragment getItem(int i) {
+    public CustomerMenuFragment getItem(int i) {
         cursor.moveToPosition(i);
         return CustomerMenuFragment.newInstance(
                 cursor.getString(Query.TRUCK_ID),
@@ -33,13 +32,18 @@ public class CursorFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
         return cursor.getCount();
     }
 
+    public String getTruckId(int position) {
+        cursor.moveToPosition(position);
+        return cursor.getString(Query.TRUCK_ID);
+    }
+
     public interface Query {
         static final String[] PROJECTION = new String[]{
-                TruckEntry.COLUMN_INTERNAL_ID,
-                TruckEntry.COLUMN_NAME,
-                TruckEntry.COLUMN_IMAGE_URL,
-                TruckEntry.COLUMN_KEYWORDS,
-                TruckEntry.COLUMN_COLOR_PRIMARY
+                TruckCombo.COLUMN_INTERNAL_ID,
+                TruckCombo.COLUMN_NAME,
+                TruckCombo.COLUMN_IMAGE_URL,
+                TruckCombo.COLUMN_KEYWORDS,
+                TruckCombo.COLUMN_COLOR_PRIMARY
         };
 
         static final int TRUCK_ID = 0;

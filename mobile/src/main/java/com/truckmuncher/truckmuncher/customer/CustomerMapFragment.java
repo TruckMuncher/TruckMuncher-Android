@@ -33,8 +33,9 @@ import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.data.Contract;
 import com.truckmuncher.truckmuncher.data.sql.SelectionQueryBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -52,6 +53,7 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
     LatLng currentLocation;
     ClusterManager<TruckCluster> clusterManager;
     private ClusterRenderer<TruckCluster> renderer;
+    private Map<String, TruckCluster> markers = Collections.emptyMap();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -197,7 +199,7 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         cursor.moveToPosition(-1);
 
-        List<TruckCluster> markers = new ArrayList<>();
+        markers = new HashMap<>();
 
         while (cursor.moveToNext()) {
             Truck truck = new Truck.Builder()
@@ -208,12 +210,12 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
             LatLng location = new LatLng(cursor.getDouble(ActiveTrucksQuery.LATITUDE),
                     cursor.getDouble(ActiveTrucksQuery.LONGITUDE));
 
-            markers.add(new TruckCluster(truck, location));
+            markers.put(truck.id, new TruckCluster(truck, location));
         }
 
         if (clusterManager != null) {
             clusterManager.clearItems();
-            clusterManager.addItems(markers);
+            clusterManager.addItems(markers.values());
             clusterManager.setRenderer(renderer);
         }
     }
@@ -254,6 +256,11 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
         // Point the map's listeners at the listeners implemented by the cluster manager.
         map.setOnCameraChangeListener(clusterManager);
         map.setOnMarkerClickListener(clusterManager);
+    }
+
+    public void moveTo(String truckId) {
+        TruckCluster cluster = markers.get(truckId);
+        mapView.getMap().moveCamera(CameraUpdateFactory.newLatLng(cluster.getPosition()));
     }
 
     public interface ActiveTrucksQuery {
