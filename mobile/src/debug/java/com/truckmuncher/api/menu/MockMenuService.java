@@ -36,12 +36,19 @@ public class MockMenuService implements MenuService {
 
     @Override
     public MenuResponse getMenu(@Body MenuRequest request) throws RetrofitError {
+        String truckId = "Truck1";
+        if (request != null) {
+            truckId = request.truckId;
+        }
+        int truckNumber = Integer.parseInt(truckId.substring(truckId.length() - 1));
+
+
         List<Category> categories = new ArrayList<>();
         for (int j = 0; j < 10; j++) {
             List<MenuItem> menuItems = new ArrayList<>();
             for (int i = 0; i < 10; i++) {
                 MenuItem item = new MenuItem.Builder()
-                        .id("MenuItem" + j + "_" + i)
+                        .id("MenuItem" + truckNumber + "_" + j + "_" + i)
                         .name("MenuItem" + j + "_" + i)
                         .price(i / 2f)
                         .notes("MenuItem" + j + "_" + i)
@@ -52,7 +59,7 @@ public class MockMenuService implements MenuService {
                 menuItems.add(item);
             }
             Category category = new Category.Builder()
-                    .id("Category" + j)
+                    .id("Category" + truckNumber + "_" + j)
                     .name("Category" + j)
                     .notes("Category" + j)
                     .orderInMenu(j)
@@ -61,10 +68,6 @@ public class MockMenuService implements MenuService {
             categories.add(category);
         }
 
-        String truckId = "Truck1";
-        if (request != null) {
-            truckId = request.truckId;
-        }
         Menu menu = new Menu.Builder().truckId(truckId).categories(categories).build();
         return new MenuResponse.Builder().menu(menu).build();
     }
