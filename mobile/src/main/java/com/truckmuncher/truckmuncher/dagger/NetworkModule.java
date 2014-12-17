@@ -8,6 +8,7 @@ import com.truckmuncher.api.menu.MenuService;
 import com.truckmuncher.api.trucks.TruckService;
 import com.truckmuncher.truckmuncher.ActiveTrucksService;
 import com.truckmuncher.truckmuncher.BuildConfig;
+import com.truckmuncher.truckmuncher.MainActivity;
 import com.truckmuncher.truckmuncher.data.ApiErrorHandler;
 import com.truckmuncher.truckmuncher.data.ApiRequestInterceptor;
 import com.truckmuncher.truckmuncher.data.sync.SyncAdapter;
@@ -27,6 +28,7 @@ import retrofit.converter.WireConverter;
 import timber.log.Timber;
 
 @Module(injects = {
+        MainActivity.class,
         MenuUpdateService.class,
         SyncAdapter.class,
         VendorTrucksService.class,

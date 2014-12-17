@@ -3,12 +3,12 @@ package com.truckmuncher.truckmuncher.customer;
 import android.content.Intent;
 import android.database.Cursor;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +31,7 @@ import com.truckmuncher.api.trucks.Truck;
 import com.truckmuncher.truckmuncher.ActiveTrucksService;
 import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.data.Contract;
-import com.truckmuncher.truckmuncher.util.CursorLoaderFactory;
+import com.truckmuncher.truckmuncher.data.sql.SelectionQueryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -187,10 +187,10 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        // Uri for trucks that are currently in serving mode
-        Uri uri = Contract.TruckEntry.buildServingTrucks();
 
-        return CursorLoaderFactory.create(getActivity(), uri, ActiveTrucksQuery.PROJECTION);
+        // Selection args for trucks that are currently in serving mode
+        SelectionQueryBuilder query = Contract.TruckCombo.buildServingTrucks();
+        return new CursorLoader(getActivity(), Contract.TruckCombo.CONTENT_URI, ActiveTrucksQuery.PROJECTION, query.toString(), query.getArgsArray(), null);
     }
 
     @Override
@@ -259,10 +259,10 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
     public interface ActiveTrucksQuery {
 
         public static final String[] PROJECTION = new String[]{
-                Contract.TruckEntry.COLUMN_INTERNAL_ID,
-                Contract.TruckEntry.COLUMN_LATITUDE,
-                Contract.TruckEntry.COLUMN_LONGITUDE,
-                Contract.TruckEntry.COLUMN_NAME
+                Contract.TruckCombo.COLUMN_INTERNAL_ID,
+                Contract.TruckCombo.COLUMN_LATITUDE,
+                Contract.TruckCombo.COLUMN_LONGITUDE,
+                Contract.TruckCombo.COLUMN_NAME
         };
         static final int INTERNAL_ID = 0;
         static final int LATITUDE = 1;

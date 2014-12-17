@@ -29,6 +29,9 @@ public class TruckTableTest {
         values.put(TruckEntry.COLUMN_IS_SERVING, false);
         values.put(TruckEntry.COLUMN_LATITUDE, 88.43);
         values.put(TruckEntry.COLUMN_LONGITUDE, -180.53);
+        values.put(TruckEntry.COLUMN_IS_DIRTY, false);
+        values.put(TruckEntry.COLUMN_COLOR_PRIMARY, "#000000");
+        values.put(TruckEntry.COLUMN_COLOR_SECONDARY, "#FFFFFF");
 
         Assertions.assertThat(db.insert(TruckEntry.TABLE_NAME, null, values)).isEqualTo(1);
         return internalId;

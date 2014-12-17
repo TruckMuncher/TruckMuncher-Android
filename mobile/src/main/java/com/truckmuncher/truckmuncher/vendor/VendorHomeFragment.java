@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.AsyncQueryHandler;
 import android.content.ContentValues;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.data.Contract;
 import com.truckmuncher.truckmuncher.data.SimpleAsyncQueryHandler;
+import com.truckmuncher.truckmuncher.data.sql.SelectionQueryBuilder;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -88,13 +90,16 @@ public class VendorHomeFragment extends Fragment {
         updateAnimation(isChecked);
 
         ContentValues values = new ContentValues();
-        values.put(Contract.TruckEntry.COLUMN_LATITUDE, currentLocation.getLatitude());
-        values.put(Contract.TruckEntry.COLUMN_LONGITUDE, currentLocation.getLongitude());
-        values.put(Contract.TruckEntry.COLUMN_IS_SERVING, isChecked);
-        values.put(Contract.TruckEntry.COLUMN_IS_DIRTY, true);
+        values.put(Contract.TruckCombo.COLUMN_LATITUDE, currentLocation.getLatitude());
+        values.put(Contract.TruckCombo.COLUMN_LONGITUDE, currentLocation.getLongitude());
+        values.put(Contract.TruckCombo.COLUMN_IS_SERVING, isChecked);
+        values.put(Contract.TruckCombo.COLUMN_IS_DIRTY, true);
         AsyncQueryHandler handler = new SimpleAsyncQueryHandler(getActivity().getContentResolver());
+
+        Uri uri = Contract.buildNeedsSync(Contract.TruckStateEntry.CONTENT_URI);
         // FIXME Need to use a real truck id, not a mock one
-        handler.startUpdate(0, null, Contract.buildNeedsSync(Contract.TruckEntry.buildSingleTruck("de513002-5a44-11e4-aa15-123b93f75cba")), values, null, null);
+        SelectionQueryBuilder query = Contract.TruckCombo.buildSingleTruck("de513002-5a44-11e4-aa15-123b93f75cba");
+        handler.startUpdate(0, null, uri, values, query.toString(), query.getArgsArray());
 
         onServingModeChangedListener.onServingModeChanged(isChecked);
     }

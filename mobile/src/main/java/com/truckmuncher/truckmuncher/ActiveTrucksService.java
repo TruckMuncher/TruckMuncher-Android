@@ -54,15 +54,15 @@ public class ActiveTrucksService extends IntentService {
             for (int i = 0, max = trucks.size(); i < max; i++) {
                 ActiveTrucksResponse.Truck truck = trucks.get(i);
                 ContentValues values = new ContentValues();
-                values.put(Contract.TruckEntry.COLUMN_INTERNAL_ID, truck.id);
-                values.put(Contract.TruckEntry.COLUMN_LATITUDE, truck.latitude);
-                values.put(Contract.TruckEntry.COLUMN_LONGITUDE, truck.longitude);
-                values.put(Contract.TruckEntry.COLUMN_IS_SERVING, 1);
+                values.put(Contract.TruckStateEntry.COLUMN_INTERNAL_ID, truck.id);
+                values.put(Contract.TruckStateEntry.COLUMN_LATITUDE, truck.latitude);
+                values.put(Contract.TruckStateEntry.COLUMN_LONGITUDE, truck.longitude);
+                values.put(Contract.TruckStateEntry.COLUMN_IS_SERVING, 1);
                 contentValues[i] = values;
             }
 
-            getContentResolver().delete(Contract.TruckEntry.CONTENT_URI, null, null);
-            getContentResolver().bulkInsert(Contract.TruckEntry.CONTENT_URI, contentValues);
+            getContentResolver().delete(Contract.TruckStateEntry.CONTENT_URI, null, null);
+            getContentResolver().bulkInsert(Contract.TruckStateEntry.CONTENT_URI, contentValues);
         } catch (ApiException e) {
             Timber.e("Got an error while getting active trucks.");
             Intent errorIntent = new Intent();

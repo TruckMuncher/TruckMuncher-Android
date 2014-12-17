@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    app:panelHeight="@dimen/menu_pull_up_header_height"
+    app:shadowHeight="4dp">
 
     <fragment
         android:id="@+id/customer_map_fragment"
@@ -11,4 +15,9 @@
         android:layout_height="match_parent"
         tools:context="MainActivity" />
 
-</FrameLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</com.sothree.slidinguppanel.SlidingUpPanelLayout>

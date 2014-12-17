@@ -140,6 +140,7 @@ dependencies {
 
     // UI Components
     compile 'com.twotoasters.SectionCursorAdapter:library:1.0.1'
+    compile 'com.sothree.slidinguppanel:library:2.0.4'
 
     compile 'com.squareup.dagger:dagger:1.2.2'
     provided 'com.squareup.dagger:dagger-compiler:1.2.2'

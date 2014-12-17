@@ -4,12 +4,14 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 import com.truckmuncher.truckmuncher.BuildConfig;
+import com.truckmuncher.truckmuncher.data.sql.SelectionQueryBuilder;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.UUID;
+
+import static com.truckmuncher.truckmuncher.data.sql.SelectionQueryBuilder.Op.EQ;
 
 public final class Contract {
 
@@ -18,7 +20,6 @@ public final class Contract {
     protected static final String CONTENT_TYPE_BASE = "vnd.android.cursor.dir/" + CONTENT_AUTHORITY + "/";
     protected static final String CONTENT_ITEM_TYPE_BASE = "vnd.android.cursor.item/" + CONTENT_AUTHORITY + "/";
 
-    public static final String PATH_TRUCK = "truck";
     public static final String PATH_CATEGORY = "category";
     public static final String PATH_MENU_ITEM = "menu_item";
     public static final String PATH_MENU = "menu";
@@ -93,50 +94,56 @@ public final class Contract {
         return builder.build();
     }
 
-    public static final class TruckEntry implements BaseColumns {
+    public interface TruckStateEntry extends BaseColumns {
 
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TRUCK).build();
-        public static final String TABLE_NAME = "truck";
+        public static final String TABLE_NAME = "truck_state";
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME).build();
         public static final String COLUMN_INTERNAL_ID = TABLE_NAME + "__internal_id";
-        public static final String COLUMN_NAME = TABLE_NAME + "__name";
-        public static final String COLUMN_IMAGE_URL = TABLE_NAME + "__image_url";
-        public static final String COLUMN_KEYWORDS = TABLE_NAME + "__keywords";
         public static final String COLUMN_IS_SELECTED_TRUCK = TABLE_NAME + "__is_selected";
-        public static final String COLUMN_OWNED_BY_CURRENT_USER = TABLE_NAME + "__owned_by_current_user";
         public static final String COLUMN_IS_SERVING = TABLE_NAME + "__is_serving";
         public static final String COLUMN_LATITUDE = TABLE_NAME + "__latitude";
         public static final String COLUMN_LONGITUDE = TABLE_NAME + "__longitude";
         public static final String COLUMN_IS_DIRTY = TABLE_NAME + "__is_dirty";
+    }
 
-        public static Uri buildSingleTruck(String internalId) {
-            // Do this to make sure it's actually an ID. Will throw if not correctly formatted
-            UUID.fromString(internalId);
-            return CONTENT_URI.buildUpon().appendPath(internalId).build();
+    public interface TruckEntry extends BaseColumns {
+
+        public static final String TABLE_NAME = "truck";
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME).build();
+
+        public static final String COLUMN_INTERNAL_ID = TABLE_NAME + "__internal_id";
+        public static final String COLUMN_NAME = TABLE_NAME + "__name";
+        public static final String COLUMN_IMAGE_URL = TABLE_NAME + "__image_url";
+        public static final String COLUMN_KEYWORDS = TABLE_NAME + "__keywords";
+        public static final String COLUMN_COLOR_PRIMARY = TABLE_NAME + "__color_primary";
+        public static final String COLUMN_COLOR_SECONDARY = TABLE_NAME + "__color_secondary";
+        public static final String COLUMN_OWNED_BY_CURRENT_USER = TABLE_NAME + "__owned_by_current_user";
+    }
+
+    public static final class TruckCombo implements TruckEntry, TruckStateEntry {
+
+        public static final String VIEW_NAME = "truck_view";
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(VIEW_NAME).build();
+        public static final String COLUMN_INTERNAL_ID = TruckEntry.TABLE_NAME + "__internal_id";
+
+        public static SelectionQueryBuilder buildSingleTruck(String internalId) {
+            return new SelectionQueryBuilder()
+                    .expr(TruckStateEntry.COLUMN_INTERNAL_ID, EQ, internalId);
         }
 
-        public static Uri buildServingTrucks() {
-            return Contract.TruckEntry.CONTENT_URI.buildUpon()
-                    .appendQueryParameter(Contract.TruckEntry.COLUMN_IS_SERVING, "1").build();
+        public static SelectionQueryBuilder buildServingTrucks() {
+            return new SelectionQueryBuilder()
+                    .expr(COLUMN_IS_SERVING, EQ, true);
         }
 
-        public static String getInternalIdFromUri(Uri uri) {
-            String internalId = uri.getLastPathSegment();
-            if (internalId == null) {
-                throw new IllegalArgumentException("Uri didn't include an internal id.");
-            }
-
-            // Do this to make sure it's actually the ID. Will throw if not correctly formatted
-            UUID.fromString(internalId);
-            return internalId;
+        public static SelectionQueryBuilder buildDirty() {
+            return new SelectionQueryBuilder()
+                    .expr(COLUMN_IS_DIRTY, EQ, true);
         }
 
-        public static Uri buildDirty() {
-            return CONTENT_URI.buildUpon().appendQueryParameter(COLUMN_IS_DIRTY, "1").build();
-        }
+        public static final String CONTENT_TYPE = CONTENT_TYPE_BASE + VIEW_NAME;
 
-        public static final String CONTENT_TYPE = CONTENT_TYPE_BASE + PATH_TRUCK;
-
-        public static final String CONTENT_ITEM_TYPE = CONTENT_ITEM_TYPE_BASE + PATH_TRUCK;
+        public static final String CONTENT_ITEM_TYPE = CONTENT_ITEM_TYPE_BASE + VIEW_NAME;
     }
 
     public static final class CategoryEntry implements BaseColumns {

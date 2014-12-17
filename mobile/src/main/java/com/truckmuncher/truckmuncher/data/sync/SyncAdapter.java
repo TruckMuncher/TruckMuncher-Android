@@ -19,6 +19,7 @@ import com.truckmuncher.api.trucks.TruckService;
 import com.truckmuncher.truckmuncher.App;
 import com.truckmuncher.truckmuncher.data.ApiException;
 import com.truckmuncher.truckmuncher.data.Contract;
+import com.truckmuncher.truckmuncher.data.sql.SelectionQueryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.truckmuncher.truckmuncher.data.Contract.MenuItemEntry;
-import static com.truckmuncher.truckmuncher.data.Contract.TruckEntry;
+import static com.truckmuncher.truckmuncher.data.Contract.TruckCombo;
+import static com.truckmuncher.truckmuncher.data.Contract.buildSuppressNotify;
 
 public final class SyncAdapter extends AbstractThreadedSyncAdapter {
 
@@ -87,7 +89,7 @@ public final class SyncAdapter extends AbstractThreadedSyncAdapter {
             }
 
             // Since we're clearing an internal state, don't notify listeners
-            Uri uri = Contract.buildSuppressNotify(MenuItemEntry.CONTENT_URI);
+            Uri uri = buildSuppressNotify(MenuItemEntry.CONTENT_URI);
             provider.bulkInsert(uri, contentValues);
         } catch (ApiException e) {
             // Error has already been logged. If it was network, Let the framework handle it.
@@ -96,7 +98,8 @@ public final class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     void syncTruckServingMode(ContentProviderClient provider) throws RemoteException {
-        Cursor cursor = provider.query(TruckEntry.buildDirty(), TruckServingModeQuery.PROJECTION, null, null, null);
+        SelectionQueryBuilder query = TruckCombo.buildDirty();
+        Cursor cursor = provider.query(TruckCombo.CONTENT_URI, TruckServingModeQuery.PROJECTION, query.toString(), query.getArgsArray(), null);
         if (!cursor.moveToFirst()) {
             // Cursor is empty. Probably already synced this.
             cursor.close();
@@ -116,11 +119,12 @@ public final class SyncAdapter extends AbstractThreadedSyncAdapter {
 
                 // Clear the dirty state
                 ContentValues values = new ContentValues();
-                values.put(TruckEntry.COLUMN_IS_DIRTY, false);
+                values.put(TruckCombo.COLUMN_IS_DIRTY, false);
 
                 // Since we're clearing an internal state, don't notify listeners
-                Uri uri = Contract.buildSuppressNotify(TruckEntry.buildSingleTruck(request.truckId));
-                provider.update(uri, values, null, null);
+                Uri uri = buildSuppressNotify(Contract.TruckStateEntry.CONTENT_URI);
+                SelectionQueryBuilder selection = TruckCombo.buildSingleTruck(request.truckId);
+                provider.update(uri, values, selection.toString(), selection.getArgsArray());
             } catch (ApiException e) {
                 // Error has already been logged. If it was network, let the framework handle it.
                 // If it was a server error, we either handle it elsewhere or a repeat request won't make a difference.
@@ -140,10 +144,10 @@ public final class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     interface TruckServingModeQuery {
         static final String[] PROJECTION = new String[]{
-                TruckEntry.COLUMN_INTERNAL_ID,
-                TruckEntry.COLUMN_IS_SERVING,
-                TruckEntry.COLUMN_LATITUDE,
-                TruckEntry.COLUMN_LONGITUDE
+                TruckCombo.COLUMN_INTERNAL_ID,
+                TruckCombo.COLUMN_IS_SERVING,
+                TruckCombo.COLUMN_LATITUDE,
+                TruckCombo.COLUMN_LONGITUDE
         };
         static final int INTERNAL_ID = 0;
         static final int IS_SERVING = 1;

@@ -22,8 +22,11 @@ public class MockMenuService implements MenuService {
 
     @Override
     public FullMenusResponse getFullMenus(@Body FullMenusRequest request) throws RetrofitError {
-        MenuResponse response = getMenu(null);
-        return new FullMenusResponse(Arrays.asList(response.menu));
+        List<Menu> menus = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            menus.add(getMenu(new MenuRequest("Truck" + i)).menu);
+        }
+        return new FullMenusResponse(menus);
     }
 
     @Override
@@ -58,7 +61,11 @@ public class MockMenuService implements MenuService {
             categories.add(category);
         }
 
-        Menu menu = new Menu.Builder().truckId("Truck1").categories(categories).build();
+        String truckId = "Truck1";
+        if (request != null) {
+            truckId = request.truckId;
+        }
+        Menu menu = new Menu.Builder().truckId(truckId).categories(categories).build();
         return new MenuResponse.Builder().menu(menu).build();
     }
 
