@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
+import com.truckmuncher.truckmuncher.data.Contract;
 import com.volkhart.androidutil.data.QueryArgs;
 
 import timber.log.Timber;
@@ -11,8 +12,6 @@ import timber.log.Timber;
 import static com.truckmuncher.truckmuncher.data.Contract.CategoryEntry;
 import static com.truckmuncher.truckmuncher.data.Contract.MenuEntry;
 import static com.truckmuncher.truckmuncher.data.Contract.MenuItemEntry;
-import static com.truckmuncher.truckmuncher.data.Contract.TruckCombo;
-import static com.truckmuncher.truckmuncher.data.Contract.TruckEntry;
 
 public final class MenuView {
 
@@ -37,15 +36,15 @@ public final class MenuView {
                 + CategoryEntry.COLUMN_NOTES + ", "
                 + CategoryEntry.COLUMN_ORDER_IN_MENU + ", "
 
-                + TruckEntry.COLUMN_INTERNAL_ID
+                + Contract.TruckConstantEntry.COLUMN_INTERNAL_ID
 
                 + " from "
                 + MenuItemEntry.TABLE_NAME + " inner join "
                 + CategoryEntry.TABLE_NAME + " on "
                 + MenuItemEntry.COLUMN_CATEGORY_ID + "=" + CategoryEntry.COLUMN_INTERNAL_ID
                 + " inner join "
-                + TruckCombo.VIEW_NAME + " on "
-                + CategoryEntry.COLUMN_TRUCK_ID + "=" + TruckCombo.COLUMN_INTERNAL_ID
+                + Contract.TruckEntry.VIEW_NAME + " on "
+                + CategoryEntry.COLUMN_TRUCK_ID + "=" + Contract.TruckEntry.COLUMN_INTERNAL_ID
 
                 + " order by " + CategoryEntry.COLUMN_ORDER_IN_MENU + ", "
                 + MenuItemEntry.COLUMN_ORDER_IN_CATEGORY + ";";

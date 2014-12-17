@@ -19,7 +19,6 @@ import com.truckmuncher.truckmuncher.data.sql.TruckStateTable;
 import com.truckmuncher.truckmuncher.data.sql.TruckTable;
 import com.truckmuncher.truckmuncher.menu.MenuUpdateService;
 
-import hugo.weaving.DebugLog;
 import timber.log.Timber;
 
 import static com.truckmuncher.truckmuncher.data.Contract.CONTENT_AUTHORITY;
@@ -28,8 +27,6 @@ import static com.truckmuncher.truckmuncher.data.Contract.MenuItemEntry;
 import static com.truckmuncher.truckmuncher.data.Contract.PATH_CATEGORY;
 import static com.truckmuncher.truckmuncher.data.Contract.PATH_MENU;
 import static com.truckmuncher.truckmuncher.data.Contract.PATH_MENU_ITEM;
-import static com.truckmuncher.truckmuncher.data.Contract.TruckCombo;
-import static com.truckmuncher.truckmuncher.data.Contract.TruckEntry;
 import static com.truckmuncher.truckmuncher.data.Contract.TruckStateEntry;
 import static com.truckmuncher.truckmuncher.data.Contract.needsSync;
 import static com.truckmuncher.truckmuncher.data.Contract.sanitize;
@@ -52,9 +49,9 @@ public class MyContentProvider extends ContentProvider {
         UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         String authority = CONTENT_AUTHORITY;
 
-        matcher.addURI(authority, TruckEntry.TABLE_NAME, TRUCK_ALL);
-        matcher.addURI(authority, TruckEntry.TABLE_NAME + "/*", TRUCK_SINGLE);
-        matcher.addURI(authority, TruckCombo.VIEW_NAME, TRUCK_VIEW);
+        matcher.addURI(authority, Contract.TruckConstantEntry.TABLE_NAME, TRUCK_ALL);
+        matcher.addURI(authority, Contract.TruckConstantEntry.TABLE_NAME + "/*", TRUCK_SINGLE);
+        matcher.addURI(authority, Contract.TruckEntry.VIEW_NAME, TRUCK_VIEW);
         matcher.addURI(authority, TruckStateEntry.TABLE_NAME, TRUCK_STATE);
 
         matcher.addURI(authority, PATH_CATEGORY, CATEGORY_ALL);
@@ -73,7 +70,6 @@ public class MyContentProvider extends ContentProvider {
         return true;
     }
 
-    @DebugLog
     @Override
     @NonNull
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
@@ -84,23 +80,8 @@ public class MyContentProvider extends ContentProvider {
                 retCursor = MenuItemTable.queryMany(db, uri, projection);
                 break;
             case TRUCK_VIEW:
-                retCursor = db.query(TruckCombo.VIEW_NAME, projection, selection, selectionArgs, null, null, null);
+                retCursor = db.query(Contract.TruckEntry.VIEW_NAME, projection, selection, selectionArgs, null, null, null);
                 break;
-            case TRUCK_ALL:
-                throw new RuntimeException();
-
-                // TODO Migrate to using selection and args. Just here for backwards compatibility
-//                QueryArgs args = new QueryArgs(uri);
-//                retCursor = db.query(TruckCombo.VIEW_NAME, projection, args.selection, args.selectionArgs, null, null, null);
-//                break;
-            case TRUCK_SINGLE:
-
-                // TODO Migrate to using selection and args. Just here for backwards compatibility
-                throw new RuntimeException();
-//                selection = TruckEntry.COLUMN_INTERNAL_ID + "=?";
-//                selectionArgs = new String[]{TruckCombo.getInternalIdFromUri(uri)};
-//                retCursor = db.query(TruckCombo.VIEW_NAME, projection, selection, selectionArgs, null, null, null);
-//                break;
             case MENU:
                 Uri sanitized = sanitize(uri);
                 retCursor = MenuView.queryMany(db, sanitized, projection);
@@ -122,9 +103,9 @@ public class MyContentProvider extends ContentProvider {
     public String getType(@NonNull Uri uri) {
         switch (uriMatcher.match(uri)) {
             case TRUCK_SINGLE:
-                return TruckCombo.CONTENT_ITEM_TYPE;
+                return Contract.TruckEntry.CONTENT_ITEM_TYPE;
             case TRUCK_VIEW:
-                return TruckCombo.CONTENT_TYPE;
+                return Contract.TruckEntry.CONTENT_TYPE;
             case CATEGORY_ALL:
                 return CategoryEntry.CONTENT_TYPE;
             case MENU_ITEM_ALL:
@@ -151,7 +132,6 @@ public class MyContentProvider extends ContentProvider {
 //        return returnUri;
     }
 
-    @DebugLog
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         boolean suppressNotify = suppressNotify(uri);
@@ -160,22 +140,6 @@ public class MyContentProvider extends ContentProvider {
         SQLiteDatabase db = database.getWritableDatabase();
         int rowsDeleted;
         switch (uriMatcher.match(uri)) {
-            case TRUCK_ALL:
-
-                throw new RuntimeException();
-                // TODO Migrate to using selection and args. Just here for backwards compatibility
-//                QueryArgs args = new QueryArgs(uri);
-//                rowsDeleted = db.delete(TruckCombo.VIEW_NAME, args.selection, args.selectionArgs);
-//                break;
-
-                // TODO Is there any reason to have this?
-//            case TRUCK_SINGLE:
-//
-//                // TODO Migrate to using selection and args. Just here for backwards compatibility
-//                selection = TruckEntry.COLUMN_INTERNAL_ID + "=?";
-//                selectionArgs = new String[]{TruckCombo.getInternalIdFromUri(uri)};
-//                rowsDeleted = db.delete(TruckCombo.VIEW_NAME, selection, selectionArgs);
-//                break;
             case TRUCK_STATE:
                 rowsDeleted = db.delete(TruckStateEntry.TABLE_NAME, selection, selectionArgs);
                 break;
@@ -190,7 +154,6 @@ public class MyContentProvider extends ContentProvider {
         return rowsDeleted;
     }
 
-    @DebugLog
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         boolean suppressNotify = suppressNotify(uri);
@@ -202,21 +165,6 @@ public class MyContentProvider extends ContentProvider {
             case TRUCK_STATE:
                 rowsUpdated = db.update(TruckStateEntry.TABLE_NAME, values, selection, selectionArgs);
                 break;
-            case TRUCK_ALL:
-
-                throw new RuntimeException();
-                // TODO Migrate to using selection and args. Just here for backwards compatibility
-//                QueryArgs args = new QueryArgs(uri);
-//                rowsUpdated = db.update(TruckCombo.VIEW_NAME, values, args.selection, args.selectionArgs);
-//                break;
-            case TRUCK_SINGLE:
-
-                throw new RuntimeException();
-                // TODO Migrate to using selection and args. Just here for backwards compatibility
-//                selection = TruckEntry.COLUMN_INTERNAL_ID + "=?";
-//                selectionArgs = new String[]{TruckCombo.getInternalIdFromUri(uri)};
-//                rowsUpdated = db.update(TruckCombo.VIEW_NAME, values, selection, selectionArgs);
-//                break;
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
@@ -227,7 +175,6 @@ public class MyContentProvider extends ContentProvider {
         return rowsUpdated;
     }
 
-    @DebugLog
     @Override
     public int bulkInsert(Uri uri, @NonNull ContentValues[] values) {
         SQLiteDatabase db = database.getWritableDatabase();
@@ -241,11 +188,11 @@ public class MyContentProvider extends ContentProvider {
                 break;
             case TRUCK_ALL:
                 returnCount = TruckTable.bulkInsert(db, values);
-                uri = TruckCombo.CONTENT_URI;
+                uri = Contract.TruckEntry.CONTENT_URI;
                 break;
             case TRUCK_STATE:
                 returnCount = TruckStateTable.bulkInsert(db, values);
-                uri = TruckCombo.CONTENT_URI;
+                uri = Contract.TruckEntry.CONTENT_URI;
                 break;
             default:
                 Timber.w("Attempting a bulk insert for an unsupported URI, %s. Falling back to normal inserts...", uri);

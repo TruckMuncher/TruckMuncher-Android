@@ -89,16 +89,16 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
                 for (int i = 0, max = trucks.size(); i < max; i++) {
                     Truck truck = trucks.get(i);
                     ContentValues values = new ContentValues();
-                    values.put(Contract.TruckEntry.COLUMN_INTERNAL_ID, truck.id);
-                    values.put(Contract.TruckEntry.COLUMN_NAME, truck.name);
-                    values.put(Contract.TruckEntry.COLUMN_IMAGE_URL, truck.imageUrl);
-                    values.put(Contract.TruckEntry.COLUMN_KEYWORDS, Contract.convertListToString(truck.keywords));
-                    values.put(Contract.TruckEntry.COLUMN_COLOR_PRIMARY, truck.primaryColor);
-                    values.put(Contract.TruckEntry.COLUMN_COLOR_SECONDARY, truck.secondaryColor);
+                    values.put(Contract.TruckConstantEntry.COLUMN_INTERNAL_ID, truck.id);
+                    values.put(Contract.TruckConstantEntry.COLUMN_NAME, truck.name);
+                    values.put(Contract.TruckConstantEntry.COLUMN_IMAGE_URL, truck.imageUrl);
+                    values.put(Contract.TruckConstantEntry.COLUMN_KEYWORDS, Contract.convertListToString(truck.keywords));
+                    values.put(Contract.TruckConstantEntry.COLUMN_COLOR_PRIMARY, truck.primaryColor);
+                    values.put(Contract.TruckConstantEntry.COLUMN_COLOR_SECONDARY, truck.secondaryColor);
                     contentValues[i] = values;
                 }
 
-                getContentResolver().bulkInsert(Contract.TruckEntry.CONTENT_URI, contentValues);
+                getContentResolver().bulkInsert(Contract.TruckConstantEntry.CONTENT_URI, contentValues);
                 getSupportLoaderManager().initLoader(LOADER_TRUCKS, null, MainActivity.this);
             }
 
@@ -165,6 +165,7 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
      * appropriate action. Currently only the {@link Intent#ACTION_SEARCH} and
      * {@link SearchIntents#ACTION_SEARCH} intents are supported to filter food trucks by the given
      * search query.
+     *
      * @param intent An intent that was passed to this activity that should be handled.
      */
     private void handleIntent(Intent intent) {
@@ -216,8 +217,8 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         switch (i) {
             case LOADER_TRUCKS:
-                SelectionQueryBuilder query = Contract.TruckCombo.buildServingTrucks();
-                return new CursorLoader(this, Contract.TruckCombo.CONTENT_URI, CursorFragmentStatePagerAdapter.Query.PROJECTION, query.toString(), query.getArgsArray(), null);
+                SelectionQueryBuilder query = Contract.TruckEntry.buildServingTrucks();
+                return new CursorLoader(this, Contract.TruckEntry.CONTENT_URI, CursorFragmentStatePagerAdapter.Query.PROJECTION, query.toString(), query.getArgsArray(), null);
             default:
                 throw new RuntimeException("Invalid loader id: " + i);
         }

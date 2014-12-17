@@ -94,6 +94,9 @@ public final class Contract {
         return builder.build();
     }
 
+    /**
+     * Stores the temporary state. You must use this to do writes to the db, but should not use this for queries.
+     */
     public interface TruckStateEntry extends BaseColumns {
 
         public static final String TABLE_NAME = "truck_state";
@@ -106,7 +109,10 @@ public final class Contract {
         public static final String COLUMN_IS_DIRTY = TABLE_NAME + "__is_dirty";
     }
 
-    public interface TruckEntry extends BaseColumns {
+    /**
+     * Stores the permanent state. You must use this to do writes to the db, but should not use this for queries.
+     */
+    public interface TruckConstantEntry extends BaseColumns {
 
         public static final String TABLE_NAME = "truck";
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME).build();
@@ -120,11 +126,14 @@ public final class Contract {
         public static final String COLUMN_OWNED_BY_CURRENT_USER = TABLE_NAME + "__owned_by_current_user";
     }
 
-    public static final class TruckCombo implements TruckEntry, TruckStateEntry {
+    /**
+     * Gives a wholistic view of a truck. Use this for queries but not writes.
+     */
+    public static final class TruckEntry implements TruckConstantEntry, TruckStateEntry {
 
         public static final String VIEW_NAME = "truck_view";
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(VIEW_NAME).build();
-        public static final String COLUMN_INTERNAL_ID = TruckEntry.TABLE_NAME + "__internal_id";
+        public static final String COLUMN_INTERNAL_ID = TruckConstantEntry.TABLE_NAME + "__internal_id";
 
         public static SelectionQueryBuilder buildSingleTruck(String internalId) {
             return new SelectionQueryBuilder()
@@ -186,7 +195,7 @@ public final class Contract {
         public static final String VIEW_NAME = "view_menu";
 
         public static Uri buildMenuForTruck(String truckId) {
-            return CONTENT_URI.buildUpon().appendQueryParameter(TruckEntry.COLUMN_INTERNAL_ID, truckId).build();
+            return CONTENT_URI.buildUpon().appendQueryParameter(TruckConstantEntry.COLUMN_INTERNAL_ID, truckId).build();
         }
     }
 }

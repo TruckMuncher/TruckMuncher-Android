@@ -21,9 +21,9 @@ public class MyContentProviderTest extends ProviderTestCase2<MyContentProvider> 
         super.setUp();
         ContentValues[] contentValues = new ContentValues[1];
         ContentValues values = new ContentValues();
-        values.put(Contract.TruckEntry.COLUMN_INTERNAL_ID, UUID.randomUUID().toString());
+        values.put(Contract.TruckConstantEntry.COLUMN_INTERNAL_ID, UUID.randomUUID().toString());
         contentValues[0] = values;
-        getMockContentResolver().bulkInsert(Contract.TruckEntry.CONTENT_URI, contentValues);
+        getMockContentResolver().bulkInsert(Contract.TruckConstantEntry.CONTENT_URI, contentValues);
     }
 
     @Override
@@ -31,12 +31,12 @@ public class MyContentProviderTest extends ProviderTestCase2<MyContentProvider> 
         super.tearDown();
 
         // Delete all entries
-        getMockContentResolver().delete(Contract.TruckEntry.CONTENT_URI, null, null);
+        getMockContentResolver().delete(Contract.TruckConstantEntry.CONTENT_URI, null, null);
     }
 
     public void testInsertIsNotSupported() {
         try {
-            mContext.getContentResolver().insert(Contract.TruckEntry.CONTENT_URI, null);
+            mContext.getContentResolver().insert(Contract.TruckConstantEntry.CONTENT_URI, null);
             failBecauseExceptionWasNotThrown(UnsupportedOperationException.class);
         } catch (UnsupportedOperationException e) {
             // Just here to ensure this is tested in the future
@@ -44,7 +44,7 @@ public class MyContentProviderTest extends ProviderTestCase2<MyContentProvider> 
     }
 
     public void testUpdateRespectsNeedsSyncContract() {
-        mContext.getContentResolver().registerContentObserver(Contract.TruckEntry.CONTENT_URI, false, new ContentObserver(new Handler()) {
+        mContext.getContentResolver().registerContentObserver(Contract.TruckConstantEntry.CONTENT_URI, false, new ContentObserver(new Handler()) {
             @Override
             public void onChange(boolean selfChange) {
                 super.onChange(selfChange);
@@ -73,11 +73,11 @@ public class MyContentProviderTest extends ProviderTestCase2<MyContentProvider> 
     }
 
     public void testGetType() {
-        assertThat(mContext.getContentResolver().getType(Contract.TruckEntry.CONTENT_URI))
-                .isEqualTo(Contract.TruckEntry.CONTENT_TYPE);
+        assertThat(mContext.getContentResolver().getType(Contract.TruckConstantEntry.CONTENT_URI))
+                .isEqualTo(Contract.TruckConstantEntry.CONTENT_TYPE);
 
-        assertThat(mContext.getContentResolver().getType(Contract.TruckEntry.buildSingleTruck(UUID.randomUUID().toString())))
-                .isEqualTo(Contract.TruckEntry.CONTENT_ITEM_TYPE);
+        assertThat(mContext.getContentResolver().getType(Contract.TruckConstantEntry.buildSingleTruck(UUID.randomUUID().toString())))
+                .isEqualTo(Contract.TruckConstantEntry.CONTENT_ITEM_TYPE);
 
         assertThat(mContext.getContentResolver().getType(Contract.CategoryEntry.CONTENT_URI))
                 .isEqualTo(Contract.CategoryEntry.CONTENT_TYPE);

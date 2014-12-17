@@ -191,8 +191,8 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
         // Selection args for trucks that are currently in serving mode
-        SelectionQueryBuilder query = Contract.TruckCombo.buildServingTrucks();
-        return new CursorLoader(getActivity(), Contract.TruckCombo.CONTENT_URI, ActiveTrucksQuery.PROJECTION, query.toString(), query.getArgsArray(), null);
+        SelectionQueryBuilder query = Contract.TruckEntry.buildServingTrucks();
+        return new CursorLoader(getActivity(), Contract.TruckEntry.CONTENT_URI, ActiveTrucksQuery.PROJECTION, query.toString(), query.getArgsArray(), null);
     }
 
     @Override
@@ -266,10 +266,10 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
     public interface ActiveTrucksQuery {
 
         public static final String[] PROJECTION = new String[]{
-                Contract.TruckCombo.COLUMN_INTERNAL_ID,
-                Contract.TruckCombo.COLUMN_LATITUDE,
-                Contract.TruckCombo.COLUMN_LONGITUDE,
-                Contract.TruckCombo.COLUMN_NAME
+                Contract.TruckEntry.COLUMN_INTERNAL_ID,
+                Contract.TruckEntry.COLUMN_LATITUDE,
+                Contract.TruckEntry.COLUMN_LONGITUDE,
+                Contract.TruckEntry.COLUMN_NAME
         };
         static final int INTERNAL_ID = 0;
         static final int LATITUDE = 1;

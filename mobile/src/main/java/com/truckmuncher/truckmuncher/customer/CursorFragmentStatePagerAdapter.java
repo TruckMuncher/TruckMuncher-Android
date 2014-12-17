@@ -4,7 +4,7 @@ import android.database.Cursor;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import static com.truckmuncher.truckmuncher.data.Contract.TruckCombo;
+import com.truckmuncher.truckmuncher.data.Contract;
 
 public class CursorFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 
@@ -39,11 +39,11 @@ public class CursorFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 
     public interface Query {
         static final String[] PROJECTION = new String[]{
-                TruckCombo.COLUMN_INTERNAL_ID,
-                TruckCombo.COLUMN_NAME,
-                TruckCombo.COLUMN_IMAGE_URL,
-                TruckCombo.COLUMN_KEYWORDS,
-                TruckCombo.COLUMN_COLOR_PRIMARY
+                Contract.TruckEntry.COLUMN_INTERNAL_ID,
+                Contract.TruckEntry.COLUMN_NAME,
+                Contract.TruckEntry.COLUMN_IMAGE_URL,
+                Contract.TruckEntry.COLUMN_KEYWORDS,
+                Contract.TruckEntry.COLUMN_COLOR_PRIMARY
         };
 
         static final int TRUCK_ID = 0;

@@ -96,7 +96,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
         });
 
         // Run the sync manually
-        ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckEntry.CONTENT_URI);
+        ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckConstantEntry.CONTENT_URI);
         adapter.syncMenuItemAvailability(client, new SyncResult());
 
         // If there are no results, the method should short circuit and no updates will happen.
@@ -161,7 +161,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
         testServer.enqueue(response);
 
         // Run the sync manually
-        ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckEntry.CONTENT_URI);
+        ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckConstantEntry.CONTENT_URI);
         adapter.syncMenuItemAvailability(client, new SyncResult());
 
         // Confirm the request was as expected
@@ -211,7 +211,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
         testServer.enqueue(errorResponse);
 
         // Run the sync manually
-        ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckEntry.CONTENT_URI);
+        ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckConstantEntry.CONTENT_URI);
         adapter.syncMenuItemAvailability(client, new SyncResult());
 
         testProvider.assertThatQueuesAreEmpty();
@@ -253,7 +253,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
         testServer.enqueue(authResponse);
 
         // Run the sync manually
-        ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckEntry.CONTENT_URI);
+        ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckConstantEntry.CONTENT_URI);
         SyncResult result = new SyncResult();
         adapter.syncMenuItemAvailability(client, result);
 
@@ -293,7 +293,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
         testServer.enqueue(errorResponse);
 
         // Run the sync manually
-        ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckEntry.CONTENT_URI);
+        ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckConstantEntry.CONTENT_URI);
         SyncResult result = new SyncResult();
         adapter.syncMenuItemAvailability(client, result);
 
@@ -313,7 +313,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
         });
 
         // Run the sync manually
-        ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckEntry.CONTENT_URI);
+        ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckConstantEntry.CONTENT_URI);
         adapter.syncTruckServingMode(client, new SyncResult());
 
         // If there are no results, the method should short circuit and no updates will happen.
@@ -335,7 +335,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
             @NonNull
             @Override
             public Cursor onQuery(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-                assertThat(uri).isEqualTo(Contract.TruckEntry.buildDirty());
+                assertThat(uri).isEqualTo(Contract.TruckConstantEntry.buildDirty());
 
                 MatrixCursor cursor = new MatrixCursor(projection);
 
@@ -353,8 +353,8 @@ public class SyncAdapterTest extends InstrumentationTestCase {
         testProvider.enqueue(new VerifiableContentProvider.UpdateEvent() {
             @Override
             public int onUpdate(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-                assertThat(uri).isEqualTo(Contract.buildSuppressNotify(Contract.TruckEntry.buildSingleTruck(truckId)));
-                assertThat(values.getAsBoolean(Contract.TruckEntry.COLUMN_IS_DIRTY)).isFalse();
+                assertThat(uri).isEqualTo(Contract.buildSuppressNotify(Contract.TruckConstantEntry.buildSingleTruck(truckId)));
+                assertThat(values.getAsBoolean(Contract.TruckConstantEntry.COLUMN_IS_DIRTY)).isFalse();
                 return 1;
             }
         });
@@ -366,7 +366,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
         testServer.enqueue(response);
 
         // Run the sync manually
-        ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckEntry.CONTENT_URI);
+        ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckConstantEntry.CONTENT_URI);
         adapter.syncTruckServingMode(client, new SyncResult());
 
         // Confirm the request was as expected
@@ -399,7 +399,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
             @NonNull
             @Override
             public Cursor onQuery(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-                assertThat(uri).isEqualTo(Contract.TruckEntry.buildDirty());
+                assertThat(uri).isEqualTo(Contract.TruckConstantEntry.buildDirty());
 
                 MatrixCursor cursor = new MatrixCursor(projection);
                 Object[] row1 = new Object[projection.length];
@@ -424,8 +424,8 @@ public class SyncAdapterTest extends InstrumentationTestCase {
         testProvider.enqueue(new VerifiableContentProvider.UpdateEvent() {
             @Override
             public int onUpdate(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-                assertThat(uri).isEqualTo(Contract.buildSuppressNotify(Contract.TruckEntry.buildSingleTruck(truckId2)));
-                assertThat(values.getAsBoolean(Contract.TruckEntry.COLUMN_IS_DIRTY)).isFalse();
+                assertThat(uri).isEqualTo(Contract.buildSuppressNotify(Contract.TruckConstantEntry.buildSingleTruck(truckId2)));
+                assertThat(values.getAsBoolean(Contract.TruckConstantEntry.COLUMN_IS_DIRTY)).isFalse();
                 return 1;
             }
         });
@@ -442,7 +442,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
         testServer.enqueue(mockResponse);
 
         // Run the sync manually
-        ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckEntry.CONTENT_URI);
+        ContentProviderClient client = testContext.getContentResolver().acquireContentProviderClient(Contract.TruckConstantEntry.CONTENT_URI);
         adapter.syncTruckServingMode(client, new SyncResult());
 
         testProvider.assertThatQueuesAreEmpty();

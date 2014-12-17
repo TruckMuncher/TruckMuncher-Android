@@ -54,17 +54,17 @@ public class VendorTrucksService extends IntentService {
             for (int i = 0, max = trucks.size(); i < max; i++) {
                 Truck truck = trucks.get(i);
                 ContentValues values = new ContentValues();
-                values.put(Contract.TruckEntry.COLUMN_INTERNAL_ID, truck.id);
-                values.put(Contract.TruckEntry.COLUMN_NAME, truck.name);
-                values.put(Contract.TruckEntry.COLUMN_IMAGE_URL, truck.imageUrl);
-                values.put(Contract.TruckEntry.COLUMN_KEYWORDS, Contract.convertListToString(truck.keywords));
-                values.put(Contract.TruckEntry.COLUMN_COLOR_PRIMARY, truck.primaryColor);
-                values.put(Contract.TruckEntry.COLUMN_COLOR_SECONDARY, truck.secondaryColor);
-                values.put(Contract.TruckEntry.COLUMN_OWNED_BY_CURRENT_USER, true);
+                values.put(Contract.TruckConstantEntry.COLUMN_INTERNAL_ID, truck.id);
+                values.put(Contract.TruckConstantEntry.COLUMN_NAME, truck.name);
+                values.put(Contract.TruckConstantEntry.COLUMN_IMAGE_URL, truck.imageUrl);
+                values.put(Contract.TruckConstantEntry.COLUMN_KEYWORDS, Contract.convertListToString(truck.keywords));
+                values.put(Contract.TruckConstantEntry.COLUMN_COLOR_PRIMARY, truck.primaryColor);
+                values.put(Contract.TruckConstantEntry.COLUMN_COLOR_SECONDARY, truck.secondaryColor);
+                values.put(Contract.TruckConstantEntry.COLUMN_OWNED_BY_CURRENT_USER, true);
                 contentValues[i] = values;
             }
 
-            getContentResolver().bulkInsert(Contract.TruckEntry.CONTENT_URI, contentValues);
+            getContentResolver().bulkInsert(Contract.TruckConstantEntry.CONTENT_URI, contentValues);
         } catch (SocialCredentialsException sce) {
             // TODO Implement
             throw new UnsupportedOperationException("not yet implemented");

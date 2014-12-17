@@ -90,15 +90,15 @@ public class VendorHomeFragment extends Fragment {
         updateAnimation(isChecked);
 
         ContentValues values = new ContentValues();
-        values.put(Contract.TruckCombo.COLUMN_LATITUDE, currentLocation.getLatitude());
-        values.put(Contract.TruckCombo.COLUMN_LONGITUDE, currentLocation.getLongitude());
-        values.put(Contract.TruckCombo.COLUMN_IS_SERVING, isChecked);
-        values.put(Contract.TruckCombo.COLUMN_IS_DIRTY, true);
+        values.put(Contract.TruckEntry.COLUMN_LATITUDE, currentLocation.getLatitude());
+        values.put(Contract.TruckEntry.COLUMN_LONGITUDE, currentLocation.getLongitude());
+        values.put(Contract.TruckEntry.COLUMN_IS_SERVING, isChecked);
+        values.put(Contract.TruckEntry.COLUMN_IS_DIRTY, true);
         AsyncQueryHandler handler = new SimpleAsyncQueryHandler(getActivity().getContentResolver());
 
         Uri uri = Contract.buildNeedsSync(Contract.TruckStateEntry.CONTENT_URI);
         // FIXME Need to use a real truck id, not a mock one
-        SelectionQueryBuilder query = Contract.TruckCombo.buildSingleTruck("de513002-5a44-11e4-aa15-123b93f75cba");
+        SelectionQueryBuilder query = Contract.TruckEntry.buildSingleTruck("de513002-5a44-11e4-aa15-123b93f75cba");
         handler.startUpdate(0, null, uri, values, query.toString(), query.getArgsArray());
 
         onServingModeChangedListener.onServingModeChanged(isChecked);

@@ -6,22 +6,21 @@ import junit.framework.TestCase;
 
 import java.util.UUID;
 
-import static com.truckmuncher.truckmuncher.data.Contract.TruckEntry;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
-public class ContractTruckEntryTest extends TestCase {
+public class ContractTruckConstantEntryTest extends TestCase {
 
     public void testSingleTruckConversion() {
         String internalId = UUID.randomUUID().toString();
-        Uri uri = TruckEntry.buildSingleTruck(internalId);
+        Uri uri = Contract.TruckConstantEntry.buildSingleTruck(internalId);
 
-        assertThat(TruckEntry.getInternalIdFromUri(uri)).isEqualTo(internalId);
+        assertThat(Contract.TruckConstantEntry.getInternalIdFromUri(uri)).isEqualTo(internalId);
     }
 
     public void testGetInternalIdThrowsOnInvalidUri() {
         try {
-            TruckEntry.getInternalIdFromUri(TruckEntry.CONTENT_URI);
+            Contract.TruckConstantEntry.getInternalIdFromUri(Contract.TruckConstantEntry.CONTENT_URI);
             failBecauseExceptionWasNotThrown(IllegalArgumentException.class);
         } catch (IllegalArgumentException e) {
             // No-op
@@ -30,7 +29,7 @@ public class ContractTruckEntryTest extends TestCase {
 
     public void testBuildSingleTruckThrowsOnInvalidId() {
         try {
-            TruckEntry.buildSingleTruck("not_uuid");
+            Contract.TruckConstantEntry.buildSingleTruck("not_uuid");
             failBecauseExceptionWasNotThrown(IllegalArgumentException.class);
         } catch (IllegalArgumentException e) {
             // No-op
@@ -38,9 +37,9 @@ public class ContractTruckEntryTest extends TestCase {
     }
 
     public void testBuildServingTrucksUri() {
-        Uri uri = TruckEntry.buildServingTrucks();
+        Uri uri = Contract.TruckConstantEntry.buildServingTrucks();
 
-        String parameter = uri.getQueryParameter(TruckEntry.COLUMN_IS_SERVING);
+        String parameter = uri.getQueryParameter(Contract.TruckConstantEntry.COLUMN_IS_SERVING);
 
         assertThat(uri.getPath()).isEqualTo("/" + Contract.PATH_TRUCK);
         assertThat(parameter).isEqualTo("1");

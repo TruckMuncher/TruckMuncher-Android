@@ -32,7 +32,7 @@ public class ContractTest extends TestCase {
     }
 
     public void testSyncDirective() {
-        Uri uri = Contract.TruckEntry.CONTENT_URI;
+        Uri uri = Contract.TruckConstantEntry.CONTENT_URI;
         assertThat(Contract.needsSync(uri)).isFalse();
 
         uri = Contract.buildNeedsSync(uri);
@@ -40,7 +40,7 @@ public class ContractTest extends TestCase {
     }
 
     public void testSuppressNotifyDirective() {
-        Uri uri = Contract.TruckEntry.CONTENT_URI;
+        Uri uri = Contract.TruckConstantEntry.CONTENT_URI;
         assertThat(Contract.suppressNotify(uri)).isFalse();
 
         uri = Contract.buildSuppressNotify(uri);
@@ -48,7 +48,7 @@ public class ContractTest extends TestCase {
     }
 
     public void testSanitizeRemovesAllDirectives() {
-        Uri base = Contract.TruckEntry.CONTENT_URI;
+        Uri base = Contract.TruckConstantEntry.CONTENT_URI;
 
         Uri uri = Contract.buildSuppressNotify(base);
         uri = Contract.buildNeedsSync(uri);

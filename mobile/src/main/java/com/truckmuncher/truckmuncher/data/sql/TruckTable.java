@@ -3,9 +3,9 @@ package com.truckmuncher.truckmuncher.data.sql;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 
-import timber.log.Timber;
+import com.truckmuncher.truckmuncher.data.Contract;
 
-import static com.truckmuncher.truckmuncher.data.Contract.TruckEntry;
+import timber.log.Timber;
 
 public final class TruckTable {
 
@@ -15,22 +15,22 @@ public final class TruckTable {
 
     public static void onCreate(SQLiteDatabase db) {
         String DATABASE_CREATE = "create table "
-                + TruckEntry.TABLE_NAME
+                + Contract.TruckConstantEntry.TABLE_NAME
                 + "("
-                + TruckEntry._ID + " integer primary key autoincrement, "
-                + TruckEntry.COLUMN_INTERNAL_ID + " text unique, "
-                + TruckEntry.COLUMN_NAME + " text, "
-                + TruckEntry.COLUMN_IMAGE_URL + " text, "
-                + TruckEntry.COLUMN_KEYWORDS + " text, "
-                + TruckEntry.COLUMN_OWNED_BY_CURRENT_USER + " integer default 0, "
-                + TruckEntry.COLUMN_COLOR_PRIMARY + " text, "
-                + TruckEntry.COLUMN_COLOR_SECONDARY + " text"
+                + Contract.TruckConstantEntry._ID + " integer primary key autoincrement, "
+                + Contract.TruckConstantEntry.COLUMN_INTERNAL_ID + " text unique, "
+                + Contract.TruckConstantEntry.COLUMN_NAME + " text, "
+                + Contract.TruckConstantEntry.COLUMN_IMAGE_URL + " text, "
+                + Contract.TruckConstantEntry.COLUMN_KEYWORDS + " text, "
+                + Contract.TruckConstantEntry.COLUMN_OWNED_BY_CURRENT_USER + " integer default 0, "
+                + Contract.TruckConstantEntry.COLUMN_COLOR_PRIMARY + " text, "
+                + Contract.TruckConstantEntry.COLUMN_COLOR_SECONDARY + " text"
                 + ");";
 
         String INDEX_CREATE = "create index "
-                + "idx_" + TruckEntry.COLUMN_INTERNAL_ID
-                + " on " + TruckEntry.TABLE_NAME
-                + " (" + TruckEntry.COLUMN_INTERNAL_ID + ");";
+                + "idx_" + Contract.TruckConstantEntry.COLUMN_INTERNAL_ID
+                + " on " + Contract.TruckConstantEntry.TABLE_NAME
+                + " (" + Contract.TruckConstantEntry.COLUMN_INTERNAL_ID + ");";
 
         Timber.i("Creating database: %s", DATABASE_CREATE);
         db.execSQL(DATABASE_CREATE);
@@ -47,7 +47,7 @@ public final class TruckTable {
         db.beginTransaction();
         try {
             for (ContentValues values : contentValues) {
-                long rowId = db.replace(TruckEntry.TABLE_NAME, null, values);
+                long rowId = db.replace(Contract.TruckConstantEntry.TABLE_NAME, null, values);
                 if (rowId != -1) {
                     returnCount++;
                 }

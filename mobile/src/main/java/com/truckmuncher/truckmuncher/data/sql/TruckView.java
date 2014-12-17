@@ -14,16 +14,16 @@ public class TruckView {
 
     public static void onCreate(SQLiteDatabase db) {
         String VIEW_CREATE = "create view "
-                + Contract.TruckCombo.VIEW_NAME
+                + Contract.TruckEntry.VIEW_NAME
                 + " as select "
-                + Contract.TruckEntry.TABLE_NAME + "." + Contract.TruckEntry._ID + ", "
-                + Contract.TruckEntry.COLUMN_INTERNAL_ID + ", "
-                + Contract.TruckEntry.COLUMN_NAME + ", "
-                + Contract.TruckEntry.COLUMN_IMAGE_URL + ", "
-                + Contract.TruckEntry.COLUMN_KEYWORDS + ", "
-                + Contract.TruckEntry.COLUMN_OWNED_BY_CURRENT_USER + ", "
-                + Contract.TruckEntry.COLUMN_COLOR_PRIMARY + ", "
-                + Contract.TruckEntry.COLUMN_COLOR_SECONDARY + ", "
+                + Contract.TruckConstantEntry.TABLE_NAME + "." + Contract.TruckConstantEntry._ID + ", "
+                + Contract.TruckConstantEntry.COLUMN_INTERNAL_ID + ", "
+                + Contract.TruckConstantEntry.COLUMN_NAME + ", "
+                + Contract.TruckConstantEntry.COLUMN_IMAGE_URL + ", "
+                + Contract.TruckConstantEntry.COLUMN_KEYWORDS + ", "
+                + Contract.TruckConstantEntry.COLUMN_OWNED_BY_CURRENT_USER + ", "
+                + Contract.TruckConstantEntry.COLUMN_COLOR_PRIMARY + ", "
+                + Contract.TruckConstantEntry.COLUMN_COLOR_SECONDARY + ", "
 
                 + Contract.TruckStateEntry.COLUMN_INTERNAL_ID + ", "
                 + Contract.TruckStateEntry.COLUMN_IS_SELECTED_TRUCK + ", "
@@ -33,9 +33,9 @@ public class TruckView {
                 + Contract.TruckStateEntry.COLUMN_IS_DIRTY
 
                 + " from "
-                + Contract.TruckEntry.TABLE_NAME + " inner join "
+                + Contract.TruckConstantEntry.TABLE_NAME + " inner join "
                 + Contract.TruckStateEntry.TABLE_NAME + " on "
-                + Contract.TruckEntry.COLUMN_INTERNAL_ID + "=" + Contract.TruckStateEntry.COLUMN_INTERNAL_ID
+                + Contract.TruckConstantEntry.COLUMN_INTERNAL_ID + "=" + Contract.TruckStateEntry.COLUMN_INTERNAL_ID
                 + ";";
 
         Timber.i("Creating view: %s", VIEW_CREATE);

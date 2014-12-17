@@ -3,10 +3,11 @@ package com.truckmuncher.truckmuncher.data.sql;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.truckmuncher.truckmuncher.data.Contract;
+
 import timber.log.Timber;
 
 import static com.truckmuncher.truckmuncher.data.Contract.CategoryEntry;
-import static com.truckmuncher.truckmuncher.data.Contract.TruckEntry;
 
 public final class CategoryTable {
 
@@ -25,7 +26,7 @@ public final class CategoryTable {
                 + CategoryEntry.COLUMN_ORDER_IN_MENU + " integer, "
                 + CategoryEntry.COLUMN_TRUCK_ID + " text, "
                 + "foreign key(" + CategoryEntry.COLUMN_TRUCK_ID + ") "
-                + "references " + TruckEntry.TABLE_NAME + "(" + TruckEntry.COLUMN_INTERNAL_ID + ")"
+                + "references " + Contract.TruckConstantEntry.TABLE_NAME + "(" + Contract.TruckConstantEntry.COLUMN_INTERNAL_ID + ")"
                 + ");";
 
         Timber.d("Creating database: %s", DATABASE_CREATE);
