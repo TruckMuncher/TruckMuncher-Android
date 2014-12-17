@@ -1,5 +1,7 @@
 package com.truckmuncher.truckmuncher.dagger;
 
+import com.truckmuncher.api.auth.AuthService;
+import com.truckmuncher.api.auth.MockAuthService;
 import com.truckmuncher.api.menu.MenuService;
 import com.truckmuncher.api.menu.MockMenuService;
 import com.truckmuncher.api.trucks.MockTruckService;
@@ -39,5 +41,11 @@ public class MockNetworkModule {
         mockAdapter.setErrorPercentage(0);
         mockAdapter.setDelay(0);
         return mockAdapter.create(MenuService.class, new MockMenuService());
+    }
+
+    @Singleton
+    @Provides
+    public AuthService provideAuthService(RestAdapter adapter) {
+        return MockRestAdapter.from(adapter).create(AuthService.class, new MockAuthService());
     }
 }

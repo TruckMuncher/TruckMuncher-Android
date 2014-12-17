@@ -1,17 +1,26 @@
 package com.truckmuncher.truckmuncher.vendor;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.truckmuncher.api.auth.AuthRequest;
+import com.truckmuncher.api.auth.AuthResponse;
+import com.truckmuncher.api.auth.AuthService;
 import com.truckmuncher.api.trucks.Truck;
 import com.truckmuncher.api.trucks.TruckService;
 import com.truckmuncher.api.trucks.TrucksForVendorRequest;
 import com.truckmuncher.api.trucks.TrucksForVendorResponse;
 import com.truckmuncher.truckmuncher.App;
+import com.truckmuncher.truckmuncher.authentication.AccountGeneral;
 import com.truckmuncher.truckmuncher.data.ApiException;
+import com.truckmuncher.truckmuncher.data.AuthenticatedRequestInterceptor;
 import com.truckmuncher.truckmuncher.data.Contract;
+import com.truckmuncher.truckmuncher.data.ExpiredSessionException;
+import com.truckmuncher.truckmuncher.data.SocialCredentialsException;
 
 import java.util.List;
 
@@ -25,6 +34,10 @@ public class VendorTrucksService extends IntentService {
 
     @Inject
     TruckService truckService;
+    @Inject
+    AuthService authService;
+    @Inject
+    AccountManager accountManager;
 
     public VendorTrucksService() {
         super(VendorTrucksService.class.getSimpleName());
@@ -52,6 +65,23 @@ public class VendorTrucksService extends IntentService {
             }
 
             getContentResolver().bulkInsert(Contract.TruckEntry.CONTENT_URI, contentValues);
+        } catch (SocialCredentialsException sce) {
+            // TODO Implement
+            throw new UnsupportedOperationException("not yet implemented");
+//            Account account = AccountGeneral.getStoredAccount(accountManager);
+//            accountManager.getAuthToken(
+//                    account,
+//                    AccountGeneral.AUTH_TOKEN_TYPE,
+//                    null,
+//                    true,
+//                    null,
+//                    null
+//            );
+        } catch (ExpiredSessionException ese) {
+            AuthResponse response = authService.getAuth(new AuthRequest());
+            Account account = AccountGeneral.getStoredAccount(accountManager);
+            accountManager.setUserData(account, AuthenticatedRequestInterceptor.SESSION_TOKEN, response.sessionToken);
+            startService(intent);   // Start self
         } catch (ApiException e) {
             Timber.e("Got an error while getting trucks for vendor.");
             Intent errorIntent = new Intent();

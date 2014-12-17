@@ -22,7 +22,7 @@ public interface AuthService {
    * Returns the full User model plus a session token.
    */
   @POST("/com.truckmuncher.api.auth.AuthService/getAuth")
-  void getAuth(@Body AuthRequest request, Callback<AuthResponse>  callback);
+  void getAuth(@Body AuthRequest request, Callback<AuthResponse> callback);
   /**
    * Deletes an existing session if it exists.
    */
@@ -34,5 +34,5 @@ public interface AuthService {
    * Deletes an existing session if it exists.
    */
   @POST("/com.truckmuncher.api.auth.AuthService/deleteAuth")
-  void deleteAuth(@Body AuthRequest request, Callback<DeleteAuthResponse>  callback);
+  void deleteAuth(@Body AuthRequest request, Callback<DeleteAuthResponse> callback);
 }

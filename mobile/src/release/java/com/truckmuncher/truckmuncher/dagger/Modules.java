@@ -9,6 +9,6 @@ public final class Modules {
     }
 
     public static Object[] list(Context context) {
-        return new Object[]{new NetworkModule(context)};
+        return new Object[]{new NetworkModule(context), new UserModule(context)};
     }
 }

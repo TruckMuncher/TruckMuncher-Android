@@ -72,8 +72,7 @@ public class VendorHomeActivity extends ActionBarActivity implements
         Account[] accounts = accountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
 
         if (accounts.length > 0) {
-            String authToken = accountManager.peekAuthToken(accounts[0],
-                    AccountGeneral.getAuthTokenType(this));
+            String authToken = accountManager.peekAuthToken(accounts[0], AccountGeneral.AUTH_TOKEN_TYPE);
 
             if (!TextUtils.isEmpty(authToken)) {
                 accountManager.invalidateAuthToken(AccountGeneral.ACCOUNT_TYPE, authToken);

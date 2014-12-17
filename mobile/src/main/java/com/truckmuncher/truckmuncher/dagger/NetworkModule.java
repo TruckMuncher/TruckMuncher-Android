@@ -1,16 +1,21 @@
 package com.truckmuncher.truckmuncher.dagger;
 
+import android.accounts.Account;
 import android.content.Context;
 
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
+import com.truckmuncher.api.auth.AuthService;
 import com.truckmuncher.api.menu.MenuService;
 import com.truckmuncher.api.trucks.TruckService;
 import com.truckmuncher.truckmuncher.ActiveTrucksService;
 import com.truckmuncher.truckmuncher.BuildConfig;
 import com.truckmuncher.truckmuncher.MainActivity;
 import com.truckmuncher.truckmuncher.data.ApiErrorHandler;
-import com.truckmuncher.truckmuncher.data.ApiRequestInterceptor;
+import com.truckmuncher.truckmuncher.data.AuthErrorHandler;
+import com.truckmuncher.truckmuncher.data.AuthRequestInterceptor;
+import com.truckmuncher.truckmuncher.data.AuthenticatedRequestInterceptor;
+import com.truckmuncher.truckmuncher.data.PRNGFixes;
 import com.truckmuncher.truckmuncher.data.sync.SyncAdapter;
 import com.truckmuncher.truckmuncher.menu.MenuUpdateService;
 import com.truckmuncher.truckmuncher.vendor.VendorTrucksService;
@@ -33,7 +38,8 @@ import timber.log.Timber;
         SyncAdapter.class,
         VendorTrucksService.class,
         ActiveTrucksService.class
-})
+},
+        complete = false)
 public class NetworkModule {
 
     private static final int DISK_CACHE_SIZE = 50 * 1024 * 1024; // 50MB
@@ -42,6 +48,7 @@ public class NetworkModule {
 
     public NetworkModule(Context context) {
         appContext = context.getApplicationContext();
+        PRNGFixes.apply();  // Fix SecureRandom
     }
 
     protected static void configureHttpCache(Context context, OkHttpClient client) {
@@ -63,9 +70,9 @@ public class NetworkModule {
     }
 
     @Provides
-    public RestAdapter.Builder provideRestAdapterBuilder(OkHttpClient client) {
+    public RestAdapter.Builder provideRestAdapterBuilder(OkHttpClient client, Account account) {
         return new RestAdapter.Builder()
-                .setRequestInterceptor(new ApiRequestInterceptor())
+                .setRequestInterceptor(new AuthenticatedRequestInterceptor(appContext, account))
                 .setConverter(new WireConverter())
                 .setEndpoint(BuildConfig.API_ENDPOINT)
                 .setClient(new OkClient(client))
@@ -88,5 +95,14 @@ public class NetworkModule {
     @Provides
     public MenuService provideMenuService(RestAdapter adapter) {
         return adapter.create(MenuService.class);
+    }
+
+    @Singleton
+    @Provides
+    public AuthService provideAuthService(RestAdapter.Builder builder, Account account) {
+        builder.setLogLevel(RestAdapter.LogLevel.FULL)
+                .setErrorHandler(new AuthErrorHandler(appContext))
+                .setRequestInterceptor(new AuthRequestInterceptor(appContext, account));
+        return builder.build().create(AuthService.class);
     }
 }

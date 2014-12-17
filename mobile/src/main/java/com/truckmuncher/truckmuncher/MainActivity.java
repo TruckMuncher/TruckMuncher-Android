@@ -70,7 +70,7 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
         Account[] accounts = accountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
 
         if (accounts.length > 0) {
-            String authToken = accountManager.peekAuthToken(accounts[0], AccountGeneral.getAuthTokenType(this));
+            String authToken = accountManager.peekAuthToken(accounts[0], AccountGeneral.AUTH_TOKEN_TYPE);
 
             // If we get an authToken the user is signed in and we can go straight to vendor mode
             if (!TextUtils.isEmpty(authToken)) {

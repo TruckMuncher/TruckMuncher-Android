@@ -89,7 +89,7 @@ public class LoginFragment extends Fragment {
                     public void onError(int socialNetworkID, String requestID, String errorMessage, Object data) {
                         // Something went wrong trying to retrieve the person's Twitter info. We
                         // can still log them in, but we don't have their name or account info.
-                        Timber.w("Retreival of Twitter account information failed with the following" +
+                        Timber.w("Retrieval of Twitter account information failed with the following" +
                                 "error %s", errorMessage);
 
                         String token = socialNetworkManager.getFacebookSocialNetwork().getAccessToken().token;

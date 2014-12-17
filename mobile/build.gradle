@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.14.3'
     }
 }
 
@@ -81,9 +81,13 @@ android {
             buildConfigField "String", "API_ENDPOINT", "\"https://api.truckmuncher.com:8443\""
             versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         }
-        devMarius {
-            buildConfigField "String", "API_ENDPOINT", "\"https://Marius-MBA:8443\""
+        dev {
+            buildConfigField "String", "API_ENDPOINT", "\"http://truckmuncher:8443\""
             versionName "${versionMajor}.${versionMinor}.${versionPatch}.dev"
+        }
+        mock {
+            buildConfigField "String", "API_ENDPOINT", "\"mock://\""
+            versionName "${versionMajor}.${versionMinor}.${versionPatch}.mock"
         }
     }
 
@@ -128,6 +132,7 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.3.4'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
     compile 'com.squareup.retrofit:converter-wire:1.7.0'
+//    compile 'info.metadude.android:typed-preferences:2.0.0'
 
     // Logging
     compile 'com.crashlytics.android:crashlytics:1.1.11'
@@ -155,8 +160,8 @@ dependencies {
     androidTestCompile('com.squareup.okhttp:mockwebserver:2.0.0') {
         exclude group: 'com.squareup.okhttp', module: 'okhttp'
     }
-//    androidTestCompile 'org.mockito:mockito-core:1.10.8'
-//    androidTestCompile fileTree(dir: 'testLibs', include: ['*.jar'])
+    androidTestCompile 'org.mockito:mockito-core:1.10.8'
+    androidTestCompile fileTree(dir: 'testLibs', include: ['*.jar'])
 }
 
 repositories {
