@@ -3,7 +3,6 @@ package com.truckmuncher.truckmuncher;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.SearchManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -20,37 +19,29 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.android.gms.actions.SearchIntents;
-import com.truckmuncher.api.trucks.Truck;
-import com.truckmuncher.api.trucks.TruckProfilesRequest;
-import com.truckmuncher.api.trucks.TruckProfilesResponse;
-import com.truckmuncher.api.trucks.TruckService;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.truckmuncher.truckmuncher.authentication.AccountGeneral;
 import com.truckmuncher.truckmuncher.authentication.AuthenticatorActivity;
 import com.truckmuncher.truckmuncher.customer.CursorFragmentStatePagerAdapter;
 import com.truckmuncher.truckmuncher.customer.CustomerMapFragment;
+import com.truckmuncher.truckmuncher.customer.CustomerMenuFragment;
+import com.truckmuncher.truckmuncher.customer.GetTruckProfilesService;
 import com.truckmuncher.truckmuncher.data.Contract;
 import com.truckmuncher.truckmuncher.data.sql.SelectionQueryBuilder;
 import com.truckmuncher.truckmuncher.vendor.VendorHomeActivity;
 
-import java.util.List;
-
-import javax.inject.Inject;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int REQUEST_LOGIN = 1;
     private static final int LOADER_TRUCKS = 0;
 
-    @Inject
-    TruckService truckService;
     @InjectView(R.id.view_pager)
     ViewPager viewPager;
+    @InjectView(R.id.sliding_panel)
+    SlidingUpPanelLayout slidingPanel;
 
     private SearchView searchView;
 
@@ -62,7 +53,6 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
-        App.inject(this, this);
 
         AccountManager accountManager = AccountManager.get(this);
 
@@ -79,40 +69,20 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
         handleIntent(getIntent());
 
-        truckService.getTruckProfiles(new TruckProfilesRequest(null, null), new Callback<TruckProfilesResponse>() {
-
-            @Override
-            public void success(TruckProfilesResponse truckProfilesResponse, Response response) {
-
-                List<Truck> trucks = truckProfilesResponse.trucks;
-                ContentValues[] contentValues = new ContentValues[trucks.size()];
-                for (int i = 0, max = trucks.size(); i < max; i++) {
-                    Truck truck = trucks.get(i);
-                    ContentValues values = new ContentValues();
-                    values.put(Contract.TruckConstantEntry.COLUMN_INTERNAL_ID, truck.id);
-                    values.put(Contract.TruckConstantEntry.COLUMN_NAME, truck.name);
-                    values.put(Contract.TruckConstantEntry.COLUMN_IMAGE_URL, truck.imageUrl);
-                    values.put(Contract.TruckConstantEntry.COLUMN_KEYWORDS, Contract.convertListToString(truck.keywords));
-                    values.put(Contract.TruckConstantEntry.COLUMN_COLOR_PRIMARY, truck.primaryColor);
-                    values.put(Contract.TruckConstantEntry.COLUMN_COLOR_SECONDARY, truck.secondaryColor);
-                    contentValues[i] = values;
-                }
-
-                getContentResolver().bulkInsert(Contract.TruckConstantEntry.CONTENT_URI, contentValues);
-                getSupportLoaderManager().initLoader(LOADER_TRUCKS, null, MainActivity.this);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
+        startService(new Intent(this, GetTruckProfilesService.class));
+        getSupportLoaderManager().initLoader(LOADER_TRUCKS, null, MainActivity.this);
 
         final CustomerMapFragment mapFragment = (CustomerMapFragment) getSupportFragmentManager().findFragmentById(R.id.customer_map_fragment);
         viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
+
+                // Set the new drag view so scrolling works nicely
+                CustomerMenuFragment fragment = pagerAdapter.getItem(position);
+                slidingPanel.setDragView(fragment.getHeaderView());
+
+                // Change the focused truck
                 mapFragment.moveTo(pagerAdapter.getTruckId(position));
             }
         });

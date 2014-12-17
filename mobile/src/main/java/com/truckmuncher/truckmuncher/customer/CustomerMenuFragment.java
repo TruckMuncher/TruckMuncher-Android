@@ -36,6 +36,8 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
     TextView truckKeywords;
     @InjectView(R.id.truck_image)
     ImageView truckImage;
+    @InjectView(R.id.header)
+    View headerView;
     private MenuAdminAdapter adapter;
 
     public static CustomerMenuFragment newInstance(String truckId, String truckName, String imageUrl, String keywords, String primaryColor) {
@@ -105,5 +107,9 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         adapter.swapCursor(null);
+    }
+
+    public View getHeaderView() {
+        return headerView;
     }
 }
