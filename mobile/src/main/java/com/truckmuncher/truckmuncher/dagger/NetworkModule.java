@@ -70,9 +70,9 @@ public class NetworkModule {
     }
 
     @Provides
-    public RestAdapter.Builder provideRestAdapterBuilder(OkHttpClient client, Account account) {
+    public RestAdapter.Builder provideRestAdapterBuilder(OkHttpClient client) {
         return new RestAdapter.Builder()
-                .setRequestInterceptor(new AuthenticatedRequestInterceptor(appContext, account))
+                .setRequestInterceptor(new AuthenticatedRequestInterceptor(appContext))
                 .setConverter(new WireConverter())
                 .setEndpoint(BuildConfig.API_ENDPOINT)
                 .setClient(new OkClient(client))
