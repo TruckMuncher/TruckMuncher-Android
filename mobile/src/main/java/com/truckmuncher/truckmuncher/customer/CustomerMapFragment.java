@@ -27,18 +27,29 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.ClusterRenderer;
+import com.truckmuncher.api.search.SearchResponse;
+import com.truckmuncher.api.search.SearchService;
+import com.truckmuncher.api.search.SimpleSearchRequest;
+import com.truckmuncher.api.search.SimpleSearchResponse;
 import com.truckmuncher.api.trucks.Truck;
 import com.truckmuncher.truckmuncher.ActiveTrucksService;
+import com.truckmuncher.truckmuncher.App;
 import com.truckmuncher.truckmuncher.R;
+import com.truckmuncher.truckmuncher.data.ApiException;
 import com.truckmuncher.truckmuncher.data.Contract;
 import com.truckmuncher.truckmuncher.data.sql.SelectionQueryBuilder;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import timber.log.Timber;
 
 public class CustomerMapFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener,
@@ -49,15 +60,20 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
     @InjectView(R.id.customer_map)
     MapView mapView;
 
+    @Inject
+    SearchService searchService;
+
     GoogleApiClient apiClient;
     LatLng currentLocation;
     ClusterManager<TruckCluster> clusterManager;
     private ClusterRenderer<TruckCluster> renderer;
-    private Map<String, TruckCluster> markers = Collections.emptyMap();
+    private Map<String, TruckCluster> activeTruckMarkers = Collections.emptyMap();
+    private Map<String, TruckCluster> searchHitMarkers = Collections.emptyMap();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        App.inject(getActivity(), this);
 
         MapsInitializer.initialize(getActivity().getApplicationContext());
     }
@@ -178,7 +194,7 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
         currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
         if (trucksNeedLoading) {
-            loadActiveTrucks(null);
+            loadActiveTrucks();
         }
     }
 
@@ -199,7 +215,7 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         cursor.moveToPosition(-1);
 
-        markers = new HashMap<>();
+        activeTruckMarkers = new HashMap<>();
 
         while (cursor.moveToNext()) {
             Truck truck = new Truck.Builder()
@@ -210,14 +226,10 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
             LatLng location = new LatLng(cursor.getDouble(ActiveTrucksQuery.LATITUDE),
                     cursor.getDouble(ActiveTrucksQuery.LONGITUDE));
 
-            markers.put(truck.id, new TruckCluster(truck, location));
+            activeTruckMarkers.put(truck.id, new TruckCluster(truck, location));
         }
 
-        if (clusterManager != null) {
-            clusterManager.clearItems();
-            clusterManager.addItems(markers.values());
-            clusterManager.setRenderer(renderer);
-        }
+        forceClusterRender(activeTruckMarkers.values());
     }
 
     @Override
@@ -234,12 +246,52 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
         return true;
     }
 
-    public void loadActiveTrucks(String searchQuery) {
+    public void searchTrucks(final String query) {
+        if (query == null || query.isEmpty()) {
+            forceClusterRender(activeTruckMarkers.values());
+        } else {
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    SimpleSearchRequest request = new SimpleSearchRequest(query, null, null);
+
+                    try {
+                        SimpleSearchResponse response = searchService.simpleSearch(request);
+
+                        searchHitMarkers = new HashMap<>();
+
+                        List<SearchResponse> searchResponses = response.searchResponse;
+                        for (int i = 0, max = searchResponses.size(); i < max; i++) {
+                            String truckId = searchResponses.get(i).truck.id;
+
+                            TruckCluster currentMarker = activeTruckMarkers.get(truckId);
+
+                            if (currentMarker != null) {
+                                searchHitMarkers.put(truckId, activeTruckMarkers.get(truckId));
+                            }
+                        }
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                forceClusterRender(searchHitMarkers.values());
+                            }
+                        });
+                    } catch (ApiException e) {
+                        Timber.e("Got an error while searching for trucks.");
+                    }
+                }
+            });
+
+            t.start();
+        }
+    }
+
+    private void loadActiveTrucks() {
         // Kick off a refresh of the vendor data
         Intent intent = new Intent(getActivity(), ActiveTrucksService.class);
         intent.putExtra(ActiveTrucksService.ARG_LATITUDE, currentLocation.latitude);
         intent.putExtra(ActiveTrucksService.ARG_LONGITUDE, currentLocation.longitude);
-        intent.putExtra(ActiveTrucksService.ARG_SEARCH_QUERY, searchQuery);
         getActivity().startService(intent);
     }
 
@@ -258,8 +310,16 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
         map.setOnMarkerClickListener(clusterManager);
     }
 
+    private void forceClusterRender(Collection<TruckCluster> markers) {
+        if (clusterManager != null) {
+            clusterManager.clearItems();
+            clusterManager.addItems(markers);
+            clusterManager.cluster();
+        }
+    }
+
     public void moveTo(String truckId) {
-        TruckCluster cluster = markers.get(truckId);
+        TruckCluster cluster = activeTruckMarkers.get(truckId);
         mapView.getMap().moveCamera(CameraUpdateFactory.newLatLng(cluster.getPosition()));
     }
 

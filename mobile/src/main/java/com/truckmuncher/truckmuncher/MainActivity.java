@@ -156,7 +156,7 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
                     CustomerMapFragment mapFragment = (CustomerMapFragment)
                             getSupportFragmentManager().findFragmentById(R.id.customer_map_fragment);
 
-                    mapFragment.loadActiveTrucks(query);
+                    mapFragment.searchTrucks(query);
 
                     lastQuery = query;
                 }

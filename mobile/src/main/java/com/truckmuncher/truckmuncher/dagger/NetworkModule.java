@@ -7,9 +7,11 @@ import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 import com.truckmuncher.api.auth.AuthService;
 import com.truckmuncher.api.menu.MenuService;
+import com.truckmuncher.api.search.SearchService;
 import com.truckmuncher.api.trucks.TruckService;
 import com.truckmuncher.truckmuncher.ActiveTrucksService;
 import com.truckmuncher.truckmuncher.BuildConfig;
+import com.truckmuncher.truckmuncher.customer.CustomerMapFragment;
 import com.truckmuncher.truckmuncher.customer.GetTruckProfilesService;
 import com.truckmuncher.truckmuncher.data.ApiErrorHandler;
 import com.truckmuncher.truckmuncher.data.AuthErrorHandler;
@@ -33,6 +35,7 @@ import retrofit.converter.WireConverter;
 import timber.log.Timber;
 
 @Module(injects = {
+        CustomerMapFragment.class,
         GetTruckProfilesService.class,
         MenuUpdateService.class,
         SyncAdapter.class,
@@ -104,5 +107,11 @@ public class NetworkModule {
                 .setErrorHandler(new AuthErrorHandler(appContext))
                 .setRequestInterceptor(new AuthRequestInterceptor(appContext, account));
         return builder.build().create(AuthService.class);
+    }
+
+    @Singleton
+    @Provides
+    public SearchService profideSearchService(RestAdapter adapter) {
+        return adapter.create(SearchService.class);
     }
 }

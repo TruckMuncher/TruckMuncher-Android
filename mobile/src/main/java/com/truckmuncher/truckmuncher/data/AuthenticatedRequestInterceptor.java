@@ -27,7 +27,9 @@ public class AuthenticatedRequestInterceptor extends ApiRequestInterceptor {
         super.intercept(request);
 
         // Authorization
-        String sessionToken = accountManager.getUserData(account, AccountGeneral.USER_DATA_SESSION);
-        request.addHeader(HEADER_AUTHORIZATION, SESSION_TOKEN + "=" + sessionToken);
+        if (account != null) {
+            String sessionToken = accountManager.getUserData(account, AccountGeneral.USER_DATA_SESSION);
+            request.addHeader(HEADER_AUTHORIZATION, SESSION_TOKEN + "=" + sessionToken);
+        }
     }
 }
