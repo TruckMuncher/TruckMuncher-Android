@@ -30,7 +30,7 @@ def versionPatch = 0
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
         applicationId "com.truckmuncher.truckmuncher"
@@ -64,7 +64,7 @@ android {
     buildTypes {
         release {
             testCoverageEnabled false   // Incompatible with Dagger
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
