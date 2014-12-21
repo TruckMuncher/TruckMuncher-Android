@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
 public class ContractTest extends TestCase {
 
@@ -37,5 +38,39 @@ public class ContractTest extends TestCase {
 
         uri = Contract.suppressNotify(uri);
         assertThat(Contract.isSuppressNotify(uri)).isTrue();
+    }
+
+    public void testSyncToNetworkDirective() {
+        Uri uri = Contract.TruckConstantEntry.CONTENT_URI;
+        assertThat(Contract.isSyncToNetwork(uri)).isFalse();
+
+        uri = Contract.syncToNetwork(uri);
+        assertThat(Contract.isSyncToNetwork(uri)).isTrue();
+    }
+
+    public void testSyncFromNetworkDirective() {
+        Uri uri = Contract.TruckConstantEntry.CONTENT_URI;
+        assertThat(Contract.isSyncFromNetwork(uri)).isFalse();
+
+        uri = Contract.syncFromNetwork(uri);
+        assertThat(Contract.isSyncFromNetwork(uri)).isTrue();
+    }
+
+    public void testSuppressNotifyCanNotBeUsedWithSyncToNetwork() {
+        Uri uri = Contract.syncToNetwork(Contract.TruckConstantEntry.CONTENT_URI);
+        try {
+            Contract.suppressNotify(uri);
+            failBecauseExceptionWasNotThrown(IllegalStateException.class);
+        } catch (IllegalStateException ignored) {
+        }
+    }
+
+    public void testSyncToNetworkCanNotBeUsedWithSuppressNotify() {
+        Uri uri = Contract.suppressNotify(Contract.TruckConstantEntry.CONTENT_URI);
+        try {
+            Contract.syncToNetwork(uri);
+            failBecauseExceptionWasNotThrown(IllegalStateException.class);
+        } catch (IllegalStateException ignored) {
+        }
     }
 }

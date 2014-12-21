@@ -46,34 +46,52 @@ public final class Contract {
         return Arrays.asList(string.split(STRING_SEPARATOR));
     }
 
+    /**
+     * If used, the ContentProvider will attempt to sync the provided uri to the network. This is
+     * incompatible with the {@link #suppressNotify(android.net.Uri)} directive.
+     *
+     * @param uri to sync
+     * @return original uri with the directive attached
+     */
     public static Uri syncToNetwork(Uri uri) {
+        if (isSuppressNotify(uri)) {
+            throw new IllegalStateException("The syncToNetwork directive cannot be used with the suppressNotify directive.");
+        }
         return uri.buildUpon().appendQueryParameter(PARAM_SYNC_TO_NETWORK, "true").build();
     }
 
     public static boolean isSyncToNetwork(Uri uri) {
-        String sync = uri.getQueryParameter(PARAM_SYNC_TO_NETWORK);
-        return sync != null && Boolean.parseBoolean(sync);
+        return uri.getBooleanQueryParameter(PARAM_SYNC_TO_NETWORK, false);
     }
 
+    /**
+     * If used, the ContentProvider will attempt to sync the provided uri from the network
+     * @param uri to sync
+     * @return original uri with the directive attached
+     */
     public static Uri syncFromNetwork(Uri uri) {
         return uri.buildUpon().appendQueryParameter(PARAM_SYNC_FROM_NETWORK, "true").build();
     }
 
     public static boolean isSyncFromNetwork(Uri uri) {
-        String sync = uri.getQueryParameter(PARAM_SYNC_FROM_NETWORK);
-        return sync != null && Boolean.parseBoolean(sync);
+        return uri.getBooleanQueryParameter(PARAM_SYNC_FROM_NETWORK, false);
     }
 
     /**
      * If used, the resulting Uri will not have it's listeners notified when new data is available.
+     * This is incompatible with the {@link #syncToNetwork(android.net.Uri)} directive.
+     * @param uri to sync
+     * @return original uri with the directive attached
      */
     public static Uri suppressNotify(Uri uri) {
+        if (isSyncToNetwork(uri)) {
+            throw new IllegalStateException("The suppressNotify directive cannot be used with the syncToNetwork directive.");
+        }
         return uri.buildUpon().appendQueryParameter(PARAM_NOTIFY, "false").build();
     }
 
     public static boolean isSuppressNotify(Uri uri) {
-        String suppress = uri.getQueryParameter(PARAM_NOTIFY);
-        return suppress != null && !Boolean.parseBoolean(suppress);
+        return uri.getBooleanQueryParameter(PARAM_NOTIFY, false);
     }
 
     /**
