@@ -27,7 +27,7 @@ import com.truckmuncher.truckmuncher.customer.CustomerMapFragment;
 import com.truckmuncher.truckmuncher.customer.CustomerMenuFragment;
 import com.truckmuncher.truckmuncher.customer.GetTruckProfilesService;
 import com.truckmuncher.truckmuncher.data.Contract;
-import com.truckmuncher.truckmuncher.data.sql.SelectionQueryBuilder;
+import com.truckmuncher.truckmuncher.data.sql.Query;
 import com.truckmuncher.truckmuncher.vendor.VendorHomeActivity;
 
 import butterknife.ButterKnife;
@@ -187,8 +187,8 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         switch (i) {
             case LOADER_TRUCKS:
-                SelectionQueryBuilder query = Contract.TruckEntry.buildServingTrucks();
-                return new CursorLoader(this, Contract.TruckEntry.CONTENT_URI, CursorFragmentStatePagerAdapter.Query.PROJECTION, query.toString(), query.getArgsArray(), null);
+                Query query = Contract.TruckEntry.buildServingTrucks();
+                return new CursorLoader(this, Contract.TruckEntry.CONTENT_URI, CursorFragmentStatePagerAdapter.Query.PROJECTION, query.selection, query.selectionArgs, null);
             default:
                 throw new RuntimeException("Invalid loader id: " + i);
         }

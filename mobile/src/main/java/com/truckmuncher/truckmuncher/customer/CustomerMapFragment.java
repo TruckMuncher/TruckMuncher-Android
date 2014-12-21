@@ -31,7 +31,7 @@ import com.truckmuncher.api.trucks.Truck;
 import com.truckmuncher.truckmuncher.ActiveTrucksService;
 import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.data.Contract;
-import com.truckmuncher.truckmuncher.data.sql.SelectionQueryBuilder;
+import com.truckmuncher.truckmuncher.data.sql.Query;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -191,8 +191,8 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
         // Selection args for trucks that are currently in serving mode
-        SelectionQueryBuilder query = Contract.TruckEntry.buildServingTrucks();
-        return new CursorLoader(getActivity(), Contract.TruckEntry.CONTENT_URI, ActiveTrucksQuery.PROJECTION, query.toString(), query.getArgsArray(), null);
+        Query query = Contract.TruckEntry.buildServingTrucks();
+        return new CursorLoader(getActivity(), Contract.TruckEntry.CONTENT_URI, ActiveTrucksQuery.PROJECTION, query.selection, query.selectionArgs, null);
     }
 
     @Override

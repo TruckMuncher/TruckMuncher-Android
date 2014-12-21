@@ -142,9 +142,10 @@ public final class Contract {
                     .expr(TruckStateEntry.COLUMN_INTERNAL_ID, EQ, internalId);
         }
 
-        public static SelectionQueryBuilder buildServingTrucks() {
-            return new SelectionQueryBuilder()
-                    .expr(COLUMN_IS_SERVING, EQ, true);
+        public static Query buildServingTrucks() {
+            return new Query.Builder()
+                    .where(COLUMN_IS_SERVING, EQ, true)
+                    .build();
         }
 
         public static Query buildDirty() {
