@@ -8,8 +8,6 @@ import com.truckmuncher.truckmuncher.data.sql.Query;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 import static com.truckmuncher.truckmuncher.data.sql.Query.Operator.EQUALS;
 
@@ -91,27 +89,6 @@ public final class Contract {
     public static boolean isSuppressNotify(Uri uri) {
         String suppress = uri.getQueryParameter(PARAM_NOTIFY);
         return suppress != null && !Boolean.parseBoolean(suppress);
-    }
-
-    /**
-     * Removes all directives from the provided Uri which do not pertain to data persistence.
-     * For example, whether the data should sync to network or if listeners should be notified.
-     */
-    public static Uri sanitize(Uri uri) {
-        Uri.Builder builder = new Uri.Builder()
-                .scheme(uri.getScheme())
-                .authority(uri.getAuthority())
-                .path(uri.getPath());
-
-        Set<String> privateParams = new TreeSet<>();
-        privateParams.add(PARAM_NEEDS_SYNC);
-        privateParams.add(PARAM_NOTIFY);
-        for (String param : uri.getQueryParameterNames()) {
-            if (!privateParams.contains(param)) {
-                builder.appendQueryParameter(param, uri.getQueryParameter(param));
-            }
-        }
-        return builder.build();
     }
 
     /**
@@ -217,8 +194,10 @@ public final class Contract {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_MENU).build();
         public static final String VIEW_NAME = "view_menu";
 
-        public static Uri buildMenuForTruck(String truckId) {
-            return CONTENT_URI.buildUpon().appendQueryParameter(TruckConstantEntry.COLUMN_INTERNAL_ID, truckId).build();
+        public static Query buildMenuForTruck(String truckId) {
+            return new Query.Builder()
+                    .where(TruckConstantEntry.COLUMN_INTERNAL_ID, EQUALS, truckId)
+                    .build();
         }
     }
 }

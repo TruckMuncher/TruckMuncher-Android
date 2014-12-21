@@ -1,7 +1,5 @@
 package com.truckmuncher.truckmuncher.data;
 
-import android.net.Uri;
-
 import junit.framework.TestCase;
 
 import java.util.Arrays;
@@ -31,29 +29,19 @@ public class ContractTest extends TestCase {
         assertThat(Contract.convertStringToList(input)).containsExactly("cat", "dog", "horse");
     }
 
-    public void testSyncDirective() {
-        Uri uri = Contract.TruckConstantEntry.CONTENT_URI;
-        assertThat(Contract.needsSync(uri)).isFalse();
-
-        uri = Contract.buildNeedsSync(uri);
-        assertThat(Contract.needsSync(uri)).isTrue();
-    }
-
-    public void testSuppressNotifyDirective() {
-        Uri uri = Contract.TruckConstantEntry.CONTENT_URI;
-        assertThat(Contract.isSuppressNotify(uri)).isFalse();
-
-        uri = Contract.suppressNotify(uri);
-        assertThat(Contract.isSuppressNotify(uri)).isTrue();
-    }
-
-    public void testSanitizeRemovesAllDirectives() {
-        Uri base = Contract.TruckConstantEntry.CONTENT_URI;
-
-        Uri uri = Contract.suppressNotify(base);
-        uri = Contract.buildNeedsSync(uri);
-
-        assertThat(uri).isNotEqualTo(base);
-        assertThat(Contract.sanitize(uri)).isEqualTo(base);
-    }
+//    public void testSyncDirective() {
+//        Uri uri = Contract.TruckConstantEntry.CONTENT_URI;
+//        assertThat(Contract.needsSync(uri)).isFalse();
+//
+//        uri = Contract.buildNeedsSync(uri);
+//        assertThat(Contract.needsSync(uri)).isTrue();
+//    }
+//
+//    public void testSuppressNotifyDirective() {
+//        Uri uri = Contract.TruckConstantEntry.CONTENT_URI;
+//        assertThat(Contract.isSuppressNotify(uri)).isFalse();
+//
+//        uri = Contract.suppressNotify(uri);
+//        assertThat(Contract.isSuppressNotify(uri)).isTrue();
+//    }
 }

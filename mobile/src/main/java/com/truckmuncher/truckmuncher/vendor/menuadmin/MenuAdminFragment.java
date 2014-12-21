@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,7 +16,7 @@ import android.view.View;
 
 import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.data.Contract;
-import com.truckmuncher.truckmuncher.util.CursorLoaderFactory;
+import com.truckmuncher.truckmuncher.data.sql.Query;
 
 import java.util.Map;
 
@@ -87,8 +88,10 @@ public class MenuAdminFragment extends ListFragment implements LoaderManager.Loa
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String truckId = args.getString(ARG_TRUCK_ID);
-        Uri uri = Contract.buildNeedsSync(Contract.MenuEntry.buildMenuForTruck(truckId));
-        return CursorLoaderFactory.create(getActivity(), uri, MenuAdminAdapter.Query.PROJECTION);
+        Query query = Contract.MenuEntry.buildMenuForTruck(truckId);
+        String[] projection = MenuAdminAdapter.Query.PROJECTION;
+        Uri uri = Contract.syncFromNetwork(Contract.MenuEntry.CONTENT_URI);
+        return new CursorLoader(getActivity(), uri, projection, query.selection, query.selectionArgs, null);
     }
 
     @Override

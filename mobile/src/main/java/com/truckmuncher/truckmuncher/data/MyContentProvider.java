@@ -13,7 +13,6 @@ import android.support.annotation.NonNull;
 import com.truckmuncher.truckmuncher.LoggerStarter;
 import com.truckmuncher.truckmuncher.data.sql.CategoryTable;
 import com.truckmuncher.truckmuncher.data.sql.MenuItemTable;
-import com.truckmuncher.truckmuncher.data.sql.MenuView;
 import com.truckmuncher.truckmuncher.data.sql.SqlOpenHelper;
 import com.truckmuncher.truckmuncher.data.sql.TruckStateTable;
 import com.truckmuncher.truckmuncher.data.sql.TruckTable;
@@ -28,7 +27,6 @@ import static com.truckmuncher.truckmuncher.data.Contract.PATH_CATEGORY;
 import static com.truckmuncher.truckmuncher.data.Contract.PATH_MENU;
 import static com.truckmuncher.truckmuncher.data.Contract.PATH_MENU_ITEM;
 import static com.truckmuncher.truckmuncher.data.Contract.TruckStateEntry;
-import static com.truckmuncher.truckmuncher.data.Contract.sanitize;
 
 public class MyContentProvider extends ContentProvider {
 
@@ -85,8 +83,7 @@ public class MyContentProvider extends ContentProvider {
                 retCursor = db.query(Contract.TruckEntry.VIEW_NAME, projection, selection, selectionArgs, null, null, null);
                 break;
             case MENU:
-                Uri sanitized = sanitize(uri);
-                retCursor = MenuView.queryMany(db, sanitized, projection);
+                retCursor = db.query(Contract.MenuEntry.VIEW_NAME, projection, selection, selectionArgs, null, null, null);
 
                 // TODO replace with a push notification to spawn this sync
                 if (Contract.isSyncFromNetwork(uri) && !hasSyncedAlreadyThisSession) {

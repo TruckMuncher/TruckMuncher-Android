@@ -1,11 +1,8 @@
 package com.truckmuncher.truckmuncher.data.sql;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 
 import com.truckmuncher.truckmuncher.data.Contract;
-import com.volkhart.androidutil.data.QueryArgs;
 
 import timber.log.Timber;
 
@@ -55,10 +52,5 @@ public final class MenuView {
 
     public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-    }
-
-    public static Cursor queryMany(SQLiteDatabase db, Uri uri, String[] projection) {
-        QueryArgs args = new QueryArgs(uri);
-        return db.query(MenuEntry.VIEW_NAME, projection, args.selection, args.selectionArgs, null, null, null);
     }
 }
