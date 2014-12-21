@@ -73,17 +73,17 @@ public class MyContentProvider extends ContentProvider {
     @NonNull
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteDatabase db = database.getReadableDatabase();
-        final Cursor retCursor;
 
+        String tableName;
         switch (uriMatcher.match(uri)) {
             case MENU_ITEM_ALL:
-                retCursor = MenuItemTable.queryMany(db, uri, projection);
+                tableName = MenuItemEntry.TABLE_NAME;
                 break;
             case TRUCK_VIEW:
-                retCursor = db.query(Contract.TruckEntry.VIEW_NAME, projection, selection, selectionArgs, null, null, null);
+                tableName = Contract.TruckEntry.VIEW_NAME;
                 break;
             case MENU:
-                retCursor = db.query(Contract.MenuEntry.VIEW_NAME, projection, selection, selectionArgs, null, null, null);
+                tableName = Contract.MenuEntry.VIEW_NAME;
 
                 // TODO replace with a push notification to spawn this sync
                 if (Contract.isSyncFromNetwork(uri) && !hasAlreadySyncedMenuThisSession) {
@@ -95,7 +95,9 @@ public class MyContentProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
 
+        Cursor retCursor = db.query(tableName, projection, selection, selectionArgs, null, null, null);
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+
         return retCursor;
     }
 

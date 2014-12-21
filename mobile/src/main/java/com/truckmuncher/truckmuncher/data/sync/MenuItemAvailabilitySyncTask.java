@@ -12,6 +12,7 @@ import com.truckmuncher.api.menu.MenuService;
 import com.truckmuncher.api.menu.ModifyMenuItemAvailabilityRequest;
 import com.truckmuncher.truckmuncher.data.ApiException;
 import com.truckmuncher.truckmuncher.data.Contract;
+import com.truckmuncher.truckmuncher.data.sql.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,8 @@ public final class MenuItemAvailabilitySyncTask extends SyncTask {
 
     @Override
     public ApiResult sync(SyncResult syncResult) throws RemoteException {
-        Cursor cursor = provider.query(Contract.MenuItemEntry.buildDirty(), MenuItemAvailabilityQuery.PROJECTION, null, null, null);
+        Query query = Contract.MenuItemEntry.buildDirty();
+        Cursor cursor = provider.query(Contract.MenuItemEntry.CONTENT_URI, MenuItemAvailabilityQuery.PROJECTION, query.selection, query.selectionArgs, null);
         if (!cursor.moveToFirst()) {
             // Cursor is empty. Probably already synced this.
             cursor.close();

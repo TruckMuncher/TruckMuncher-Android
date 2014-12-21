@@ -185,8 +185,10 @@ public final class Contract {
         public static final String COLUMN_CATEGORY_ID = TABLE_NAME + "__category_id";
         public static final String COLUMN_IS_DIRTY = TABLE_NAME + "__is_dirty";
 
-        public static Uri buildDirty() {
-            return CONTENT_URI.buildUpon().appendQueryParameter(COLUMN_IS_DIRTY, "1").build();
+        public static Query buildDirty() {
+            return new Query.Builder()
+                    .where(COLUMN_IS_DIRTY, EQUALS, true)
+                    .build();
         }
 
         public static final String CONTENT_TYPE = CONTENT_TYPE_BASE + PATH_MENU_ITEM;

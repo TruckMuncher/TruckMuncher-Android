@@ -1,11 +1,7 @@
 package com.truckmuncher.truckmuncher.data.sql;
 
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
-
-import com.volkhart.androidutil.data.QueryArgs;
 
 import timber.log.Timber;
 
@@ -41,12 +37,6 @@ public final class MenuItemTable {
     }
 
     public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-    }
-
-    public static Cursor queryMany(SQLiteDatabase db, Uri uri, String[] projection) {
-        QueryArgs args = new QueryArgs(uri);
-        return db.query(MenuItemEntry.TABLE_NAME, projection, args.selection, args.selectionArgs, null, null, null);
     }
 
     public static int bulkInsert(SQLiteDatabase db, ContentValues[] contentValues) {
