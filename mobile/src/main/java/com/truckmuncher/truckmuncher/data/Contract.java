@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 import com.truckmuncher.truckmuncher.BuildConfig;
+import com.truckmuncher.truckmuncher.data.sql.Query;
 import com.truckmuncher.truckmuncher.data.sql.SelectionQueryBuilder;
 
 import java.util.Arrays;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import static com.truckmuncher.truckmuncher.data.sql.Query.Operator.EQUALS;
 import static com.truckmuncher.truckmuncher.data.sql.SelectionQueryBuilder.Op.EQ;
 
 public final class Contract {
@@ -127,7 +129,7 @@ public final class Contract {
     }
 
     /**
-     * Gives a wholistic view of a truck. Use this for queries but not writes.
+     * Gives a holistic view of a truck. Use this for queries but not writes.
      */
     public static final class TruckEntry implements TruckConstantEntry, TruckStateEntry {
 
@@ -145,9 +147,10 @@ public final class Contract {
                     .expr(COLUMN_IS_SERVING, EQ, true);
         }
 
-        public static SelectionQueryBuilder buildDirty() {
-            return new SelectionQueryBuilder()
-                    .expr(COLUMN_IS_DIRTY, EQ, true);
+        public static Query buildDirty() {
+            return new Query.Builder()
+                    .where(COLUMN_IS_DIRTY, EQUALS, true)
+                    .build();
         }
 
         public static final String CONTENT_TYPE = CONTENT_TYPE_BASE + VIEW_NAME;

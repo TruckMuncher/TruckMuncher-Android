@@ -11,6 +11,7 @@ import com.truckmuncher.api.trucks.ServingModeRequest;
 import com.truckmuncher.api.trucks.TruckService;
 import com.truckmuncher.truckmuncher.data.ApiException;
 import com.truckmuncher.truckmuncher.data.Contract;
+import com.truckmuncher.truckmuncher.data.sql.Query;
 import com.truckmuncher.truckmuncher.data.sql.SelectionQueryBuilder;
 
 import static com.truckmuncher.truckmuncher.data.Contract.TruckStateEntry;
@@ -30,8 +31,8 @@ public final class TruckServingModeSyncTask extends SyncTask {
 
     @Override
     protected ApiResult sync(SyncResult syncResult) throws RemoteException {
-        SelectionQueryBuilder query = Contract.TruckEntry.buildDirty();
-        Cursor cursor = provider.query(Contract.TruckEntry.CONTENT_URI, TruckServingModeQuery.PROJECTION, query.toString(), query.getArgsArray(), null);
+        Query query = Contract.TruckEntry.buildDirty();
+        Cursor cursor = provider.query(Contract.TruckEntry.CONTENT_URI, TruckServingModeQuery.PROJECTION, query.selection, query.selectionArgs, null);
         if (!cursor.moveToFirst()) {
 
             // Cursor is empty. Probably already synced this.
