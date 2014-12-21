@@ -22,6 +22,6 @@ public class InsertMenuItemDiffService extends IntentService {
         for (int i = 0; i < parcelables.length; i++) {
             contentValues[i] = (ContentValues) parcelables[i];
         }
-        getContentResolver().bulkInsert(Contract.buildNeedsSync(Contract.MenuItemEntry.CONTENT_URI), contentValues);
+        getContentResolver().bulkInsert(Contract.syncToNetwork(Contract.MenuItemEntry.CONTENT_URI), contentValues);
     }
 }

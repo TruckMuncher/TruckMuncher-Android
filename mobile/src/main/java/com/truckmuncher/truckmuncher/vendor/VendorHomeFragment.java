@@ -96,7 +96,7 @@ public class VendorHomeFragment extends Fragment {
         values.put(Contract.TruckEntry.COLUMN_IS_DIRTY, true);
         AsyncQueryHandler handler = new SimpleAsyncQueryHandler(getActivity().getContentResolver());
 
-        Uri uri = Contract.buildNeedsSync(Contract.TruckStateEntry.CONTENT_URI);
+        Uri uri = Contract.syncToNetwork(Contract.TruckStateEntry.CONTENT_URI);
         // FIXME Need to use a real truck id, not a mock one
         Query query = Contract.TruckEntry.buildSingleTruck("de513002-5a44-11e4-aa15-123b93f75cba");
         handler.startUpdate(0, null, uri, values, query.selection, query.selectionArgs);

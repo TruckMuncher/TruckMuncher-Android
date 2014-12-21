@@ -23,7 +23,6 @@ public final class Contract {
     public static final String PATH_MENU = "menu";
 
     private static final String STRING_SEPARATOR = ",";
-    private static final String PARAM_NEEDS_SYNC = "needs_sync";
     private static final String PARAM_NOTIFY = "notify";
     private static final String PARAM_SYNC_TO_NETWORK = "sync_to_network";
     private static final String PARAM_SYNC_FROM_NETWORK = "sync_from_network";
@@ -63,20 +62,6 @@ public final class Contract {
     public static boolean isSyncFromNetwork(Uri uri) {
         String sync = uri.getQueryParameter(PARAM_SYNC_FROM_NETWORK);
         return sync != null && Boolean.parseBoolean(sync);
-    }
-
-    /**
-     * If used, the resulting Uri will have it's data synced to the network.
-     *
-     * @param uri to sync
-     */
-    public static Uri buildNeedsSync(Uri uri) {
-        return uri.buildUpon().appendQueryParameter(PARAM_NEEDS_SYNC, "true").build();
-    }
-
-    public static boolean needsSync(Uri uri) {
-        String needsSync = uri.getQueryParameter(PARAM_NEEDS_SYNC);
-        return needsSync != null && Boolean.parseBoolean(needsSync);
     }
 
     /**
