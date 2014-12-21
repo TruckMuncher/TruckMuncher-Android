@@ -28,9 +28,7 @@ import static com.truckmuncher.truckmuncher.data.Contract.PATH_CATEGORY;
 import static com.truckmuncher.truckmuncher.data.Contract.PATH_MENU;
 import static com.truckmuncher.truckmuncher.data.Contract.PATH_MENU_ITEM;
 import static com.truckmuncher.truckmuncher.data.Contract.TruckStateEntry;
-import static com.truckmuncher.truckmuncher.data.Contract.needsSync;
 import static com.truckmuncher.truckmuncher.data.Contract.sanitize;
-import static com.truckmuncher.truckmuncher.data.Contract.suppressNotify;
 
 public class MyContentProvider extends ContentProvider {
 
@@ -78,6 +76,7 @@ public class MyContentProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteDatabase db = database.getReadableDatabase();
         final Cursor retCursor;
+
         switch (uriMatcher.match(uri)) {
             case MENU_ITEM_ALL:
                 retCursor = MenuItemTable.queryMany(db, uri, projection);
@@ -90,7 +89,7 @@ public class MyContentProvider extends ContentProvider {
                 retCursor = MenuView.queryMany(db, sanitized, projection);
 
                 // TODO replace with a push notification to spawn this sync
-                if (needsSync(uri) && !hasSyncedAlreadyThisSession) {
+                if (Contract.isSyncFromNetwork(uri) && !hasSyncedAlreadyThisSession) {
                     getContext().startService(new Intent(getContext(), MenuUpdateService.class));
                     hasSyncedAlreadyThisSession = true;
                 }
@@ -98,6 +97,7 @@ public class MyContentProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
+
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
         return retCursor;
     }
@@ -124,47 +124,35 @@ public class MyContentProvider extends ContentProvider {
      */
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
-        SQLiteDatabase db = database.getWritableDatabase();
-        Uri returnUri;
-        switch (uriMatcher.match(uri)) {
-            default:
-                throw new UnsupportedOperationException("Not yet implemented. Uri: " + uri.toString());
-        }
-//        if (!Contract.suppressNotify(uri)) {
-//            getContext().getContentResolver().notifyChange(uri, null, Contract.needsSync(uri));
-//        }
-//        return returnUri;
+        throw new UnsupportedOperationException("Not yet implemented. Uri: " + uri);
     }
 
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
-        boolean suppressNotify = suppressNotify(uri);
-        boolean needsSync = needsSync(uri);
-        uri = sanitize(uri);
         SQLiteDatabase db = database.getWritableDatabase();
         int rowsDeleted;
+
         switch (uriMatcher.match(uri)) {
             case TRUCK_STATE:
                 rowsDeleted = db.delete(TruckStateEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             default:
-                throw new UnsupportedOperationException("Not yet implemented. Uri: " + uri.toString());
+                throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
 
         // Because a null deletes all rows
-        if (selection == null || rowsDeleted != 0 && !suppressNotify) {
-            getContext().getContentResolver().notifyChange(uri, null, needsSync);
+        if (selection == null || rowsDeleted != 0 && !Contract.isSuppressNotify(uri)) {
+            getContext().getContentResolver().notifyChange(uri, null, Contract.isSyncToNetwork(uri));
         }
+
         return rowsDeleted;
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        boolean suppressNotify = suppressNotify(uri);
-        boolean needsSync = needsSync(uri);
-        uri = sanitize(uri);
         SQLiteDatabase db = database.getWritableDatabase();
         int rowsUpdated;
+
         switch (uriMatcher.match(uri)) {
             case TRUCK_STATE:
                 rowsUpdated = db.update(TruckStateEntry.TABLE_NAME, values, selection, selectionArgs);
@@ -172,10 +160,12 @@ public class MyContentProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
-        Timber.d("Suppressing notify: %b", suppressNotify);
-        if (rowsUpdated != 0 && !suppressNotify) {
-            getContext().getContentResolver().notifyChange(uri, null, needsSync);
+
+        // Notify and sync as appropriate. This is defined by the Uri
+        if (rowsUpdated != 0 && !Contract.isSuppressNotify(uri)) {
+            getContext().getContentResolver().notifyChange(uri, null, Contract.isSyncToNetwork(uri));
         }
+
         return rowsUpdated;
     }
 
@@ -183,6 +173,7 @@ public class MyContentProvider extends ContentProvider {
     public int bulkInsert(Uri uri, @NonNull ContentValues[] values) {
         SQLiteDatabase db = database.getWritableDatabase();
         int returnCount;
+
         switch (uriMatcher.match(uri)) {
             case MENU_ITEM_ALL:
                 returnCount = MenuItemTable.bulkInsert(db, values);
@@ -202,9 +193,11 @@ public class MyContentProvider extends ContentProvider {
                 Timber.w("Attempting a bulk insert for an unsupported URI, %s. Falling back to normal inserts...", uri);
                 returnCount = super.bulkInsert(uri, values);
         }
-        if (returnCount > 0 && !suppressNotify(uri)) {
-            getContext().getContentResolver().notifyChange(uri, null, needsSync(uri));
+
+        if (returnCount > 0 && !Contract.isSuppressNotify(uri)) {
+            getContext().getContentResolver().notifyChange(uri, null, Contract.isSyncToNetwork(uri));
         }
+
         return returnCount;
     }
 }

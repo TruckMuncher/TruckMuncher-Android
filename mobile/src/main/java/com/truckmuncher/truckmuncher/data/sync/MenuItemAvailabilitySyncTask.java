@@ -65,7 +65,7 @@ public final class MenuItemAvailabilitySyncTask extends SyncTask {
             }
 
             // Since we're clearing an internal state, don't notify listeners
-            Uri uri = Contract.buildSuppressNotify(Contract.MenuItemEntry.CONTENT_URI);
+            Uri uri = Contract.suppressNotify(Contract.MenuItemEntry.CONTENT_URI);
             provider.bulkInsert(uri, contentValues);
         } catch (ApiException e) {
             return apiExceptionResolver.resolve(e);

@@ -14,7 +14,7 @@ import com.truckmuncher.truckmuncher.data.Contract;
 import com.truckmuncher.truckmuncher.data.sql.Query;
 
 import static com.truckmuncher.truckmuncher.data.Contract.TruckStateEntry;
-import static com.truckmuncher.truckmuncher.data.Contract.buildSuppressNotify;
+import static com.truckmuncher.truckmuncher.data.Contract.suppressNotify;
 
 public final class TruckServingModeSyncTask extends SyncTask {
 
@@ -57,7 +57,7 @@ public final class TruckServingModeSyncTask extends SyncTask {
                 values.put(TruckStateEntry.COLUMN_IS_DIRTY, false);
 
                 // Since we're clearing an internal state, don't notify listeners
-                Uri uri = buildSuppressNotify(TruckStateEntry.CONTENT_URI);
+                Uri uri = suppressNotify(TruckStateEntry.CONTENT_URI);
                 Query q = Contract.TruckEntry.buildSingleTruck(request.truckId);
                 provider.update(uri, values, q.selection, q.selectionArgs);
             } catch (ApiException e) {

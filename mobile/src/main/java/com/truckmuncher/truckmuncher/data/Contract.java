@@ -27,6 +27,8 @@ public final class Contract {
     private static final String STRING_SEPARATOR = ",";
     private static final String PARAM_NEEDS_SYNC = "needs_sync";
     private static final String PARAM_NOTIFY = "notify";
+    private static final String PARAM_SYNC_TO_NETWORK = "sync_to_network";
+    private static final String PARAM_SYNC_FROM_NETWORK = "sync_from_network";
 
     private Contract() {
         // No instances
@@ -47,6 +49,24 @@ public final class Contract {
         return Arrays.asList(string.split(STRING_SEPARATOR));
     }
 
+    public static Uri syncToNetwork(Uri uri) {
+        return uri.buildUpon().appendQueryParameter(PARAM_SYNC_TO_NETWORK, "true").build();
+    }
+
+    public static boolean isSyncToNetwork(Uri uri) {
+        String sync = uri.getQueryParameter(PARAM_SYNC_TO_NETWORK);
+        return sync != null && Boolean.parseBoolean(sync);
+    }
+
+    public static Uri syncFromNetwork(Uri uri) {
+        return uri.buildUpon().appendQueryParameter(PARAM_SYNC_FROM_NETWORK, "true").build();
+    }
+
+    public static boolean isSyncFromNetwork(Uri uri) {
+        String sync = uri.getQueryParameter(PARAM_SYNC_FROM_NETWORK);
+        return sync != null && Boolean.parseBoolean(sync);
+    }
+
     /**
      * If used, the resulting Uri will have it's data synced to the network.
      *
@@ -64,11 +84,11 @@ public final class Contract {
     /**
      * If used, the resulting Uri will not have it's listeners notified when new data is available.
      */
-    public static Uri buildSuppressNotify(Uri uri) {
+    public static Uri suppressNotify(Uri uri) {
         return uri.buildUpon().appendQueryParameter(PARAM_NOTIFY, "false").build();
     }
 
-    public static boolean suppressNotify(Uri uri) {
+    public static boolean isSuppressNotify(Uri uri) {
         String suppress = uri.getQueryParameter(PARAM_NOTIFY);
         return suppress != null && !Boolean.parseBoolean(suppress);
     }

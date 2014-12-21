@@ -41,16 +41,16 @@ public class ContractTest extends TestCase {
 
     public void testSuppressNotifyDirective() {
         Uri uri = Contract.TruckConstantEntry.CONTENT_URI;
-        assertThat(Contract.suppressNotify(uri)).isFalse();
+        assertThat(Contract.isSuppressNotify(uri)).isFalse();
 
-        uri = Contract.buildSuppressNotify(uri);
-        assertThat(Contract.suppressNotify(uri)).isTrue();
+        uri = Contract.suppressNotify(uri);
+        assertThat(Contract.isSuppressNotify(uri)).isTrue();
     }
 
     public void testSanitizeRemovesAllDirectives() {
         Uri base = Contract.TruckConstantEntry.CONTENT_URI;
 
-        Uri uri = Contract.buildSuppressNotify(base);
+        Uri uri = Contract.suppressNotify(base);
         uri = Contract.buildNeedsSync(uri);
 
         assertThat(uri).isNotEqualTo(base);

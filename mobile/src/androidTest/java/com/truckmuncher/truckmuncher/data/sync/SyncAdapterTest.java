@@ -138,7 +138,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
         testProvider.enqueue(new VerifiableContentProvider.BulkInsertEvent() {
             @Override
             public int onBulkInsert(Uri uri, @NonNull ContentValues[] values) {
-                assertThat(uri).isEqualTo(Contract.buildSuppressNotify(Contract.MenuItemEntry.CONTENT_URI));
+                assertThat(uri).isEqualTo(Contract.suppressNotify(Contract.MenuItemEntry.CONTENT_URI));
 
                 ContentValues row1 = new ContentValues(2);
                 row1.put(Contract.MenuItemEntry.COLUMN_INTERNAL_ID, menuItemId1);
@@ -353,7 +353,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
         testProvider.enqueue(new VerifiableContentProvider.UpdateEvent() {
             @Override
             public int onUpdate(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-                assertThat(uri).isEqualTo(Contract.buildSuppressNotify(Contract.TruckConstantEntry.buildSingleTruck(truckId)));
+                assertThat(uri).isEqualTo(Contract.suppressNotify(Contract.TruckConstantEntry.buildSingleTruck(truckId)));
                 assertThat(values.getAsBoolean(Contract.TruckConstantEntry.COLUMN_IS_DIRTY)).isFalse();
                 return 1;
             }
@@ -424,7 +424,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
         testProvider.enqueue(new VerifiableContentProvider.UpdateEvent() {
             @Override
             public int onUpdate(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-                assertThat(uri).isEqualTo(Contract.buildSuppressNotify(Contract.TruckConstantEntry.buildSingleTruck(truckId2)));
+                assertThat(uri).isEqualTo(Contract.suppressNotify(Contract.TruckConstantEntry.buildSingleTruck(truckId2)));
                 assertThat(values.getAsBoolean(Contract.TruckConstantEntry.COLUMN_IS_DIRTY)).isFalse();
                 return 1;
             }
