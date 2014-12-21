@@ -2,6 +2,7 @@ package com.truckmuncher.truckmuncher.vendor.menuadmin;
 
 import android.app.IntentService;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
 
@@ -9,10 +10,16 @@ import com.truckmuncher.truckmuncher.data.Contract;
 
 public class InsertMenuItemDiffService extends IntentService {
 
-    static final String ARG_VALUES = "content_values";
+    private static final String ARG_VALUES = "content_values";
 
     public InsertMenuItemDiffService() {
         super(InsertMenuItemDiffService.class.getName());
+    }
+
+    public static Intent newIntent(Context context, ContentValues[] contentValues) {
+        Intent intent = new Intent(context, InsertMenuItemDiffService.class);
+        intent.putExtra(ARG_VALUES, contentValues);
+        return intent;
     }
 
     @Override

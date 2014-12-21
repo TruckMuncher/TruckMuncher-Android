@@ -69,8 +69,8 @@ public class MenuAdminFragment extends ListFragment implements LoaderManager.Loa
             contentValues[i] = values;
             i++;
         }
-        Intent intent = new Intent(getActivity(), InsertMenuItemDiffService.class);
-        intent.putExtra(InsertMenuItemDiffService.ARG_VALUES, contentValues);
+
+        Intent intent = InsertMenuItemDiffService.newIntent(getActivity(), contentValues);
         getActivity().startService(intent);
     }
 
