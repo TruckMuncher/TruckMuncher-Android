@@ -40,7 +40,7 @@ public class MyContentProvider extends ContentProvider {
     private static final UriMatcher uriMatcher = buildUriMatcher();
 
     // TODO this is not OK. We need push messages
-    private static boolean hasSyncedAlreadyThisSession = false;
+    private static boolean hasAlreadySyncedMenuThisSession = false;
 
     private SQLiteOpenHelper database;
 
@@ -86,9 +86,9 @@ public class MyContentProvider extends ContentProvider {
                 retCursor = db.query(Contract.MenuEntry.VIEW_NAME, projection, selection, selectionArgs, null, null, null);
 
                 // TODO replace with a push notification to spawn this sync
-                if (Contract.isSyncFromNetwork(uri) && !hasSyncedAlreadyThisSession) {
+                if (Contract.isSyncFromNetwork(uri) && !hasAlreadySyncedMenuThisSession) {
                     getContext().startService(new Intent(getContext(), MenuUpdateService.class));
-                    hasSyncedAlreadyThisSession = true;
+                    hasAlreadySyncedMenuThisSession = true;
                 }
                 break;
             default:
