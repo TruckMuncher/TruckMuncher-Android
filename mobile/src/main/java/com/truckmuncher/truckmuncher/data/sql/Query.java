@@ -60,148 +60,6 @@ public final class Query {
                 '}';
     }
 
-    public static class Builder {
-
-        private static final String AND = " AND ";
-        private static final String OR = " OR ";
-
-        private final StringBuilder stringBuilder = new StringBuilder();
-        private final List<String> args = new ArrayList<>();
-        private String nextOperator;
-
-        public Builder where(String column, String operand, String arg) {
-            setNextOperatorIfNeeded();
-            stringBuilder.append(column).append(operand).append("?");
-            args.add(arg);
-            nextOperator = null;
-
-            return this;
-        }
-
-        public Builder where(String column, String operand, boolean arg) {
-            return where(column, operand, arg ? "1" : "0");
-        }
-
-        public Builder where(String column, String operand, int arg) {
-            return where(column, operand, Integer.toString(arg));
-        }
-
-        public Builder where(String column, String operand, long arg) {
-            return where(column, operand, Long.toString(arg));
-        }
-
-        public Builder where(String column, String operand, float arg) {
-            return where(column, operand, Float.toString(arg));
-        }
-
-        public Builder where(String column, String operand, double arg) {
-            return where(column, operand, Double.toString(arg));
-        }
-
-        public Builder and() {
-            nextOperator = AND;
-            return this;
-        }
-
-        public Builder or() {
-            nextOperator = OR;
-            return this;
-        }
-
-        /**
-         * Ensures that multiple {@code where} statements can be joined safely. Defaults to using
-         * {@code AND}.
-         */
-        private void setNextOperatorIfNeeded() {
-            if (stringBuilder.length() == 0) {
-                return;
-            }
-
-            if (nextOperator == null) {
-                stringBuilder.append(AND);
-            } else {
-                stringBuilder.append(nextOperator);
-                nextOperator = null;
-            }
-        }
-
-        public Query build() {
-            String[] arguments = args.toArray(new String[args.size()]);
-            return new Query(stringBuilder.toString(), arguments);
-        }
-    }
-
-    public static class Builder {
-
-        private static final String AND = " AND ";
-        private static final String OR = " OR ";
-
-        private final StringBuilder stringBuilder = new StringBuilder();
-        private final List<String> args = new ArrayList<>();
-        private String nextOperator;
-
-        public Builder where(String column, String operand, String arg) {
-            setNextOperatorIfNeeded();
-            stringBuilder.append(column).append(operand).append("?");
-            args.add(arg);
-            nextOperator = null;
-
-            return this;
-        }
-
-        public Builder where(String column, String operand, boolean arg) {
-            return where(column, operand, arg ? "1" : "0");
-        }
-
-        public Builder where(String column, String operand, int arg) {
-            return where(column, operand, Integer.toString(arg));
-        }
-
-        public Builder where(String column, String operand, long arg) {
-            return where(column, operand, Long.toString(arg));
-        }
-
-        public Builder where(String column, String operand, float arg) {
-            return where(column, operand, Float.toString(arg));
-        }
-
-        public Builder where(String column, String operand, double arg) {
-            return where(column, operand, Double.toString(arg));
-        }
-
-        public Builder and() {
-            nextOperator = AND;
-            return this;
-        }
-
-        public Builder or() {
-            nextOperator = OR;
-            return this;
-        }
-
-        /**
-         * Ensures that multiple {@code where} statements can be joined safely. Defaults to using
-         * {@code AND}.
-         */
-        private void setNextOperatorIfNeeded() {
-            if (stringBuilder.length() == 0) {
-                return;
-            }
-
-            if (nextOperator == null) {
-                stringBuilder.append(AND);
-            } else {
-                stringBuilder.append(nextOperator);
-                nextOperator = null;
-            }
-        }
-
-        public Query build() {
-            String[] arguments = args.toArray(new String[args.size()]);
-            return new Query(stringBuilder.toString(), arguments);
-        }
-    }
-
     /**
      * Common SQL operators. For convenience, consider implementing this interface if creating a
      * lot of queries.
@@ -216,5 +74,76 @@ public final class Query {
         public String LIKE = " LIKE ";
         public String IS = " IS ";
         public String IS_NOT = " IS NOT ";
+    }
+
+    public static class Builder {
+
+        private static final String AND = " AND ";
+        private static final String OR = " OR ";
+
+        private final StringBuilder stringBuilder = new StringBuilder();
+        private final List<String> args = new ArrayList<>();
+        private String nextOperator;
+
+        public Builder where(String column, String operand, String arg) {
+            setNextOperatorIfNeeded();
+            stringBuilder.append(column).append(operand).append("?");
+            args.add(arg);
+            nextOperator = null;
+
+            return this;
+        }
+
+        public Builder where(String column, String operand, boolean arg) {
+            return where(column, operand, arg ? "1" : "0");
+        }
+
+        public Builder where(String column, String operand, int arg) {
+            return where(column, operand, Integer.toString(arg));
+        }
+
+        public Builder where(String column, String operand, long arg) {
+            return where(column, operand, Long.toString(arg));
+        }
+
+        public Builder where(String column, String operand, float arg) {
+            return where(column, operand, Float.toString(arg));
+        }
+
+        public Builder where(String column, String operand, double arg) {
+            return where(column, operand, Double.toString(arg));
+        }
+
+        public Builder and() {
+            nextOperator = AND;
+            return this;
+        }
+
+        public Builder or() {
+            nextOperator = OR;
+            return this;
+        }
+
+        /**
+         * Ensures that multiple {@code where} statements can be joined safely. Defaults to using
+         * {@code AND}.
+         */
+        private void setNextOperatorIfNeeded() {
+            if (stringBuilder.length() == 0) {
+                return;
+            }
+
+            if (nextOperator == null) {
+                stringBuilder.append(AND);
+            } else {
+                stringBuilder.append(nextOperator);
+                nextOperator = null;
+            }
+        }
+
+        public Query build() {
+            String[] arguments = args.toArray(new String[args.size()]);
+            return new Query(stringBuilder.toString(), arguments);
+        }
     }
 }
