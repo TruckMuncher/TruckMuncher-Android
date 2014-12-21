@@ -12,6 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Original at https://gist.github.com/MariusVolkhart/3e2374b5fdbefad17d56
  */
 
 package com.truckmuncher.truckmuncher.data.sql;
@@ -87,7 +89,7 @@ public final class Query {
 
         public Builder where(String column, String operand, String arg) {
             setNextOperatorIfNeeded();
-            stringBuilder.append(column).append(operand).append("?");
+            stringBuilder.append(column).append(operand).append('?');
             args.add(arg);
             nextOperator = null;
 
@@ -114,6 +116,21 @@ public final class Query {
             return where(column, operand, Double.toString(arg));
         }
 
+        public Builder where(Query query) {
+
+            if (query.selectionArgs.length > 0) {
+                setNextOperatorIfNeeded();
+                stringBuilder.append('(').append(query.selection).append(')');
+                args.addAll(Arrays.asList(query.selectionArgs));
+            }
+
+            nextOperator = null;
+            return this;
+        }
+
+        /**
+         * Joins two statements with an {@code AND} operator. This is also the implicit behavior.
+         */
         public Builder and() {
             nextOperator = AND;
             return this;
