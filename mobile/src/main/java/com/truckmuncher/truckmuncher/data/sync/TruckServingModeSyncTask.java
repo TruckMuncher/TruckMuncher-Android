@@ -12,7 +12,6 @@ import com.truckmuncher.api.trucks.TruckService;
 import com.truckmuncher.truckmuncher.data.ApiException;
 import com.truckmuncher.truckmuncher.data.Contract;
 import com.truckmuncher.truckmuncher.data.sql.Query;
-import com.truckmuncher.truckmuncher.data.sql.SelectionQueryBuilder;
 
 import static com.truckmuncher.truckmuncher.data.Contract.TruckStateEntry;
 import static com.truckmuncher.truckmuncher.data.Contract.buildSuppressNotify;
@@ -59,8 +58,8 @@ public final class TruckServingModeSyncTask extends SyncTask {
 
                 // Since we're clearing an internal state, don't notify listeners
                 Uri uri = buildSuppressNotify(TruckStateEntry.CONTENT_URI);
-                SelectionQueryBuilder selection = Contract.TruckEntry.buildSingleTruck(request.truckId);
-                provider.update(uri, values, selection.toString(), selection.getArgsArray());
+                Query q = Contract.TruckEntry.buildSingleTruck(request.truckId);
+                provider.update(uri, values, q.selection, q.selectionArgs);
             } catch (ApiException e) {
                 ApiResult result = apiExceptionResolver.resolve(e);
 

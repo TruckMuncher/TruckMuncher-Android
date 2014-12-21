@@ -19,7 +19,7 @@ import android.widget.ImageView;
 import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.data.Contract;
 import com.truckmuncher.truckmuncher.data.SimpleAsyncQueryHandler;
-import com.truckmuncher.truckmuncher.data.sql.SelectionQueryBuilder;
+import com.truckmuncher.truckmuncher.data.sql.Query;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -98,8 +98,8 @@ public class VendorHomeFragment extends Fragment {
 
         Uri uri = Contract.buildNeedsSync(Contract.TruckStateEntry.CONTENT_URI);
         // FIXME Need to use a real truck id, not a mock one
-        SelectionQueryBuilder query = Contract.TruckEntry.buildSingleTruck("de513002-5a44-11e4-aa15-123b93f75cba");
-        handler.startUpdate(0, null, uri, values, query.toString(), query.getArgsArray());
+        Query query = Contract.TruckEntry.buildSingleTruck("de513002-5a44-11e4-aa15-123b93f75cba");
+        handler.startUpdate(0, null, uri, values, query.selection, query.selectionArgs);
 
         onServingModeChangedListener.onServingModeChanged(isChecked);
     }

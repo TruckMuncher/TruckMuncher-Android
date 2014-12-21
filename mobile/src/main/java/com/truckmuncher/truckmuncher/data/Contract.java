@@ -5,7 +5,6 @@ import android.provider.BaseColumns;
 
 import com.truckmuncher.truckmuncher.BuildConfig;
 import com.truckmuncher.truckmuncher.data.sql.Query;
-import com.truckmuncher.truckmuncher.data.sql.SelectionQueryBuilder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,7 +12,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import static com.truckmuncher.truckmuncher.data.sql.Query.Operator.EQUALS;
-import static com.truckmuncher.truckmuncher.data.sql.SelectionQueryBuilder.Op.EQ;
 
 public final class Contract {
 
@@ -137,14 +135,15 @@ public final class Contract {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(VIEW_NAME).build();
         public static final String COLUMN_INTERNAL_ID = TruckConstantEntry.TABLE_NAME + "__internal_id";
 
-        public static SelectionQueryBuilder buildSingleTruck(String internalId) {
-            return new SelectionQueryBuilder()
-                    .expr(TruckStateEntry.COLUMN_INTERNAL_ID, EQ, internalId);
+        public static Query buildSingleTruck(String internalId) {
+            return new Query.Builder()
+                    .where(TruckStateEntry.COLUMN_INTERNAL_ID, EQUALS, internalId)
+                    .build();
         }
 
         public static Query buildServingTrucks() {
             return new Query.Builder()
-                    .where(COLUMN_IS_SERVING, EQ, true)
+                    .where(COLUMN_IS_SERVING, EQUALS, true)
                     .build();
         }
 

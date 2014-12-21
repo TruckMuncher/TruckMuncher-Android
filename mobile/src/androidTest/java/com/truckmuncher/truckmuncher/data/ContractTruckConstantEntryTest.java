@@ -2,7 +2,7 @@ package com.truckmuncher.truckmuncher.data;
 
 import android.net.Uri;
 
-import com.truckmuncher.truckmuncher.data.sql.SelectionQueryBuilder;
+import com.truckmuncher.truckmuncher.data.sql.Query;
 
 import junit.framework.TestCase;
 
@@ -15,7 +15,7 @@ public class ContractTruckEntryTest extends TestCase {
 
     public void testSingleTruckConversion() {
         String internalId = UUID.randomUUID().toString();
-        SelectionQueryBuilder query = Contract.TruckEntry.buildSingleTruck(internalId);
+        Query query = Contract.TruckEntry.buildSingleTruck(internalId);
 
         assertThat(Contract.TruckEntry.getInternalIdFromUri(uri)).isEqualTo(internalId);
     }
