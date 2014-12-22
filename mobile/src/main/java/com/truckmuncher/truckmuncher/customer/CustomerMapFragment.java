@@ -31,6 +31,7 @@ import com.truckmuncher.api.trucks.Truck;
 import com.truckmuncher.truckmuncher.ActiveTrucksService;
 import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.data.Contract;
+import com.truckmuncher.truckmuncher.data.PublicContract;
 import com.truckmuncher.truckmuncher.data.sql.Query;
 
 import java.util.Collections;
@@ -203,7 +204,7 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
 
         while (cursor.moveToNext()) {
             Truck truck = new Truck.Builder()
-                    .id(cursor.getString(ActiveTrucksQuery.INTERNAL_ID))
+                    .id(cursor.getString(ActiveTrucksQuery.ID))
                     .name(cursor.getString(ActiveTrucksQuery.NAME))
                     .build();
 
@@ -267,11 +268,11 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
 
         public static final String[] PROJECTION = new String[]{
                 Contract.TruckEntry.COLUMN_INTERNAL_ID,
-                Contract.TruckEntry.COLUMN_LATITUDE,
-                Contract.TruckEntry.COLUMN_LONGITUDE,
+                PublicContract.TruckState.LATITUDE,
+                PublicContract.TruckState.LONGITUDE,
                 Contract.TruckEntry.COLUMN_NAME
         };
-        static final int INTERNAL_ID = 0;
+        static final int ID = 0;
         static final int LATITUDE = 1;
         static final int LONGITUDE = 2;
         static final int NAME = 3;

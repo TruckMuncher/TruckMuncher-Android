@@ -18,6 +18,7 @@ import android.widget.ImageView;
 
 import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.data.Contract;
+import com.truckmuncher.truckmuncher.data.PublicContract;
 import com.truckmuncher.truckmuncher.data.SimpleAsyncQueryHandler;
 import com.truckmuncher.truckmuncher.data.sql.Query;
 
@@ -90,13 +91,13 @@ public class VendorHomeFragment extends Fragment {
         updateAnimation(isChecked);
 
         ContentValues values = new ContentValues();
-        values.put(Contract.TruckEntry.COLUMN_LATITUDE, currentLocation.getLatitude());
-        values.put(Contract.TruckEntry.COLUMN_LONGITUDE, currentLocation.getLongitude());
-        values.put(Contract.TruckEntry.COLUMN_IS_SERVING, isChecked);
-        values.put(Contract.TruckEntry.COLUMN_IS_DIRTY, true);
+        values.put(PublicContract.TruckState.LATITUDE, currentLocation.getLatitude());
+        values.put(PublicContract.TruckState.LONGITUDE, currentLocation.getLongitude());
+        values.put(PublicContract.TruckState.IS_SERVING, isChecked);
+        values.put(Contract.TruckState.IS_DIRTY, true);
         AsyncQueryHandler handler = new SimpleAsyncQueryHandler(getActivity().getContentResolver());
 
-        Uri uri = Contract.syncToNetwork(Contract.TruckStateEntry.CONTENT_URI);
+        Uri uri = Contract.syncToNetwork(PublicContract.TRUCK_STATE_URI);
         // FIXME Need to use a real truck id, not a mock one
         Query query = Contract.TruckEntry.buildSingleTruck("de513002-5a44-11e4-aa15-123b93f75cba");
         handler.startUpdate(0, null, uri, values, query.selection, query.selectionArgs);

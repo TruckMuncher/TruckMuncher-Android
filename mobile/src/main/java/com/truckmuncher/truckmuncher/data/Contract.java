@@ -61,6 +61,7 @@ public final class Contract {
 
     /**
      * If used, the ContentProvider will attempt to sync the provided uri from the network
+     *
      * @param uri to sync
      * @return original uri with the directive attached
      */
@@ -75,6 +76,7 @@ public final class Contract {
     /**
      * If used, the resulting Uri will not have it's listeners notified when new data is available.
      * This is incompatible with the {@link #syncToNetwork(android.net.Uri)} directive.
+     *
      * @param uri to sync
      * @return original uri with the directive attached
      */
@@ -92,17 +94,12 @@ public final class Contract {
     /**
      * Stores the temporary state. You must use this to do writes to the db, but should not use this for queries.
      */
-    public interface TruckStateEntry {
-
-        public static final String TABLE_NAME = "truck_state";
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME).build();
-        public static final String _ID = BaseColumns._ID;
-        public static final String COLUMN_INTERNAL_ID = TABLE_NAME + "__internal_id";
-        public static final String COLUMN_IS_SELECTED_TRUCK = TABLE_NAME + "__is_selected";
-        public static final String COLUMN_IS_SERVING = TABLE_NAME + "__is_serving";
-        public static final String COLUMN_LATITUDE = TABLE_NAME + "__latitude";
-        public static final String COLUMN_LONGITUDE = TABLE_NAME + "__longitude";
-        public static final String COLUMN_IS_DIRTY = TABLE_NAME + "__is_dirty";
+    public interface TruckState extends PublicContract.TruckState {
+        /**
+         * Unused
+         */
+        public static final String IS_SELECTED_TRUCK = "is_selected";
+        public static final String IS_DIRTY = "is_dirty";
     }
 
     /**
@@ -136,7 +133,7 @@ public final class Contract {
     /**
      * Gives a holistic view of a truck. Use this for queries but not writes.
      */
-    public static final class TruckEntry implements TruckConstantEntry, TruckStateEntry {
+    public static final class TruckEntry implements TruckConstantEntry, TruckState {
 
         public static final String VIEW_NAME = "truck";
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(VIEW_NAME).build();
@@ -144,19 +141,19 @@ public final class Contract {
 
         public static Query buildSingleTruck(String internalId) {
             return new Query.Builder()
-                    .where(TruckStateEntry.COLUMN_INTERNAL_ID, EQUALS, internalId)
+                    .where(TruckState.ID, EQUALS, internalId)
                     .build();
         }
 
         public static Query buildServingTrucks() {
             return new Query.Builder()
-                    .where(COLUMN_IS_SERVING, EQUALS, true)
+                    .where(IS_SERVING, EQUALS, true)
                     .build();
         }
 
         public static Query buildDirty() {
             return new Query.Builder()
-                    .where(COLUMN_IS_DIRTY, EQUALS, true)
+                    .where(IS_DIRTY, EQUALS, true)
                     .build();
         }
 

@@ -13,9 +13,9 @@ public class TruckView {
     }
 
     public static void onCreate(SQLiteDatabase db) {
-        String VIEW_CREATE = "create view "
+        String VIEW_CREATE = "CREATE VIEW "
                 + Contract.TruckEntry.VIEW_NAME
-                + " as select "
+                + " AS SELECT "
                 + Contract.TruckConstantEntry.TABLE_NAME + "." + Contract.TruckConstantEntry._ID + ", "
                 + Contract.TruckConstantEntry.COLUMN_INTERNAL_ID + ", "
                 + Contract.TruckConstantEntry.COLUMN_NAME + ", "
@@ -25,18 +25,17 @@ public class TruckView {
                 + Contract.TruckConstantEntry.COLUMN_COLOR_PRIMARY + ", "
                 + Contract.TruckConstantEntry.COLUMN_COLOR_SECONDARY + ", "
 
-                + Contract.TruckStateEntry.COLUMN_INTERNAL_ID + ", "
-                + Contract.TruckStateEntry.COLUMN_IS_SELECTED_TRUCK + ", "
-                + Contract.TruckStateEntry.COLUMN_IS_SERVING + ", "
-                + Contract.TruckStateEntry.COLUMN_LATITUDE + ", "
-                + Contract.TruckStateEntry.COLUMN_LONGITUDE + ", "
-                + Contract.TruckStateEntry.COLUMN_IS_DIRTY
+                + "truck_state.id, "
+                + "truck_state.is_selected, "
+                + "truck_state.is_serving, "
+                + "truck_state.latitude, "
+                + "truck_state.longitude, "
+                + "truck_state.is_dirty"
 
-                + " from "
-                + Contract.TruckConstantEntry.TABLE_NAME + " inner join "
-                + Contract.TruckStateEntry.TABLE_NAME + " on "
-                + Contract.TruckConstantEntry.COLUMN_INTERNAL_ID + "=" + Contract.TruckStateEntry.COLUMN_INTERNAL_ID
-                + ";";
+                + " FROM "
+                + Contract.TruckConstantEntry.TABLE_NAME + " INNER JOIN "
+                + TruckStateTable.TABLE_NAME + " ON "
+                + Contract.TruckConstantEntry.COLUMN_INTERNAL_ID + "=truck_state.id;";
 
         Timber.i("Creating view: %s", VIEW_CREATE);
         db.execSQL(VIEW_CREATE);

@@ -21,7 +21,6 @@ import com.truckmuncher.truckmuncher.menu.MenuUpdateService;
 import timber.log.Timber;
 
 import static com.truckmuncher.truckmuncher.data.Contract.CONTENT_AUTHORITY;
-import static com.truckmuncher.truckmuncher.data.Contract.TruckStateEntry;
 
 public class MyContentProvider extends ContentProvider {
 
@@ -46,7 +45,7 @@ public class MyContentProvider extends ContentProvider {
         matcher.addURI(authority, Contract.TruckConstantEntry.TABLE_NAME, TRUCK_ALL);
         matcher.addURI(authority, Contract.TruckConstantEntry.TABLE_NAME + "/*", TRUCK_SINGLE);
         matcher.addURI(authority, Contract.TruckEntry.VIEW_NAME, TRUCK_VIEW);
-        matcher.addURI(authority, TruckStateEntry.TABLE_NAME, TRUCK_STATE);
+        matcher.addURI(authority, TruckStateTable.TABLE_NAME, TRUCK_STATE);
 
         matcher.addURI(authority, CategoryTable.TABLE_NAME, CATEGORY_ALL);
 
@@ -128,7 +127,7 @@ public class MyContentProvider extends ContentProvider {
 
         switch (uriMatcher.match(uri)) {
             case TRUCK_STATE:
-                rowsDeleted = db.delete(TruckStateEntry.TABLE_NAME, selection, selectionArgs);
+                rowsDeleted = db.delete(TruckStateTable.TABLE_NAME, selection, selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
@@ -149,7 +148,7 @@ public class MyContentProvider extends ContentProvider {
 
         switch (uriMatcher.match(uri)) {
             case TRUCK_STATE:
-                rowsUpdated = db.update(TruckStateEntry.TABLE_NAME, values, selection, selectionArgs);
+                rowsUpdated = db.update(TruckStateTable.TABLE_NAME, values, selection, selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);

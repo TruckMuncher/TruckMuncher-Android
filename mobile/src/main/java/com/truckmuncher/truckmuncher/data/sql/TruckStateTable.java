@@ -7,31 +7,31 @@ import com.truckmuncher.truckmuncher.data.Contract;
 
 import timber.log.Timber;
 
-import static com.truckmuncher.truckmuncher.data.Contract.TruckStateEntry;
-
 public final class TruckStateTable {
+
+    public static final String TABLE_NAME = "truck_state";
 
     private TruckStateTable() {
         // No instances
     }
 
     public static void onCreate(SQLiteDatabase db) {
-        String DATABASE_CREATE = "create table "
-                + TruckStateEntry.TABLE_NAME
+        String DATABASE_CREATE = "CREATE TABLE "
+                + TABLE_NAME
                 + "("
-                + TruckStateEntry._ID + " integer primary key autoincrement, "
-                + TruckStateEntry.COLUMN_INTERNAL_ID + " text unique, "
-                + TruckStateEntry.COLUMN_IS_SELECTED_TRUCK + " integer default 0, "
-                + TruckStateEntry.COLUMN_IS_SERVING + " integer default 0, "
-                + TruckStateEntry.COLUMN_LATITUDE + " real, "
-                + TruckStateEntry.COLUMN_LONGITUDE + " real, "
-                + TruckStateEntry.COLUMN_IS_DIRTY + " integer default 0"
+                + Contract.TruckState._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + Contract.TruckState.ID + " TEXT UNIQUE, "
+                + Contract.TruckState.IS_SELECTED_TRUCK + " INTEGER DEFAULT 0, "
+                + Contract.TruckState.IS_SERVING + " INTEGER DEFAULT 0, "
+                + Contract.TruckState.LATITUDE + " REAL, "
+                + Contract.TruckState.LONGITUDE + " REAL, "
+                + Contract.TruckState.IS_DIRTY + " INTEGER DEFAULT 0"
                 + ");";
 
-        String INDEX_CREATE = "create index "
-                + "idx_" + TruckStateEntry.COLUMN_INTERNAL_ID
-                + " on " + TruckStateEntry.TABLE_NAME
-                + " (" + TruckStateEntry.COLUMN_INTERNAL_ID + ");";
+        String INDEX_CREATE = "CREATE INDEX "
+                + "idx_" + TABLE_NAME + "_" + Contract.TruckState.ID
+                + " ON " + TABLE_NAME
+                + " (" + Contract.TruckState.ID + ");";
 
         Timber.i("Creating database: %s", DATABASE_CREATE);
         db.execSQL(DATABASE_CREATE);
@@ -48,7 +48,7 @@ public final class TruckStateTable {
         db.beginTransaction();
         try {
             for (ContentValues values : contentValues) {
-                long rowId = db.insert(Contract.TruckStateEntry.TABLE_NAME, null, values);
+                long rowId = db.insert(TABLE_NAME, null, values);
                 if (rowId != -1) {
                     returnCount++;
                 }
