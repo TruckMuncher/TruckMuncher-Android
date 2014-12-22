@@ -92,10 +92,11 @@ public final class Contract {
     /**
      * Stores the temporary state. You must use this to do writes to the db, but should not use this for queries.
      */
-    public interface TruckStateEntry extends BaseColumns {
+    public interface TruckStateEntry {
 
         public static final String TABLE_NAME = "truck_state";
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME).build();
+        public static final String _ID = BaseColumns._ID;
         public static final String COLUMN_INTERNAL_ID = TABLE_NAME + "__internal_id";
         public static final String COLUMN_IS_SELECTED_TRUCK = TABLE_NAME + "__is_selected";
         public static final String COLUMN_IS_SERVING = TABLE_NAME + "__is_serving";
@@ -107,11 +108,11 @@ public final class Contract {
     /**
      * Stores the permanent state. You must use this to do writes to the db, but should not use this for queries.
      */
-    public interface TruckConstantEntry extends BaseColumns {
+    public interface TruckConstantEntry {
 
         public static final String TABLE_NAME = "truck_constant";
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME).build();
-
+        public static final String _ID = BaseColumns._ID;
         public static final String COLUMN_INTERNAL_ID = TABLE_NAME + "__internal_id";
         public static final String COLUMN_NAME = TABLE_NAME + "__name";
         public static final String COLUMN_IMAGE_URL = TABLE_NAME + "__image_url";
@@ -153,10 +154,11 @@ public final class Contract {
         public static final String CONTENT_ITEM_TYPE = CONTENT_ITEM_TYPE_BASE + VIEW_NAME;
     }
 
-    public static final class CategoryEntry implements BaseColumns {
+    public static final class CategoryEntry {
 
         public static final String TABLE_NAME = "category";
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME).build();
+        public static final String _ID = BaseColumns._ID;
         public static final String COLUMN_INTERNAL_ID = TABLE_NAME + "__internal_id";
         public static final String COLUMN_NAME = TABLE_NAME + "__name";
         public static final String COLUMN_NOTES = TABLE_NAME + "__notes";
@@ -166,10 +168,11 @@ public final class Contract {
         public static final String CONTENT_TYPE = CONTENT_TYPE_BASE + TABLE_NAME;
     }
 
-    public static final class MenuItemEntry implements BaseColumns {
+    public static final class MenuItemEntry {
 
         public static final String TABLE_NAME = "menu_item";
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME).build();
+        public static final String _ID = BaseColumns._ID;
         public static final String COLUMN_INTERNAL_ID = TABLE_NAME + "__internal_id";
         public static final String COLUMN_NAME = TABLE_NAME + "__name";
         public static final String COLUMN_PRICE = TABLE_NAME + "__price";
