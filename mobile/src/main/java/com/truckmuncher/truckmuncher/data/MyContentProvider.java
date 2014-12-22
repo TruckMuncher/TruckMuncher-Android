@@ -25,7 +25,6 @@ import static com.truckmuncher.truckmuncher.data.Contract.CategoryEntry;
 import static com.truckmuncher.truckmuncher.data.Contract.MenuItemEntry;
 import static com.truckmuncher.truckmuncher.data.Contract.PATH_CATEGORY;
 import static com.truckmuncher.truckmuncher.data.Contract.PATH_MENU;
-import static com.truckmuncher.truckmuncher.data.Contract.PATH_MENU_ITEM;
 import static com.truckmuncher.truckmuncher.data.Contract.TruckStateEntry;
 
 public class MyContentProvider extends ContentProvider {
@@ -55,7 +54,7 @@ public class MyContentProvider extends ContentProvider {
 
         matcher.addURI(authority, PATH_CATEGORY, CATEGORY_ALL);
 
-        matcher.addURI(authority, PATH_MENU_ITEM, MENU_ITEM_ALL);
+        matcher.addURI(authority, MenuItemEntry.TABLE_NAME, MENU_ITEM_ALL);
 
         matcher.addURI(authority, PATH_MENU, MENU);
 
