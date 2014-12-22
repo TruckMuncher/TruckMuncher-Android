@@ -14,9 +14,9 @@ import static com.truckmuncher.truckmuncher.data.sql.Query.Operator.EQUALS;
 public final class Contract {
 
     public static final String CONTENT_AUTHORITY = BuildConfig.APPLICATION_ID;
-    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
-    private static final String CONTENT_TYPE_BASE = "vnd.android.cursor.dir/vnd.truckmuncher.";
-    private static final String CONTENT_ITEM_TYPE_BASE = "vnd.android.cursor.item/vnd.truckmuncher.";
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY + "/provider");
+    private static final String CONTENT_TYPE_DIR_BASE = "vnd.android.cursor.dir/vnd.truckmuncher.";
+    private static final String CONTENT_TYPE_ITEM_BASE = "vnd.android.cursor.item/vnd.truckmuncher.";
     private static final String STRING_SEPARATOR = ",";
     private static final String PARAM_NOTIFY = "notify";
     private static final String PARAM_SYNC_TO_NETWORK = "sync_to_network";
@@ -122,6 +122,17 @@ public final class Contract {
         public static final String COLUMN_OWNED_BY_CURRENT_USER = TABLE_NAME + "__owned_by_current_user";
     }
 
+    public interface Category extends PublicContract.Category {
+        public static final String ORDER_IN_MENU = "order_in_menu";
+        public static final String TRUCK_ID = "truck_id";
+    }
+
+    public interface MenuItem extends PublicContract.MenuItem {
+        public static final String ORDER_IN_CATEGORY = "order_in_category";
+        public static final String CATEGORY_ID = "category_id";
+        public static final String IS_DIRTY = "is_dirty";
+    }
+
     /**
      * Gives a holistic view of a truck. Use this for queries but not writes.
      */
@@ -149,47 +160,9 @@ public final class Contract {
                     .build();
         }
 
-        public static final String CONTENT_TYPE = CONTENT_TYPE_BASE + VIEW_NAME;
+        public static final String CONTENT_TYPE = CONTENT_TYPE_DIR_BASE + VIEW_NAME;
 
-        public static final String CONTENT_ITEM_TYPE = CONTENT_ITEM_TYPE_BASE + VIEW_NAME;
-    }
-
-    public static final class CategoryEntry {
-
-        public static final String TABLE_NAME = "category";
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME).build();
-        public static final String _ID = BaseColumns._ID;
-        public static final String COLUMN_INTERNAL_ID = TABLE_NAME + "__internal_id";
-        public static final String COLUMN_NAME = TABLE_NAME + "__name";
-        public static final String COLUMN_NOTES = TABLE_NAME + "__notes";
-        public static final String COLUMN_ORDER_IN_MENU = TABLE_NAME + "__order_in_menu";
-        public static final String COLUMN_TRUCK_ID = TABLE_NAME + "__truck_id";
-
-        public static final String CONTENT_TYPE = CONTENT_TYPE_BASE + TABLE_NAME;
-    }
-
-    public static final class MenuItemEntry {
-
-        public static final String TABLE_NAME = "menu_item";
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME).build();
-        public static final String _ID = BaseColumns._ID;
-        public static final String COLUMN_INTERNAL_ID = TABLE_NAME + "__internal_id";
-        public static final String COLUMN_NAME = TABLE_NAME + "__name";
-        public static final String COLUMN_PRICE = TABLE_NAME + "__price";
-        public static final String COLUMN_IS_AVAILABLE = TABLE_NAME + "__is_available";
-        public static final String COLUMN_NOTES = TABLE_NAME + "__notes";
-        public static final String COLUMN_TAGS = TABLE_NAME + "__tags";
-        public static final String COLUMN_ORDER_IN_CATEGORY = TABLE_NAME + "__order_in_category";
-        public static final String COLUMN_CATEGORY_ID = TABLE_NAME + "__category_id";
-        public static final String COLUMN_IS_DIRTY = TABLE_NAME + "__is_dirty";
-
-        public static Query buildDirty() {
-            return new Query.Builder()
-                    .where(COLUMN_IS_DIRTY, EQUALS, true)
-                    .build();
-        }
-
-        public static final String CONTENT_TYPE = CONTENT_TYPE_BASE + TABLE_NAME;
+        public static final String CONTENT_ITEM_TYPE = CONTENT_TYPE_ITEM_BASE + VIEW_NAME;
     }
 
     public static final class MenuEntry implements BaseColumns {

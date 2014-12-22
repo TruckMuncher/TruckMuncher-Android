@@ -6,9 +6,7 @@ import com.truckmuncher.truckmuncher.data.Contract;
 
 import timber.log.Timber;
 
-import static com.truckmuncher.truckmuncher.data.Contract.CategoryEntry;
 import static com.truckmuncher.truckmuncher.data.Contract.MenuEntry;
-import static com.truckmuncher.truckmuncher.data.Contract.MenuItemEntry;
 
 public final class MenuView {
 
@@ -17,34 +15,31 @@ public final class MenuView {
     }
 
     public static void onCreate(SQLiteDatabase db) {
-        String VIEW_CREATE = "create view "
+        String VIEW_CREATE = "CREATE VIEW "
                 + MenuEntry.VIEW_NAME
-                + " as select "
-                + MenuItemEntry.TABLE_NAME + "." + MenuItemEntry._ID + ", "
-                + MenuItemEntry.COLUMN_INTERNAL_ID + ", "
-                + MenuItemEntry.COLUMN_NAME + ", "
-                + MenuItemEntry.COLUMN_PRICE + ", "
-                + MenuItemEntry.COLUMN_NOTES + ", "
-                + MenuItemEntry.COLUMN_ORDER_IN_CATEGORY + ", "
-                + MenuItemEntry.COLUMN_IS_AVAILABLE + ", "
+                + " AS SELECT "
+                + "menu_item._id, "
+                + "menu_item.id, "
+                + "menu_item.name, "
+                + "menu_item.price, "
+                + "menu_item.notes, "
+                + "menu_item.order_in_category, "
+                + "menu_item.is_available, "
 
-                + CategoryEntry.COLUMN_NAME + ", "
-                + CategoryEntry.COLUMN_INTERNAL_ID + ", "
-                + CategoryEntry.COLUMN_NOTES + ", "
-                + CategoryEntry.COLUMN_ORDER_IN_MENU + ", "
+                + "category.name, "
+                + "category.id, "
+                + "category.notes, "
+                + "category.order_in_menu, "
 
                 + Contract.TruckConstantEntry.COLUMN_INTERNAL_ID
 
-                + " from "
-                + MenuItemEntry.TABLE_NAME + " inner join "
-                + CategoryEntry.TABLE_NAME + " on "
-                + MenuItemEntry.COLUMN_CATEGORY_ID + "=" + CategoryEntry.COLUMN_INTERNAL_ID
-                + " inner join "
-                + Contract.TruckEntry.VIEW_NAME + " on "
-                + CategoryEntry.COLUMN_TRUCK_ID + "=" + Contract.TruckEntry.COLUMN_INTERNAL_ID
+                + " FROM menu_item INNER JOIN category ON "
+                + "menu_item.category_id = category.id"
+                + " INNER JOIN "
+                + Contract.TruckEntry.VIEW_NAME + " ON category.truck_id="
+                + Contract.TruckEntry.COLUMN_INTERNAL_ID
 
-                + " order by " + CategoryEntry.COLUMN_ORDER_IN_MENU + ", "
-                + MenuItemEntry.COLUMN_ORDER_IN_CATEGORY + ";";
+                + " ORDER BY category.order_in_menu, menu_item.order_in_category;";
 
         Timber.i("Creating view: %s", VIEW_CREATE);
         db.execSQL(VIEW_CREATE);

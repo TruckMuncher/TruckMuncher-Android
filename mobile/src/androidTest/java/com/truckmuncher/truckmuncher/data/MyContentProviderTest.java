@@ -79,10 +79,10 @@ public class MyContentProviderTest extends ProviderTestCase2<MyContentProvider> 
         assertThat(mContext.getContentResolver().getType(Contract.TruckConstantEntry.buildSingleTruck(UUID.randomUUID().toString())))
                 .isEqualTo(Contract.TruckConstantEntry.CONTENT_ITEM_TYPE);
 
-        assertThat(mContext.getContentResolver().getType(Contract.CategoryEntry.CONTENT_URI))
-                .isEqualTo(Contract.CategoryEntry.CONTENT_TYPE);
+        assertThat(mContext.getContentResolver().getType(Contract.Category.CONTENT_URI))
+                .isEqualTo(Contract.Category.CONTENT_TYPE);
 
-        assertThat(mContext.getContentResolver().getType(Contract.MenuItemEntry.CONTENT_URI))
-                .isEqualTo(Contract.MenuItemEntry.CONTENT_TYPE);
+        assertThat(mContext.getContentResolver().getType(Contract.MenuItem.CONTENT_URI))
+                .isEqualTo(Contract.MenuItem.CONTENT_TYPE);
     }
 }

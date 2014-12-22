@@ -11,11 +11,11 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.data.Contract;
+import com.truckmuncher.truckmuncher.data.PublicContract;
 import com.truckmuncher.truckmuncher.data.sql.Query;
 
 import java.util.Map;
@@ -26,7 +26,7 @@ public class MenuAdminFragment extends ListFragment implements LoaderManager.Loa
     public static final String ARG_TRUCK_ID = "truck_id";
 
     private MenuAdminAdapter adapter;
-    private MenuItem actionMenu;
+    private android.view.MenuItem actionMenu;
 
     public MenuAdminFragment() {
     }
@@ -64,8 +64,8 @@ public class MenuAdminFragment extends ListFragment implements LoaderManager.Loa
         int i = 0;
         for (Map.Entry<String, Boolean> entry : diff.entrySet()) {
             ContentValues values = new ContentValues(2);
-            values.put(Contract.MenuItemEntry.COLUMN_INTERNAL_ID, entry.getKey());
-            values.put(Contract.MenuItemEntry.COLUMN_IS_AVAILABLE, entry.getValue());
+            values.put(PublicContract.MenuItem.ID, entry.getKey());
+            values.put(PublicContract.MenuItem.IS_AVAILABLE, entry.getValue());
             contentValues[i] = values;
             i++;
         }

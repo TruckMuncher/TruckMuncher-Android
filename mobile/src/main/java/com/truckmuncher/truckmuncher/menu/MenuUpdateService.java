@@ -22,6 +22,7 @@ import com.truckmuncher.api.menu.MenuItem;
 import com.truckmuncher.api.menu.MenuService;
 import com.truckmuncher.truckmuncher.App;
 import com.truckmuncher.truckmuncher.data.Contract;
+import com.truckmuncher.truckmuncher.data.PublicContract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,25 +117,25 @@ public class MenuUpdateService extends Service implements GoogleApiClient.Connec
                             List<Category> categories = menu.categories;
                             for (Category category : categories) {
                                 ContentValues categoryValues = new ContentValues();
-                                categoryValues.put(Contract.CategoryEntry.COLUMN_INTERNAL_ID, category.id);
-                                categoryValues.put(Contract.CategoryEntry.COLUMN_NAME, category.name);
-                                categoryValues.put(Contract.CategoryEntry.COLUMN_NOTES, category.notes);
-                                categoryValues.put(Contract.CategoryEntry.COLUMN_ORDER_IN_MENU, category.orderInMenu);
-                                categoryValues.put(Contract.CategoryEntry.COLUMN_TRUCK_ID, menu.truckId);
+                                categoryValues.put(Contract.Category.ID, category.id);
+                                categoryValues.put(Contract.Category.NAME, category.name);
+                                categoryValues.put(Contract.Category.NOTES, category.notes);
+                                categoryValues.put(Contract.Category.ORDER_IN_MENU, category.orderInMenu);
+                                categoryValues.put(Contract.Category.TRUCK_ID, menu.truckId);
                                 categoryContentValues.add(categoryValues);
 
 
                                 List<MenuItem> menuItems = category.menuItems;
                                 for (MenuItem item : menuItems) {
                                     ContentValues itemValues = new ContentValues();
-                                    itemValues.put(Contract.MenuItemEntry.COLUMN_INTERNAL_ID, item.id);
-                                    itemValues.put(Contract.MenuItemEntry.COLUMN_IS_AVAILABLE, item.isAvailable);
-                                    itemValues.put(Contract.MenuItemEntry.COLUMN_PRICE, item.price);
-                                    itemValues.put(Contract.MenuItemEntry.COLUMN_ORDER_IN_CATEGORY, item.orderInCategory);
-                                    itemValues.put(Contract.MenuItemEntry.COLUMN_NOTES, item.notes);
-                                    itemValues.put(Contract.MenuItemEntry.COLUMN_NAME, item.name);
-                                    itemValues.put(Contract.MenuItemEntry.COLUMN_TAGS, Contract.convertListToString(item.tags));
-                                    itemValues.put(Contract.MenuItemEntry.COLUMN_CATEGORY_ID, category.id);
+                                    itemValues.put(Contract.MenuItem.ID, item.id);
+                                    itemValues.put(Contract.MenuItem.IS_AVAILABLE, item.isAvailable);
+                                    itemValues.put(Contract.MenuItem.PRICE, item.price);
+                                    itemValues.put(Contract.MenuItem.ORDER_IN_CATEGORY, item.orderInCategory);
+                                    itemValues.put(Contract.MenuItem.NOTES, item.notes);
+                                    itemValues.put(Contract.MenuItem.NAME, item.name);
+                                    itemValues.put(Contract.MenuItem.TAGS, Contract.convertListToString(item.tags));
+                                    itemValues.put(Contract.MenuItem.CATEGORY_ID, category.id);
                                     menuItemContentValues.add(itemValues);
                                 }
                             }
@@ -142,8 +143,8 @@ public class MenuUpdateService extends Service implements GoogleApiClient.Connec
 
                         ContentValues[] categoryInsert = categoryContentValues.toArray(new ContentValues[categoryContentValues.size()]);
                         ContentValues[] menuItemInsert = menuItemContentValues.toArray(new ContentValues[menuItemContentValues.size()]);
-                        getContentResolver().bulkInsert(Contract.CategoryEntry.CONTENT_URI, categoryInsert);
-                        getContentResolver().bulkInsert(Contract.MenuItemEntry.CONTENT_URI, menuItemInsert);
+                        getContentResolver().bulkInsert(PublicContract.CATEGORY_URI, categoryInsert);
+                        getContentResolver().bulkInsert(PublicContract.MENU_ITEM_URI, menuItemInsert);
 
 
                         return null;

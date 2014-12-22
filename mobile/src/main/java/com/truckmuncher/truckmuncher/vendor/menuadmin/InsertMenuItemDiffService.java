@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Parcelable;
 
 import com.truckmuncher.truckmuncher.data.Contract;
+import com.truckmuncher.truckmuncher.data.PublicContract;
 
 public class InsertMenuItemDiffService extends IntentService {
 
@@ -29,6 +30,6 @@ public class InsertMenuItemDiffService extends IntentService {
         for (int i = 0; i < parcelables.length; i++) {
             contentValues[i] = (ContentValues) parcelables[i];
         }
-        getContentResolver().bulkInsert(Contract.syncToNetwork(Contract.MenuItemEntry.CONTENT_URI), contentValues);
+        getContentResolver().bulkInsert(Contract.syncToNetwork(PublicContract.MENU_ITEM_URI), contentValues);
     }
 }

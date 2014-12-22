@@ -12,10 +12,13 @@ import com.truckmuncher.api.menu.MenuService;
 import com.truckmuncher.api.menu.ModifyMenuItemAvailabilityRequest;
 import com.truckmuncher.truckmuncher.data.ApiException;
 import com.truckmuncher.truckmuncher.data.Contract;
+import com.truckmuncher.truckmuncher.data.PublicContract;
 import com.truckmuncher.truckmuncher.data.sql.Query;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.truckmuncher.truckmuncher.data.sql.Query.Operator.EQUALS;
 
 public final class MenuItemAvailabilitySyncTask extends SyncTask {
 
@@ -31,8 +34,10 @@ public final class MenuItemAvailabilitySyncTask extends SyncTask {
 
     @Override
     public ApiResult sync(SyncResult syncResult) throws RemoteException {
-        Query query = Contract.MenuItemEntry.buildDirty();
-        Cursor cursor = provider.query(Contract.MenuItemEntry.CONTENT_URI, MenuItemAvailabilityQuery.PROJECTION, query.selection, query.selectionArgs, null);
+        Query query = new Query.Builder()
+                .where(Contract.MenuItem.IS_DIRTY, EQUALS, true)
+                .build();
+        Cursor cursor = provider.query(PublicContract.MENU_ITEM_URI, MenuItemAvailabilityQuery.PROJECTION, query.selection, query.selectionArgs, null);
         if (!cursor.moveToFirst()) {
             // Cursor is empty. Probably already synced this.
             cursor.close();
@@ -44,7 +49,7 @@ public final class MenuItemAvailabilitySyncTask extends SyncTask {
         do {
             diff.add(
                     new MenuItemAvailability.Builder()
-                            .menuItemId(cursor.getString(MenuItemAvailabilityQuery.INTERNAL_ID))
+                            .menuItemId(cursor.getString(MenuItemAvailabilityQuery.ID))
                             .isAvailable(cursor.getInt(MenuItemAvailabilityQuery.IS_AVAILABLE) == 1)
                             .build()
             );
@@ -61,13 +66,13 @@ public final class MenuItemAvailabilitySyncTask extends SyncTask {
             for (int i = 0, max = diff.size(); i < max; i++) {
                 MenuItemAvailability availability = diff.get(i);
                 ContentValues values = new ContentValues();
-                values.put(Contract.MenuItemEntry.COLUMN_INTERNAL_ID, availability.menuItemId);
-                values.put(Contract.MenuItemEntry.COLUMN_IS_DIRTY, false);
+                values.put(Contract.MenuItem.ID, availability.menuItemId);
+                values.put(Contract.MenuItem.IS_DIRTY, false);
                 contentValues[i] = values;
             }
 
             // Since we're clearing an internal state, don't notify listeners
-            Uri uri = Contract.suppressNotify(Contract.MenuItemEntry.CONTENT_URI);
+            Uri uri = Contract.suppressNotify(PublicContract.MENU_ITEM_URI);
             provider.bulkInsert(uri, contentValues);
         } catch (ApiException e) {
             return apiExceptionResolver.resolve(e);
@@ -77,10 +82,10 @@ public final class MenuItemAvailabilitySyncTask extends SyncTask {
 
     interface MenuItemAvailabilityQuery {
         static final String[] PROJECTION = new String[]{
-                Contract.MenuItemEntry.COLUMN_INTERNAL_ID,
-                Contract.MenuItemEntry.COLUMN_IS_AVAILABLE
+                Contract.MenuItem.ID,
+                Contract.MenuItem.IS_AVAILABLE
         };
-        static final int INTERNAL_ID = 0;
+        static final int ID = 0;
         static final int IS_AVAILABLE = 1;
     }
 }

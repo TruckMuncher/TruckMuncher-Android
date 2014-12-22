@@ -115,7 +115,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
             @NonNull
             @Override
             public Cursor onQuery(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-                assertThat(uri).isEqualTo(Contract.MenuItemEntry.buildDirty());
+                assertThat(uri).isEqualTo(Contract.MenuItem.buildDirty());
 
                 MatrixCursor cursor = new MatrixCursor(projection);
 
@@ -138,14 +138,14 @@ public class SyncAdapterTest extends InstrumentationTestCase {
         testProvider.enqueue(new VerifiableContentProvider.BulkInsertEvent() {
             @Override
             public int onBulkInsert(Uri uri, @NonNull ContentValues[] values) {
-                assertThat(uri).isEqualTo(Contract.suppressNotify(Contract.MenuItemEntry.CONTENT_URI));
+                assertThat(uri).isEqualTo(Contract.suppressNotify(Contract.MenuItem.CONTENT_URI));
 
                 ContentValues row1 = new ContentValues(2);
-                row1.put(Contract.MenuItemEntry.COLUMN_INTERNAL_ID, menuItemId1);
-                row1.put(Contract.MenuItemEntry.COLUMN_IS_DIRTY, false);
+                row1.put(Contract.MenuItem.COLUMN_INTERNAL_ID, menuItemId1);
+                row1.put(Contract.MenuItem.IS_DIRTY, false);
                 ContentValues row2 = new ContentValues(2);
-                row2.put(Contract.MenuItemEntry.COLUMN_INTERNAL_ID, menuItemId2);
-                row2.put(Contract.MenuItemEntry.COLUMN_IS_DIRTY, false);
+                row2.put(Contract.MenuItem.COLUMN_INTERNAL_ID, menuItemId2);
+                row2.put(Contract.MenuItem.IS_DIRTY, false);
 
                 assertThat(values)
                         .hasSize(2)
@@ -190,7 +190,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
             @NonNull
             @Override
             public Cursor onQuery(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-                assertThat(uri).isEqualTo(Contract.MenuItemEntry.buildDirty());
+                assertThat(uri).isEqualTo(Contract.MenuItem.buildDirty());
 
                 MatrixCursor cursor = new MatrixCursor(projection);
 
@@ -227,7 +227,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
             @NonNull
             @Override
             public Cursor onQuery(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-                assertThat(uri).isEqualTo(Contract.MenuItemEntry.buildDirty());
+                assertThat(uri).isEqualTo(Contract.MenuItem.buildDirty());
 
                 MatrixCursor cursor = new MatrixCursor(projection);
 
@@ -272,7 +272,7 @@ public class SyncAdapterTest extends InstrumentationTestCase {
             @NonNull
             @Override
             public Cursor onQuery(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-                assertThat(uri).isEqualTo(Contract.MenuItemEntry.buildDirty());
+                assertThat(uri).isEqualTo(Contract.MenuItem.buildDirty());
 
                 MatrixCursor cursor = new MatrixCursor(projection);
 

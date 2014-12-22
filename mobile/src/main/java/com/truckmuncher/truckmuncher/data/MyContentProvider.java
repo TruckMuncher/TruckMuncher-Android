@@ -21,8 +21,6 @@ import com.truckmuncher.truckmuncher.menu.MenuUpdateService;
 import timber.log.Timber;
 
 import static com.truckmuncher.truckmuncher.data.Contract.CONTENT_AUTHORITY;
-import static com.truckmuncher.truckmuncher.data.Contract.CategoryEntry;
-import static com.truckmuncher.truckmuncher.data.Contract.MenuItemEntry;
 import static com.truckmuncher.truckmuncher.data.Contract.TruckStateEntry;
 
 public class MyContentProvider extends ContentProvider {
@@ -30,7 +28,7 @@ public class MyContentProvider extends ContentProvider {
     private static final int TRUCK_SINGLE = 1;
     private static final int TRUCK_ALL = 2;
     private static final int CATEGORY_ALL = 4;
-    private static final int MENU_ITEM_ALL = 6;
+    private static final int MENU_ITEM = 6;
     private static final int MENU = 7;
     private static final int TRUCK_VIEW = 8;
     private static final int TRUCK_STATE = 9;
@@ -50,9 +48,9 @@ public class MyContentProvider extends ContentProvider {
         matcher.addURI(authority, Contract.TruckEntry.VIEW_NAME, TRUCK_VIEW);
         matcher.addURI(authority, TruckStateEntry.TABLE_NAME, TRUCK_STATE);
 
-        matcher.addURI(authority, CategoryEntry.TABLE_NAME, CATEGORY_ALL);
+        matcher.addURI(authority, CategoryTable.TABLE_NAME, CATEGORY_ALL);
 
-        matcher.addURI(authority, MenuItemEntry.TABLE_NAME, MENU_ITEM_ALL);
+        matcher.addURI(authority, MenuItemTable.TABLE_NAME, MENU_ITEM);
 
         matcher.addURI(authority, Contract.MenuEntry.VIEW_NAME, MENU);
 
@@ -73,8 +71,8 @@ public class MyContentProvider extends ContentProvider {
 
         String tableName;
         switch (uriMatcher.match(uri)) {
-            case MENU_ITEM_ALL:
-                tableName = MenuItemEntry.TABLE_NAME;
+            case MENU_ITEM:
+                tableName = MenuItemTable.TABLE_NAME;
                 break;
             case TRUCK_VIEW:
                 tableName = Contract.TruckEntry.VIEW_NAME;
@@ -107,9 +105,9 @@ public class MyContentProvider extends ContentProvider {
             case TRUCK_VIEW:
                 return Contract.TruckEntry.CONTENT_TYPE;
             case CATEGORY_ALL:
-                return CategoryEntry.CONTENT_TYPE;
-            case MENU_ITEM_ALL:
-                return MenuItemEntry.CONTENT_TYPE;
+                return PublicContract.URI_TYPE_CATEGORY;
+            case MENU_ITEM:
+                return PublicContract.URI_TYPE_MENU_ITEM;
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
@@ -171,7 +169,7 @@ public class MyContentProvider extends ContentProvider {
         int returnCount;
 
         switch (uriMatcher.match(uri)) {
-            case MENU_ITEM_ALL:
+            case MENU_ITEM:
                 returnCount = MenuItemTable.bulkInsert(db, values);
                 break;
             case CATEGORY_ALL:

@@ -53,14 +53,16 @@
             android:name="com.truckmuncher.truckmuncher.TruckDetailsActivity"
             android:label="@string/app_name"
             android:parentActivityName="com.truckmuncher.truckmuncher.MainActivity">
-        <meta-data
+            <!--FIXME wrong parent-->
+            <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.volkhart.foodtruckfinder.MainActivity" />
         </activity>
         <activity
             android:name="com.truckmuncher.truckmuncher.vendor.VendorHomeActivity"
             android:label="@string/app_name">
-        android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity" >
+            <!--FIXME wrong parent-->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.volkhart.foodtruckfinder.MainActivity" />
@@ -72,7 +74,7 @@
             android:enabled="true"
             android:exported="true"
             tools:ignore="ExportedService">
-        <intent-filter>
+            <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
 
@@ -86,7 +88,7 @@
             android:exported="true"
             android:process=":sync"
             tools:ignore="ExportedService">
-        <intent-filter>
+            <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>
 
@@ -109,7 +111,7 @@
 
         <provider
             android:name="com.truckmuncher.truckmuncher.data.MyContentProvider"
-            android:authorities="@string/package_name"
+            android:authorities="${applicationId}.provider"
             android:enabled="true"
             android:exported="false"
             android:syncable="true" />

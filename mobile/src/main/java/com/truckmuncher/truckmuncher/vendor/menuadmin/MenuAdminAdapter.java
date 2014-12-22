@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.squareup.phrase.Phrase;
 import com.truckmuncher.truckmuncher.R;
+import com.truckmuncher.truckmuncher.data.PublicContract;
 import com.twotoasters.sectioncursoradapter.SectionCursorAdapter;
 
 import java.util.HashMap;
@@ -19,9 +20,7 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import static com.truckmuncher.truckmuncher.data.Contract.CategoryEntry;
 import static com.truckmuncher.truckmuncher.data.Contract.MenuEntry;
-import static com.truckmuncher.truckmuncher.data.Contract.MenuItemEntry;
 
 /**
  * @see <a href="https://github.com/twotoasters/SectionCursorAdapter">GitHub Project</a>
@@ -72,7 +71,7 @@ public class MenuAdminAdapter extends SectionCursorAdapter {
 
         // In stock
         holder.isAvailable.setChecked(cursor.getInt(Query.IS_AVAILABLE) == 1);
-        final String internalId = cursor.getString(Query.INTERNAL_ID);
+        final String internalId = cursor.getString(Query.ID);
         holder.isAvailable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -102,13 +101,13 @@ public class MenuAdminAdapter extends SectionCursorAdapter {
 
         public static final String[] PROJECTION = new String[]{
                 MenuEntry._ID,
-                MenuItemEntry.COLUMN_INTERNAL_ID,
-                MenuItemEntry.COLUMN_NAME,
-                MenuItemEntry.COLUMN_PRICE,
-                MenuItemEntry.COLUMN_IS_AVAILABLE,
-                CategoryEntry.COLUMN_NAME
+                PublicContract.MenuItem.ID,
+                PublicContract.MenuItem.NAME,
+                PublicContract.MenuItem.PRICE,
+                PublicContract.MenuItem.IS_AVAILABLE,
+                PublicContract.Category.NAME
         };
-        static final int INTERNAL_ID = 1;
+        static final int ID = 1;
         static final int NAME = 2;
         static final int PRICE = 3;
         static final int IS_AVAILABLE = 4;
