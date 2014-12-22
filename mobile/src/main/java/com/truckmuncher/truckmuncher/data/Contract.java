@@ -15,7 +15,6 @@ public final class Contract {
 
     public static final String CONTENT_AUTHORITY = BuildConfig.APPLICATION_ID;
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
-    public static final String PATH_MENU = "menu";
     private static final String CONTENT_TYPE_BASE = "vnd.android.cursor.dir/vnd.truckmuncher.";
     private static final String CONTENT_ITEM_TYPE_BASE = "vnd.android.cursor.item/vnd.truckmuncher.";
     private static final String STRING_SEPARATOR = ",";
@@ -192,8 +191,8 @@ public final class Contract {
 
     public static final class MenuEntry implements BaseColumns {
 
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_MENU).build();
         public static final String VIEW_NAME = "view_menu";
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(VIEW_NAME).build();
 
         public static Query buildMenuForTruck(String truckId) {
             return new Query.Builder()
