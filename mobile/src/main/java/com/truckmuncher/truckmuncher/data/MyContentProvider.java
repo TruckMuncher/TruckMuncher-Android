@@ -23,7 +23,6 @@ import timber.log.Timber;
 import static com.truckmuncher.truckmuncher.data.Contract.CONTENT_AUTHORITY;
 import static com.truckmuncher.truckmuncher.data.Contract.CategoryEntry;
 import static com.truckmuncher.truckmuncher.data.Contract.MenuItemEntry;
-import static com.truckmuncher.truckmuncher.data.Contract.PATH_CATEGORY;
 import static com.truckmuncher.truckmuncher.data.Contract.PATH_MENU;
 import static com.truckmuncher.truckmuncher.data.Contract.TruckStateEntry;
 
@@ -52,7 +51,7 @@ public class MyContentProvider extends ContentProvider {
         matcher.addURI(authority, Contract.TruckEntry.VIEW_NAME, TRUCK_VIEW);
         matcher.addURI(authority, TruckStateEntry.TABLE_NAME, TRUCK_STATE);
 
-        matcher.addURI(authority, PATH_CATEGORY, CATEGORY_ALL);
+        matcher.addURI(authority, CategoryEntry.TABLE_NAME, CATEGORY_ALL);
 
         matcher.addURI(authority, MenuItemEntry.TABLE_NAME, MENU_ITEM_ALL);
 

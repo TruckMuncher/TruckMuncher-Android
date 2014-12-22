@@ -15,10 +15,9 @@ public final class Contract {
 
     public static final String CONTENT_AUTHORITY = BuildConfig.APPLICATION_ID;
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
-    public static final String PATH_CATEGORY = "category";
     public static final String PATH_MENU = "menu";
-    protected static final String CONTENT_TYPE_BASE = "vnd.android.cursor.dir/vnd.truckmuncher.";
-    protected static final String CONTENT_ITEM_TYPE_BASE = "vnd.android.cursor.item/vnd.truckmuncher.";
+    private static final String CONTENT_TYPE_BASE = "vnd.android.cursor.dir/vnd.truckmuncher.";
+    private static final String CONTENT_ITEM_TYPE_BASE = "vnd.android.cursor.item/vnd.truckmuncher.";
     private static final String STRING_SEPARATOR = ",";
     private static final String PARAM_NOTIFY = "notify";
     private static final String PARAM_SYNC_TO_NETWORK = "sync_to_network";
@@ -157,15 +156,15 @@ public final class Contract {
 
     public static final class CategoryEntry implements BaseColumns {
 
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_CATEGORY).build();
         public static final String TABLE_NAME = "category";
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME).build();
         public static final String COLUMN_INTERNAL_ID = TABLE_NAME + "__internal_id";
         public static final String COLUMN_NAME = TABLE_NAME + "__name";
         public static final String COLUMN_NOTES = TABLE_NAME + "__notes";
         public static final String COLUMN_ORDER_IN_MENU = TABLE_NAME + "__order_in_menu";
         public static final String COLUMN_TRUCK_ID = TABLE_NAME + "__truck_id";
 
-        public static final String CONTENT_TYPE = CONTENT_TYPE_BASE + PATH_CATEGORY;
+        public static final String CONTENT_TYPE = CONTENT_TYPE_BASE + TABLE_NAME;
     }
 
     public static final class MenuItemEntry implements BaseColumns {
