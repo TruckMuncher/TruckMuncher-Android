@@ -122,7 +122,6 @@ android {
 }
 
 dependencies {
-    wearApp project(':wear')
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.google.android.gms:play-services:6.5.87'
     compile 'com.google.maps.android:android-maps-utils:0.3.3'
