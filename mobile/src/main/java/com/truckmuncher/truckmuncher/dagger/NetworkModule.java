@@ -48,7 +48,9 @@ public class NetworkModule {
 
     public NetworkModule(Context context) {
         appContext = context.getApplicationContext();
-        PRNGFixes.apply();  // Fix SecureRandom
+        if (!BuildConfig.DEBUG) {   // Work around for robolectric
+            PRNGFixes.apply();  // Fix SecureRandom
+        }
     }
 
     protected static void configureHttpCache(Context context, OkHttpClient client) {
