@@ -64,12 +64,14 @@ android {
 
     buildTypes {
         release {
+            manifestPlaceholders = [googleMapsKey: ""]
             testCoverageEnabled false   // Incompatible with Dagger
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
         debug {
+            manifestPlaceholders = [googleMapsKey: "AIzaSyCViPU_TIFcwHQUmPXY21EowkO2XtCFI9s"]
             testCoverageEnabled false   // Incompatible with Dagger
             versionNameSuffix ".debug"
             applicationIdSuffix ".debug"
