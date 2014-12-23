@@ -31,3 +31,7 @@ dependencies {
     compile 'org.twitter4j:twitter4j-core:4.0.2'
     compile 'com.google.android.gms:play-services:4.3.23'
 }
+
+repositories {
+    jcenter()
+}
