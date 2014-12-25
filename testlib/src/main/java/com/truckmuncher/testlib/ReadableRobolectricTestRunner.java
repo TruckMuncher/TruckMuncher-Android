@@ -1,4 +1,4 @@
-package com.truckmuncher.truckmuncher.test;
+package com.truckmuncher.testlib;
 
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;

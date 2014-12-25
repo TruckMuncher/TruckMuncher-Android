@@ -1,6 +1,6 @@
 package com.truckmuncher.truckmuncher;
 
-import com.truckmuncher.truckmuncher.test.ReadableRunner;
+import com.truckmuncher.testlib.ReadableRunner;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,8 +1,8 @@
-package com.truckmuncher.truckmuncher.test;
+package com.truckmuncher.testlib;
 
 public final class StringUtils {
 
-    public static String humanize(String camelCase) {
+    static String humanize(String camelCase) {
         char[] chars = camelCase.toCharArray();
         StringBuilder sb = new StringBuilder();
         sb.append(Character.toUpperCase(chars[0]));
