@@ -1,4 +1,4 @@
-package com.truckmuncher.truckmuncher.test;
+package com.truckmuncher.testlib;
 
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
