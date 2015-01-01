@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Marius Volkhart
+ * Copyright 2014-2015 Marius Volkhart
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,14 +23,14 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Representation of a constructed SQL query
+ * Representation of a constructed SQL query where clause
  */
-public final class Query {
+public final class WhereClause {
 
     public final String selection;
     public final String[] selectionArgs;
 
-    private Query(String selection, String[] selectionArgs) {
+    private WhereClause(String selection, String[] selectionArgs) {
         this.selection = selection;
         this.selectionArgs = selectionArgs;
     }
@@ -40,7 +40,7 @@ public final class Query {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Query that = (Query) o;
+        WhereClause that = (WhereClause) o;
 
         return !(selection != null ? !selection.equals(that.selection) : that.selection != null)
                 && Arrays.equals(selectionArgs, that.selectionArgs);
@@ -56,7 +56,7 @@ public final class Query {
 
     @Override
     public String toString() {
-        return "SelectionQuery{" +
+        return WhereClause.class.getSimpleName() + "{" +
                 "selection='" + selection + '\'' +
                 ", selectionArgs=" + Arrays.toString(selectionArgs) +
                 '}';
@@ -116,12 +116,12 @@ public final class Query {
             return where(column, operand, Double.toString(arg));
         }
 
-        public Builder where(Query query) {
+        public Builder where(WhereClause whereClause) {
 
-            if (query.selectionArgs.length > 0) {
+            if (whereClause.selectionArgs.length > 0) {
                 setNextOperatorIfNeeded();
-                stringBuilder.append('(').append(query.selection).append(')');
-                args.addAll(Arrays.asList(query.selectionArgs));
+                stringBuilder.append('(').append(whereClause.selection).append(')');
+                args.addAll(Arrays.asList(whereClause.selectionArgs));
             }
 
             nextOperator = null;
@@ -158,9 +158,9 @@ public final class Query {
             }
         }
 
-        public Query build() {
+        public WhereClause build() {
             String[] arguments = args.toArray(new String[args.size()]);
-            return new Query(stringBuilder.toString(), arguments);
+            return new WhereClause(stringBuilder.toString(), arguments);
         }
     }
 }
