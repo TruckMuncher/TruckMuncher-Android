@@ -106,7 +106,7 @@
             android:name="com.truckmuncher.truckmuncher.menu.MenuUpdateService"
             android:exported="false" />
         <service
-            android:name="com.truckmuncher.truckmuncher.vendor.menuadmin.InsertMenuItemDiffService"
+            android:name=".vendor.menuadmin.MenuItemDiffService"
             android:exported="false" />
 
         <provider

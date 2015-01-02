@@ -9,16 +9,16 @@ import android.os.Parcelable;
 import com.truckmuncher.truckmuncher.data.Contract;
 import com.truckmuncher.truckmuncher.data.PublicContract;
 
-public class InsertMenuItemDiffService extends IntentService {
+public class MenuItemDiffService extends IntentService {
 
     private static final String ARG_VALUES = "content_values";
 
-    public InsertMenuItemDiffService() {
-        super(InsertMenuItemDiffService.class.getName());
+    public MenuItemDiffService() {
+        super(MenuItemDiffService.class.getName());
     }
 
     public static Intent newIntent(Context context, ContentValues[] contentValues) {
-        Intent intent = new Intent(context, InsertMenuItemDiffService.class);
+        Intent intent = new Intent(context, MenuItemDiffService.class);
         intent.putExtra(ARG_VALUES, contentValues);
         return intent;
     }

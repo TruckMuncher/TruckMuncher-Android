@@ -27,7 +27,7 @@ public class MenuAdminServiceHelper {
             i++;
         }
 
-        Intent intent = InsertMenuItemDiffService.newIntent(context, contentValues);
+        Intent intent = MenuItemDiffService.newIntent(context, contentValues);
         context.startService(intent);
     }
 }
