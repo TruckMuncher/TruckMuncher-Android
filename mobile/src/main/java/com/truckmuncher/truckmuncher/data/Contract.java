@@ -86,19 +86,7 @@ public final class Contract {
      * Stores the temporary state. You must use this to do writes to the db, but should not use this for queries.
      */
     public interface TruckState {
-        /**
-         * Unused
-         */
-        public static final String IS_SELECTED_TRUCK = "is_selected";
         public static final String IS_DIRTY = "is_dirty";
-    }
-
-    /**
-     * Stores the permanent state. You must use this to do writes to the db, but should not use this for queries.
-     */
-    public interface TruckProperties {
-        // FIXME investigate the api usage of this and determine if this is a property or state
-        public static final String OWNED_BY_CURRENT_USER = "owned_by_current_user";
     }
 
     public interface MenuItem {

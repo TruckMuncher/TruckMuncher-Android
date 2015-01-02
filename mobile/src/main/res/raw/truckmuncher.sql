@@ -8,7 +8,6 @@ CREATE TABLE `truck_properties` (
 	`name`	                    TEXT,
 	`image_url`	                TEXT,
 	`keywords`	                TEXT,
-	`owned_by_current_user`	    INTEGER DEFAULT 0,
 	`color_primary`	            TEXT,
 	`color_secondary`	        TEXT
 );
@@ -20,7 +19,6 @@ CREATE INDEX `idx_truck_properties_id` ON `truck_properties` (
 CREATE TABLE `truck_state` (
     `_id`	        INTEGER PRIMARY KEY AUTOINCREMENT,
     `id`	        TEXT UNIQUE,
-    `is_selected`   INTEGER DEFAULT 0,
     `is_serving`    INTEGER DEFAULT 0,
     `latitude`      REAL,
     `longitude`     REAL,
@@ -36,12 +34,10 @@ CREATE VIEW `truck` AS SELECT
     `name`,
     `image_url`,
     `keywords`,
-    `owned_by_current_user`,
     `color_primary`,
     `color_secondary`,
 
     `truck_state`.`_id` AS `_id`,
-    `is_selected`,
     `is_serving`,
     `latitude`,
     `longitude`,
