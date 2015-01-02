@@ -117,25 +117,25 @@ public class MenuUpdateService extends Service implements GoogleApiClient.Connec
                             List<Category> categories = menu.categories;
                             for (Category category : categories) {
                                 ContentValues categoryValues = new ContentValues();
-                                categoryValues.put(Contract.Category.ID, category.id);
-                                categoryValues.put(Contract.Category.NAME, category.name);
-                                categoryValues.put(Contract.Category.NOTES, category.notes);
-                                categoryValues.put(Contract.Category.ORDER_IN_MENU, category.orderInMenu);
-                                categoryValues.put(Contract.Category.TRUCK_ID, menu.truckId);
+                                categoryValues.put(PublicContract.Category.ID, category.id);
+                                categoryValues.put(PublicContract.Category.NAME, category.name);
+                                categoryValues.put(PublicContract.Category.NOTES, category.notes);
+                                categoryValues.put(PublicContract.Category.ORDER_IN_MENU, category.orderInMenu);
+                                categoryValues.put(PublicContract.Category.TRUCK_ID, menu.truckId);
                                 categoryContentValues.add(categoryValues);
 
 
                                 List<MenuItem> menuItems = category.menuItems;
                                 for (MenuItem item : menuItems) {
                                     ContentValues itemValues = new ContentValues();
-                                    itemValues.put(Contract.MenuItem.ID, item.id);
-                                    itemValues.put(Contract.MenuItem.IS_AVAILABLE, item.isAvailable);
-                                    itemValues.put(Contract.MenuItem.PRICE, item.price);
-                                    itemValues.put(Contract.MenuItem.ORDER_IN_CATEGORY, item.orderInCategory);
-                                    itemValues.put(Contract.MenuItem.NOTES, item.notes);
-                                    itemValues.put(Contract.MenuItem.NAME, item.name);
-                                    itemValues.put(Contract.MenuItem.TAGS, Contract.convertListToString(item.tags));
-                                    itemValues.put(Contract.MenuItem.CATEGORY_ID, category.id);
+                                    itemValues.put(PublicContract.MenuItem.ID, item.id);
+                                    itemValues.put(PublicContract.MenuItem.IS_AVAILABLE, item.isAvailable);
+                                    itemValues.put(PublicContract.MenuItem.PRICE, item.price);
+                                    itemValues.put(PublicContract.MenuItem.ORDER_IN_CATEGORY, item.orderInCategory);
+                                    itemValues.put(PublicContract.MenuItem.NOTES, item.notes);
+                                    itemValues.put(PublicContract.MenuItem.NAME, item.name);
+                                    itemValues.put(PublicContract.MenuItem.TAGS, Contract.convertListToString(item.tags));
+                                    itemValues.put(PublicContract.MenuItem.CATEGORY_ID, category.id);
                                     menuItemContentValues.add(itemValues);
                                 }
                             }
@@ -154,7 +154,7 @@ public class MenuUpdateService extends Service implements GoogleApiClient.Connec
                     protected void onPostExecute(Void aVoid) {
 
                         // Need to notify on the Menu View URI b/c ContentProvider won't
-                        getContentResolver().notifyChange(Contract.MenuEntry.CONTENT_URI, null);
+                        getContentResolver().notifyChange(PublicContract.MENU_URI, null);
                         stopSelf();
                     }
                 }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

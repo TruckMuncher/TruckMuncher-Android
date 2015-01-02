@@ -1,7 +1,5 @@
 package com.truckmuncher.truckmuncher.vendor.menuadmin;
 
-import android.content.ContentValues;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,9 +14,11 @@ import android.view.View;
 import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.data.Contract;
 import com.truckmuncher.truckmuncher.data.PublicContract;
-import com.truckmuncher.truckmuncher.data.sql.Query;
+import com.truckmuncher.truckmuncher.data.sql.WhereClause;
 
 import java.util.Map;
+
+import static com.truckmuncher.truckmuncher.data.sql.WhereClause.Operator.EQUALS;
 
 public class MenuAdminFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -27,9 +27,7 @@ public class MenuAdminFragment extends ListFragment implements LoaderManager.Loa
 
     private MenuAdminAdapter adapter;
     private android.view.MenuItem actionMenu;
-
-    public MenuAdminFragment() {
-    }
+    private MenuAdminServiceHelper serviceHelper;
 
     public static MenuAdminFragment newInstance(String truckId) {
         Bundle args = new Bundle();
@@ -43,6 +41,7 @@ public class MenuAdminFragment extends ListFragment implements LoaderManager.Loa
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
+        serviceHelper = new MenuAdminServiceHelper();
         adapter = new MenuAdminAdapter(getActivity(), null);
         setListAdapter(adapter);
         getListView().setFastScrollEnabled(true);
@@ -60,18 +59,7 @@ public class MenuAdminFragment extends ListFragment implements LoaderManager.Loa
         super.onPause();
         Map<String, Boolean> diff = adapter.getMenuItemAvailabilityDiff();
         adapter.clearMenuItemAvailabilityDiff();
-        ContentValues[] contentValues = new ContentValues[diff.size()];
-        int i = 0;
-        for (Map.Entry<String, Boolean> entry : diff.entrySet()) {
-            ContentValues values = new ContentValues(2);
-            values.put(PublicContract.MenuItem.ID, entry.getKey());
-            values.put(PublicContract.MenuItem.IS_AVAILABLE, entry.getValue());
-            contentValues[i] = values;
-            i++;
-        }
-
-        Intent intent = InsertMenuItemDiffService.newIntent(getActivity(), contentValues);
-        getActivity().startService(intent);
+        serviceHelper.persistMenuDiff(getActivity(), diff);
     }
 
     @Override
@@ -88,14 +76,17 @@ public class MenuAdminFragment extends ListFragment implements LoaderManager.Loa
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String truckId = args.getString(ARG_TRUCK_ID);
-        Query query = Contract.MenuEntry.buildMenuForTruck(truckId);
+        WhereClause whereClause = new WhereClause.Builder()
+                .where(PublicContract.Truck.ID, EQUALS, truckId)
+                .build();
         String[] projection = MenuAdminAdapter.Query.PROJECTION;
-        Uri uri = Contract.syncFromNetwork(Contract.MenuEntry.CONTENT_URI);
-        return new CursorLoader(getActivity(), uri, projection, query.selection, query.selectionArgs, null);
+        Uri uri = Contract.syncFromNetwork(PublicContract.MENU_URI);
+        return new CursorLoader(getActivity(), uri, projection, whereClause.selection, whereClause.selectionArgs, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        // TODO move the adapter creation into here so that we get the loading indicator for free
         adapter.swapCursor(data);
     }
 

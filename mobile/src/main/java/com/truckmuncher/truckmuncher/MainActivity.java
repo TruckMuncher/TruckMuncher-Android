@@ -26,12 +26,14 @@ import com.truckmuncher.truckmuncher.customer.CursorFragmentStatePagerAdapter;
 import com.truckmuncher.truckmuncher.customer.CustomerMapFragment;
 import com.truckmuncher.truckmuncher.customer.CustomerMenuFragment;
 import com.truckmuncher.truckmuncher.customer.GetTruckProfilesService;
-import com.truckmuncher.truckmuncher.data.Contract;
-import com.truckmuncher.truckmuncher.data.sql.Query;
+import com.truckmuncher.truckmuncher.data.PublicContract;
+import com.truckmuncher.truckmuncher.data.sql.WhereClause;
 import com.truckmuncher.truckmuncher.vendor.VendorHomeActivity;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+
+import static com.truckmuncher.truckmuncher.data.sql.WhereClause.Operator.EQUALS;
 
 public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -187,8 +189,10 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         switch (i) {
             case LOADER_TRUCKS:
-                Query query = Contract.TruckEntry.buildServingTrucks();
-                return new CursorLoader(this, Contract.TruckEntry.CONTENT_URI, CursorFragmentStatePagerAdapter.Query.PROJECTION, query.selection, query.selectionArgs, null);
+                WhereClause whereClause = new WhereClause.Builder()
+                        .where(PublicContract.Truck.IS_SERVING, EQUALS, true)
+                        .build();
+                return new CursorLoader(this, PublicContract.TRUCK_URI, CursorFragmentStatePagerAdapter.Query.PROJECTION, whereClause.selection, whereClause.selectionArgs, null);
             default:
                 throw new RuntimeException("Invalid loader id: " + i);
         }

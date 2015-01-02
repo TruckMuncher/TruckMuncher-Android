@@ -7,7 +7,7 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.truckmuncher.truckmuncher.data.Contract;
+import com.truckmuncher.truckmuncher.data.PublicContract;
 
 public class AuthenticatorActivity extends AccountAuthenticatorActivity
         implements LoginFragment.LoginSuccessCallback {
@@ -38,8 +38,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         Account account = AccountGeneral.getAccount(userName);
 
         // Setup the account to be syncable
-        ContentResolver.setSyncAutomatically(account, Contract.CONTENT_AUTHORITY, true);
-        ContentResolver.setIsSyncable(account, Contract.CONTENT_AUTHORITY, 1);
+        ContentResolver.setSyncAutomatically(account, PublicContract.CONTENT_AUTHORITY, true);
+        ContentResolver.setIsSyncable(account, PublicContract.CONTENT_AUTHORITY, 1);
 
         accountManager.addAccountExplicitly(account, null, null);
         accountManager.setAuthToken(account, AccountGeneral.AUTH_TOKEN_TYPE, authToken);

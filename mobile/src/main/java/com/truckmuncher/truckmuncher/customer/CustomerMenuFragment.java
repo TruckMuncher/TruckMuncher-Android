@@ -18,11 +18,14 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.data.Contract;
-import com.truckmuncher.truckmuncher.data.sql.Query;
+import com.truckmuncher.truckmuncher.data.PublicContract;
+import com.truckmuncher.truckmuncher.data.sql.WhereClause;
 import com.truckmuncher.truckmuncher.vendor.menuadmin.MenuAdminAdapter;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+
+import static com.truckmuncher.truckmuncher.data.sql.WhereClause.Operator.EQUALS;
 
 public class CustomerMenuFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -95,10 +98,12 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String truckId = args.getString(ARG_TRUCK_ID);
-        Query query = Contract.MenuEntry.buildMenuForTruck(truckId);
+        WhereClause whereClause = new WhereClause.Builder()
+                .where(PublicContract.Truck.ID, EQUALS, truckId)
+                .build();
         String[] projection = MenuAdminAdapter.Query.PROJECTION;
-        Uri uri = Contract.syncFromNetwork(Contract.MenuEntry.CONTENT_URI);
-        return new CursorLoader(getActivity(), uri, projection, query.selection, query.selectionArgs, null);
+        Uri uri = Contract.syncFromNetwork(PublicContract.MENU_URI);
+        return new CursorLoader(getActivity(), uri, projection, whereClause.selection, whereClause.selectionArgs, null);
     }
 
     @Override

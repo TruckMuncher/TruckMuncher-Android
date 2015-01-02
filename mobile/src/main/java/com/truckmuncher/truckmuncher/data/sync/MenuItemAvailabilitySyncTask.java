@@ -13,12 +13,12 @@ import com.truckmuncher.api.menu.ModifyMenuItemAvailabilityRequest;
 import com.truckmuncher.truckmuncher.data.ApiException;
 import com.truckmuncher.truckmuncher.data.Contract;
 import com.truckmuncher.truckmuncher.data.PublicContract;
-import com.truckmuncher.truckmuncher.data.sql.Query;
+import com.truckmuncher.truckmuncher.data.sql.WhereClause;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.truckmuncher.truckmuncher.data.sql.Query.Operator.EQUALS;
+import static com.truckmuncher.truckmuncher.data.sql.WhereClause.Operator.EQUALS;
 
 public final class MenuItemAvailabilitySyncTask extends SyncTask {
 
@@ -34,10 +34,10 @@ public final class MenuItemAvailabilitySyncTask extends SyncTask {
 
     @Override
     public ApiResult sync(SyncResult syncResult) throws RemoteException {
-        Query query = new Query.Builder()
+        WhereClause whereClause = new WhereClause.Builder()
                 .where(Contract.MenuItem.IS_DIRTY, EQUALS, true)
                 .build();
-        Cursor cursor = provider.query(PublicContract.MENU_ITEM_URI, MenuItemAvailabilityQuery.PROJECTION, query.selection, query.selectionArgs, null);
+        Cursor cursor = provider.query(PublicContract.MENU_ITEM_URI, MenuItemAvailabilityQuery.PROJECTION, whereClause.selection, whereClause.selectionArgs, null);
         if (!cursor.moveToFirst()) {
             // Cursor is empty. Probably already synced this.
             cursor.close();
@@ -66,7 +66,7 @@ public final class MenuItemAvailabilitySyncTask extends SyncTask {
             for (int i = 0, max = diff.size(); i < max; i++) {
                 MenuItemAvailability availability = diff.get(i);
                 ContentValues values = new ContentValues();
-                values.put(Contract.MenuItem.ID, availability.menuItemId);
+                values.put(PublicContract.MenuItem.ID, availability.menuItemId);
                 values.put(Contract.MenuItem.IS_DIRTY, false);
                 contentValues[i] = values;
             }
@@ -82,8 +82,8 @@ public final class MenuItemAvailabilitySyncTask extends SyncTask {
 
     interface MenuItemAvailabilityQuery {
         static final String[] PROJECTION = new String[]{
-                Contract.MenuItem.ID,
-                Contract.MenuItem.IS_AVAILABLE
+                PublicContract.MenuItem.ID,
+                PublicContract.MenuItem.IS_AVAILABLE
         };
         static final int ID = 0;
         static final int IS_AVAILABLE = 1;

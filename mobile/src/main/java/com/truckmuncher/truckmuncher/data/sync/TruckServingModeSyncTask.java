@@ -12,9 +12,10 @@ import com.truckmuncher.api.trucks.TruckService;
 import com.truckmuncher.truckmuncher.data.ApiException;
 import com.truckmuncher.truckmuncher.data.Contract;
 import com.truckmuncher.truckmuncher.data.PublicContract;
-import com.truckmuncher.truckmuncher.data.sql.Query;
+import com.truckmuncher.truckmuncher.data.sql.WhereClause;
 
 import static com.truckmuncher.truckmuncher.data.Contract.suppressNotify;
+import static com.truckmuncher.truckmuncher.data.sql.WhereClause.Operator.EQUALS;
 
 public final class TruckServingModeSyncTask extends SyncTask {
 
@@ -30,8 +31,10 @@ public final class TruckServingModeSyncTask extends SyncTask {
 
     @Override
     protected ApiResult sync(SyncResult syncResult) throws RemoteException {
-        Query query = Contract.TruckEntry.buildDirty();
-        Cursor cursor = provider.query(Contract.TruckEntry.CONTENT_URI, TruckServingModeQuery.PROJECTION, query.selection, query.selectionArgs, null);
+        WhereClause whereClause = new WhereClause.Builder()
+                .where(Contract.TruckState.IS_DIRTY, EQUALS, true)
+                .build();
+        Cursor cursor = provider.query(PublicContract.TRUCK_URI, TruckServingModeQuery.PROJECTION, whereClause.selection, whereClause.selectionArgs, null);
         if (!cursor.moveToFirst()) {
 
             // Cursor is empty. Probably already synced this.
@@ -57,8 +60,10 @@ public final class TruckServingModeSyncTask extends SyncTask {
                 values.put(Contract.TruckState.IS_DIRTY, false);
 
                 // Since we're clearing an internal state, don't notify listeners
-                Uri uri = suppressNotify(PublicContract.TRUCK_STATE_URI);
-                Query q = Contract.TruckEntry.buildSingleTruck(request.truckId);
+                Uri uri = suppressNotify(Contract.TRUCK_STATE_URI);
+                WhereClause q = new WhereClause.Builder()
+                        .where(PublicContract.Truck.ID, EQUALS, request.truckId)
+                        .build();
                 provider.update(uri, values, q.selection, q.selectionArgs);
             } catch (ApiException e) {
                 ApiResult result = apiExceptionResolver.resolve(e);
@@ -83,10 +88,10 @@ public final class TruckServingModeSyncTask extends SyncTask {
 
     interface TruckServingModeQuery {
         static final String[] PROJECTION = new String[]{
-                PublicContract.TruckState.ID,
-                PublicContract.TruckState.IS_SERVING,
-                PublicContract.TruckState.LATITUDE,
-                PublicContract.TruckState.LONGITUDE
+                PublicContract.Truck.ID,
+                PublicContract.Truck.IS_SERVING,
+                PublicContract.Truck.LATITUDE,
+                PublicContract.Truck.LONGITUDE
         };
         static final int ID = 0;
         static final int IS_SERVING = 1;

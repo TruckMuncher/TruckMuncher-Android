@@ -30,9 +30,8 @@ import com.google.maps.android.clustering.view.ClusterRenderer;
 import com.truckmuncher.api.trucks.Truck;
 import com.truckmuncher.truckmuncher.ActiveTrucksService;
 import com.truckmuncher.truckmuncher.R;
-import com.truckmuncher.truckmuncher.data.Contract;
 import com.truckmuncher.truckmuncher.data.PublicContract;
-import com.truckmuncher.truckmuncher.data.sql.Query;
+import com.truckmuncher.truckmuncher.data.sql.WhereClause;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -40,6 +39,8 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+
+import static com.truckmuncher.truckmuncher.data.sql.WhereClause.Operator.EQUALS;
 
 public class CustomerMapFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener,
@@ -192,8 +193,10 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
         // Selection args for trucks that are currently in serving mode
-        Query query = Contract.TruckEntry.buildServingTrucks();
-        return new CursorLoader(getActivity(), Contract.TruckEntry.CONTENT_URI, ActiveTrucksQuery.PROJECTION, query.selection, query.selectionArgs, null);
+        WhereClause whereClause = new WhereClause.Builder()
+                .where(PublicContract.Truck.IS_SERVING, EQUALS, true)
+                .build();
+        return new CursorLoader(getActivity(), PublicContract.TRUCK_URI, ActiveTrucksQuery.PROJECTION, whereClause.selection, whereClause.selectionArgs, null);
     }
 
     @Override
@@ -267,10 +270,10 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
     public interface ActiveTrucksQuery {
 
         public static final String[] PROJECTION = new String[]{
-                Contract.TruckEntry.COLUMN_INTERNAL_ID,
-                PublicContract.TruckState.LATITUDE,
-                PublicContract.TruckState.LONGITUDE,
-                Contract.TruckEntry.COLUMN_NAME
+                PublicContract.Truck.ID,
+                PublicContract.Truck.LATITUDE,
+                PublicContract.Truck.LONGITUDE,
+                PublicContract.Truck.NAME
         };
         static final int ID = 0;
         static final int LATITUDE = 1;

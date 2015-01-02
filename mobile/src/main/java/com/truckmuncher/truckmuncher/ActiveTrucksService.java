@@ -9,6 +9,7 @@ import com.truckmuncher.api.trucks.ActiveTrucksRequest;
 import com.truckmuncher.api.trucks.ActiveTrucksResponse;
 import com.truckmuncher.api.trucks.TruckService;
 import com.truckmuncher.truckmuncher.data.ApiException;
+import com.truckmuncher.truckmuncher.data.Contract;
 import com.truckmuncher.truckmuncher.data.PublicContract;
 
 import java.util.List;
@@ -53,15 +54,15 @@ public class ActiveTrucksService extends IntentService {
             for (int i = 0, max = trucks.size(); i < max; i++) {
                 ActiveTrucksResponse.Truck truck = trucks.get(i);
                 ContentValues values = new ContentValues();
-                values.put(PublicContract.TruckState.ID, truck.id);
-                values.put(PublicContract.TruckState.LATITUDE, truck.latitude);
-                values.put(PublicContract.TruckState.LONGITUDE, truck.longitude);
-                values.put(PublicContract.TruckState.IS_SERVING, true);
+                values.put(PublicContract.Truck.ID, truck.id);
+                values.put(PublicContract.Truck.LATITUDE, truck.latitude);
+                values.put(PublicContract.Truck.LONGITUDE, truck.longitude);
+                values.put(PublicContract.Truck.IS_SERVING, true);
                 contentValues[i] = values;
             }
 
-            getContentResolver().delete(PublicContract.TRUCK_STATE_URI, null, null);
-            getContentResolver().bulkInsert(PublicContract.TRUCK_STATE_URI, contentValues);
+            getContentResolver().delete(Contract.TRUCK_STATE_URI, null, null);
+            getContentResolver().bulkInsert(Contract.TRUCK_STATE_URI, contentValues);
         } catch (ApiException e) {
             Timber.e("Got an error while getting active trucks.");
             Intent errorIntent = new Intent();
