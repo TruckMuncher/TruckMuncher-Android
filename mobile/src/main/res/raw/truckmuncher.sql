@@ -32,7 +32,7 @@ CREATE INDEX `idx_truck_state_id` ON `truck_state` (
 );
 
 CREATE VIEW `truck` AS SELECT
-    `truck_properties.id` AS `id`,
+    `truck_properties`.`id` AS `id`,
     `name`,
     `image_url`,
     `keywords`,
@@ -40,7 +40,7 @@ CREATE VIEW `truck` AS SELECT
     `color_primary`,
     `color_secondary`,
 
-    `truck_state._id` AS `_id`,
+    `truck_state`.`_id` AS `_id`,
     `is_selected`,
     `is_serving`,
     `latitude`,
@@ -49,6 +49,16 @@ CREATE VIEW `truck` AS SELECT
 
     FROM
     `truck_properties`INNER JOIN `truck_state`
-    ON `truck_properties.id` = `truck_state.id`
+    ON `truck_properties`.`id` = `truck_state`.`id`
 ;
 
+CREATE TABLE `category` (
+    `_id`	            INTEGER PRIMARY KEY AUTOINCREMENT,
+    `id`	            TEXT UNIQUE,
+    `name`              TEXT,
+    `notes`             TEXT,
+    `order_in_menu`     INTEGER,
+    `truck_id`          TEXT,
+
+    FOREIGN KEY(`truck_id`) REFERENCES `truck_properties`(`id`)
+);
