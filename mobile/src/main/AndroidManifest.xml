@@ -100,7 +100,7 @@
             android:name="com.truckmuncher.truckmuncher.ActiveTrucksService"
             android:exported="false" />
         <service
-            android:name="com.truckmuncher.truckmuncher.vendor.VendorTrucksService"
+            android:name=".vendor.VendorTrucksService"
             android:exported="false" />
         <service
             android:name="com.truckmuncher.truckmuncher.menu.MenuUpdateService"

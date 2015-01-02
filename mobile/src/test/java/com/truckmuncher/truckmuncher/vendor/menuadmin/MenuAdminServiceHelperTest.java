@@ -55,6 +55,6 @@ public class MenuAdminServiceHelperTest {
 
         helper.persistMenuDiff(Robolectric.application, diff);
         Intent actual = Robolectric.shadowOf(Robolectric.application).getNextStartedService();
-        assertThat(actual).isEqualTo(InsertMenuItemDiffService.newIntent(Robolectric.application, valuesList));
+        assertThat(actual).isEqualTo(MenuItemDiffService.newIntent(Robolectric.application, valuesList));
     }
 }
