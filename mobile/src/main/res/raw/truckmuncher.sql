@@ -8,7 +8,7 @@ CREATE TABLE `truck_properties` (
 	`name`	                    TEXT,
 	`image_url`	                TEXT,
 	`keywords`	                TEXT,
-	`owned_by_current_user`	    INTEGER,
+	`owned_by_current_user`	    INTEGER DEFAULT 0,
 	`color_primary`	            TEXT,
 	`color_secondary`	        TEXT
 );
