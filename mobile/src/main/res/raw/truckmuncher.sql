@@ -62,3 +62,18 @@ CREATE TABLE `category` (
 
     FOREIGN KEY(`truck_id`) REFERENCES `truck_properties`(`id`)
 );
+
+CREATE TABLE `menu_item` (
+    `_id`	                INTEGER PRIMARY KEY AUTOINCREMENT,
+    `id`	                TEXT UNIQUE,
+    `name`                  TEXT,
+    `price`                 REAL,
+    `is_available`          INTEGER,
+    `notes`                 TEXT,
+    `tags`                  TEXT,
+    `order_in_category`     INTEGER,
+    `category_id`           TEXT,
+    `is_dirty`              INTEGER DEFAULT 0,
+
+    FOREIGN KEY(`category_id`) REFERENCES `category`(`id`)
+);
