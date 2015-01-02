@@ -10,7 +10,7 @@ import com.truckmuncher.api.trucks.TrucksForVendorRequest;
 import com.truckmuncher.api.trucks.TrucksForVendorResponse;
 import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
 import com.truckmuncher.truckmuncher.data.PublicContract;
-import com.truckmuncher.truckmuncher.test.data.VerifiableContentProvider;
+import com.truckmuncher.truckmuncher.test.VerifiableContentProvider;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,7 +40,7 @@ public class VendorTrucksServiceTest {
     }
 
     @Test
-    public void a() {
+    public void onHandleIntentPerformsBulkInsertWithFetchedData() {
         VendorTrucksService service = new VendorTrucksService();
         service.truckService = mock(TruckService.class);
         TrucksForVendorResponse response = new TrucksForVendorResponse.Builder()
@@ -54,6 +54,7 @@ public class VendorTrucksServiceTest {
                                         .build()
                         )
                 )
+                .isNew(false)
                 .build();
         when(service.truckService.getTrucksForVendor(any(TrucksForVendorRequest.class)))
                 .thenReturn(response);

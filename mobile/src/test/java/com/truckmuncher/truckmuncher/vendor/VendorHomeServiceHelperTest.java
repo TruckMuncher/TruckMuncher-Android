@@ -7,7 +7,7 @@ import android.net.Uri;
 import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
 import com.truckmuncher.truckmuncher.data.Contract;
 import com.truckmuncher.truckmuncher.data.PublicContract;
-import com.truckmuncher.truckmuncher.test.data.VerifiableContentProvider;
+import com.truckmuncher.truckmuncher.test.VerifiableContentProvider;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

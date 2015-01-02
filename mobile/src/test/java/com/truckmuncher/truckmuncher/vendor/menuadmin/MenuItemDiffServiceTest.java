@@ -8,14 +8,13 @@ import android.support.annotation.NonNull;
 import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
 import com.truckmuncher.truckmuncher.data.Contract;
 import com.truckmuncher.truckmuncher.data.PublicContract;
-import com.truckmuncher.truckmuncher.test.data.VerifiableContentProvider;
+import com.truckmuncher.truckmuncher.test.VerifiableContentProvider;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.shadows.ShadowContentResolver;
 
-import static org.assertj.android.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(ReadableRobolectricTestRunner.class)
@@ -28,9 +27,8 @@ public class MenuItemDiffServiceTest {
         ContentValues[] valuesList = new ContentValues[]{blt};
         Intent intent = MenuItemDiffService.newIntent(Robolectric.application, valuesList);
 
-        assertThat(intent)
-                .hasComponent(Robolectric.application, MenuItemDiffService.class)
-                .hasExtra("content_values");
+        assertThat(intent.getComponent().getClassName()).isEqualTo(MenuItemDiffService.class.getName());
+        assertThat(intent.getExtras().get("content_values")).isNotNull();
     }
 
     @Test

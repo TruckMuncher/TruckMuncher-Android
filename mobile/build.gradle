@@ -6,7 +6,7 @@ buildscript {
 
     dependencies {
         classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.14.3'
-        classpath "com.github.jcandksolutions.gradle:android-unit-test:2.1.1"
+        classpath 'com.github.jcandksolutions.gradle:android-unit-test:2.1.1'
     }
 }
 
@@ -124,7 +124,7 @@ android {
     }
 }
 
-apply plugin: "android-unit-test"
+apply plugin: 'android-unit-test'
 
 dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
@@ -167,7 +167,7 @@ dependencies {
     androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.2'
 
     testCompile project(':testlib')
-    testCompile 'com.squareup.assertj:assertj-android:1.0.0'
+    testCompile 'org.mockito:mockito-core:1.10.8'
 }
 
 repositories {

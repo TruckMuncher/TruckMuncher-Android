@@ -15,7 +15,6 @@ import org.robolectric.Robolectric;
 
 import butterknife.ButterKnife;
 
-import static org.assertj.android.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -37,10 +36,10 @@ public class MenuAdminAdapterTest {
         MenuAdminAdapter adapter = new MenuAdminAdapter(Robolectric.application, cursor);
         View view = adapter.newSectionView(Robolectric.application, null, null);
         TextView text = ButterKnife.findById(view, android.R.id.text1);
-        assertThat(text).isEmpty();
+        assertThat(text.getText()).isEmpty();
 
         adapter.bindSectionView(view, Robolectric.application, 0, "Sandwiches");
-        assertThat(text).hasText("Sandwiches");
+        assertThat(text.getText()).isEqualTo("Sandwiches");
     }
 
     @Test
@@ -60,9 +59,9 @@ public class MenuAdminAdapterTest {
         View view = adapter.newItemView(Robolectric.application, cursor, null);
         adapter.bindItemView(view, Robolectric.application, cursor);
 
-        assertThat(ButterKnife.<TextView>findById(view, R.id.name)).hasText("BLT");
-        assertThat(ButterKnife.<TextView>findById(view, R.id.price)).hasText("$6.55");
-        assertThat(ButterKnife.<SwitchCompat>findById(view, R.id.price)).isChecked();
+        assertThat(ButterKnife.<TextView>findById(view, R.id.name).getText().toString()).isEqualTo("BLT");
+        assertThat(ButterKnife.<TextView>findById(view, R.id.price).getText().toString()).isEqualTo("$6.55");
+        assertThat(ButterKnife.<SwitchCompat>findById(view, R.id.isAvailableSwitch).isChecked()).isTrue();
     }
 
     @Test

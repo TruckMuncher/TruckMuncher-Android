@@ -10,19 +10,12 @@ public class SqlOpenHelperTest extends AndroidTestCase {
 
     private static final String TAG = SqlOpenHelperTest.class.getSimpleName();
 
-    public static void populateTestData(SQLiteDatabase db) {
-        String truckId = TruckTableTest.onCreate(db);
-        String categoryId = CategoryTableTest.onCreate(db, truckId);
-        MenuItemTableTest.onCreate(db, categoryId);
-    }
-
     /**
      * This always targets the schema of the latest version of the database
      */
     public void testOnCreate() {
         SQLiteOpenHelper helper = new InMemoryOpenHelper(getContext(), 1);
-        SQLiteDatabase db = helper.getWritableDatabase();
-        populateTestData(db);
+        helper.getWritableDatabase();
         helper.close();
     }
 
@@ -39,9 +32,6 @@ public class SqlOpenHelperTest extends AndroidTestCase {
         for (int version = 1; version < SqlOpenHelper.VERSION; version++) {
             Log.d(TAG, "Running version " + version);
             helper.onUpgrade(db, version - 1, version);
-            TruckTableTest.onUpgrade(db, version - 1, version);
-            CategoryTableTest.onUpgrade(db, version - 1, version);
-            MenuItemTableTest.onUpgrade(db, version - 1, version);
         }
 
         // Clean up by closing out

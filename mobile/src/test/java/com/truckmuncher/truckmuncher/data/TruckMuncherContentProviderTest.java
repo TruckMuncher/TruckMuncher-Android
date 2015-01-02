@@ -4,7 +4,6 @@ import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.net.Uri;
 
 import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
 import com.truckmuncher.truckmuncher.data.sql.SqlOpenHelper;
@@ -31,11 +30,6 @@ public class TruckMuncherContentProviderTest {
         provider.onCreate();
         ShadowContentResolver.registerProvider(PublicContract.CONTENT_AUTHORITY, provider);
         resolver = Robolectric.application.getContentResolver();
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void queryThrowsIllegalArgExceptionForUnknownUri() {
-        resolver.query(Uri.parse("content://truckmuncher/unknown"), null, null, null, null);
     }
 
     @Test
@@ -174,19 +168,9 @@ public class TruckMuncherContentProviderTest {
         assertThat(type).isEqualTo(PublicContract.URI_TYPE_MENU);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getTypeThrowsIllegalArgExceptionForUnknownUri() {
-        resolver.getType(Uri.parse("content://truckmuncher/unknown"));
-    }
-
     @Test(expected = UnsupportedOperationException.class)
     public void insertThrowsUnsupportedOperationException() {
         resolver.insert(PublicContract.CATEGORY_URI, null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void deleteThrowsIllegalArgExceptionForUnknownUri() {
-        resolver.delete(Uri.parse("content://truckmuncher/unknown"), null, null);
     }
 
     @Test
@@ -208,11 +192,6 @@ public class TruckMuncherContentProviderTest {
                 .build();
         deletedCount = resolver.delete(Contract.TRUCK_STATE_URI, whereClause.selection, whereClause.selectionArgs);
         assertThat(deletedCount).isEqualTo(1);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void updateThrowsIllegalArgExceptionForUnknownUri() {
-        resolver.delete(Uri.parse("content://truckmuncher/unknown"), null, null);
     }
 
     @Test
