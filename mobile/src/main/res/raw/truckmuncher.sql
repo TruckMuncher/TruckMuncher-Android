@@ -90,7 +90,7 @@ CREATE VIEW `menu` AS SELECT
     `category`.`name` AS `category_name`,
     `category`.`id` AS `category_id`,
     `category`.`notes` AS `category_notes`,
-    order_in_menu,
+    `order_in_menu`,
 
     `truck_properties`.`id` AS `truck_id`
 

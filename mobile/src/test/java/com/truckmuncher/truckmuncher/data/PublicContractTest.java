@@ -85,4 +85,27 @@ public class PublicContractTest {
     public void truckTypeIsCorrect() {
         assertThat(PublicContract.URI_TYPE_TRUCK).isEqualTo("vnd.android.cursor.dir/vnd.truckmuncher.truck");
     }
+
+    /*
+     * MENU
+     */
+    @Test
+    public void menuUriHasContentScheme() {
+        assertThat(PublicContract.MENU_URI).hasContentScheme();
+    }
+
+    @Test
+    public void menuUriHasCorrectPath() {
+        assertThat(PublicContract.MENU_URI).hasPath("/menu");
+    }
+
+    @Test
+    public void menuUriHasCorrectAuthority() {
+        assertThat(PublicContract.MENU_URI).hasAuthority(Contract.CONTENT_AUTHORITY);
+    }
+
+    @Test
+    public void menuTypeIsCorrect() {
+        assertThat(PublicContract.URI_TYPE_MENU).isEqualTo("vnd.android.cursor.dir/vnd.truckmuncher.menu");
+    }
 }
