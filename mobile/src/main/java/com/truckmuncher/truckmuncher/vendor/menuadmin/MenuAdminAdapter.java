@@ -3,6 +3,7 @@ package com.truckmuncher.truckmuncher.vendor.menuadmin;
 import android.content.Context;
 import android.database.CharArrayBuffer;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +20,6 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-
-import static com.truckmuncher.truckmuncher.data.Contract.MenuEntry;
 
 /**
  * @see <a href="https://github.com/twotoasters/SectionCursorAdapter">GitHub Project</a>
@@ -89,6 +88,7 @@ public class MenuAdminAdapter extends SectionCursorAdapter {
         });
     }
 
+    @NonNull
     Map<String, Boolean> getMenuItemAvailabilityDiff() {
         return new HashMap<>(diff);
     }
@@ -100,12 +100,12 @@ public class MenuAdminAdapter extends SectionCursorAdapter {
     public interface Query {
 
         public static final String[] PROJECTION = new String[]{
-                MenuEntry._ID,
-                PublicContract.MenuItem.ID,
-                PublicContract.MenuItem.NAME,
-                PublicContract.MenuItem.PRICE,
-                PublicContract.MenuItem.IS_AVAILABLE,
-                PublicContract.Category.NAME
+                PublicContract.Menu._ID,
+                PublicContract.Menu.MENU_ITEM_ID,
+                PublicContract.Menu.MENU_ITEM_NAME,
+                PublicContract.Menu.PRICE,
+                PublicContract.Menu.IS_AVAILABLE,
+                PublicContract.Menu.CATEGORY_NAME
         };
         static final int ID = 1;
         static final int NAME = 2;
