@@ -8,6 +8,7 @@ import java.util.List;
 public final class Contract {
 
     public static final Uri TRUCK_STATE_URI = Uri.parse("content://" + PublicContract.CONTENT_AUTHORITY + "/truck_state");
+    public static final Uri TRUCK_PROPERTIES_URI = Uri.parse("content://" + PublicContract.CONTENT_AUTHORITY + "/truck_properties");
     private static final String STRING_SEPARATOR = ",";
     private static final String PARAM_NOTIFY = "notify";
     private static final String PARAM_SYNC_TO_NETWORK = "sync_to_network";

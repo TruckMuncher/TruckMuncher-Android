@@ -11,26 +11,20 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.truckmuncher.truckmuncher.LoggerStarter;
-import com.truckmuncher.truckmuncher.data.sql.CategoryTable;
-import com.truckmuncher.truckmuncher.data.sql.MenuItemTable;
 import com.truckmuncher.truckmuncher.data.sql.SqlOpenHelper;
-import com.truckmuncher.truckmuncher.data.sql.TruckStateTable;
-import com.truckmuncher.truckmuncher.data.sql.TruckTable;
+import com.truckmuncher.truckmuncher.data.sql.Tables;
 import com.truckmuncher.truckmuncher.menu.MenuUpdateService;
 
 import timber.log.Timber;
 
-import static com.truckmuncher.truckmuncher.data.Contract.CONTENT_AUTHORITY;
+public class TruckMuncherContentProvider extends ContentProvider {
 
-public class MyContentProvider extends ContentProvider {
-
-    private static final int TRUCK_SINGLE = 1;
-    private static final int TRUCK_ALL = 2;
-    private static final int CATEGORY_ALL = 4;
-    private static final int MENU_ITEM = 6;
-    private static final int MENU = 7;
-    private static final int TRUCK_VIEW = 8;
-    private static final int TRUCK_STATE = 9;
+    private static final int CATEGORY = 10;
+    private static final int MENU_ITEM = 20;
+    private static final int TRUCK = 30;
+    private static final int TRUCK_STATE = 31;
+    private static final int TRUCK_PROPERTIES = 32;
+    private static final int MENU = 40;
     private static final UriMatcher uriMatcher = buildUriMatcher();
 
     // TODO this is not OK. We need push messages
@@ -40,18 +34,14 @@ public class MyContentProvider extends ContentProvider {
 
     private static UriMatcher buildUriMatcher() {
         UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
-        String authority = CONTENT_AUTHORITY;
+        String authority = PublicContract.CONTENT_AUTHORITY;
 
-        matcher.addURI(authority, Contract.TruckConstantEntry.TABLE_NAME, TRUCK_ALL);
-        matcher.addURI(authority, Contract.TruckConstantEntry.TABLE_NAME + "/*", TRUCK_SINGLE);
-        matcher.addURI(authority, Contract.TruckEntry.VIEW_NAME, TRUCK_VIEW);
-        matcher.addURI(authority, TruckStateTable.TABLE_NAME, TRUCK_STATE);
-
-        matcher.addURI(authority, CategoryTable.TABLE_NAME, CATEGORY_ALL);
-
-        matcher.addURI(authority, MenuItemTable.TABLE_NAME, MENU_ITEM);
-
-        matcher.addURI(authority, Contract.MenuEntry.VIEW_NAME, MENU);
+        matcher.addURI(authority, "/category", CATEGORY);
+        matcher.addURI(authority, "/menu_item", MENU_ITEM);
+        matcher.addURI(authority, "/truck", TRUCK);
+        matcher.addURI(authority, "/truck_state", TRUCK_STATE);
+        matcher.addURI(authority, "/truck_properties", TRUCK_PROPERTIES);
+        matcher.addURI(authority, "/menu", MENU);
 
         return matcher;
     }
@@ -70,14 +60,20 @@ public class MyContentProvider extends ContentProvider {
 
         String tableName;
         switch (uriMatcher.match(uri)) {
-            case MENU_ITEM:
-                tableName = MenuItemTable.TABLE_NAME;
+            case CATEGORY:
+                tableName = Tables.CATEGORY;
                 break;
-            case TRUCK_VIEW:
-                tableName = Contract.TruckEntry.VIEW_NAME;
+            case MENU_ITEM:
+                tableName = Tables.MENU_ITEM;
+                break;
+            case TRUCK:
+                tableName = Tables.TRUCK;
+                break;
+            case TRUCK_STATE:
+                tableName = Tables.TRUCK_STATE;
                 break;
             case MENU:
-                tableName = Contract.MenuEntry.VIEW_NAME;
+                tableName = Tables.MENU;
 
                 // TODO replace with a push notification to spawn this sync
                 if (Contract.isSyncFromNetwork(uri) && !hasAlreadySyncedMenuThisSession) {
@@ -89,7 +85,7 @@ public class MyContentProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
 
-        Cursor retCursor = db.query(tableName, projection, selection, selectionArgs, null, null, null);
+        Cursor retCursor = db.query(tableName, projection, selection, selectionArgs, null, null, sortOrder);
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
 
         return retCursor;
@@ -99,14 +95,14 @@ public class MyContentProvider extends ContentProvider {
     @NonNull
     public String getType(@NonNull Uri uri) {
         switch (uriMatcher.match(uri)) {
-            case TRUCK_SINGLE:
-                return Contract.TruckEntry.CONTENT_ITEM_TYPE;
-            case TRUCK_VIEW:
-                return Contract.TruckEntry.CONTENT_TYPE;
-            case CATEGORY_ALL:
+            case CATEGORY:
                 return PublicContract.URI_TYPE_CATEGORY;
             case MENU_ITEM:
                 return PublicContract.URI_TYPE_MENU_ITEM;
+            case TRUCK:
+                return PublicContract.URI_TYPE_TRUCK;
+            case MENU:
+                return PublicContract.URI_TYPE_MENU;
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
@@ -127,7 +123,7 @@ public class MyContentProvider extends ContentProvider {
 
         switch (uriMatcher.match(uri)) {
             case TRUCK_STATE:
-                rowsDeleted = db.delete(TruckStateTable.TABLE_NAME, selection, selectionArgs);
+                rowsDeleted = db.delete(Tables.TRUCK_STATE, selection, selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
@@ -148,7 +144,7 @@ public class MyContentProvider extends ContentProvider {
 
         switch (uriMatcher.match(uri)) {
             case TRUCK_STATE:
-                rowsUpdated = db.update(TruckStateTable.TABLE_NAME, values, selection, selectionArgs);
+                rowsUpdated = db.update(Tables.TRUCK_STATE, values, selection, selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
@@ -163,28 +159,45 @@ public class MyContentProvider extends ContentProvider {
     }
 
     @Override
-    public int bulkInsert(Uri uri, @NonNull ContentValues[] values) {
+    public int bulkInsert(Uri uri, @NonNull ContentValues[] valuesList) {
         SQLiteDatabase db = database.getWritableDatabase();
-        int returnCount;
+        int returnCount = 0;
 
+        String tableName;
         switch (uriMatcher.match(uri)) {
             case MENU_ITEM:
-                returnCount = MenuItemTable.bulkInsert(db, values);
+                tableName = Tables.MENU_ITEM;
                 break;
-            case CATEGORY_ALL:
-                returnCount = CategoryTable.bulkInsert(db, values);
+            case CATEGORY:
+                tableName = Tables.CATEGORY;
                 break;
-            case TRUCK_ALL:
-                returnCount = TruckTable.bulkInsert(db, values);
-                uri = Contract.TruckEntry.CONTENT_URI;
+            case TRUCK_PROPERTIES:
+                tableName = Tables.TRUCK_PROPERTIES;
+                uri = PublicContract.TRUCK_URI;
                 break;
             case TRUCK_STATE:
-                returnCount = TruckStateTable.bulkInsert(db, values);
-                uri = Contract.TruckEntry.CONTENT_URI;
+                tableName = Tables.TRUCK_STATE;
+                uri = PublicContract.TRUCK_URI;
                 break;
             default:
-                Timber.w("Attempting a bulk insert for an unsupported URI, %s. Falling back to normal inserts...", uri);
-                returnCount = super.bulkInsert(uri, values);
+                Timber.w(new UnsupportedOperationException(), "Attempting a bulk insert for an unsupported URI, %s. Falling back to normal inserts...", uri);
+                returnCount = super.bulkInsert(uri, valuesList);
+                tableName = null;
+        }
+
+        if (tableName != null) {    // We have bulkInsert support for the uri
+            db.beginTransaction();
+            try {
+                for (ContentValues values : valuesList) {
+                    long rowId = db.replace(tableName, null, values);
+                    if (rowId != -1) {
+                        returnCount++;
+                    }
+                }
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
         }
 
         if (returnCount > 0 && !Contract.isSuppressNotify(uri)) {

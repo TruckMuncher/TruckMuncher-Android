@@ -110,7 +110,7 @@
             android:exported="false" />
 
         <provider
-            android:name="com.truckmuncher.truckmuncher.data.MyContentProvider"
+            android:name=".data.TruckMuncherContentProvider"
             android:authorities="${applicationId}.provider"
             android:enabled="true"
             android:exported="false"

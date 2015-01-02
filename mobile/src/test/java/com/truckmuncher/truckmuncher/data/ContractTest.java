@@ -93,4 +93,22 @@ public class ContractTest {
     public void truckStateUriHasCorrectAuthority() {
         Assertions.assertThat(Contract.TRUCK_STATE_URI).hasAuthority(PublicContract.CONTENT_AUTHORITY);
     }
+
+    /*
+     * TRUCK PROPERTIES
+     */
+    @Test
+    public void truckPropertiesUriHasContentScheme() {
+        Assertions.assertThat(Contract.TRUCK_PROPERTIES_URI).hasContentScheme();
+    }
+
+    @Test
+    public void truckPropertiesUriHasCorrectPath() {
+        Assertions.assertThat(Contract.TRUCK_PROPERTIES_URI).hasPath("/truck_properties");
+    }
+
+    @Test
+    public void truckPropertiesUriHasCorrectAuthority() {
+        Assertions.assertThat(Contract.TRUCK_PROPERTIES_URI).hasAuthority(PublicContract.CONTENT_AUTHORITY);
+    }
 }
