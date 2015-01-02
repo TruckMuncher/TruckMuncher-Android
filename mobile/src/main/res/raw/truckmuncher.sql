@@ -30,3 +30,25 @@ CREATE TABLE `truck_state` (
 CREATE INDEX `idx_truck_state_id` ON `truck_state` (
     `id`
 );
+
+CREATE VIEW `truck` AS SELECT
+    `truck_properties.id` AS `id`,
+    `name`,
+    `image_url`,
+    `keywords`,
+    `owned_by_current_user`,
+    `color_primary`,
+    `color_secondary`,
+
+    `truck_state._id` AS `_id`,
+    `is_selected`,
+    `is_serving`,
+    `latitude`,
+    `longitude`,
+    `is_dirty`,
+
+    FROM
+    `truck_properties`INNER JOIN `truck_state`
+    ON `truck_properties.id` = `truck_state.id`
+;
+
