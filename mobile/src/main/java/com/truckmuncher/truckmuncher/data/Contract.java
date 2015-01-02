@@ -1,22 +1,13 @@
 package com.truckmuncher.truckmuncher.data;
 
 import android.net.Uri;
-import android.provider.BaseColumns;
-
-import com.truckmuncher.truckmuncher.BuildConfig;
-import com.truckmuncher.truckmuncher.data.sql.Query;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static com.truckmuncher.truckmuncher.data.sql.Query.Operator.EQUALS;
-
 public final class Contract {
 
-    public static final String CONTENT_AUTHORITY = BuildConfig.APPLICATION_ID;
-    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY + "/provider");
-    private static final String CONTENT_TYPE_DIR_BASE = "vnd.android.cursor.dir/vnd.truckmuncher.";
-    private static final String CONTENT_TYPE_ITEM_BASE = "vnd.android.cursor.item/vnd.truckmuncher.";
+    public static final Uri TRUCK_STATE_URI = Uri.parse("content://" + PublicContract.CONTENT_AUTHORITY + "/truck_state");
     private static final String STRING_SEPARATOR = ",";
     private static final String PARAM_NOTIFY = "notify";
     private static final String PARAM_SYNC_TO_NETWORK = "sync_to_network";
@@ -84,7 +75,7 @@ public final class Contract {
         if (isSyncToNetwork(uri)) {
             throw new IllegalStateException("The suppressNotify directive cannot be used with the syncToNetwork directive.");
         }
-        return uri.buildUpon().appendQueryParameter(PARAM_NOTIFY, "false").build();
+        return uri.buildUpon().appendQueryParameter(PARAM_NOTIFY, "true").build();
     }
 
     public static boolean isSuppressNotify(Uri uri) {
@@ -94,7 +85,7 @@ public final class Contract {
     /**
      * Stores the temporary state. You must use this to do writes to the db, but should not use this for queries.
      */
-    public interface TruckState extends PublicContract.TruckState {
+    public interface TruckState {
         /**
          * Unused
          */
@@ -105,72 +96,12 @@ public final class Contract {
     /**
      * Stores the permanent state. You must use this to do writes to the db, but should not use this for queries.
      */
-    public interface TruckConstantEntry {
-
-        public static final String TABLE_NAME = "truck_constant";
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME).build();
-        public static final String _ID = BaseColumns._ID;
-        public static final String COLUMN_INTERNAL_ID = TABLE_NAME + "__internal_id";
-        public static final String COLUMN_NAME = TABLE_NAME + "__name";
-        public static final String COLUMN_IMAGE_URL = TABLE_NAME + "__image_url";
-        public static final String COLUMN_KEYWORDS = TABLE_NAME + "__keywords";
-        public static final String COLUMN_COLOR_PRIMARY = TABLE_NAME + "__color_primary";
-        public static final String COLUMN_COLOR_SECONDARY = TABLE_NAME + "__color_secondary";
-        public static final String COLUMN_OWNED_BY_CURRENT_USER = TABLE_NAME + "__owned_by_current_user";
+    public interface TruckProperties {
+        // FIXME investigate the api usage of this and determine if this is a property or state
+        public static final String OWNED_BY_CURRENT_USER = "owned_by_current_user";
     }
 
-    public interface Category extends PublicContract.Category {
-        public static final String ORDER_IN_MENU = "order_in_menu";
-        public static final String TRUCK_ID = "truck_id";
-    }
-
-    public interface MenuItem extends PublicContract.MenuItem {
-        public static final String ORDER_IN_CATEGORY = "order_in_category";
-        public static final String CATEGORY_ID = "category_id";
+    public interface MenuItem {
         public static final String IS_DIRTY = "is_dirty";
-    }
-
-    /**
-     * Gives a holistic view of a truck. Use this for queries but not writes.
-     */
-    public static final class TruckEntry implements TruckConstantEntry, TruckState {
-
-        public static final String VIEW_NAME = "truck";
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(VIEW_NAME).build();
-        public static final String COLUMN_INTERNAL_ID = TruckConstantEntry.TABLE_NAME + "__internal_id";
-
-        public static Query buildSingleTruck(String internalId) {
-            return new Query.Builder()
-                    .where(TruckState.ID, EQUALS, internalId)
-                    .build();
-        }
-
-        public static Query buildServingTrucks() {
-            return new Query.Builder()
-                    .where(IS_SERVING, EQUALS, true)
-                    .build();
-        }
-
-        public static Query buildDirty() {
-            return new Query.Builder()
-                    .where(IS_DIRTY, EQUALS, true)
-                    .build();
-        }
-
-        public static final String CONTENT_TYPE = CONTENT_TYPE_DIR_BASE + VIEW_NAME;
-
-        public static final String CONTENT_ITEM_TYPE = CONTENT_TYPE_ITEM_BASE + VIEW_NAME;
-    }
-
-    public static final class MenuEntry implements BaseColumns {
-
-        public static final String VIEW_NAME = "view_menu";
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(VIEW_NAME).build();
-
-        public static Query buildMenuForTruck(String truckId) {
-            return new Query.Builder()
-                    .where(TruckConstantEntry.COLUMN_INTERNAL_ID, EQUALS, truckId)
-                    .build();
-        }
     }
 }

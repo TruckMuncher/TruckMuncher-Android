@@ -14,7 +14,7 @@ public class PublicContractTest {
 
     @Test
     public void authorityIsAsExpected() {
-        assertThat(Contract.CONTENT_AUTHORITY).isEqualTo(BuildConfig.APPLICATION_ID + ".provider");
+        assertThat(PublicContract.CONTENT_AUTHORITY).isEqualTo(BuildConfig.APPLICATION_ID + ".provider");
     }
 
     /*
@@ -32,7 +32,7 @@ public class PublicContractTest {
 
     @Test
     public void categoryUriHasCorrectAuthority() {
-        assertThat(PublicContract.CATEGORY_URI).hasAuthority(Contract.CONTENT_AUTHORITY);
+        assertThat(PublicContract.CATEGORY_URI).hasAuthority(PublicContract.CONTENT_AUTHORITY);
     }
 
     @Test
@@ -55,7 +55,7 @@ public class PublicContractTest {
 
     @Test
     public void menuItemUriHasCorrectAuthority() {
-        assertThat(PublicContract.MENU_ITEM_URI).hasAuthority(Contract.CONTENT_AUTHORITY);
+        assertThat(PublicContract.MENU_ITEM_URI).hasAuthority(PublicContract.CONTENT_AUTHORITY);
     }
 
     @Test
@@ -78,7 +78,7 @@ public class PublicContractTest {
 
     @Test
     public void truckUriHasCorrectAuthority() {
-        assertThat(PublicContract.TRUCK_URI).hasAuthority(Contract.CONTENT_AUTHORITY);
+        assertThat(PublicContract.TRUCK_URI).hasAuthority(PublicContract.CONTENT_AUTHORITY);
     }
 
     @Test
@@ -101,7 +101,7 @@ public class PublicContractTest {
 
     @Test
     public void menuUriHasCorrectAuthority() {
-        assertThat(PublicContract.MENU_URI).hasAuthority(Contract.CONTENT_AUTHORITY);
+        assertThat(PublicContract.MENU_URI).hasAuthority(PublicContract.CONTENT_AUTHORITY);
     }
 
     @Test
