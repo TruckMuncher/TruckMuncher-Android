@@ -77,7 +77,7 @@ public class MenuAdminFragment extends ListFragment implements LoaderManager.Loa
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String truckId = args.getString(ARG_TRUCK_ID);
         WhereClause whereClause = new WhereClause.Builder()
-                .where(PublicContract.Truck.ID, EQUALS, truckId)
+                .where(PublicContract.Menu.TRUCK_ID, EQUALS, truckId)
                 .build();
         String[] projection = MenuAdminAdapter.Query.PROJECTION;
         Uri uri = Contract.syncFromNetwork(PublicContract.MENU_URI);

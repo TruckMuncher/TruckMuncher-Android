@@ -35,7 +35,11 @@ public class GetTruckProfilesService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        TruckProfilesResponse truckProfilesResponse = truckService.getTruckProfiles(new TruckProfilesRequest(null, null));
+        TruckProfilesRequest request = new TruckProfilesRequest.Builder()
+                .latitude(0.0)
+                .longitude(0.0)
+                .build();
+        TruckProfilesResponse truckProfilesResponse = truckService.getTruckProfiles(request);
 
         List<Truck> trucks = truckProfilesResponse.trucks;
         ContentValues[] contentValues = new ContentValues[trucks.size()];
