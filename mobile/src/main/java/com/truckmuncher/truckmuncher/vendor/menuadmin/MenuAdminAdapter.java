@@ -10,12 +10,13 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import com.squareup.phrase.Phrase;
 import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.data.PublicContract;
 import com.twotoasters.sectioncursoradapter.SectionCursorAdapter;
 
+import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.ButterKnife;
@@ -63,9 +64,7 @@ public class MenuAdminAdapter extends SectionCursorAdapter {
         holder.name.setText(holder.nameBuffer.data, 0, holder.nameBuffer.sizeCopied);
 
         // Price
-        CharSequence price = Phrase.from(context, R.string.currency)
-                .put("price", Float.toString(cursor.getFloat(Query.PRICE)))
-                .format();
+        String price = NumberFormat.getCurrencyInstance(Locale.US).format(cursor.getDouble(Query.PRICE));
         holder.price.setText(price);
 
         // In stock

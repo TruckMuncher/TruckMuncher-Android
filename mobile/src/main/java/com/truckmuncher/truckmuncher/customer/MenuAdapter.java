@@ -1,18 +1,19 @@
 package com.truckmuncher.truckmuncher.customer;
 
 import android.content.Context;
-import android.database.CharArrayBuffer;
 import android.database.Cursor;
 import android.text.style.StrikethroughSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.squareup.phrase.Phrase;
 import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.data.PublicContract;
 import com.twotoasters.sectioncursoradapter.SectionCursorAdapter;
 import com.volkhart.androidutil.text.Truss;
+
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -53,21 +54,18 @@ public class MenuAdapter extends SectionCursorAdapter {
         ViewHolder holder = (ViewHolder) view.getTag();
 
         // Name
-        cursor.copyStringToBuffer(Query.NAME, holder.nameBuffer);
-        holder.name.setText(holder.nameBuffer.data, 0, holder.nameBuffer.sizeCopied);
-
-        // Price
-        CharSequence price = Phrase.from(context, R.string.currency)
-                .put("price", Float.toString(cursor.getFloat(Query.PRICE)))
-                .format();
-
+        CharSequence name = cursor.getString(Query.NAME);
         boolean isAvailable = cursor.getInt(Query.IS_AVAILABLE) == 1;
         if (!isAvailable) {
-            price = new Truss()
+            name = new Truss()
                     .pushSpan(new StrikethroughSpan())
-                    .append(price)
+                    .append(name)
                     .build();
         }
+        holder.name.setText(name);
+
+        // Price
+        String price = NumberFormat.getCurrencyInstance(Locale.US).format(cursor.getDouble(Query.PRICE));
         holder.price.setText(price);
     }
 
@@ -93,7 +91,6 @@ public class MenuAdapter extends SectionCursorAdapter {
         TextView name;
         @InjectView(R.id.price)
         TextView price;
-        CharArrayBuffer nameBuffer = new CharArrayBuffer(128);
 
         private ViewHolder(View view) {
             ButterKnife.inject(this, view);
