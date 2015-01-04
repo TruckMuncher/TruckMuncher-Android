@@ -20,7 +20,6 @@ import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.data.Contract;
 import com.truckmuncher.truckmuncher.data.PublicContract;
 import com.truckmuncher.truckmuncher.data.sql.WhereClause;
-import com.truckmuncher.truckmuncher.vendor.menuadmin.MenuAdminAdapter;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -42,7 +41,7 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
     ImageView truckImage;
     @InjectView(R.id.header)
     View headerView;
-    private MenuAdminAdapter adapter;
+    private MenuAdapter adapter;
 
     public static CustomerMenuFragment newInstance(String truckId, String truckName, String imageUrl, String keywords, String primaryColor) {
         Bundle args = new Bundle();
@@ -77,7 +76,7 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
-        adapter = new MenuAdminAdapter(getActivity(), null);
+        adapter = new MenuAdapter(getActivity());
         setListAdapter(adapter);
         getListView().setFastScrollEnabled(true);
         getListView().setBackgroundColor(getResources().getColor(android.R.color.background_light));
@@ -101,7 +100,7 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
         WhereClause whereClause = new WhereClause.Builder()
                 .where(PublicContract.Menu.TRUCK_ID, EQUALS, truckId)
                 .build();
-        String[] projection = MenuAdminAdapter.Query.PROJECTION;
+        String[] projection = MenuAdapter.Query.PROJECTION;
         Uri uri = Contract.syncFromNetwork(PublicContract.MENU_URI);
         return new CursorLoader(getActivity(), uri, projection, whereClause.selection, whereClause.selectionArgs, null);
     }

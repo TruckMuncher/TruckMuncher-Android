@@ -1,22 +1,18 @@
-package com.truckmuncher.truckmuncher.vendor.menuadmin;
+package com.truckmuncher.truckmuncher.customer;
 
 import android.content.Context;
 import android.database.CharArrayBuffer;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.SwitchCompat;
+import android.text.style.StrikethroughSpan;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.squareup.phrase.Phrase;
 import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.data.PublicContract;
 import com.twotoasters.sectioncursoradapter.SectionCursorAdapter;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.volkhart.androidutil.text.Truss;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -24,12 +20,10 @@ import butterknife.InjectView;
 /**
  * @see <a href="https://github.com/twotoasters/SectionCursorAdapter">GitHub Project</a>
  */
-public class MenuAdminAdapter extends SectionCursorAdapter {
+public class MenuAdapter extends SectionCursorAdapter {
 
-    private final Map<String, Boolean> diff = new HashMap<>();
-
-    public MenuAdminAdapter(Context context, Cursor cursor) {
-        super(context, cursor, 0);
+    public MenuAdapter(Context context) {
+        super(context, null, 0);
     }
 
     @Override
@@ -49,7 +43,7 @@ public class MenuAdminAdapter extends SectionCursorAdapter {
 
     @Override
     protected View newItemView(Context context, Cursor cursor, ViewGroup parent) {
-        View view = getLayoutInflater().inflate(R.layout.list_item_menu_item_admin, parent, false);
+        View view = getLayoutInflater().inflate(R.layout.list_item_menu_item, parent, false);
         view.setTag(new ViewHolder(view));
         return view;
     }
@@ -66,35 +60,15 @@ public class MenuAdminAdapter extends SectionCursorAdapter {
         CharSequence price = Phrase.from(context, R.string.currency)
                 .put("price", Float.toString(cursor.getFloat(Query.PRICE)))
                 .format();
+
+        boolean isAvailable = cursor.getInt(Query.IS_AVAILABLE) == 1;
+        if (!isAvailable) {
+            price = new Truss()
+                    .pushSpan(new StrikethroughSpan())
+                    .append(price)
+                    .build();
+        }
         holder.price.setText(price);
-
-        // In stock
-        holder.isAvailable.setChecked(cursor.getInt(Query.IS_AVAILABLE) == 1);
-        final String internalId = cursor.getString(Query.ID);
-        holder.isAvailable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                // If the item has not been changed, add the new state
-                Boolean state = diff.get(internalId);
-                if (state == null) {
-                    diff.put(internalId, isChecked);
-                } else {
-
-                    // If the item has been changed, it's now been changed back so remove from the diff
-                    diff.remove(internalId);
-                }
-            }
-        });
-    }
-
-    @NonNull
-    Map<String, Boolean> getMenuItemAvailabilityDiff() {
-        return new HashMap<>(diff);
-    }
-
-    void clearMenuItemAvailabilityDiff() {
-        diff.clear();
     }
 
     interface Query {
@@ -119,8 +93,6 @@ public class MenuAdminAdapter extends SectionCursorAdapter {
         TextView name;
         @InjectView(R.id.price)
         TextView price;
-        @InjectView(R.id.isAvailableSwitch)
-        SwitchCompat isAvailable;
         CharArrayBuffer nameBuffer = new CharArrayBuffer(128);
 
         private ViewHolder(View view) {
