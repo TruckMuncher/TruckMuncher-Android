@@ -15,6 +15,7 @@ import com.truckmuncher.truckmuncher.data.sql.SqlOpenHelper;
 import com.truckmuncher.truckmuncher.data.sql.Tables;
 import com.truckmuncher.truckmuncher.menu.MenuUpdateService;
 
+import hugo.weaving.DebugLog;
 import timber.log.Timber;
 
 public class TruckMuncherContentProvider extends ContentProvider {
@@ -53,6 +54,7 @@ public class TruckMuncherContentProvider extends ContentProvider {
         return true;
     }
 
+    @DebugLog
     @Override
     @NonNull
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
@@ -91,6 +93,7 @@ public class TruckMuncherContentProvider extends ContentProvider {
         return retCursor;
     }
 
+    @DebugLog
     @Override
     @NonNull
     public String getType(@NonNull Uri uri) {
@@ -111,11 +114,13 @@ public class TruckMuncherContentProvider extends ContentProvider {
     /**
      * @return null if the insert failed. Otherwise the same uri as was provided.
      */
+    @DebugLog
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
         throw new UnsupportedOperationException("Not yet implemented. Uri: " + uri);
     }
 
+    @DebugLog
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         SQLiteDatabase db = database.getWritableDatabase();
@@ -137,6 +142,7 @@ public class TruckMuncherContentProvider extends ContentProvider {
         return rowsDeleted;
     }
 
+    @DebugLog
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         SQLiteDatabase db = database.getWritableDatabase();
@@ -158,6 +164,7 @@ public class TruckMuncherContentProvider extends ContentProvider {
         return rowsUpdated;
     }
 
+    @DebugLog
     @Override
     public int bulkInsert(Uri uri, @NonNull ContentValues[] valuesList) {
         SQLiteDatabase db = database.getWritableDatabase();

@@ -2,6 +2,7 @@ package com.truckmuncher.truckmuncher.customer;
 
 import android.app.IntentService;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 
 import com.truckmuncher.api.trucks.Truck;
@@ -16,15 +17,27 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import timber.log.Timber;
+
 import static com.truckmuncher.truckmuncher.data.Contract.convertListToString;
 
 public class GetTruckProfilesService extends IntentService {
+
+    private static final String ARG_LATITUDE = "arg_latitude";
+    private static final String ARG_LONGITUDE = "arg_longitude";
 
     @Inject
     TruckService truckService;
 
     public GetTruckProfilesService() {
         super(GetTruckProfilesService.class.getName());
+    }
+
+    public static Intent newIntent(Context context, double latitude, double longitude) {
+        Intent intent = new Intent(context, GetTruckProfilesService.class);
+        intent.putExtra(ARG_LATITUDE, latitude);
+        intent.putExtra(ARG_LONGITUDE, longitude);
+        return intent;
     }
 
     @Override
@@ -36,10 +49,11 @@ public class GetTruckProfilesService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         TruckProfilesRequest request = new TruckProfilesRequest.Builder()
-                .latitude(0.0)
-                .longitude(0.0)
+                .latitude(intent.getDoubleExtra(ARG_LATITUDE, 0.0))
+                .longitude(intent.getDoubleExtra(ARG_LONGITUDE, 0.0))
                 .build();
         TruckProfilesResponse truckProfilesResponse = truckService.getTruckProfiles(request);
+        Timber.d("Response: %s", truckProfilesResponse.toString());
 
         List<Truck> trucks = truckProfilesResponse.trucks;
         ContentValues[] contentValues = new ContentValues[trucks.size()];

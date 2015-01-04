@@ -1,6 +1,5 @@
 package com.truckmuncher.truckmuncher.customer;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.location.Location;
 import android.os.Bundle;
@@ -28,7 +27,6 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.ClusterRenderer;
 import com.truckmuncher.api.trucks.Truck;
-import com.truckmuncher.truckmuncher.ActiveTrucksService;
 import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.data.PublicContract;
 import com.truckmuncher.truckmuncher.data.sql.WhereClause;
@@ -181,6 +179,7 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
 
         if (trucksNeedLoading) {
             loadActiveTrucks(null);
+            getActivity().startService(GetTruckProfilesService.newIntent(getActivity(), currentLocation.latitude, currentLocation.longitude));
         }
     }
 
@@ -239,12 +238,9 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
     }
 
     public void loadActiveTrucks(String searchQuery) {
+
         // Kick off a refresh of the vendor data
-        Intent intent = new Intent(getActivity(), ActiveTrucksService.class);
-        intent.putExtra(ActiveTrucksService.ARG_LATITUDE, currentLocation.latitude);
-        intent.putExtra(ActiveTrucksService.ARG_LONGITUDE, currentLocation.longitude);
-        intent.putExtra(ActiveTrucksService.ARG_SEARCH_QUERY, searchQuery);
-        getActivity().startService(intent);
+        getActivity().startService(ActiveTrucksService.newIntent(getActivity(), currentLocation.latitude, currentLocation.longitude, searchQuery));
     }
 
     private void setUpClusterer() {

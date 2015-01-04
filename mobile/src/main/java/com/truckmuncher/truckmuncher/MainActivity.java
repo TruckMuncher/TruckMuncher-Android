@@ -6,6 +6,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
@@ -26,7 +27,6 @@ import com.truckmuncher.truckmuncher.authentication.AuthenticatorActivity;
 import com.truckmuncher.truckmuncher.customer.CursorFragmentStatePagerAdapter;
 import com.truckmuncher.truckmuncher.customer.CustomerMapFragment;
 import com.truckmuncher.truckmuncher.customer.CustomerMenuFragment;
-import com.truckmuncher.truckmuncher.customer.GetTruckProfilesService;
 import com.truckmuncher.truckmuncher.data.PublicContract;
 import com.truckmuncher.truckmuncher.data.sql.WhereClause;
 import com.truckmuncher.truckmuncher.vendor.VendorHomeActivity;
@@ -73,7 +73,6 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
         handleSearchIntent(getIntent());
 
-        startService(new Intent(this, GetTruckProfilesService.class));
         getSupportLoaderManager().initLoader(LOADER_TRUCKS, null, MainActivity.this);
 
         final CustomerMapFragment mapFragment = (CustomerMapFragment) getSupportFragmentManager().findFragmentById(R.id.customer_map_fragment);
@@ -215,6 +214,7 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        Timber.d("onLoadFinished: %s", DatabaseUtils.dumpCursorToString(cursor));
         pagerAdapter = new CursorFragmentStatePagerAdapter(getSupportFragmentManager(), cursor);
         viewPager.setAdapter(pagerAdapter);
     }
