@@ -9,6 +9,7 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,14 +62,23 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
         ButterKnife.inject(this, view);
         Bundle args = getArguments();
 
-        Picasso.with(getActivity()).load(args.getString(ARG_IMAGE_URL)).into(truckImage);
+        String imageUrl = args.getString(ARG_IMAGE_URL);
+        if (TextUtils.isEmpty(imageUrl)) {
+            truckImage.setVisibility(View.GONE);
+        } else {
+            Picasso.with(getActivity()).load(imageUrl).into(truckImage);
+        }
+
+        String backgroundColor = args.getString(ARG_COLOR_PRIMARY);
+        if (backgroundColor != null) {
+            view.findViewById(R.id.header).setBackgroundColor(Color.parseColor(backgroundColor));
+            int textColor = ColorCorrector.calculateTextColor(backgroundColor);
+            truckName.setTextColor(textColor);
+            truckKeywords.setTextColor(textColor);
+        }
 
         truckName.setText(args.getString(ARG_TRUCK_ID));
         truckKeywords.setText(args.getString(ARG_KEYWORDS));
-        String color = args.getString(ARG_COLOR_PRIMARY);
-        if (color != null) {
-            view.findViewById(R.id.header).setBackgroundColor(Color.parseColor(color));
-        }
         return view;
     }
 

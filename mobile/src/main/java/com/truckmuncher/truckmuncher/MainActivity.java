@@ -6,7 +6,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
@@ -214,7 +213,6 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        Timber.d("onLoadFinished: %s", DatabaseUtils.dumpCursorToString(cursor));
         pagerAdapter = new CursorFragmentStatePagerAdapter(getSupportFragmentManager(), cursor);
         viewPager.setAdapter(pagerAdapter);
     }
