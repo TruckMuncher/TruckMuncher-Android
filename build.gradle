@@ -14,10 +14,3 @@ buildscript {
         classpath 'com.autoscout24.gradle:gradle-monkey-plugin:0.7.1'
     }
 }
-
-allprojects {
-    repositories {
-        jcenter()
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-    }
-}

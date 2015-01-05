@@ -1,8 +1,6 @@
 package com.truckmuncher.truckmuncher.vendor;
 
 import android.app.Activity;
-import android.content.AsyncQueryHandler;
-import android.content.ContentValues;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,8 +14,6 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 
 import com.truckmuncher.truckmuncher.R;
-import com.truckmuncher.truckmuncher.data.Contract;
-import com.truckmuncher.truckmuncher.data.SimpleAsyncQueryHandler;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -35,6 +31,7 @@ public class VendorHomeFragment extends Fragment {
 
     private Location currentLocation;
     private OnServingModeChangedListener onServingModeChangedListener;
+    private VendorHomeServiceHelper serviceHelper;
 
     @Override
     public void onAttach(Activity activity) {
@@ -55,6 +52,7 @@ public class VendorHomeFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
+        serviceHelper = new VendorHomeServiceHelper();
 
         if (savedInstanceState != null) {
             currentLocation = savedInstanceState.getParcelable(ARG_CURRENT_LOCATION);
@@ -87,14 +85,8 @@ public class VendorHomeFragment extends Fragment {
 
         updateAnimation(isChecked);
 
-        ContentValues values = new ContentValues();
-        values.put(Contract.TruckEntry.COLUMN_LATITUDE, currentLocation.getLatitude());
-        values.put(Contract.TruckEntry.COLUMN_LONGITUDE, currentLocation.getLongitude());
-        values.put(Contract.TruckEntry.COLUMN_IS_SERVING, isChecked);
-        values.put(Contract.TruckEntry.COLUMN_IS_DIRTY, true);
-        AsyncQueryHandler handler = new SimpleAsyncQueryHandler(getActivity().getContentResolver());
         // FIXME Need to use a real truck id, not a mock one
-        handler.startUpdate(0, null, Contract.buildNeedsSync(Contract.TruckEntry.buildSingleTruck("de513002-5a44-11e4-aa15-123b93f75cba")), values, null, null);
+        serviceHelper.changeServingState(getActivity(), "de513002-5a44-11e4-aa15-123b93f75cba", isChecked, currentLocation);
 
         onServingModeChangedListener.onServingModeChanged(isChecked);
     }

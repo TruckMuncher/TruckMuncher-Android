@@ -1,0 +1,11 @@
+apply plugin: 'java'
+
+dependencies {
+    compile 'junit:junit:4.12'
+    compile 'org.robolectric:robolectric:2.4'
+    compile 'org.assertj:assertj-core:1.6.1'
+}
+
+repositories {
+    jcenter()
+}

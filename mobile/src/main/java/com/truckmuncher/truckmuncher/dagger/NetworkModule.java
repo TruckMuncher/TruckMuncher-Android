@@ -8,8 +8,9 @@ import com.squareup.okhttp.OkHttpClient;
 import com.truckmuncher.api.auth.AuthService;
 import com.truckmuncher.api.menu.MenuService;
 import com.truckmuncher.api.trucks.TruckService;
-import com.truckmuncher.truckmuncher.ActiveTrucksService;
 import com.truckmuncher.truckmuncher.BuildConfig;
+import com.truckmuncher.truckmuncher.customer.ActiveTrucksService;
+import com.truckmuncher.truckmuncher.customer.GetTruckProfilesService;
 import com.truckmuncher.truckmuncher.data.ApiErrorHandler;
 import com.truckmuncher.truckmuncher.data.AuthErrorHandler;
 import com.truckmuncher.truckmuncher.data.AuthRequestInterceptor;
@@ -32,6 +33,7 @@ import retrofit.converter.WireConverter;
 import timber.log.Timber;
 
 @Module(injects = {
+        GetTruckProfilesService.class,
         MenuUpdateService.class,
         SyncAdapter.class,
         VendorTrucksService.class,
@@ -46,7 +48,9 @@ public class NetworkModule {
 
     public NetworkModule(Context context) {
         appContext = context.getApplicationContext();
-        PRNGFixes.apply();  // Fix SecureRandom
+        if (!BuildConfig.DEBUG) {   // Work around for robolectric
+            PRNGFixes.apply();  // Fix SecureRandom
+        }
     }
 
     protected static void configureHttpCache(Context context, OkHttpClient client) {
@@ -68,9 +72,9 @@ public class NetworkModule {
     }
 
     @Provides
-    public RestAdapter.Builder provideRestAdapterBuilder(OkHttpClient client, Account account) {
+    public RestAdapter.Builder provideRestAdapterBuilder(OkHttpClient client) {
         return new RestAdapter.Builder()
-                .setRequestInterceptor(new AuthenticatedRequestInterceptor(appContext, account))
+                .setRequestInterceptor(new AuthenticatedRequestInterceptor(appContext))
                 .setConverter(new WireConverter())
                 .setEndpoint(BuildConfig.API_ENDPOINT)
                 .setClient(new OkClient(client))

@@ -20,6 +20,7 @@ import com.truckmuncher.truckmuncher.data.ApiException;
 import com.truckmuncher.truckmuncher.data.AuthenticatedRequestInterceptor;
 import com.truckmuncher.truckmuncher.data.Contract;
 import com.truckmuncher.truckmuncher.data.ExpiredSessionException;
+import com.truckmuncher.truckmuncher.data.PublicContract;
 import com.truckmuncher.truckmuncher.data.SocialCredentialsException;
 
 import java.util.List;
@@ -44,8 +45,13 @@ public class VendorTrucksService extends IntentService {
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    public void onCreate() {
+        super.onCreate();
         App.inject(this, this);
+    }
+
+    @Override
+    protected void onHandleIntent(Intent intent) {
         try {
             TrucksForVendorResponse response = truckService.getTrucksForVendor(new TrucksForVendorRequest());
 
@@ -54,15 +60,16 @@ public class VendorTrucksService extends IntentService {
             for (int i = 0, max = trucks.size(); i < max; i++) {
                 Truck truck = trucks.get(i);
                 ContentValues values = new ContentValues();
-                values.put(Contract.TruckEntry.COLUMN_INTERNAL_ID, truck.id);
-                values.put(Contract.TruckEntry.COLUMN_NAME, truck.name);
-                values.put(Contract.TruckEntry.COLUMN_IMAGE_URL, truck.imageUrl);
-                values.put(Contract.TruckEntry.COLUMN_KEYWORDS, Contract.convertListToString(truck.keywords));
-                values.put(Contract.TruckEntry.COLUMN_OWNED_BY_CURRENT_USER, true);
+                values.put(PublicContract.Truck.ID, truck.id);
+                values.put(PublicContract.Truck.NAME, truck.name);
+                values.put(PublicContract.Truck.IMAGE_URL, truck.imageUrl);
+                values.put(PublicContract.Truck.KEYWORDS, Contract.convertListToString(truck.keywords));
+                values.put(PublicContract.Truck.COLOR_PRIMARY, truck.primaryColor);
+                values.put(PublicContract.Truck.COLOR_SECONDARY, truck.secondaryColor);
                 contentValues[i] = values;
             }
 
-            getContentResolver().bulkInsert(Contract.TruckEntry.CONTENT_URI, contentValues);
+            getContentResolver().bulkInsert(Contract.TRUCK_PROPERTIES_URI, contentValues);
         } catch (SocialCredentialsException sce) {
             // TODO Implement
             throw new UnsupportedOperationException("not yet implemented");

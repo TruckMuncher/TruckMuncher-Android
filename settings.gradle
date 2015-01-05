@@ -1,5 +1,5 @@
 include ':mobile'
-include ':wear'
 include ':facebook'
 include ':AndroidSocialNetworks'
 include ':minified-guava'
+include ':testlib'

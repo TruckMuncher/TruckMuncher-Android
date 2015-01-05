@@ -28,13 +28,19 @@ public class MockNetworkModule {
     @Singleton
     @Provides
     public TruckService provideTruckService(RestAdapter adapter) {
-        return MockRestAdapter.from(adapter).create(TruckService.class, new MockTruckService());
+        MockRestAdapter mockAdapter = MockRestAdapter.from(adapter);
+        mockAdapter.setErrorPercentage(0);
+        mockAdapter.setDelay(0);
+        return mockAdapter.create(TruckService.class, new MockTruckService());
     }
 
     @Singleton
     @Provides
     public MenuService provideMenuService(RestAdapter adapter) {
-        return MockRestAdapter.from(adapter).create(MenuService.class, new MockMenuService());
+        MockRestAdapter mockAdapter = MockRestAdapter.from(adapter);
+        mockAdapter.setErrorPercentage(0);
+        mockAdapter.setDelay(0);
+        return mockAdapter.create(MenuService.class, new MockMenuService());
     }
 
     @Singleton

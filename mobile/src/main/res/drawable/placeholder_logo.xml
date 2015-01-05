@@ -12,13 +12,14 @@
         </shape>
     </item>
     <item
-        android:top="18dp"
-        android:right="18dp"
         android:bottom="18dp"
-        android:left="18dp">
+        android:left="18dp"
+        android:right="18dp"
+        android:top="18dp">
         <shape xmlns:android="http://schemas.android.com/apk/res/android"
             android:shape="oval">
-            <solid android:color="@color/wallet_holo_blue_light" />
+            <!-- FIXME check this color resource-->
+            <solid android:color="@android:color/white" />
             <size
                 android:width="144dp"
                 android:height="144dp" />
@@ -26,13 +27,14 @@
         </shape>
     </item>
     <item
-        android:top="36dp"
-        android:right="36dp"
         android:bottom="36dp"
-        android:left="36dp">
+        android:left="36dp"
+        android:right="36dp"
+        android:top="36dp">
         <shape xmlns:android="http://schemas.android.com/apk/res/android"
             android:shape="oval">
-            <solid android:color="@color/fake_light_gray" />
+            <!-- FIXME check this color resource-->
+            <solid android:color="@android:color/white" />
             <size
                 android:width="144dp"
                 android:height="144dp" />

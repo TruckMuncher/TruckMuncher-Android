@@ -58,7 +58,6 @@ public class MockTruckService implements TruckService {
         for (int i = 0; i < 10; i++) {
             Truck truck = new Truck.Builder()
                     .id("Truck" + i)
-                    .imageUrl("http://api.truckmuncher.com/images/truck/" + i)
                     .name("Truck" + i)
                     .keywords(Arrays.asList("These", "Are", "Keywords"))
                     .primaryColor("#0000FF")
@@ -96,6 +95,7 @@ public class MockTruckService implements TruckService {
 
     /**
      * Generates a random latitude between 43.03 and 43.05 (somewhere in Milwaukee).
+     *
      * @return A random latitude between 43.03 and 43.05 (somewhere in Milwaukee).
      */
     private double getRandomLatitude() {
@@ -107,6 +107,7 @@ public class MockTruckService implements TruckService {
 
     /**
      * Generates a random longitude between -87.90 and -87.92 (somewhere in Milwaukee).
+     *
      * @return A random longitude between -87.90 and -87.92 (somewhere in Milwaukee).
      */
     private double getRandomLongitude() {

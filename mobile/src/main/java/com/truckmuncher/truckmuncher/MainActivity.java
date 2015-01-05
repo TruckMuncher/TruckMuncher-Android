@@ -5,8 +5,14 @@ import android.accounts.AccountManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
@@ -14,23 +20,42 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.android.gms.actions.SearchIntents;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.truckmuncher.truckmuncher.authentication.AccountGeneral;
 import com.truckmuncher.truckmuncher.authentication.AuthenticatorActivity;
+import com.truckmuncher.truckmuncher.customer.CursorFragmentStatePagerAdapter;
 import com.truckmuncher.truckmuncher.customer.CustomerMapFragment;
+import com.truckmuncher.truckmuncher.customer.CustomerMenuFragment;
+import com.truckmuncher.truckmuncher.data.PublicContract;
+import com.truckmuncher.truckmuncher.data.sql.WhereClause;
 import com.truckmuncher.truckmuncher.vendor.VendorHomeActivity;
 
-public class MainActivity extends ActionBarActivity {
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import timber.log.Timber;
+
+import static com.truckmuncher.truckmuncher.data.sql.WhereClause.Operator.EQUALS;
+
+public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int REQUEST_LOGIN = 1;
+    private static final int LOADER_TRUCKS = 0;
+
+    @InjectView(R.id.view_pager)
+    ViewPager viewPager;
+    @InjectView(R.id.sliding_panel)
+    SlidingUpPanelLayout slidingPanel;
 
     private SearchView searchView;
 
     private String lastQuery;
+    private CursorFragmentStatePagerAdapter pagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.inject(this);
 
         AccountManager accountManager = AccountManager.get(this);
 
@@ -45,7 +70,24 @@ public class MainActivity extends ActionBarActivity {
             }
         }
 
-        handleIntent(getIntent());
+        handleSearchIntent(getIntent());
+
+        getSupportLoaderManager().initLoader(LOADER_TRUCKS, null, MainActivity.this);
+
+        final CustomerMapFragment mapFragment = (CustomerMapFragment) getSupportFragmentManager().findFragmentById(R.id.customer_map_fragment);
+        viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+
+                // Set the new drag view so scrolling works nicely
+                CustomerMenuFragment fragment = pagerAdapter.getItem(position);
+                slidingPanel.setDragView(fragment.getHeaderView());
+
+                // Change the focused truck
+                mapFragment.moveTo(pagerAdapter.getTruckId(position));
+            }
+        });
     }
 
     @Override
@@ -61,7 +103,7 @@ public class MainActivity extends ActionBarActivity {
                 Intent searchIntent = new Intent(Intent.ACTION_SEARCH);
                 searchIntent.putExtra(SearchManager.QUERY, (String) null);
 
-                handleIntent(searchIntent);
+                handleSearchIntent(searchIntent);
 
                 return false;
             }
@@ -86,8 +128,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-
-        handleIntent(intent);
+        handleSearchIntent(intent);
     }
 
     /**
@@ -95,19 +136,34 @@ public class MainActivity extends ActionBarActivity {
      * appropriate action. Currently only the {@link Intent#ACTION_SEARCH} and
      * {@link SearchIntents#ACTION_SEARCH} intents are supported to filter food trucks by the given
      * search query.
+     *
      * @param intent An intent that was passed to this activity that should be handled.
      */
-    private void handleIntent(Intent intent) {
+    /**
+     * If the provided intent is a search intent, the query operation it contains will be performed.
+     * Currently only the {@link Intent#ACTION_SEARCH} and {@link SearchIntents#ACTION_SEARCH}
+     * intents are supported to filter food trucks by the given search query.
+     * <p/>
+     * If the provided intent is not a search intent, no action will be taken.
+     *
+     * @param intent that was passed to this activity. This does not have to be a search intent.
+     */
+    private void handleSearchIntent(@NonNull Intent intent) {
         String query = intent.getStringExtra(SearchManager.QUERY);
+        String action = intent.getAction();
 
-        switch (intent.getAction()) {
-            // Google Now search
+        if (action == null) {
+            return;
+        }
+
+        switch (action) {
             case SearchIntents.ACTION_SEARCH:
+                Timber.i("Google Now search");
                 searchView.setIconified(false);
                 searchView.setQuery(query, true);
                 break;
-            // Action bar search
             case Intent.ACTION_SEARCH:
+                Timber.i("Action Bar search");
                 boolean repeatQuery = query == null ? lastQuery == null : query.equals(lastQuery);
 
                 // Don't need to redo the search if it's the same as last time
@@ -140,5 +196,29 @@ public class MainActivity extends ActionBarActivity {
         intent.putExtra(VendorHomeActivity.USERNAME, userName);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        switch (i) {
+            case LOADER_TRUCKS:
+                WhereClause whereClause = new WhereClause.Builder()
+                        .where(PublicContract.Truck.IS_SERVING, EQUALS, true)
+                        .build();
+                return new CursorLoader(this, PublicContract.TRUCK_URI, CursorFragmentStatePagerAdapter.Query.PROJECTION, whereClause.selection, whereClause.selectionArgs, null);
+            default:
+                throw new RuntimeException("Invalid loader id: " + i);
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        pagerAdapter = new CursorFragmentStatePagerAdapter(getSupportFragmentManager(), cursor);
+        viewPager.setAdapter(pagerAdapter);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+        pagerAdapter = null;
     }
 }
