@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -25,13 +26,15 @@ import com.truckmuncher.truckmuncher.authentication.AuthenticatorActivity;
 import com.truckmuncher.truckmuncher.customer.CursorFragmentStatePagerAdapter;
 import com.truckmuncher.truckmuncher.customer.CustomerMapFragment;
 import com.truckmuncher.truckmuncher.customer.CustomerMenuFragment;
-import com.truckmuncher.truckmuncher.customer.GetTruckProfilesService;
-import com.truckmuncher.truckmuncher.data.Contract;
-import com.truckmuncher.truckmuncher.data.sql.SelectionQueryBuilder;
+import com.truckmuncher.truckmuncher.data.PublicContract;
+import com.truckmuncher.truckmuncher.data.sql.WhereClause;
 import com.truckmuncher.truckmuncher.vendor.VendorHomeActivity;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import timber.log.Timber;
+
+import static com.truckmuncher.truckmuncher.data.sql.WhereClause.Operator.EQUALS;
 
 public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -67,9 +70,8 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
             }
         }
 
-        handleIntent(getIntent());
+        handleSearchIntent(getIntent());
 
-        startService(new Intent(this, GetTruckProfilesService.class));
         getSupportLoaderManager().initLoader(LOADER_TRUCKS, null, MainActivity.this);
 
         final CustomerMapFragment mapFragment = (CustomerMapFragment) getSupportFragmentManager().findFragmentById(R.id.customer_map_fragment);
@@ -101,7 +103,7 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
                 Intent searchIntent = new Intent(Intent.ACTION_SEARCH);
                 searchIntent.putExtra(SearchManager.QUERY, (String) null);
 
-                handleIntent(searchIntent);
+                handleSearchIntent(searchIntent);
 
                 return false;
             }
@@ -126,8 +128,7 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-
-        handleIntent(intent);
+        handleSearchIntent(intent);
     }
 
     /**
@@ -138,17 +139,31 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
      *
      * @param intent An intent that was passed to this activity that should be handled.
      */
-    private void handleIntent(Intent intent) {
+    /**
+     * If the provided intent is a search intent, the query operation it contains will be performed.
+     * Currently only the {@link Intent#ACTION_SEARCH} and {@link SearchIntents#ACTION_SEARCH}
+     * intents are supported to filter food trucks by the given search query.
+     * <p/>
+     * If the provided intent is not a search intent, no action will be taken.
+     *
+     * @param intent that was passed to this activity. This does not have to be a search intent.
+     */
+    private void handleSearchIntent(@NonNull Intent intent) {
         String query = intent.getStringExtra(SearchManager.QUERY);
+        String action = intent.getAction();
 
-        switch (intent.getAction()) {
-            // Google Now search
+        if (action == null) {
+            return;
+        }
+
+        switch (action) {
             case SearchIntents.ACTION_SEARCH:
+                Timber.i("Google Now search");
                 searchView.setIconified(false);
                 searchView.setQuery(query, true);
                 break;
-            // Action bar search
             case Intent.ACTION_SEARCH:
+                Timber.i("Action Bar search");
                 boolean repeatQuery = query == null ? lastQuery == null : query.equals(lastQuery);
 
                 // Don't need to redo the search if it's the same as last time
@@ -187,8 +202,10 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         switch (i) {
             case LOADER_TRUCKS:
-                SelectionQueryBuilder query = Contract.TruckEntry.buildServingTrucks();
-                return new CursorLoader(this, Contract.TruckEntry.CONTENT_URI, CursorFragmentStatePagerAdapter.Query.PROJECTION, query.toString(), query.getArgsArray(), null);
+                WhereClause whereClause = new WhereClause.Builder()
+                        .where(PublicContract.Truck.IS_SERVING, EQUALS, true)
+                        .build();
+                return new CursorLoader(this, PublicContract.TRUCK_URI, CursorFragmentStatePagerAdapter.Query.PROJECTION, whereClause.selection, whereClause.selectionArgs, null);
             default:
                 throw new RuntimeException("Invalid loader id: " + i);
         }

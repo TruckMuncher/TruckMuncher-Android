@@ -5,5 +5,5 @@
     <integer name="pulse_duration">1500</integer>
     <integer name="fade_delay">1100</integer>
     <integer name="fade_duration">900</integer>
-
+    <integer name="gms_version">@integer/google_play_services_version</integer>
 </resources>

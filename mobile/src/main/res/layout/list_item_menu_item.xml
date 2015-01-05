@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/list_item_two_line_height"
+    android:gravity="center_vertical"
+    android:paddingEnd="@dimen/list_item_text_padding"
+    android:paddingLeft="@dimen/list_item_text_padding"
+    android:paddingRight="@dimen/list_item_text_padding"
+    android:paddingStart="@dimen/list_item_text_padding">
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        tools:text="Grilled Chicken" />
+
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/name"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        tools:text="$4.25" />
+</RelativeLayout>

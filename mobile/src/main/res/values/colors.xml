@@ -4,8 +4,4 @@
     <color name="pink_dark">#c2185b</color>
     <color name="mold">#009688</color>
     <color name="mold_light">#88009688</color>
-    <color name="fake_background_header">#351C75</color>
-    <color name="fake_background_menu">#333333</color>
-    <color name="fake_green">#009E0F</color>
-    <color name="fake_light_gray">#999999</color>
 </resources>

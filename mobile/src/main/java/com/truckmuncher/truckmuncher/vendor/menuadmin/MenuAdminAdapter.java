@@ -3,25 +3,24 @@ package com.truckmuncher.truckmuncher.vendor.menuadmin;
 import android.content.Context;
 import android.database.CharArrayBuffer;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import com.squareup.phrase.Phrase;
 import com.truckmuncher.truckmuncher.R;
+import com.truckmuncher.truckmuncher.data.PublicContract;
 import com.twotoasters.sectioncursoradapter.SectionCursorAdapter;
 
+import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-
-import static com.truckmuncher.truckmuncher.data.Contract.CategoryEntry;
-import static com.truckmuncher.truckmuncher.data.Contract.MenuEntry;
-import static com.truckmuncher.truckmuncher.data.Contract.MenuItemEntry;
 
 /**
  * @see <a href="https://github.com/twotoasters/SectionCursorAdapter">GitHub Project</a>
@@ -65,14 +64,12 @@ public class MenuAdminAdapter extends SectionCursorAdapter {
         holder.name.setText(holder.nameBuffer.data, 0, holder.nameBuffer.sizeCopied);
 
         // Price
-        CharSequence price = Phrase.from(context, R.string.currency)
-                .put("price", Float.toString(cursor.getFloat(Query.PRICE)))
-                .format();
+        String price = NumberFormat.getCurrencyInstance(Locale.US).format(cursor.getDouble(Query.PRICE));
         holder.price.setText(price);
 
         // In stock
         holder.isAvailable.setChecked(cursor.getInt(Query.IS_AVAILABLE) == 1);
-        final String internalId = cursor.getString(Query.INTERNAL_ID);
+        final String internalId = cursor.getString(Query.ID);
         holder.isAvailable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -90,6 +87,7 @@ public class MenuAdminAdapter extends SectionCursorAdapter {
         });
     }
 
+    @NonNull
     Map<String, Boolean> getMenuItemAvailabilityDiff() {
         return new HashMap<>(diff);
     }
@@ -98,17 +96,17 @@ public class MenuAdminAdapter extends SectionCursorAdapter {
         diff.clear();
     }
 
-    public interface Query {
+    interface Query {
 
-        public static final String[] PROJECTION = new String[]{
-                MenuEntry._ID,
-                MenuItemEntry.COLUMN_INTERNAL_ID,
-                MenuItemEntry.COLUMN_NAME,
-                MenuItemEntry.COLUMN_PRICE,
-                MenuItemEntry.COLUMN_IS_AVAILABLE,
-                CategoryEntry.COLUMN_NAME
+        static final String[] PROJECTION = new String[]{
+                PublicContract.Menu._ID,
+                PublicContract.Menu.MENU_ITEM_ID,
+                PublicContract.Menu.MENU_ITEM_NAME,
+                PublicContract.Menu.PRICE,
+                PublicContract.Menu.IS_AVAILABLE,
+                PublicContract.Menu.CATEGORY_NAME
         };
-        static final int INTERNAL_ID = 1;
+        static final int ID = 1;
         static final int NAME = 2;
         static final int PRICE = 3;
         static final int IS_AVAILABLE = 4;

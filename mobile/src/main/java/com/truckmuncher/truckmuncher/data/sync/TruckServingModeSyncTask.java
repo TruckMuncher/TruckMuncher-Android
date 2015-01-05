@@ -11,10 +11,11 @@ import com.truckmuncher.api.trucks.ServingModeRequest;
 import com.truckmuncher.api.trucks.TruckService;
 import com.truckmuncher.truckmuncher.data.ApiException;
 import com.truckmuncher.truckmuncher.data.Contract;
-import com.truckmuncher.truckmuncher.data.sql.SelectionQueryBuilder;
+import com.truckmuncher.truckmuncher.data.PublicContract;
+import com.truckmuncher.truckmuncher.data.sql.WhereClause;
 
-import static com.truckmuncher.truckmuncher.data.Contract.TruckStateEntry;
-import static com.truckmuncher.truckmuncher.data.Contract.buildSuppressNotify;
+import static com.truckmuncher.truckmuncher.data.Contract.suppressNotify;
+import static com.truckmuncher.truckmuncher.data.sql.WhereClause.Operator.EQUALS;
 
 public final class TruckServingModeSyncTask extends SyncTask {
 
@@ -30,8 +31,10 @@ public final class TruckServingModeSyncTask extends SyncTask {
 
     @Override
     protected ApiResult sync(SyncResult syncResult) throws RemoteException {
-        SelectionQueryBuilder query = Contract.TruckEntry.buildDirty();
-        Cursor cursor = provider.query(Contract.TruckEntry.CONTENT_URI, TruckServingModeQuery.PROJECTION, query.toString(), query.getArgsArray(), null);
+        WhereClause whereClause = new WhereClause.Builder()
+                .where(Contract.TruckState.IS_DIRTY, EQUALS, true)
+                .build();
+        Cursor cursor = provider.query(PublicContract.TRUCK_URI, TruckServingModeQuery.PROJECTION, whereClause.selection, whereClause.selectionArgs, null);
         if (!cursor.moveToFirst()) {
 
             // Cursor is empty. Probably already synced this.
@@ -44,7 +47,7 @@ public final class TruckServingModeSyncTask extends SyncTask {
         do {
             ServingModeRequest request = new ServingModeRequest.Builder()
                     .isInServingMode(cursor.getInt(TruckServingModeQuery.IS_SERVING) == 1)
-                    .truckId(cursor.getString(TruckServingModeQuery.INTERNAL_ID))
+                    .truckId(cursor.getString(TruckServingModeQuery.ID))
                     .truckLatitude(cursor.getDouble(TruckServingModeQuery.LATITUDE))
                     .truckLongitude(cursor.getDouble(TruckServingModeQuery.LONGITUDE))
                     .build();
@@ -54,12 +57,14 @@ public final class TruckServingModeSyncTask extends SyncTask {
 
                 // Clear the dirty state
                 ContentValues values = new ContentValues();
-                values.put(TruckStateEntry.COLUMN_IS_DIRTY, false);
+                values.put(Contract.TruckState.IS_DIRTY, false);
 
                 // Since we're clearing an internal state, don't notify listeners
-                Uri uri = buildSuppressNotify(TruckStateEntry.CONTENT_URI);
-                SelectionQueryBuilder selection = Contract.TruckEntry.buildSingleTruck(request.truckId);
-                provider.update(uri, values, selection.toString(), selection.getArgsArray());
+                Uri uri = suppressNotify(Contract.TRUCK_STATE_URI);
+                WhereClause q = new WhereClause.Builder()
+                        .where(PublicContract.Truck.ID, EQUALS, request.truckId)
+                        .build();
+                provider.update(uri, values, q.selection, q.selectionArgs);
             } catch (ApiException e) {
                 ApiResult result = apiExceptionResolver.resolve(e);
 
@@ -83,12 +88,12 @@ public final class TruckServingModeSyncTask extends SyncTask {
 
     interface TruckServingModeQuery {
         static final String[] PROJECTION = new String[]{
-                Contract.TruckEntry.COLUMN_INTERNAL_ID,
-                Contract.TruckEntry.COLUMN_IS_SERVING,
-                Contract.TruckEntry.COLUMN_LATITUDE,
-                Contract.TruckEntry.COLUMN_LONGITUDE
+                PublicContract.Truck.ID,
+                PublicContract.Truck.IS_SERVING,
+                PublicContract.Truck.LATITUDE,
+                PublicContract.Truck.LONGITUDE
         };
-        static final int INTERNAL_ID = 0;
+        static final int ID = 0;
         static final int IS_SERVING = 1;
         static final int LATITUDE = 2;
         static final int LONGITUDE = 3;

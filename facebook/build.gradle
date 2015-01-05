@@ -2,17 +2,16 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "com.facebook.android"
         minSdkVersion 14
         targetSdkVersion 21
     }
 
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
@@ -23,7 +22,10 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:21.0.0'
+    compile 'com.android.support:support-v4:21.0.3'
     compile 'com.parse.bolts:bolts-android:1.1.2'
+}
 
+repositories {
+    jcenter()
 }

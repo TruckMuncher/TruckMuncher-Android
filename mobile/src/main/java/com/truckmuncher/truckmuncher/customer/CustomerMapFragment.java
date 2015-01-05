@@ -1,6 +1,5 @@
 package com.truckmuncher.truckmuncher.customer;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.location.Location;
 import android.os.Bundle;
@@ -35,6 +34,8 @@ import com.truckmuncher.api.trucks.Truck;
 import com.truckmuncher.truckmuncher.ActiveTrucksService;
 import com.truckmuncher.truckmuncher.App;
 import com.truckmuncher.truckmuncher.R;
+import com.truckmuncher.truckmuncher.data.PublicContract;
+import com.truckmuncher.truckmuncher.data.sql.WhereClause;
 import com.truckmuncher.truckmuncher.data.ApiException;
 import com.truckmuncher.truckmuncher.data.Contract;
 import com.truckmuncher.truckmuncher.data.sql.SelectionQueryBuilder;
@@ -50,6 +51,8 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import timber.log.Timber;
+
+import static com.truckmuncher.truckmuncher.data.sql.WhereClause.Operator.EQUALS;
 
 public class CustomerMapFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener,
@@ -207,8 +210,10 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
         // Selection args for trucks that are currently in serving mode
-        SelectionQueryBuilder query = Contract.TruckEntry.buildServingTrucks();
-        return new CursorLoader(getActivity(), Contract.TruckEntry.CONTENT_URI, ActiveTrucksQuery.PROJECTION, query.toString(), query.getArgsArray(), null);
+        WhereClause whereClause = new WhereClause.Builder()
+                .where(PublicContract.Truck.IS_SERVING, EQUALS, true)
+                .build();
+        return new CursorLoader(getActivity(), PublicContract.TRUCK_URI, ActiveTrucksQuery.PROJECTION, whereClause.selection, whereClause.selectionArgs, null);
     }
 
     @Override
@@ -219,7 +224,7 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
 
         while (cursor.moveToNext()) {
             Truck truck = new Truck.Builder()
-                    .id(cursor.getString(ActiveTrucksQuery.INTERNAL_ID))
+                    .id(cursor.getString(ActiveTrucksQuery.ID))
                     .name(cursor.getString(ActiveTrucksQuery.NAME))
                     .build();
 
@@ -289,10 +294,7 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
 
     private void loadActiveTrucks() {
         // Kick off a refresh of the vendor data
-        Intent intent = new Intent(getActivity(), ActiveTrucksService.class);
-        intent.putExtra(ActiveTrucksService.ARG_LATITUDE, currentLocation.latitude);
-        intent.putExtra(ActiveTrucksService.ARG_LONGITUDE, currentLocation.longitude);
-        getActivity().startService(intent);
+        getActivity().startService(ActiveTrucksService.newIntent(getActivity(), currentLocation.latitude, currentLocation.longitude, searchQuery));
     }
 
     private void setUpClusterer() {
@@ -326,12 +328,12 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
     public interface ActiveTrucksQuery {
 
         public static final String[] PROJECTION = new String[]{
-                Contract.TruckEntry.COLUMN_INTERNAL_ID,
-                Contract.TruckEntry.COLUMN_LATITUDE,
-                Contract.TruckEntry.COLUMN_LONGITUDE,
-                Contract.TruckEntry.COLUMN_NAME
+                PublicContract.Truck.ID,
+                PublicContract.Truck.LATITUDE,
+                PublicContract.Truck.LONGITUDE,
+                PublicContract.Truck.NAME
         };
-        static final int INTERNAL_ID = 0;
+        static final int ID = 0;
         static final int LATITUDE = 1;
         static final int LONGITUDE = 2;
         static final int NAME = 3;

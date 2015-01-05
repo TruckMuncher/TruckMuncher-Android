@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +19,13 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.data.Contract;
-import com.truckmuncher.truckmuncher.util.CursorLoaderFactory;
-import com.truckmuncher.truckmuncher.vendor.menuadmin.MenuAdminAdapter;
+import com.truckmuncher.truckmuncher.data.PublicContract;
+import com.truckmuncher.truckmuncher.data.sql.WhereClause;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+
+import static com.truckmuncher.truckmuncher.data.sql.WhereClause.Operator.EQUALS;
 
 public class CustomerMenuFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -38,7 +42,7 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
     ImageView truckImage;
     @InjectView(R.id.header)
     View headerView;
-    private MenuAdminAdapter adapter;
+    private MenuAdapter adapter;
 
     public static CustomerMenuFragment newInstance(String truckId, String truckName, String imageUrl, String keywords, String primaryColor) {
         Bundle args = new Bundle();
@@ -58,14 +62,23 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
         ButterKnife.inject(this, view);
         Bundle args = getArguments();
 
-        Picasso.with(getActivity()).load(args.getString(ARG_IMAGE_URL)).into(truckImage);
+        String imageUrl = args.getString(ARG_IMAGE_URL);
+        if (TextUtils.isEmpty(imageUrl)) {
+            truckImage.setVisibility(View.GONE);
+        } else {
+            Picasso.with(getActivity()).load(imageUrl).into(truckImage);
+        }
+
+        String backgroundColor = args.getString(ARG_COLOR_PRIMARY);
+        if (backgroundColor != null) {
+            view.findViewById(R.id.header).setBackgroundColor(Color.parseColor(backgroundColor));
+            int textColor = ColorCorrector.calculateTextColor(backgroundColor);
+            truckName.setTextColor(textColor);
+            truckKeywords.setTextColor(textColor);
+        }
 
         truckName.setText(args.getString(ARG_TRUCK_ID));
         truckKeywords.setText(args.getString(ARG_KEYWORDS));
-        String color = args.getString(ARG_COLOR_PRIMARY);
-        if (color != null) {
-            view.findViewById(R.id.header).setBackgroundColor(Color.parseColor(color));
-        }
         return view;
     }
 
@@ -73,7 +86,7 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
-        adapter = new MenuAdminAdapter(getActivity(), null);
+        adapter = new MenuAdapter(getActivity());
         setListAdapter(adapter);
         getListView().setFastScrollEnabled(true);
         getListView().setBackgroundColor(getResources().getColor(android.R.color.background_light));
@@ -94,9 +107,12 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String truckId = args.getString(ARG_TRUCK_ID);
-        Uri uri = Contract.MenuEntry.buildMenuForTruck(truckId);
-        uri = Contract.buildNeedsSync(uri);
-        return CursorLoaderFactory.create(getActivity(), uri, MenuAdminAdapter.Query.PROJECTION);
+        WhereClause whereClause = new WhereClause.Builder()
+                .where(PublicContract.Menu.TRUCK_ID, EQUALS, truckId)
+                .build();
+        String[] projection = MenuAdapter.Query.PROJECTION;
+        Uri uri = Contract.syncFromNetwork(PublicContract.MENU_URI);
+        return new CursorLoader(getActivity(), uri, projection, whereClause.selection, whereClause.selectionArgs, null);
     }
 
     @Override

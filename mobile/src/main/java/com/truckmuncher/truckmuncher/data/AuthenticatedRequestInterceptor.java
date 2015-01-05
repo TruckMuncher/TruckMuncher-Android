@@ -14,12 +14,10 @@ public class AuthenticatedRequestInterceptor extends ApiRequestInterceptor {
     public static final String SESSION_TOKEN = "session_token";
 
     private final AccountManager accountManager;
-    private final Account account;
 
-    public AuthenticatedRequestInterceptor(Context context, Account account) {
+    public AuthenticatedRequestInterceptor(Context context) {
         super();
         accountManager = AccountManager.get(context);
-        this.account = account;
     }
 
     @Override
@@ -27,6 +25,7 @@ public class AuthenticatedRequestInterceptor extends ApiRequestInterceptor {
         super.intercept(request);
 
         // Authorization
+        Account account = AccountGeneral.getStoredAccount(accountManager);
         if (account != null) {
             String sessionToken = accountManager.getUserData(account, AccountGeneral.USER_DATA_SESSION);
             request.addHeader(HEADER_AUTHORIZATION, SESSION_TOKEN + "=" + sessionToken);

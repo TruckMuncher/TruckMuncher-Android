@@ -24,13 +24,13 @@
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
 
     <application
-        android:name="com.truckmuncher.truckmuncher.App"
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.truckmuncher.truckmuncher.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop">
             <meta-data
@@ -50,29 +50,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.truckmuncher.truckmuncher.TruckDetailsActivity"
-            android:label="@string/app_name"
-            android:parentActivityName="com.truckmuncher.truckmuncher.MainActivity">
-        <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.volkhart.foodtruckfinder.MainActivity" />
-        </activity>
-        <activity
-            android:name="com.truckmuncher.truckmuncher.vendor.VendorHomeActivity"
-            android:label="@string/app_name">
-        android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.volkhart.foodtruckfinder.MainActivity" />
-        </activity>
-        <activity android:name="com.truckmuncher.truckmuncher.authentication.AuthenticatorActivity" />
+            android:name=".vendor.VendorHomeActivity"
+            android:label="@string/app_name" />
+        <activity android:name=".authentication.AuthenticatorActivity" />
 
         <service
-            android:name="com.truckmuncher.truckmuncher.authentication.AuthenticatorService"
+            android:name=".authentication.AuthenticatorService"
             android:enabled="true"
             android:exported="true"
             tools:ignore="ExportedService">
-        <intent-filter>
+            <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
 
@@ -81,12 +68,12 @@
                 android:resource="@xml/authenticator" />
         </service>
         <service
-            android:name="com.truckmuncher.truckmuncher.data.sync.SyncService"
+            android:name=".data.sync.SyncService"
             android:enabled="true"
             android:exported="true"
             android:process=":sync"
             tools:ignore="ExportedService">
-        <intent-filter>
+            <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>
 
@@ -95,31 +82,32 @@
                 android:resource="@xml/syncadapter" />
         </service>
         <service
-            android:name="com.truckmuncher.truckmuncher.ActiveTrucksService"
+            android:name=".customer.ActiveTrucksService"
             android:exported="false" />
         <service
-            android:name="com.truckmuncher.truckmuncher.vendor.VendorTrucksService"
+            android:name=".vendor.VendorTrucksService"
             android:exported="false" />
         <service
-            android:name="com.truckmuncher.truckmuncher.menu.MenuUpdateService"
+            android:name=".menu.MenuUpdateService"
             android:exported="false" />
         <service
-            android:name="com.truckmuncher.truckmuncher.vendor.menuadmin.InsertMenuItemDiffService"
+            android:name=".vendor.menuadmin.MenuItemDiffService"
             android:exported="false" />
 
         <provider
-            android:name="com.truckmuncher.truckmuncher.data.MyContentProvider"
-            android:authorities="@string/package_name"
+            android:name=".data.TruckMuncherContentProvider"
+            android:authorities="${applicationId}.provider"
             android:enabled="true"
             android:exported="false"
             android:syncable="true" />
 
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+            android:value="@integer/gms_version"
+            tools:replace="android:value" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="${googleMapsKey}" />
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="2d3548a0b8747eb27b8284162847057e23ccae1f" />
@@ -129,7 +117,7 @@
 
         <service
             android:name=".customer.GetTruckProfilesService"
-            android:exported="false"></service>
+            android:exported="false" />
     </application>
 
 </manifest>

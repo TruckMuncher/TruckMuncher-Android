@@ -58,7 +58,6 @@ public class MockTruckService implements TruckService {
         for (int i = 0; i < 10; i++) {
             Truck truck = new Truck.Builder()
                     .id("Truck" + i)
-                    .imageUrl("http://api.truckmuncher.com/images/truck/" + i)
                     .name("Truck" + i)
                     .keywords(Arrays.asList("These", "Are", "Keywords"))
                     .primaryColor("#0000FF")

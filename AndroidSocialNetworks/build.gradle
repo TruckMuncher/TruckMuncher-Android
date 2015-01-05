@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
         minSdkVersion 14
@@ -16,7 +16,7 @@ android {
 
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
@@ -29,5 +29,9 @@ android {
 dependencies {
     compile project(':facebook')
     compile 'org.twitter4j:twitter4j-core:4.0.2'
-    compile 'com.google.android.gms:play-services:4.3.23'
+    compile 'com.google.android.gms:play-services-plus:6.5.87'
+}
+
+repositories {
+    jcenter()
 }
