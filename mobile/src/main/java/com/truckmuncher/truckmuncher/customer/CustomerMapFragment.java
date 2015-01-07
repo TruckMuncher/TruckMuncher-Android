@@ -31,14 +31,11 @@ import com.truckmuncher.api.search.SearchService;
 import com.truckmuncher.api.search.SimpleSearchRequest;
 import com.truckmuncher.api.search.SimpleSearchResponse;
 import com.truckmuncher.api.trucks.Truck;
-import com.truckmuncher.truckmuncher.ActiveTrucksService;
 import com.truckmuncher.truckmuncher.App;
 import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.data.PublicContract;
 import com.truckmuncher.truckmuncher.data.sql.WhereClause;
 import com.truckmuncher.truckmuncher.data.ApiException;
-import com.truckmuncher.truckmuncher.data.Contract;
-import com.truckmuncher.truckmuncher.data.sql.SelectionQueryBuilder;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -71,7 +68,7 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
     ClusterManager<TruckCluster> clusterManager;
     private ClusterRenderer<TruckCluster> renderer;
     private Map<String, TruckCluster> activeTruckMarkers = Collections.emptyMap();
-    private Map<String, TruckCluster> searchHitMarkers = Collections.emptyMap();
+    private Map<String, TruckCluster> searchResultMarkers = Collections.emptyMap();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -198,6 +195,7 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
 
         if (trucksNeedLoading) {
             loadActiveTrucks();
+            getActivity().startService(GetTruckProfilesService.newIntent(getActivity(), currentLocation.latitude, currentLocation.longitude));
         }
     }
 
@@ -263,7 +261,7 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
                     try {
                         SimpleSearchResponse response = searchService.simpleSearch(request);
 
-                        searchHitMarkers = new HashMap<>();
+                        searchResultMarkers = new HashMap<>();
 
                         List<SearchResponse> searchResponses = response.searchResponse;
                         for (int i = 0, max = searchResponses.size(); i < max; i++) {
@@ -272,14 +270,14 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
                             TruckCluster currentMarker = activeTruckMarkers.get(truckId);
 
                             if (currentMarker != null) {
-                                searchHitMarkers.put(truckId, activeTruckMarkers.get(truckId));
+                                searchResultMarkers.put(truckId, activeTruckMarkers.get(truckId));
                             }
                         }
 
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                forceClusterRender(searchHitMarkers.values());
+                                forceClusterRender(searchResultMarkers.values());
                             }
                         });
                     } catch (ApiException e) {
@@ -294,7 +292,7 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
 
     private void loadActiveTrucks() {
         // Kick off a refresh of the vendor data
-        getActivity().startService(ActiveTrucksService.newIntent(getActivity(), currentLocation.latitude, currentLocation.longitude, searchQuery));
+        getActivity().startService(ActiveTrucksService.newIntent(getActivity(), currentLocation.latitude, currentLocation.longitude));
     }
 
     private void setUpClusterer() {

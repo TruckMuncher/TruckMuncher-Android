@@ -36,11 +36,10 @@ public class ActiveTrucksService extends IntentService {
         super(ActiveTrucksService.class.getSimpleName());
     }
 
-    public static Intent newIntent(Context context, double latitude, double longitude, String query) {
+    public static Intent newIntent(Context context, double latitude, double longitude) {
         Intent intent = new Intent(context, ActiveTrucksService.class);
         intent.putExtra(ARG_LATITUDE, latitude);
         intent.putExtra(ARG_LONGITUDE, longitude);
-        intent.putExtra(ARG_SEARCH_QUERY, query);
         return intent;
     }
 
