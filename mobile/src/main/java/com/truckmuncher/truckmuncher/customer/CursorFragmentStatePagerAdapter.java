@@ -37,6 +37,17 @@ public class CursorFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
         return cursor.getString(Query.TRUCK_ID);
     }
 
+    public int getTruckPosition(String truckId) {
+        for (int i = 0; i < getCount(); i++) {
+            cursor.moveToPosition(i);
+
+            if (cursor.getString(Query.TRUCK_ID).equals(truckId)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public interface Query {
         static final String[] PROJECTION = new String[]{
                 PublicContract.Truck.ID,
