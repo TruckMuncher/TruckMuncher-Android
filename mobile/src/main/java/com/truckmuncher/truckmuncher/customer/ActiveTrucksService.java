@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.truckmuncher.api.trucks.ActiveTrucksRequest;
@@ -13,6 +14,7 @@ import com.truckmuncher.truckmuncher.App;
 import com.truckmuncher.truckmuncher.data.ApiException;
 import com.truckmuncher.truckmuncher.data.Contract;
 import com.truckmuncher.truckmuncher.data.PublicContract;
+import com.truckmuncher.truckmuncher.data.TruckMuncherContentProvider;
 
 import java.util.List;
 
@@ -66,6 +68,8 @@ public class ActiveTrucksService extends IntentService {
 
             List<ActiveTrucksResponse.Truck> trucks = response.trucks;
             ContentValues[] contentValues = new ContentValues[trucks.size()];
+            String[] truckIds = new String[trucks.size()];
+
             for (int i = 0, max = trucks.size(); i < max; i++) {
                 ActiveTrucksResponse.Truck truck = trucks.get(i);
                 ContentValues values = new ContentValues();
@@ -73,11 +77,19 @@ public class ActiveTrucksService extends IntentService {
                 values.put(PublicContract.Truck.LATITUDE, truck.latitude);
                 values.put(PublicContract.Truck.LONGITUDE, truck.longitude);
                 values.put(PublicContract.Truck.IS_SERVING, true);
+                values.put(PublicContract.Truck.MATCHED_SEARCH, true);
                 contentValues[i] = values;
+
+                truckIds[i] = truck.id;
             }
 
-            getContentResolver().delete(Contract.TRUCK_STATE_URI, null, null);
             getContentResolver().bulkInsert(Contract.TRUCK_STATE_URI, contentValues);
+
+            Bundle bundle = new Bundle();
+            bundle.putStringArray(TruckMuncherContentProvider.ARG_ID_ARRAY, truckIds);
+
+            getContentResolver().call(Contract.TRUCK_STATE_URI,
+                    TruckMuncherContentProvider.METHOD_UPDATE_INACTIVE_TRUCKS, null, bundle);
         } catch (ApiException e) {
             Timber.e(e, "Got an error while getting active trucks.");
             Intent errorIntent = new Intent();

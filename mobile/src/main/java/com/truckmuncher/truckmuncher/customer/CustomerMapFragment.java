@@ -26,28 +26,18 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.ClusterRenderer;
-import com.truckmuncher.api.search.SearchResponse;
-import com.truckmuncher.api.search.SearchService;
-import com.truckmuncher.api.search.SimpleSearchRequest;
-import com.truckmuncher.api.search.SimpleSearchResponse;
 import com.truckmuncher.api.trucks.Truck;
-import com.truckmuncher.truckmuncher.App;
 import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.data.PublicContract;
 import com.truckmuncher.truckmuncher.data.sql.WhereClause;
-import com.truckmuncher.truckmuncher.data.ApiException;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import timber.log.Timber;
 
 import static com.truckmuncher.truckmuncher.data.sql.WhereClause.Operator.EQUALS;
 
@@ -60,20 +50,18 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
     @InjectView(R.id.customer_map)
     MapView mapView;
 
-    @Inject
-    SearchService searchService;
-
     GoogleApiClient apiClient;
     LatLng currentLocation;
     ClusterManager<TruckCluster> clusterManager;
     private ClusterRenderer<TruckCluster> renderer;
     private Map<String, TruckCluster> activeTruckMarkers = Collections.emptyMap();
-    private Map<String, TruckCluster> searchResultMarkers = Collections.emptyMap();
+    private SimpleSearchServiceHelper serviceHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        App.inject(getActivity(), this);
+
+        serviceHelper = new SimpleSearchServiceHelper();
 
         MapsInitializer.initialize(getActivity().getApplicationContext());
     }
@@ -210,6 +198,8 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
         // Selection args for trucks that are currently in serving mode
         WhereClause whereClause = new WhereClause.Builder()
                 .where(PublicContract.Truck.IS_SERVING, EQUALS, true)
+                .and()
+                .where(PublicContract.Truck.MATCHED_SEARCH, EQUALS, true)
                 .build();
         return new CursorLoader(getActivity(), PublicContract.TRUCK_URI, ActiveTrucksQuery.PROJECTION, whereClause.selection, whereClause.selectionArgs, null);
     }
@@ -251,42 +241,9 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
 
     public void searchTrucks(final String query) {
         if (query == null || query.isEmpty()) {
-            forceClusterRender(activeTruckMarkers.values());
+            serviceHelper.clearSearchQueryMatches(getActivity());
         } else {
-            Thread t = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    SimpleSearchRequest request = new SimpleSearchRequest(query, null, null);
-
-                    try {
-                        SimpleSearchResponse response = searchService.simpleSearch(request);
-
-                        searchResultMarkers = new HashMap<>();
-
-                        List<SearchResponse> searchResponses = response.searchResponse;
-                        for (int i = 0, max = searchResponses.size(); i < max; i++) {
-                            String truckId = searchResponses.get(i).truck.id;
-
-                            TruckCluster currentMarker = activeTruckMarkers.get(truckId);
-
-                            if (currentMarker != null) {
-                                searchResultMarkers.put(truckId, activeTruckMarkers.get(truckId));
-                            }
-                        }
-
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                forceClusterRender(searchResultMarkers.values());
-                            }
-                        });
-                    } catch (ApiException e) {
-                        Timber.e("Got an error while searching for trucks.");
-                    }
-                }
-            });
-
-            t.start();
+            getActivity().startService(SimpleSearchService.newIntent(getActivity(), query));
         }
     }
 
@@ -320,7 +277,10 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
 
     public void moveTo(String truckId) {
         TruckCluster cluster = activeTruckMarkers.get(truckId);
-        mapView.getMap().moveCamera(CameraUpdateFactory.newLatLng(cluster.getPosition()));
+
+        if (cluster != null) {
+            mapView.getMap().moveCamera(CameraUpdateFactory.newLatLng(cluster.getPosition()));
+        }
     }
 
     public interface ActiveTrucksQuery {

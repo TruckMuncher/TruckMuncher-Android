@@ -204,6 +204,8 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
             case LOADER_TRUCKS:
                 WhereClause whereClause = new WhereClause.Builder()
                         .where(PublicContract.Truck.IS_SERVING, EQUALS, true)
+                        .and()
+                        .where(PublicContract.Truck.MATCHED_SEARCH, EQUALS, true)
                         .build();
                 return new CursorLoader(this, PublicContract.TRUCK_URI, CursorFragmentStatePagerAdapter.Query.PROJECTION, whereClause.selection, whereClause.selectionArgs, null);
             default:

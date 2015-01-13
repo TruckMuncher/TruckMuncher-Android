@@ -10,7 +10,6 @@ import com.truckmuncher.api.menu.MenuService;
 import com.truckmuncher.api.search.SearchService;
 import com.truckmuncher.api.trucks.TruckService;
 import com.truckmuncher.truckmuncher.BuildConfig;
-import com.truckmuncher.truckmuncher.customer.CustomerMapFragment;
 import com.truckmuncher.truckmuncher.customer.ActiveTrucksService;
 import com.truckmuncher.truckmuncher.customer.GetTruckProfilesService;
 import com.truckmuncher.truckmuncher.data.ApiErrorHandler;
@@ -20,6 +19,7 @@ import com.truckmuncher.truckmuncher.data.AuthenticatedRequestInterceptor;
 import com.truckmuncher.truckmuncher.data.PRNGFixes;
 import com.truckmuncher.truckmuncher.data.sync.SyncAdapter;
 import com.truckmuncher.truckmuncher.menu.MenuUpdateService;
+import com.truckmuncher.truckmuncher.customer.SimpleSearchService;
 import com.truckmuncher.truckmuncher.vendor.VendorTrucksService;
 
 import java.io.File;
@@ -35,7 +35,7 @@ import retrofit.converter.WireConverter;
 import timber.log.Timber;
 
 @Module(injects = {
-        CustomerMapFragment.class,
+        SimpleSearchService.class,
         GetTruckProfilesService.class,
         MenuUpdateService.class,
         SyncAdapter.class,
@@ -113,7 +113,7 @@ public class NetworkModule {
 
     @Singleton
     @Provides
-    public SearchService profideSearchService(RestAdapter adapter) {
+    public SearchService provideSearchService(RestAdapter adapter) {
         return adapter.create(SearchService.class);
     }
 }

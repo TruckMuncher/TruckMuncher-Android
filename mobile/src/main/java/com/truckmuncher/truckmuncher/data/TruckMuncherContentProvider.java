@@ -7,7 +7,9 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.truckmuncher.truckmuncher.LoggerStarter;
@@ -20,12 +22,18 @@ import timber.log.Timber;
 
 public class TruckMuncherContentProvider extends ContentProvider {
 
+    public static final String METHOD_UPDATE_INACTIVE_TRUCKS = "method_update_inactive_trucks";
+    public static final String METHOD_UPDATE_SEARCH_RESULTS = "method_update_search_results";
+    public static final String METHOD_CLEAR_SEARCH_RESULTS = "method_clear_search_results";
+    public static final String ARG_ID_ARRAY = "arg_id_list";
+
     private static final int CATEGORY = 10;
     private static final int MENU_ITEM = 20;
     private static final int TRUCK = 30;
     private static final int TRUCK_STATE = 31;
     private static final int TRUCK_PROPERTIES = 32;
     private static final int MENU = 40;
+
     private static final UriMatcher uriMatcher = buildUriMatcher();
 
     // TODO this is not OK. We need push messages
@@ -52,6 +60,48 @@ public class TruckMuncherContentProvider extends ContentProvider {
         LoggerStarter.start(getContext());
         database = SqlOpenHelper.newInstance(getContext());
         return true;
+    }
+
+    @Override
+    public Bundle call(String method, String arg, Bundle extras) {
+        SQLiteDatabase db = database.getReadableDatabase();
+        SQLiteStatement statement;
+        String[] ids = extras != null ? extras.getStringArray(ARG_ID_ARRAY): new String[]{};
+
+        switch (method) {
+            case METHOD_UPDATE_INACTIVE_TRUCKS:
+                statement = db.compileStatement("UPDATE " + Tables.TRUCK_STATE +
+                        " SET " + PublicContract.Truck.IS_SERVING + " = CASE WHEN " +
+                        PublicContract.Truck.ID + " not in (" + generatePlaceholders(ids.length) + ") THEN 0 ELSE 1 END;");
+
+                for (int i = 0; i < ids.length; i++) {
+                    statement.bindString(i + 1, ids[i]);
+                }
+                break;
+            case METHOD_UPDATE_SEARCH_RESULTS:
+                statement = db.compileStatement("UPDATE " + Tables.TRUCK_STATE +
+                        " SET " + PublicContract.Truck.MATCHED_SEARCH + " = CASE WHEN " +
+                        PublicContract.Truck.ID + " not in (" + generatePlaceholders(ids.length) + ") THEN 0 ELSE 1 END;");
+
+                for (int i = 0; i < ids.length; i++) {
+                    statement.bindString(i + 1, ids[i]);
+                }
+                break;
+
+            case METHOD_CLEAR_SEARCH_RESULTS:
+                statement = db.compileStatement("UPDATE " + Tables.TRUCK_STATE +
+                        " SET " + PublicContract.Truck.MATCHED_SEARCH + " = 1");
+                break;
+            default:
+                return super.call(method, arg, extras);
+        }
+
+        statement.execute();
+
+        getContext().getContentResolver().notifyChange(PublicContract.TRUCK_URI, null);
+
+
+        return null;
     }
 
     @DebugLog
@@ -212,5 +262,20 @@ public class TruckMuncherContentProvider extends ContentProvider {
         }
 
         return returnCount;
+    }
+
+    private String generatePlaceholders(int number) {
+        if (number < 1) {
+            return "";
+        } else {
+            StringBuilder builder = new StringBuilder(number * 2 - 1);
+            builder.append("?");
+
+            for (int i = 1; i < number; i++) {
+                builder.append(",?");
+            }
+
+            return builder.toString();
+        }
     }
 }

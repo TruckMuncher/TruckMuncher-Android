@@ -53,7 +53,7 @@ public class MockNetworkModule {
 
     @Singleton
     @Provides
-    public SearchService profideSearchService(RestAdapter adapter) {
+    public SearchService provideSearchService(RestAdapter adapter) {
         MockRestAdapter mockAdapter = MockRestAdapter.from(adapter);
         mockAdapter.setErrorPercentage(0);
         mockAdapter.setDelay(0);
