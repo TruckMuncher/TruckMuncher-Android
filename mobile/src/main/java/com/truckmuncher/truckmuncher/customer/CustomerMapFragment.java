@@ -1,5 +1,6 @@
 package com.truckmuncher.truckmuncher.customer;
 
+import android.app.Activity;
 import android.database.Cursor;
 import android.location.Location;
 import android.os.Bundle;
@@ -43,7 +44,8 @@ import static com.truckmuncher.truckmuncher.data.sql.WhereClause.Operator.EQUALS
 
 public class CustomerMapFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener,
-        ClusterManager.OnClusterClickListener<TruckCluster>, LoaderManager.LoaderCallbacks<Cursor> {
+        ClusterManager.OnClusterClickListener<TruckCluster>,
+        ClusterManager.OnClusterItemClickListener<TruckCluster>, LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String ARG_MAP_STATE = "map_state";
 
@@ -56,6 +58,17 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
     private ClusterRenderer<TruckCluster> renderer;
     private Map<String, TruckCluster> activeTruckMarkers = Collections.emptyMap();
     private SimpleSearchServiceHelper serviceHelper;
+    private OnTruckMarkerClickListener onTruckMarkerClickListener;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            onTruckMarkerClickListener = (OnTruckMarkerClickListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Calling activity must implement " + OnTruckMarkerClickListener.class.getName());
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -247,6 +260,21 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
         }
     }
 
+    @Override
+    public boolean onClusterItemClick(final TruckCluster truckClusterItem) {
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                onTruckMarkerClickListener.onTruckMarkerClick(truckClusterItem);
+            }
+        });
+
+        t.start();
+
+        // false to preserve the default behavior of centering the screen on the marker
+        return false;
+    }
+
     private void loadActiveTrucks() {
         // Kick off a refresh of the vendor data
         getActivity().startService(ActiveTrucksService.newIntent(getActivity(), currentLocation.latitude, currentLocation.longitude));
@@ -261,6 +289,7 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
         clusterManager.setRenderer(renderer);
 
         clusterManager.setOnClusterClickListener(this);
+        clusterManager.setOnClusterItemClickListener(this);
 
         // Point the map's listeners at the listeners implemented by the cluster manager.
         map.setOnCameraChangeListener(clusterManager);
@@ -295,5 +324,9 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
         static final int LATITUDE = 1;
         static final int LONGITUDE = 2;
         static final int NAME = 3;
+    }
+
+    public interface OnTruckMarkerClickListener {
+        public void onTruckMarkerClick(TruckCluster truckClusterItem);
     }
 }
