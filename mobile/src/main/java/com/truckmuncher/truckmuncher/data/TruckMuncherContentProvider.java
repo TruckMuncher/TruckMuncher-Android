@@ -124,6 +124,9 @@ public class TruckMuncherContentProvider extends ContentProvider {
             case TRUCK_STATE:
                 tableName = Tables.TRUCK_STATE;
                 break;
+            case TRUCK_PROPERTIES:
+                tableName = Tables.TRUCK_PROPERTIES;
+                break;
             case MENU:
                 tableName = Tables.MENU;
 
