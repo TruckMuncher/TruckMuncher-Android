@@ -34,7 +34,7 @@ public class MenuAdapter extends SectionCursorAdapter {
 
     @Override
     protected View newSectionView(Context context, Object o, ViewGroup viewGroup) {
-        return getLayoutInflater().inflate(android.R.layout.simple_list_item_1, viewGroup, false);
+        return getLayoutInflater().inflate(R.layout.list_item_menu_category, viewGroup, false);
     }
 
     @Override
