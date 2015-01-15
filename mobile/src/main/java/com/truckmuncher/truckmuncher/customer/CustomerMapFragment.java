@@ -6,7 +6,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -14,9 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -28,6 +25,7 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.ClusterRenderer;
 import com.truckmuncher.api.trucks.Truck;
+import com.truckmuncher.truckmuncher.ApiClientFragment;
 import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.data.PublicContract;
 import com.truckmuncher.truckmuncher.data.sql.WhereClause;
@@ -42,8 +40,7 @@ import butterknife.InjectView;
 
 import static com.truckmuncher.truckmuncher.data.sql.WhereClause.Operator.EQUALS;
 
-public class CustomerMapFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener,
+public class CustomerMapFragment extends ApiClientFragment implements
         ClusterManager.OnClusterClickListener<TruckCluster>,
         ClusterManager.OnClusterItemClickListener<TruckCluster>, LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -52,7 +49,6 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
     @InjectView(R.id.customer_map)
     MapView mapView;
 
-    GoogleApiClient apiClient;
     LatLng currentLocation;
     ClusterManager<TruckCluster> clusterManager;
     private ClusterRenderer<TruckCluster> renderer;
@@ -124,25 +120,9 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        apiClient.connect();
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
         mapView.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        if (apiClient.isConnected()) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(apiClient, this);
-            apiClient.disconnect();
-        }
     }
 
     @Override
@@ -183,11 +163,6 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
     }
 
     @Override
-    public void onConnectionSuspended(int i) {
-        LocationServices.FusedLocationApi.removeLocationUpdates(apiClient, this);
-    }
-
-    @Override
     public void onLocationChanged(Location location) {
         // if the current location is null, we haven't loaded the active trucks yet.
         boolean trucksNeedLoading = currentLocation == null;
@@ -198,11 +173,6 @@ public class CustomerMapFragment extends Fragment implements GoogleApiClient.Con
             loadActiveTrucks();
             getActivity().startService(GetTruckProfilesService.newIntent(getActivity(), currentLocation.latitude, currentLocation.longitude));
         }
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        // TODO Consider handling
     }
 
     @Override

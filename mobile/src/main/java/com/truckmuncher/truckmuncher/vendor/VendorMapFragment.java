@@ -5,14 +5,11 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -21,13 +18,14 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
+import com.truckmuncher.truckmuncher.ApiClientFragment;
 import com.truckmuncher.truckmuncher.R;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnTouch;
 
-public class VendorMapFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class VendorMapFragment extends ApiClientFragment {
 
     private static final String ARG_MAP_STATE = "map_state";
 
@@ -36,7 +34,6 @@ public class VendorMapFragment extends Fragment implements GoogleApiClient.Conne
 
     private boolean useMapLocation;
     private OnMapLocationChangedListener onMapLocationChangedListener;
-    private GoogleApiClient apiClient;
     private LocationRequest request;
 
     @Override
@@ -104,12 +101,6 @@ public class VendorMapFragment extends Fragment implements GoogleApiClient.Conne
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        apiClient.connect();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         mapView.onResume();
@@ -119,15 +110,6 @@ public class VendorMapFragment extends Fragment implements GoogleApiClient.Conne
     public void onPause() {
         super.onPause();
         mapView.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (apiClient.isConnected()) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(apiClient, this);
-        }
-        apiClient.disconnect();
     }
 
     @Override
@@ -192,22 +174,12 @@ public class VendorMapFragment extends Fragment implements GoogleApiClient.Conne
     }
 
     @Override
-    public void onConnectionSuspended(int i) {
-        LocationServices.FusedLocationApi.removeLocationUpdates(apiClient, this);
-    }
-
-    @Override
     public void onLocationChanged(Location location) {
         if (!useMapLocation) {
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             mapView.getMap().animateCamera(CameraUpdateFactory.newLatLng(latLng));
             onMapLocationChangedListener.onMapLocationChanged(latLng);
         }
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        // TODO Consider handling
     }
 
     public void setMapControlsEnabled(boolean enabled) {
