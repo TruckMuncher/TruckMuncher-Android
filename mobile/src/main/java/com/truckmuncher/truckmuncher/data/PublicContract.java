@@ -47,6 +47,7 @@ public class PublicContract {
         public static final String COLOR_PRIMARY = "color_primary";
         public static final String COLOR_SECONDARY = "color_secondary";
         public static final String IS_SERVING = "is_serving";
+        public static final String MATCHED_SEARCH = "matched_search";
         public static final String LATITUDE = "latitude";
         public static final String LONGITUDE = "longitude";
     }

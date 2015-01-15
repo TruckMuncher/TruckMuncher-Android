@@ -85,6 +85,9 @@
             android:name=".customer.ActiveTrucksService"
             android:exported="false" />
         <service
+            android:name=".customer.SimpleSearchService"
+            android:exported="false" />
+        <service
             android:name=".vendor.VendorTrucksService"
             android:exported="false" />
         <service
