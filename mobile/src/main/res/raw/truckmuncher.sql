@@ -9,7 +9,8 @@ CREATE TABLE `truck_properties` (
 	`image_url`	                TEXT,
 	`keywords`	                TEXT,
 	`color_primary`	            TEXT,
-	`color_secondary`	        TEXT
+	`color_secondary`	        TEXT,
+	`owned_by_current_user`     INTEGER DEFAULT 0
 );
 
 CREATE INDEX `idx_truck_properties_id` ON `truck_properties` (
@@ -37,6 +38,7 @@ CREATE VIEW `truck` AS SELECT
     `keywords`,
     `color_primary`,
     `color_secondary`,
+    `owned_by_current_user`,
 
     `truck_state`.`_id` AS `_id`,
     `is_serving`,

@@ -66,6 +66,7 @@ public class VendorTrucksService extends IntentService {
                 values.put(PublicContract.Truck.KEYWORDS, Contract.convertListToString(truck.keywords));
                 values.put(PublicContract.Truck.COLOR_PRIMARY, truck.primaryColor);
                 values.put(PublicContract.Truck.COLOR_SECONDARY, truck.secondaryColor);
+                values.put(PublicContract.Truck.OWNED_BY_CURRENT_USER, 1);
                 contentValues[i] = values;
             }
 
