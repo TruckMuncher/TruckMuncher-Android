@@ -30,10 +30,8 @@ import static com.truckmuncher.truckmuncher.data.sql.WhereClause.Operator.EQUALS
 public class CustomerMenuFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String ARG_TRUCK_ID = "truck_id";
-    private static final String ARG_TRUCK_NAME = "truck_name";
-    private static final String ARG_IMAGE_URL = "image_url";
-    private static final String ARG_KEYWORDS = "keywords";
-    private static final String ARG_COLOR_PRIMARY = "color_primary";
+    private static final int LOADER_HEADER = 0;
+    private static final int LOADER_MENU = 1;
     @InjectView(R.id.truck_name)
     TextView truckName;
     @InjectView(R.id.truck_keywords)
@@ -44,13 +42,9 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
     View headerView;
     private MenuAdapter adapter;
 
-    public static CustomerMenuFragment newInstance(String truckId, String truckName, String imageUrl, String keywords, String primaryColor) {
+    public static CustomerMenuFragment newInstance(String truckId) {
         Bundle args = new Bundle();
         args.putString(ARG_TRUCK_ID, truckId);
-        args.putString(ARG_TRUCK_NAME, truckName);
-        args.putString(ARG_IMAGE_URL, imageUrl);
-        args.putString(ARG_KEYWORDS, keywords);
-        args.putString(ARG_COLOR_PRIMARY, primaryColor);
         CustomerMenuFragment fragment = new CustomerMenuFragment();
         fragment.setArguments(args);
         return fragment;
@@ -60,25 +54,6 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_customer_menu, container, false);
         ButterKnife.inject(this, view);
-        Bundle args = getArguments();
-
-        String imageUrl = args.getString(ARG_IMAGE_URL);
-        if (TextUtils.isEmpty(imageUrl)) {
-            truckImage.setVisibility(View.GONE);
-        } else {
-            Picasso.with(getActivity()).load(imageUrl).into(truckImage);
-        }
-
-        String backgroundColor = args.getString(ARG_COLOR_PRIMARY);
-        if (backgroundColor != null) {
-            view.findViewById(R.id.header).setBackgroundColor(Color.parseColor(backgroundColor));
-            int textColor = ColorCorrector.calculateTextColor(backgroundColor);
-            truckName.setTextColor(textColor);
-            truckKeywords.setTextColor(textColor);
-        }
-
-        truckName.setText(args.getString(ARG_TRUCK_ID));
-        truckKeywords.setText(args.getString(ARG_KEYWORDS));
         return view;
     }
 
@@ -95,7 +70,8 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getLoaderManager().initLoader(0, getArguments(), this);
+        getLoaderManager().initLoader(LOADER_HEADER, getArguments(), this);
+        getLoaderManager().initLoader(LOADER_MENU, getArguments(), this);
     }
 
     @Override
@@ -107,25 +83,83 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String truckId = args.getString(ARG_TRUCK_ID);
-        WhereClause whereClause = new WhereClause.Builder()
-                .where(PublicContract.Menu.TRUCK_ID, EQUALS, truckId)
-                .build();
-        String[] projection = MenuAdapter.Query.PROJECTION;
-        Uri uri = Contract.syncFromNetwork(PublicContract.MENU_URI);
-        return new CursorLoader(getActivity(), uri, projection, whereClause.selection, whereClause.selectionArgs, null);
+        switch (id) {
+            case LOADER_HEADER: {
+                WhereClause whereClause = new WhereClause.Builder()
+                        .where(PublicContract.Truck.ID, EQUALS, truckId)
+                        .build();
+                return new CursorLoader(getActivity(), PublicContract.TRUCK_URI, HeaderQuery.PROJECTION, whereClause.selection, whereClause.selectionArgs, null);
+            }
+            case LOADER_MENU: {
+                WhereClause whereClause = new WhereClause.Builder()
+                        .where(PublicContract.Menu.TRUCK_ID, EQUALS, truckId)
+                        .build();
+                String[] projection = MenuAdapter.Query.PROJECTION;
+                Uri uri = Contract.syncFromNetwork(PublicContract.MENU_URI);
+                return new CursorLoader(getActivity(), uri, projection, whereClause.selection, whereClause.selectionArgs, null);
+            }
+            default:
+                throw new IllegalArgumentException("Unknown loader id: " + id);
+        }
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        adapter.swapCursor(data);
+        switch (loader.getId()) {
+            case LOADER_HEADER:
+                if (data.moveToFirst()) {
+                    bindHeaderView(data);
+                }
+                break;
+            case LOADER_MENU:
+                adapter.swapCursor(data);
+                break;
+        }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        adapter.swapCursor(null);
+        switch (loader.getId()) {
+            case LOADER_MENU:
+                adapter.swapCursor(null);
+                break;
+        }
     }
 
     public View getHeaderView() {
         return headerView;
+    }
+
+    private void bindHeaderView(Cursor cursor) {
+        String imageUrl = cursor.getString(HeaderQuery.IMAGE_URL);
+        if (TextUtils.isEmpty(imageUrl)) {
+            truckImage.setVisibility(View.GONE);
+        } else {
+            Picasso.with(getActivity()).load(imageUrl).into(truckImage);
+        }
+
+        String backgroundColor = cursor.getString(HeaderQuery.COLOR_PRIMARY);
+        if (backgroundColor != null) {
+            headerView.setBackgroundColor(Color.parseColor(backgroundColor));
+            int textColor = ColorCorrector.calculateTextColor(backgroundColor);
+            truckName.setTextColor(textColor);
+            truckKeywords.setTextColor(textColor);
+        }
+
+        truckName.setText(cursor.getString(HeaderQuery.NAME));
+        truckKeywords.setText(cursor.getString(HeaderQuery.KEYWORDS));
+    }
+
+    interface HeaderQuery {
+        static final String[] PROJECTION = new String[]{
+                PublicContract.Truck.NAME,
+                PublicContract.Truck.IMAGE_URL,
+                PublicContract.Truck.KEYWORDS,
+                PublicContract.Truck.COLOR_PRIMARY
+        };
+        static final int NAME = 0;
+        static final int IMAGE_URL = 1;
+        static final int KEYWORDS = 2;
+        static final int COLOR_PRIMARY = 3;
     }
 }

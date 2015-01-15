@@ -18,13 +18,7 @@ public class CursorFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public CustomerMenuFragment getItem(int i) {
         cursor.moveToPosition(i);
-        return CustomerMenuFragment.newInstance(
-                cursor.getString(Query.TRUCK_ID),
-                cursor.getString(Query.NAME),
-                cursor.getString(Query.IMAGE_URL),
-                cursor.getString(Query.KEYWORDS),
-                cursor.getString(Query.PRIMARY_COLOR)
-        );
+        return CustomerMenuFragment.newInstance(cursor.getString(Query.TRUCK_ID));
     }
 
     @Override
@@ -49,18 +43,7 @@ public class CursorFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
     }
 
     public interface Query {
-        static final String[] PROJECTION = new String[]{
-                PublicContract.Truck.ID,
-                PublicContract.Truck.NAME,
-                PublicContract.Truck.IMAGE_URL,
-                PublicContract.Truck.KEYWORDS,
-                PublicContract.Truck.COLOR_PRIMARY
-        };
-
+        static final String[] PROJECTION = new String[]{PublicContract.Truck.ID};
         static final int TRUCK_ID = 0;
-        static final int NAME = 1;
-        static final int IMAGE_URL = 2;
-        static final int KEYWORDS = 3;
-        static final int PRIMARY_COLOR = 4;
     }
 }
