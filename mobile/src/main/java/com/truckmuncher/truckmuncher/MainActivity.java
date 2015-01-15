@@ -26,6 +26,7 @@ import com.truckmuncher.truckmuncher.authentication.AuthenticatorActivity;
 import com.truckmuncher.truckmuncher.customer.CursorFragmentStatePagerAdapter;
 import com.truckmuncher.truckmuncher.customer.CustomerMapFragment;
 import com.truckmuncher.truckmuncher.customer.CustomerMenuFragment;
+import com.truckmuncher.truckmuncher.customer.TruckCluster;
 import com.truckmuncher.truckmuncher.data.PublicContract;
 import com.truckmuncher.truckmuncher.data.sql.WhereClause;
 import com.truckmuncher.truckmuncher.vendor.VendorHomeActivity;
@@ -36,7 +37,8 @@ import timber.log.Timber;
 
 import static com.truckmuncher.truckmuncher.data.sql.WhereClause.Operator.EQUALS;
 
-public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor>,
+    CustomerMapFragment.OnTruckMarkerClickListener {
 
     private static final int REQUEST_LOGIN = 1;
     private static final int LOADER_TRUCKS = 0;
@@ -220,5 +222,16 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         pagerAdapter = null;
+    }
+
+    @Override
+    public void onTruckMarkerClick(final TruckCluster truckClusterItem) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String truckId = truckClusterItem.getTruck().id;
+                viewPager.setCurrentItem(pagerAdapter.getTruckPosition(truckId));
+            }
+        });
     }
 }
