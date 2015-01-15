@@ -8,6 +8,7 @@
     <string name="out_of_stock">Out</string>
     <string name="search_title">Search</string>
     <string name="search_hint">Search for trucks</string>
+    <string name="title_sign_in">Sign in</string>
 
     <!-- Actions -->
     <string name="action_settings">Settings</string>

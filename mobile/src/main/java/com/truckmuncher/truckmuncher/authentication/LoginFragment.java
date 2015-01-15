@@ -24,6 +24,10 @@ public class LoginFragment extends Fragment {
     private SocialNetworkManager socialNetworkManager;
     private LoginSuccessCallback loginSuccessCallback;
 
+    public static LoginFragment newInstance() {
+        return new LoginFragment();
+    }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);

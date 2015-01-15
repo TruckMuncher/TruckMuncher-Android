@@ -1,15 +1,16 @@
 package com.truckmuncher.truckmuncher.authentication;
 
 import android.accounts.Account;
-import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.view.MenuItem;
 
 import com.truckmuncher.truckmuncher.data.PublicContract;
 
-public class AuthenticatorActivity extends AccountAuthenticatorActivity
+public class AuthenticatorActivity extends ActionBarAccountAuthenticatorActivity
         implements LoginFragment.LoginSuccessCallback {
 
     public final static String ARG_ACCOUNT_TYPE = "account_type";
@@ -21,9 +22,23 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getFragmentManager().beginTransaction().add(android.R.id.content, new LoginFragment()).commit();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getFragmentManager().beginTransaction()
+                .add(android.R.id.content, LoginFragment.newInstance())
+                .commit();
 
         accountManager = AccountManager.get(this);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
