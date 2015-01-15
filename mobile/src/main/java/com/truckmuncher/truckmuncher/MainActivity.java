@@ -68,7 +68,7 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
             // If we get an authToken the user is signed in and we can go straight to vendor mode
             if (!TextUtils.isEmpty(authToken)) {
-                launchVendorMode();
+                launchVendorMode(accounts[0].name);
             }
         }
 
@@ -184,15 +184,19 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_LOGIN) {
             if (resultCode == RESULT_OK) {
-                launchVendorMode();
+                Bundle extras = data.getExtras();
+
+                launchVendorMode(extras.getString(AccountManager.KEY_ACCOUNT_NAME));
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
-    private void launchVendorMode() {
-        startActivity(new Intent(this, VendorHomeActivity.class));
+    private void launchVendorMode(String userName) {
+        Intent intent = new Intent(this, VendorHomeActivity.class);
+        intent.putExtra(VendorHomeActivity.USERNAME, userName);
+        startActivity(intent);
         finish();
     }
 
