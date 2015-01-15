@@ -23,7 +23,7 @@ import static com.truckmuncher.truckmuncher.data.sql.WhereClause.Operator.EQUALS
 public class MenuAdminFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String TAG = MenuAdminFragment.class.getSimpleName();
-    public static final String ARG_TRUCK_ID = "truck_id";
+    private static final String ARG_TRUCK_ID = "truck_id";
 
     private MenuAdminAdapter adapter;
     private android.view.MenuItem actionMenu;
@@ -41,11 +41,11 @@ public class MenuAdminFragment extends ListFragment implements LoaderManager.Loa
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
+        view.setBackgroundColor(getResources().getColor(android.R.color.background_light));
+        setEmptyText(getString(R.string.error_empty_vendor_menu));
         serviceHelper = new MenuAdminServiceHelper();
         adapter = new MenuAdminAdapter(getActivity(), null);
-        setListAdapter(adapter);
         getListView().setFastScrollEnabled(true);
-        getListView().setBackgroundColor(getResources().getColor(android.R.color.background_light));
     }
 
     @Override
@@ -86,8 +86,8 @@ public class MenuAdminFragment extends ListFragment implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        // TODO move the adapter creation into here so that we get the loading indicator for free
         adapter.swapCursor(data);
+        setListAdapter(adapter);
     }
 
     @Override

@@ -23,5 +23,5 @@
 
     <!-- Errors -->
     <string name="error_network">Oops, something went wrong. Please check your network connection and try again.</string>
-
+    <string name="error_empty_vendor_menu">It looks like you have not yet added any menu items using the web interface. On Android you can only mark them as being in or out of stock.\n\nVisit the website at https://www.truckmuncher.com</string>
 </resources>
