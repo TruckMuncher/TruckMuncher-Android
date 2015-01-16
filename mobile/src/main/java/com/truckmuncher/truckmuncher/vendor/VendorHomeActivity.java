@@ -26,6 +26,7 @@ import com.truckmuncher.truckmuncher.data.Contract;
 import com.truckmuncher.truckmuncher.data.PublicContract;
 import com.truckmuncher.truckmuncher.data.sql.WhereClause;
 import com.truckmuncher.truckmuncher.vendor.menuadmin.MenuAdminFragment;
+import com.truckmuncher.truckmuncher.vendor.menuadmin.ResetVendorTrucksServiceHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,6 +44,7 @@ public class VendorHomeActivity extends ActionBarActivity implements
     private List<Truck> trucksOwnedByUser = Collections.emptyList();
     private Truck selectedTruck;
     private VendorHomeServiceHelper serviceHelper;
+    private ResetVendorTrucksServiceHelper resetServiceHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,7 @@ public class VendorHomeActivity extends ActionBarActivity implements
         getSupportLoaderManager().initLoader(0, savedInstanceState, this);
 
         serviceHelper = new VendorHomeServiceHelper();
+        resetServiceHelper = new ResetVendorTrucksServiceHelper();
         accountManager = AccountManager.get(this);
 
         // Kick off a refresh of the vendor data
@@ -93,6 +96,8 @@ public class VendorHomeActivity extends ActionBarActivity implements
                 accountManager.invalidateAuthToken(AccountGeneral.ACCOUNT_TYPE, authToken);
             }
         }
+
+        resetServiceHelper.resetVendorTrucks(this, trucksOwnedByUser);
 
         exitVendorMode();
     }
@@ -149,6 +154,10 @@ public class VendorHomeActivity extends ActionBarActivity implements
             Truck truck = new Truck.Builder()
                     .id(cursor.getString(TrucksOwnedByUserQuery.ID))
                     .name(cursor.getString(TrucksOwnedByUserQuery.NAME))
+                    .imageUrl(cursor.getString(TrucksOwnedByUserQuery.IMAGE_URL))
+                    .keywords(Contract.convertStringToList(cursor.getString(TrucksOwnedByUserQuery.KEYWORDS)))
+                    .primaryColor(cursor.getString(TrucksOwnedByUserQuery.COLOR_PRIMARY))
+                    .secondaryColor(cursor.getString(TrucksOwnedByUserQuery.COLOR_SECONDARY))
                     .build();
 
             trucksOwnedByUser.add(truck);
@@ -170,9 +179,17 @@ public class VendorHomeActivity extends ActionBarActivity implements
 
         public static final String[] PROJECTION = new String[]{
                 PublicContract.Truck.ID,
-                PublicContract.Truck.NAME
+                PublicContract.Truck.NAME,
+                PublicContract.Truck.IMAGE_URL,
+                PublicContract.Truck.KEYWORDS,
+                PublicContract.Truck.COLOR_PRIMARY,
+                PublicContract.Truck.COLOR_SECONDARY
         };
         static final int ID = 0;
         static final int NAME = 1;
+        static final int IMAGE_URL = 2;
+        static final int KEYWORDS = 3;
+        static final int COLOR_PRIMARY = 4;
+        static final int COLOR_SECONDARY = 5;
     }
 }
