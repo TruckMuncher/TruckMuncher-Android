@@ -4,7 +4,7 @@ import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 
 /**
- * Simple class to not require you to sublcass {@link android.content.AsyncQueryHandler} in code.
+ * Simple class to not require you to subclass {@link android.content.AsyncQueryHandler} in code.
  */
 public class SimpleAsyncQueryHandler extends AsyncQueryHandler {
 
