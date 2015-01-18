@@ -32,7 +32,7 @@ import static com.truckmuncher.truckmuncher.data.sql.WhereClause.Operator.EQUALS
 public class CustomerMenuFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String ARG_TRUCK_ID = "truck_id";
-    private static final int LOADER_HEADER = 0;
+    private static final int LOADER_TRUCK = 0;
     private static final int LOADER_MENU = 1;
     @InjectView(R.id.truck_name)
     TextView truckName;
@@ -43,6 +43,7 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
     @InjectView(R.id.header)
     View headerView;
     private MenuAdapter adapter;
+    private String truckSecondaryColor;
 
     public static CustomerMenuFragment newInstance(String truckId) {
         Bundle args = new Bundle();
@@ -63,8 +64,6 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
-        adapter = new MenuAdapter(getActivity());
-        setListAdapter(adapter);
         getListView().setFastScrollEnabled(true);
         getListView().setBackgroundColor(getResources().getColor(android.R.color.background_light));
     }
@@ -72,8 +71,7 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getLoaderManager().initLoader(LOADER_HEADER, getArguments(), this);
-        getLoaderManager().initLoader(LOADER_MENU, getArguments(), this);
+        getLoaderManager().initLoader(LOADER_TRUCK, getArguments(), this);
     }
 
     @Override
@@ -86,11 +84,11 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String truckId = args.getString(ARG_TRUCK_ID);
         switch (id) {
-            case LOADER_HEADER: {
+            case LOADER_TRUCK: {
                 WhereClause whereClause = new WhereClause.Builder()
                         .where(PublicContract.Truck.ID, EQUALS, truckId)
                         .build();
-                return new CursorLoader(getActivity(), PublicContract.TRUCK_URI, HeaderQuery.PROJECTION, whereClause.selection, whereClause.selectionArgs, null);
+                return new CursorLoader(getActivity(), PublicContract.TRUCK_URI, TruckQuery.PROJECTION, whereClause.selection, whereClause.selectionArgs, null);
             }
             case LOADER_MENU: {
                 WhereClause whereClause = new WhereClause.Builder()
@@ -108,12 +106,20 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         switch (loader.getId()) {
-            case LOADER_HEADER:
+            case LOADER_TRUCK:
                 if (data.moveToFirst()) {
+
+                    // Wait to load the menu until we have a truck so that we for sure have the category color
+                    truckSecondaryColor = data.getString(TruckQuery.COLOR_SECONDARY);
+                    getLoaderManager().initLoader(LOADER_MENU, getArguments(), this);
                     bindHeaderView(data);
                 }
                 break;
             case LOADER_MENU:
+                if (adapter == null) {
+                    adapter = new MenuAdapter(getActivity(), truckSecondaryColor);
+                    setListAdapter(adapter);
+                }
                 adapter.swapCursor(data);
                 break;
         }
@@ -133,14 +139,14 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
     }
 
     private void bindHeaderView(Cursor cursor) {
-        String imageUrl = cursor.getString(HeaderQuery.IMAGE_URL);
+        String imageUrl = cursor.getString(TruckQuery.IMAGE_URL);
         if (TextUtils.isEmpty(imageUrl)) {
             truckImage.setVisibility(View.GONE);
         } else {
             Picasso.with(getActivity()).load(imageUrl).into(truckImage);
         }
 
-        String backgroundColor = cursor.getString(HeaderQuery.COLOR_PRIMARY);
+        String backgroundColor = cursor.getString(TruckQuery.COLOR_PRIMARY);
         if (backgroundColor != null) {
             headerView.setBackgroundColor(Color.parseColor(backgroundColor));
             int textColor = ColorCorrector.calculateTextColor(backgroundColor);
@@ -148,10 +154,12 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
             truckKeywords.setTextColor(textColor);
         }
 
-        truckName.setText(cursor.getString(HeaderQuery.NAME));
+        truckName.setText(cursor.getString(TruckQuery.NAME));
+        truckKeywords.setText(cursor.getString(TruckQuery.KEYWORDS));
+        truckName.setText(cursor.getString(TruckQuery.NAME));
 
         // Split the keywords and format them in a way that is user friendly
-        String keywordsString = cursor.getString(HeaderQuery.KEYWORDS);
+        String keywordsString = cursor.getString(TruckQuery.KEYWORDS);
         List<String> keywords = Contract.convertStringToList(keywordsString);
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < keywords.size(); i++) {
@@ -163,16 +171,18 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
         truckKeywords.setText(builder.toString());
     }
 
-    interface HeaderQuery {
+    interface TruckQuery {
         static final String[] PROJECTION = new String[]{
                 PublicContract.Truck.NAME,
                 PublicContract.Truck.IMAGE_URL,
                 PublicContract.Truck.KEYWORDS,
-                PublicContract.Truck.COLOR_PRIMARY
+                PublicContract.Truck.COLOR_PRIMARY,
+                PublicContract.Truck.COLOR_SECONDARY
         };
         static final int NAME = 0;
         static final int IMAGE_URL = 1;
         static final int KEYWORDS = 2;
         static final int COLOR_PRIMARY = 3;
+        static final int COLOR_SECONDARY = 4;
     }
 }
