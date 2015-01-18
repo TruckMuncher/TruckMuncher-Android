@@ -22,6 +22,8 @@ import com.truckmuncher.truckmuncher.data.Contract;
 import com.truckmuncher.truckmuncher.data.PublicContract;
 import com.truckmuncher.truckmuncher.data.sql.WhereClause;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
@@ -147,7 +149,18 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
         }
 
         truckName.setText(cursor.getString(HeaderQuery.NAME));
-        truckKeywords.setText(cursor.getString(HeaderQuery.KEYWORDS));
+
+        // Split the keywords and format them in a way that is user friendly
+        String keywordsString = cursor.getString(HeaderQuery.KEYWORDS);
+        List<String> keywords = Contract.convertStringToList(keywordsString);
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < keywords.size(); i++) {
+            builder.append(keywords.get(i));
+            if (i < keywords.size() - 1) {
+                builder.append(", ");
+            }
+        }
+        truckKeywords.setText(builder.toString());
     }
 
     interface HeaderQuery {
