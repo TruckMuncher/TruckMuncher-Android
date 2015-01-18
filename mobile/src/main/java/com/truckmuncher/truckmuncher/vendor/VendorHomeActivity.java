@@ -26,7 +26,6 @@ import com.truckmuncher.truckmuncher.data.Contract;
 import com.truckmuncher.truckmuncher.data.PublicContract;
 import com.truckmuncher.truckmuncher.data.sql.WhereClause;
 import com.truckmuncher.truckmuncher.vendor.menuadmin.MenuAdminFragment;
-import com.truckmuncher.truckmuncher.vendor.menuadmin.ResetVendorTrucksServiceHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,8 +36,6 @@ import static com.truckmuncher.truckmuncher.data.sql.WhereClause.Operator.EQUALS
 public class VendorHomeActivity extends ActionBarActivity implements
         VendorMapFragment.OnMapLocationChangedListener, VendorHomeFragment.OnServingModeChangedListener,
         LoaderManager.LoaderCallbacks<Cursor> {
-
-    public static final String USERNAME = "VendorHomeActivity.username";
 
     private AccountManager accountManager;
     private List<Truck> trucksOwnedByUser = Collections.emptyList();
@@ -140,7 +137,7 @@ public class VendorHomeActivity extends ActionBarActivity implements
                 .where(PublicContract.Truck.OWNED_BY_CURRENT_USER, EQUALS, 1)
                 .build();
         String[] projection = TrucksOwnedByUserQuery.PROJECTION;
-        Uri uri = Contract.TRUCK_PROPERTIES_URI;
+        Uri uri = PublicContract.TRUCK_URI;
         return new CursorLoader(this, uri, projection, whereClause.selection, whereClause.selectionArgs, null);
     }
 

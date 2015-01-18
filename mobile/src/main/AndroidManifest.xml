@@ -99,7 +99,7 @@
             android:name=".vendor.VendorTrucksService"
             android:exported="false" />
         <service
-            android:name=".vendor.menuadmin.ResetVendorTrucksService"
+            android:name=".vendor.ResetVendorTrucksService"
             android:exported="false" />
         <service
             android:name=".menu.MenuUpdateService"
