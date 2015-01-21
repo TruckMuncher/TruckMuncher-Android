@@ -28,7 +28,6 @@ public final class LoggerStarter {
             if (BuildConfig.DEBUG) {
                 Timber.plant(new Timber.DebugTree());
             } else {
-                Crashlytics.start(context);
                 Timber.plant(new CrashlyticsTree());
             }
             hasStarted = true;

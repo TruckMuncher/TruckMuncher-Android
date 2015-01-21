@@ -11,12 +11,13 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.androidsocialnetworks.lib.SocialNetworkManager;
+import com.facebook.Session;
 import com.google.android.gms.maps.model.LatLng;
 import com.truckmuncher.truckmuncher.MainActivity;
 import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.authentication.AccountGeneral;
 import com.truckmuncher.truckmuncher.vendor.menuadmin.MenuAdminFragment;
+import com.twitter.sdk.android.Twitter;
 
 public class VendorHomeActivity extends ActionBarActivity implements
         VendorMapFragment.OnMapLocationChangedListener, VendorHomeFragment.OnServingModeChangedListener {
@@ -67,8 +68,6 @@ public class VendorHomeActivity extends ActionBarActivity implements
     }
 
     private void doLogout() {
-        SocialNetworkManager.getInstance(this).logout();
-
         Account[] accounts = accountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
 
         if (accounts.length > 0) {
@@ -77,6 +76,13 @@ public class VendorHomeActivity extends ActionBarActivity implements
             if (!TextUtils.isEmpty(authToken)) {
                 accountManager.invalidateAuthToken(AccountGeneral.ACCOUNT_TYPE, authToken);
             }
+        }
+
+        Twitter.getSessionManager().clearActiveSession();
+        Session facebookSession = Session.getActiveSession();
+
+        if (facebookSession != null && facebookSession.isOpened()) {
+            facebookSession.close();
         }
 
         exitVendorMode();
