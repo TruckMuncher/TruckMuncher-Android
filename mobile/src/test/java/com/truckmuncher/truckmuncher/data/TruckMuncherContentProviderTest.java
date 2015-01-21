@@ -79,29 +79,6 @@ public class TruckMuncherContentProviderTest {
     }
 
     @Test
-    public void queryTruckHitsTruckView() {
-
-        // Populate some data
-        ContentValues values = new ContentValues();
-        values.put(PublicContract.Truck.NAME, "The Sandwich Makers");
-        SqlOpenHelper.newInstance(Robolectric.application).getWritableDatabase().insert(Tables.TRUCK_PROPERTIES, null, values);
-
-        values.put(PublicContract.Truck.IS_SERVING, true);
-        SqlOpenHelper.newInstance(Robolectric.application).getWritableDatabase().insert(Tables.TRUCK_STATE, null, values);
-
-        // Make sure we got our data
-        WhereClause whereClause = new WhereClause.Builder()
-                .where(PublicContract.Truck.NAME, EQUALS, "The Sandwich Makers")
-                .where(PublicContract.Truck.IS_SERVING, EQUALS, true)
-                .build();
-        String[] projection = new String[]{PublicContract.Truck.NAME};
-        Cursor cursor = resolver.query(PublicContract.TRUCK_URI, projection, whereClause.selection, whereClause.selectionArgs, null);
-        assertThat(cursor).isNotNull();
-        assertThat(cursor.getCount()).isEqualTo(1);     // Verifies the behavior because only the view has both of those columns
-        assertThat(cursor.getColumnCount()).isEqualTo(1);   // Verifies that the projection is respected
-    }
-
-    @Test
     public void queryTruckStateHitsTruckStateTable() {
 
         // Populate some data
@@ -122,29 +99,6 @@ public class TruckMuncherContentProviderTest {
         cursor = resolver.query(Contract.TRUCK_STATE_URI, null, whereClause.selection, whereClause.selectionArgs, null);
         assertThat(cursor).isNotNull();
         assertThat(cursor.getCount()).isZero();
-    }
-
-    @Test
-    public void queryMenuHitsMenuView() {
-
-        // Populate some data
-        ContentValues values = new ContentValues();
-        values.put(PublicContract.Category.NAME, "Sandwiches");
-        SqlOpenHelper.newInstance(Robolectric.application).getWritableDatabase().insert(Tables.CATEGORY, null, values);
-
-        values.put(PublicContract.MenuItem.NAME, "BLT");
-        SqlOpenHelper.newInstance(Robolectric.application).getWritableDatabase().insert(Tables.MENU_ITEM, null, values);
-
-        // Make sure we got our data
-        WhereClause whereClause = new WhereClause.Builder()
-                .where(PublicContract.Menu.CATEGORY_NAME, EQUALS, "Sandwiches")
-                .where(PublicContract.Menu.MENU_ITEM_NAME, EQUALS, "BLT")
-                .build();
-        String[] projection = new String[]{PublicContract.Menu.CATEGORY_NAME};
-        Cursor cursor = resolver.query(PublicContract.MENU_URI, projection, whereClause.selection, whereClause.selectionArgs, null);
-        assertThat(cursor).isNotNull();
-        assertThat(cursor.getCount()).isEqualTo(1);     // Verifies the behavior because only the view has both of those columns
-        assertThat(cursor.getColumnCount()).isEqualTo(1);   // Verifies that the projection is respected
     }
 
     @Test
@@ -201,7 +155,7 @@ public class TruckMuncherContentProviderTest {
         queryTruckStateHitsTruckStateTable();
 
         ContentValues values = new ContentValues();
-        values.put(PublicContract.Truck.NAME, "The Sandwich Makers");
+        values.put(PublicContract.Truck.ID, "The Sandwich Makers");
 
         // Make sure the selection is respected
         WhereClause whereClause = new WhereClause.Builder()
@@ -319,7 +273,7 @@ public class TruckMuncherContentProviderTest {
         assertThat(inserted).isEqualTo(1);
 
         // Verify that the mock data indeed exists
-        Cursor cursor = resolver.query(PublicContract.TRUCK_URI, null, null, null, null);
+        Cursor cursor = SqlOpenHelper.newInstance(Robolectric.application).getReadableDatabase().query(Tables.TRUCK_PROPERTIES, null, null, null, null, null, null);
         assertThat(cursor).isNotNull();
         assertThat(cursor.getCount()).isEqualTo(1);
         cursor.moveToFirst();
@@ -356,7 +310,7 @@ public class TruckMuncherContentProviderTest {
         assertThat(inserted).isEqualTo(1);
 
         // Verify that the mock data indeed exists
-        Cursor cursor = resolver.query(PublicContract.TRUCK_URI, null, null, null, null);
+        Cursor cursor = resolver.query(Contract.TRUCK_STATE_URI, null, null, null, null);
         assertThat(cursor).isNotNull();
         assertThat(cursor.getCount()).isEqualTo(1);
         cursor.moveToFirst();

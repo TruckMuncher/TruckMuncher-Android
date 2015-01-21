@@ -2,6 +2,7 @@ package com.truckmuncher.truckmuncher.customer;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.text.style.StrikethroughSpan;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +24,11 @@ import butterknife.InjectView;
  */
 public class MenuAdapter extends SectionCursorAdapter {
 
-    public MenuAdapter(Context context) {
+    private final String categoryColorHex;
+
+    public MenuAdapter(Context context, String categoryColorHex) {
         super(context, null, 0);
+        this.categoryColorHex = categoryColorHex;
     }
 
     @Override
@@ -34,7 +38,12 @@ public class MenuAdapter extends SectionCursorAdapter {
 
     @Override
     protected View newSectionView(Context context, Object o, ViewGroup viewGroup) {
-        return getLayoutInflater().inflate(R.layout.list_item_menu_category, viewGroup, false);
+        TextView view = (TextView) getLayoutInflater().inflate(R.layout.list_item_menu_category, viewGroup, false);
+        if (categoryColorHex != null) {
+            view.setBackgroundColor(Color.parseColor(categoryColorHex));
+            view.setTextColor(ColorCorrector.calculateTextColor(categoryColorHex));
+        }
+        return view;
     }
 
     @Override
