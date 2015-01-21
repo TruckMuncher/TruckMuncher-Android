@@ -22,8 +22,6 @@ import com.twitter.sdk.android.Twitter;
 public class VendorHomeActivity extends ActionBarActivity implements
         VendorMapFragment.OnMapLocationChangedListener, VendorHomeFragment.OnServingModeChangedListener {
 
-    public static final String USERNAME = "VendorHomeActivity.username";
-
     private AccountManager accountManager;
 
     @Override
@@ -35,12 +33,6 @@ public class VendorHomeActivity extends ActionBarActivity implements
         startService(new Intent(this, VendorTrucksService.class));
 
         accountManager = AccountManager.get(this);
-
-        Bundle extras = getIntent().getExtras();
-
-        if (extras.getString(USERNAME) != null) {
-            setTitle(extras.getString(USERNAME));
-        }
     }
 
     @Override

@@ -52,6 +52,7 @@ public class VendorHomeFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
+        serviceHelper = new VendorHomeServiceHelper();
 
         if (savedInstanceState != null) {
             currentLocation = savedInstanceState.getParcelable(ARG_CURRENT_LOCATION);
