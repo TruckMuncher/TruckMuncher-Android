@@ -124,6 +124,9 @@ public class TruckMuncherContentProvider extends ContentProvider {
             case TRUCK_STATE:
                 tableName = Tables.TRUCK_STATE;
                 break;
+            case TRUCK_PROPERTIES:
+                tableName = Tables.TRUCK_PROPERTIES;
+                break;
             case MENU:
                 tableName = Tables.MENU;
 
@@ -219,6 +222,7 @@ public class TruckMuncherContentProvider extends ContentProvider {
     public int bulkInsert(Uri uri, @NonNull ContentValues[] valuesList) {
         SQLiteDatabase db = database.getWritableDatabase();
         int returnCount = 0;
+        boolean suppressNotification = Contract.isSuppressNotify(uri);
 
         String tableName;
         switch (uriMatcher.match(uri)) {
@@ -230,11 +234,11 @@ public class TruckMuncherContentProvider extends ContentProvider {
                 break;
             case TRUCK_PROPERTIES:
                 tableName = Tables.TRUCK_PROPERTIES;
-                uri = PublicContract.TRUCK_URI;
+                uri = suppressNotification ? Contract.suppressNotify(PublicContract.TRUCK_URI) : PublicContract.TRUCK_URI;
                 break;
             case TRUCK_STATE:
                 tableName = Tables.TRUCK_STATE;
-                uri = PublicContract.TRUCK_URI;
+                uri = suppressNotification ? Contract.suppressNotify(PublicContract.TRUCK_URI) : PublicContract.TRUCK_URI;
                 break;
             default:
                 Timber.w(new UnsupportedOperationException(), "Attempting a bulk insert for an unsupported URI, %s. Falling back to normal inserts...", uri);
@@ -257,7 +261,7 @@ public class TruckMuncherContentProvider extends ContentProvider {
             }
         }
 
-        if (returnCount > 0 && !Contract.isSuppressNotify(uri)) {
+        if (returnCount > 0 && !suppressNotification) {
             getContext().getContentResolver().notifyChange(uri, null, Contract.isSyncToNetwork(uri));
         }
 

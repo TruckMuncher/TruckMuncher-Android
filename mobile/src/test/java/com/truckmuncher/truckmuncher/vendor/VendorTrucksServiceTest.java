@@ -73,6 +73,15 @@ public class VendorTrucksServiceTest {
                 return 0;
             }
         });
+        provider.enqueue(new VerifiableContentProvider.BulkInsertEvent() {
+
+            @Override
+            public int onBulkInsert(Uri uri, @NonNull ContentValues[] values) {
+                assertThat(values[0].getAsString(PublicContract.Truck.ID)).isEqualTo("ID");
+                assertThat(values[0].getAsBoolean(PublicContract.Truck.OWNED_BY_CURRENT_USER)).isEqualTo(true);
+                return 0;
+            }
+        });
 
         service.onHandleIntent(null);
 

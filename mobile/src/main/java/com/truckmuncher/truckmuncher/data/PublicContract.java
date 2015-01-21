@@ -50,6 +50,7 @@ public class PublicContract {
         public static final String MATCHED_SEARCH = "matched_search";
         public static final String LATITUDE = "latitude";
         public static final String LONGITUDE = "longitude";
+        public static final String OWNED_BY_CURRENT_USER = "owned_by_current_user";
     }
 
     public interface Menu {
