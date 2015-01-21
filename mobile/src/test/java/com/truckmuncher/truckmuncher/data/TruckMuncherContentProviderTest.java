@@ -215,7 +215,7 @@ public class TruckMuncherContentProviderTest {
         queryTruckStateHitsTruckStateTable();
 
         ContentValues values = new ContentValues();
-        values.put(PublicContract.Truck.IS_SERVING, true);
+        values.put(PublicContract.Truck.ID, "The Sandwich Makers");
 
         // Make sure the selection is respected
         WhereClause whereClause = new WhereClause.Builder()
@@ -333,7 +333,7 @@ public class TruckMuncherContentProviderTest {
         assertThat(inserted).isEqualTo(1);
 
         // Verify that the mock data indeed exists
-        Cursor cursor = resolver.query(Contract.TRUCK_PROPERTIES_URI, null, null, null, null);
+        Cursor cursor = SqlOpenHelper.newInstance(Robolectric.application).getReadableDatabase().query(Tables.TRUCK_PROPERTIES, null, null, null, null, null, null);
         assertThat(cursor).isNotNull();
         assertThat(cursor.getCount()).isEqualTo(1);
         cursor.moveToFirst();
