@@ -4,6 +4,7 @@ import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
 import com.truckmuncher.truckmuncher.data.sql.SqlOpenHelper;
@@ -80,14 +81,18 @@ public class TruckMuncherContentProviderTest {
 
     @Test
     public void queryTruckHitsTruckView() {
+        SQLiteDatabase db = SqlOpenHelper.newInstance(Robolectric.application).getWritableDatabase();
 
         // Populate some data
         ContentValues values = new ContentValues();
+        values.put(PublicContract.Truck.ID, "Truck_1");
         values.put(PublicContract.Truck.NAME, "The Sandwich Makers");
-        SqlOpenHelper.newInstance(Robolectric.application).getWritableDatabase().insert(Tables.TRUCK_PROPERTIES, null, values);
+        db.insert(Tables.TRUCK_PROPERTIES, null, values);
 
-        values.put(PublicContract.Truck.IS_SERVING, true);
-        SqlOpenHelper.newInstance(Robolectric.application).getWritableDatabase().insert(Tables.TRUCK_STATE, null, values);
+        ContentValues stateValues = new ContentValues();
+        stateValues.put(PublicContract.Truck.ID, "Truck_1");
+        stateValues.put(PublicContract.Truck.IS_SERVING, true);
+        db.insert(Tables.TRUCK_STATE, null, stateValues);
 
         // Make sure we got our data
         WhereClause whereClause = new WhereClause.Builder()
@@ -126,14 +131,23 @@ public class TruckMuncherContentProviderTest {
 
     @Test
     public void queryMenuHitsMenuView() {
+        SQLiteDatabase db = SqlOpenHelper.newInstance(Robolectric.application).getWritableDatabase();
 
         // Populate some data
-        ContentValues values = new ContentValues();
-        values.put(PublicContract.Category.NAME, "Sandwiches");
-        SqlOpenHelper.newInstance(Robolectric.application).getWritableDatabase().insert(Tables.CATEGORY, null, values);
+        ContentValues truckValues = new ContentValues();
+        truckValues.put(PublicContract.Truck.ID, "Truck_1");
+        db.insert(Tables.TRUCK_PROPERTIES, null, truckValues);
 
-        values.put(PublicContract.MenuItem.NAME, "BLT");
-        SqlOpenHelper.newInstance(Robolectric.application).getWritableDatabase().insert(Tables.MENU_ITEM, null, values);
+        ContentValues categoryValues = new ContentValues();
+        categoryValues.put(PublicContract.Category.NAME, "Sandwiches");
+        categoryValues.put(PublicContract.Category.ID, "Category_1");
+        categoryValues.put(PublicContract.Category.TRUCK_ID, "Truck_1");
+        db.insert(Tables.CATEGORY, null, categoryValues);
+
+        ContentValues itemValues = new ContentValues();
+        itemValues.put(PublicContract.MenuItem.NAME, "BLT");
+        itemValues.put(PublicContract.MenuItem.CATEGORY_ID, "Category_1");
+        db.insert(Tables.MENU_ITEM, null, itemValues);
 
         // Make sure we got our data
         WhereClause whereClause = new WhereClause.Builder()
@@ -201,7 +215,7 @@ public class TruckMuncherContentProviderTest {
         queryTruckStateHitsTruckStateTable();
 
         ContentValues values = new ContentValues();
-        values.put(PublicContract.Truck.NAME, "The Sandwich Makers");
+        values.put(PublicContract.Truck.IS_SERVING, true);
 
         // Make sure the selection is respected
         WhereClause whereClause = new WhereClause.Builder()
@@ -319,7 +333,7 @@ public class TruckMuncherContentProviderTest {
         assertThat(inserted).isEqualTo(1);
 
         // Verify that the mock data indeed exists
-        Cursor cursor = resolver.query(PublicContract.TRUCK_URI, null, null, null, null);
+        Cursor cursor = resolver.query(Contract.TRUCK_PROPERTIES_URI, null, null, null, null);
         assertThat(cursor).isNotNull();
         assertThat(cursor.getCount()).isEqualTo(1);
         cursor.moveToFirst();
@@ -356,7 +370,7 @@ public class TruckMuncherContentProviderTest {
         assertThat(inserted).isEqualTo(1);
 
         // Verify that the mock data indeed exists
-        Cursor cursor = resolver.query(PublicContract.TRUCK_URI, null, null, null, null);
+        Cursor cursor = resolver.query(Contract.TRUCK_STATE_URI, null, null, null, null);
         assertThat(cursor).isNotNull();
         assertThat(cursor.getCount()).isEqualTo(1);
         cursor.moveToFirst();
