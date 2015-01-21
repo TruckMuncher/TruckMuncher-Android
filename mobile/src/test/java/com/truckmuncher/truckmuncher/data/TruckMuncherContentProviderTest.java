@@ -4,6 +4,7 @@ import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
 import com.truckmuncher.truckmuncher.data.sql.SqlOpenHelper;
@@ -79,6 +80,33 @@ public class TruckMuncherContentProviderTest {
     }
 
     @Test
+    public void queryTruckHitsTruckView() {
+        SQLiteDatabase db = SqlOpenHelper.newInstance(Robolectric.application).getWritableDatabase();
+
+        // Populate some data
+        ContentValues values = new ContentValues();
+        values.put(PublicContract.Truck.ID, "Truck_1");
+        values.put(PublicContract.Truck.NAME, "The Sandwich Makers");
+        db.insert(Tables.TRUCK_PROPERTIES, null, values);
+
+        ContentValues stateValues = new ContentValues();
+        stateValues.put(PublicContract.Truck.ID, "Truck_1");
+        stateValues.put(PublicContract.Truck.IS_SERVING, true);
+        db.insert(Tables.TRUCK_STATE, null, stateValues);
+
+        // Make sure we got our data
+        WhereClause whereClause = new WhereClause.Builder()
+                .where(PublicContract.Truck.NAME, EQUALS, "The Sandwich Makers")
+                .where(PublicContract.Truck.IS_SERVING, EQUALS, true)
+                .build();
+        String[] projection = new String[]{PublicContract.Truck.NAME};
+        Cursor cursor = resolver.query(PublicContract.TRUCK_URI, projection, whereClause.selection, whereClause.selectionArgs, null);
+        assertThat(cursor).isNotNull();
+        assertThat(cursor.getCount()).isEqualTo(1);     // Verifies the behavior because only the view has both of those columns
+        assertThat(cursor.getColumnCount()).isEqualTo(1);   // Verifies that the projection is respected
+    }
+
+    @Test
     public void queryTruckStateHitsTruckStateTable() {
 
         // Populate some data
@@ -99,6 +127,38 @@ public class TruckMuncherContentProviderTest {
         cursor = resolver.query(Contract.TRUCK_STATE_URI, null, whereClause.selection, whereClause.selectionArgs, null);
         assertThat(cursor).isNotNull();
         assertThat(cursor.getCount()).isZero();
+    }
+
+    @Test
+    public void queryMenuHitsMenuView() {
+        SQLiteDatabase db = SqlOpenHelper.newInstance(Robolectric.application).getWritableDatabase();
+
+        // Populate some data
+        ContentValues truckValues = new ContentValues();
+        truckValues.put(PublicContract.Truck.ID, "Truck_1");
+        db.insert(Tables.TRUCK_PROPERTIES, null, truckValues);
+
+        ContentValues categoryValues = new ContentValues();
+        categoryValues.put(PublicContract.Category.NAME, "Sandwiches");
+        categoryValues.put(PublicContract.Category.ID, "Category_1");
+        categoryValues.put(PublicContract.Category.TRUCK_ID, "Truck_1");
+        db.insert(Tables.CATEGORY, null, categoryValues);
+
+        ContentValues itemValues = new ContentValues();
+        itemValues.put(PublicContract.MenuItem.NAME, "BLT");
+        itemValues.put(PublicContract.MenuItem.CATEGORY_ID, "Category_1");
+        db.insert(Tables.MENU_ITEM, null, itemValues);
+
+        // Make sure we got our data
+        WhereClause whereClause = new WhereClause.Builder()
+                .where(PublicContract.Menu.CATEGORY_NAME, EQUALS, "Sandwiches")
+                .where(PublicContract.Menu.MENU_ITEM_NAME, EQUALS, "BLT")
+                .build();
+        String[] projection = new String[]{PublicContract.Menu.CATEGORY_NAME};
+        Cursor cursor = resolver.query(PublicContract.MENU_URI, projection, whereClause.selection, whereClause.selectionArgs, null);
+        assertThat(cursor).isNotNull();
+        assertThat(cursor.getCount()).isEqualTo(1);     // Verifies the behavior because only the view has both of those columns
+        assertThat(cursor.getColumnCount()).isEqualTo(1);   // Verifies that the projection is respected
     }
 
     @Test

@@ -31,7 +31,6 @@ public class VendorHomeFragment extends Fragment {
 
     private Location currentLocation;
     private OnServingModeChangedListener onServingModeChangedListener;
-    private VendorHomeServiceHelper serviceHelper;
 
     @Override
     public void onAttach(Activity activity) {
@@ -52,7 +51,6 @@ public class VendorHomeFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        serviceHelper = new VendorHomeServiceHelper();
 
         if (savedInstanceState != null) {
             currentLocation = savedInstanceState.getParcelable(ARG_CURRENT_LOCATION);
@@ -85,10 +83,7 @@ public class VendorHomeFragment extends Fragment {
 
         updateAnimation(isChecked);
 
-        // FIXME Need to use a real truck id, not a mock one
-        serviceHelper.changeServingState(getActivity(), "de513002-5a44-11e4-aa15-123b93f75cba", isChecked, currentLocation);
-
-        onServingModeChangedListener.onServingModeChanged(isChecked);
+        onServingModeChangedListener.onServingModeChanged(isChecked, currentLocation);
     }
 
     public void onLocationUpdate(Location location) {
@@ -110,6 +105,6 @@ public class VendorHomeFragment extends Fragment {
     }
 
     interface OnServingModeChangedListener {
-        void onServingModeChanged(boolean enabled);
+        void onServingModeChanged(boolean enabled, Location currentLocation);
     }
 }

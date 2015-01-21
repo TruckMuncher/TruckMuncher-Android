@@ -56,20 +56,30 @@ public class VendorTrucksService extends IntentService {
             TrucksForVendorResponse response = truckService.getTrucksForVendor(new TrucksForVendorRequest());
 
             List<Truck> trucks = response.trucks;
-            ContentValues[] contentValues = new ContentValues[trucks.size()];
+            ContentValues[] propertiesContentValues = new ContentValues[trucks.size()];
+            ContentValues[] stateContentValues = new ContentValues[trucks.size()];
+
             for (int i = 0, max = trucks.size(); i < max; i++) {
                 Truck truck = trucks.get(i);
-                ContentValues values = new ContentValues();
-                values.put(PublicContract.Truck.ID, truck.id);
-                values.put(PublicContract.Truck.NAME, truck.name);
-                values.put(PublicContract.Truck.IMAGE_URL, truck.imageUrl);
-                values.put(PublicContract.Truck.KEYWORDS, Contract.convertListToString(truck.keywords));
-                values.put(PublicContract.Truck.COLOR_PRIMARY, truck.primaryColor);
-                values.put(PublicContract.Truck.COLOR_SECONDARY, truck.secondaryColor);
-                contentValues[i] = values;
+                ContentValues propertiesValues = new ContentValues();
+                propertiesValues.put(PublicContract.Truck.ID, truck.id);
+                propertiesValues.put(PublicContract.Truck.NAME, truck.name);
+                propertiesValues.put(PublicContract.Truck.IMAGE_URL, truck.imageUrl);
+                propertiesValues.put(PublicContract.Truck.KEYWORDS, Contract.convertListToString(truck.keywords));
+                propertiesValues.put(PublicContract.Truck.COLOR_PRIMARY, truck.primaryColor);
+                propertiesValues.put(PublicContract.Truck.COLOR_SECONDARY, truck.secondaryColor);
+                propertiesContentValues[i] = propertiesValues;
+
+                ContentValues stateValues = new ContentValues();
+                stateValues.put(PublicContract.Truck.ID, truck.id);
+                stateValues.put(PublicContract.Truck.OWNED_BY_CURRENT_USER, true);
+                stateContentValues[i] = stateValues;
             }
 
-            getContentResolver().bulkInsert(Contract.TRUCK_PROPERTIES_URI, contentValues);
+            // Set suppressNotify on the first transaction since they both notify the same uri
+            // and there is not need to do a notify after both of them.
+            getContentResolver().bulkInsert(Contract.suppressNotify(Contract.TRUCK_PROPERTIES_URI), propertiesContentValues);
+            getContentResolver().bulkInsert(Contract.TRUCK_STATE_URI, stateContentValues);
         } catch (SocialCredentialsException sce) {
             // TODO Implement
             throw new UnsupportedOperationException("not yet implemented");

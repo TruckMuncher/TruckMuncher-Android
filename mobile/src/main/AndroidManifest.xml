@@ -99,7 +99,7 @@
             android:name=".vendor.VendorTrucksService"
             android:exported="false" />
         <service
-            android:name=".vendor.menuadmin.ResetVendorTrucksService"
+            android:name=".vendor.ResetVendorTrucksService"
             android:exported="false" />
         <service
             android:name=".menu.MenuUpdateService"
@@ -124,7 +124,7 @@
             android:value="${googleMapsKey}" />
         <meta-data
             android:name="com.crashlytics.ApiKey"
-            android:value="784b0d9a3411f2869fc76515d00b3c512e0d381c" />
+            android:value="2d3548a0b8747eb27b8284162847057e23ccae1f" />
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="\ 691864144229001" />
