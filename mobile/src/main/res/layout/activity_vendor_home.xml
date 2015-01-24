@@ -4,14 +4,14 @@
 
     <fragment
         android:id="@+id/vendor_map_fragment"
-        android:name="com.truckmuncher.truckmuncher.vendor.VendorMapFragment"
+        android:name="com.truckmuncher.app.vendor.VendorMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="vendor.VendorHomeActivity" />
 
     <fragment
         android:id="@+id/vendor_home_fragment"
-        android:name="com.truckmuncher.truckmuncher.vendor.VendorHomeFragment"
+        android:name="com.truckmuncher.app.vendor.VendorHomeFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="vendor.VendorHomeActivity" />

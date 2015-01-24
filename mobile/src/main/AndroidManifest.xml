@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.truckmuncher.truckmuncher">
+    package="com.truckmuncher.app">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -24,13 +24,13 @@
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
 
     <application
-        android:name=".App"
+        android:name="com.truckmuncher.app.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.truckmuncher.app.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop">
             <meta-data
@@ -50,20 +50,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".vendor.VendorHomeActivity"
+            android:name="com.truckmuncher.app.vendor.VendorHomeActivity"
             android:label="@string/app_name" />
         <activity
-            android:name=".authentication.AuthenticatorActivity"
+            android:name="com.truckmuncher.app.authentication.AuthenticatorActivity"
             android:label="@string/title_sign_in"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName="com.truckmuncher.app.MainActivity"
             tools:ignore="unusedAttribute">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.truckmuncher.truckmuncher.MainActivity" />
+                android:value="com.truckmuncher.app.MainActivity" />
         </activity>
 
         <service
-            android:name=".authentication.AuthenticatorService"
+            android:name="com.truckmuncher.app.authentication.AuthenticatorService"
             android:enabled="true"
             android:exported="true"
             tools:ignore="ExportedService">
@@ -76,7 +76,7 @@
                 android:resource="@xml/authenticator" />
         </service>
         <service
-            android:name=".data.sync.SyncService"
+            android:name="com.truckmuncher.app.data.sync.SyncService"
             android:enabled="true"
             android:exported="true"
             android:process=":sync"
@@ -90,26 +90,26 @@
                 android:resource="@xml/syncadapter" />
         </service>
         <service
-            android:name=".customer.ActiveTrucksService"
+            android:name="com.truckmuncher.app.customer.ActiveTrucksService"
             android:exported="false" />
         <service
-            android:name=".customer.SimpleSearchService"
+            android:name="com.truckmuncher.app.customer.SimpleSearchService"
             android:exported="false" />
         <service
-            android:name=".vendor.VendorTrucksService"
+            android:name="com.truckmuncher.app.vendor.VendorTrucksService"
             android:exported="false" />
         <service
-            android:name=".vendor.ResetVendorTrucksService"
+            android:name="com.truckmuncher.app.vendor.ResetVendorTrucksService"
             android:exported="false" />
         <service
-            android:name=".menu.MenuUpdateService"
+            android:name="com.truckmuncher.app.menu.MenuUpdateService"
             android:exported="false" />
         <service
-            android:name=".vendor.menuadmin.MenuItemDiffService"
+            android:name="com.truckmuncher.app.vendor.menuadmin.MenuItemDiffService"
             android:exported="false" />
 
         <provider
-            android:name=".data.TruckMuncherContentProvider"
+            android:name="com.truckmuncher.app.data.TruckMuncherContentProvider"
             android:authorities="${applicationId}.provider"
             android:enabled="true"
             android:exported="false"
@@ -130,7 +130,7 @@
             android:value="\ 691864144229001" />
 
         <service
-            android:name=".customer.GetTruckProfilesService"
+            android:name="com.truckmuncher.app.customer.GetTruckProfilesService"
             android:exported="false" />
     </application>
 
