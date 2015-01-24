@@ -34,7 +34,7 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "com.truckmuncher.truckmuncher"
+        applicationId "com.truckmuncher.app"
         minSdkVersion 15
         targetSdkVersion 21
         versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
@@ -64,14 +64,14 @@ android {
 
     buildTypes {
         release {
-            manifestPlaceholders = [googleMapsKey: ""]
+            manifestPlaceholders = [googleMapsKey: TRUCK_MUNCHER_GOOGLE_MAPS_KEY]
             testCoverageEnabled false   // Incompatible with Dagger
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
         debug {
-            manifestPlaceholders = [googleMapsKey: "AIzaSyCViPU_TIFcwHQUmPXY21EowkO2XtCFI9s"]
+            manifestPlaceholders = [googleMapsKey: "AIzaSyD9O-7TbkrDzHp9tboo4Jx4v5FVE4JSE4Q"]
             testCoverageEnabled false   // Incompatible with Dagger
             versionNameSuffix ".debug"
             applicationIdSuffix ".debug"

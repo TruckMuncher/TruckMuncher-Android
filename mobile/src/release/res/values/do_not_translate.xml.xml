@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="package_name" translatable="false">com.truckmuncher.truckmuncher</string>
+    <string name="package_name" translatable="false">com.truckmuncher.app</string>
 </resources>
