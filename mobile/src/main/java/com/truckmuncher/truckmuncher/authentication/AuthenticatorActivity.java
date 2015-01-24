@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
-import com.truckmuncher.truckmuncher.R;
 import com.truckmuncher.truckmuncher.data.PublicContract;
 
 public class AuthenticatorActivity extends ActionBarAccountAuthenticatorActivity

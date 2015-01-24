@@ -149,6 +149,10 @@ public class LoginFragment extends Fragment {
     }
 
     private void onSessionStateChange(final Session session, SessionState state, Exception exception) {
+        if (exception != null) {
+            Timber.e("Facebook error: %s", exception.getMessage());
+        }
+
         if (state.isOpened()) {
             Request request = Request.newMeRequest(session, new Request.GraphUserCallback() {
                 @Override
