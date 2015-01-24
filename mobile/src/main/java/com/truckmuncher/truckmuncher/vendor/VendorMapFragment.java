@@ -29,6 +29,9 @@ public class VendorMapFragment extends ApiClientFragment {
 
     private static final String ARG_MAP_STATE = "map_state";
 
+    private static final int REFRESH_INTERVAL = 30 * 1000; // 30 seconds
+    private static final int FASTEST_REFRESH_INTERVAL = 10 * 1000; // 10 seconds
+
     @InjectView(R.id.map)
     MapView mapView;
 
@@ -169,7 +172,8 @@ public class VendorMapFragment extends ApiClientFragment {
 
         request = new LocationRequest()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(5000);
+                .setFastestInterval(FASTEST_REFRESH_INTERVAL)
+                .setInterval(REFRESH_INTERVAL);
         LocationServices.FusedLocationApi.requestLocationUpdates(apiClient, request, this);
     }
 

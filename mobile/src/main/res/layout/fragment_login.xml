@@ -1,40 +1,40 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp">
+    android:orientation="vertical"
+    android:padding="40dp">
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/twitter_button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="54dp"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:layout_gravity="center_horizontal"
         android:importantForAccessibility="no"
-        android:src="@drawable/placeholder_logo" />
+        android:src="@drawable/logo" />
 
-    <ImageView
-        android:id="@+id/twitter_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/facebook_button"
-        android:layout_alignLeft="@+id/facebook_button"
-        android:layout_alignStart="@+id/facebook_button"
-        android:layout_gravity="center_vertical"
-        android:layout_marginBottom="8dp"
-        android:contentDescription="@string/access_twitter_login"
-        android:src="@drawable/twitter_login" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2">
 
-    <ImageView
-        android:id="@+id/facebook_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center_vertical"
-        android:layout_marginBottom="133dp"
-        android:contentDescription="@string/access_facebook_login"
-        android:src="@drawable/facebook_login" />
+        <com.twitter.sdk.android.core.identity.TwitterLoginButton
+            android:id="@+id/twitter_login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
 
-</RelativeLayout>
+        <com.facebook.widget.LoginButton
+            android:id="@+id/facebook_login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/twitter_login_button"
+            android:layout_alignLeft="@+id/twitter_login_button"
+            android:layout_alignRight="@+id/twitter_login_button"
+            android:layout_alignStart="@+id/twitter_login_button"
+            android:layout_below="@+id/twitter_login_button"
+            android:layout_marginTop="8dp" />
+    </RelativeLayout>
+
+</LinearLayout>

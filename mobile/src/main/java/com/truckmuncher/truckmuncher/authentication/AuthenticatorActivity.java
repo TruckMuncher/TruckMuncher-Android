@@ -2,6 +2,7 @@ package com.truckmuncher.truckmuncher.authentication;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.Fragment;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,13 +19,17 @@ public class AuthenticatorActivity extends ActionBarAccountAuthenticatorActivity
     public final static String ARG_IS_ADDING_NEW_ACCOUNT = "is_adding_account";
 
     private AccountManager accountManager;
+    private Fragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        fragment = LoginFragment.newInstance();
+
         getFragmentManager().beginTransaction()
-                .add(android.R.id.content, LoginFragment.newInstance())
+                .add(android.R.id.content, fragment)
                 .commit();
 
         accountManager = AccountManager.get(this);
@@ -63,5 +68,14 @@ public class AuthenticatorActivity extends ActionBarAccountAuthenticatorActivity
         setAccountAuthenticatorResult(result);
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (fragment != null) {
+            fragment.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

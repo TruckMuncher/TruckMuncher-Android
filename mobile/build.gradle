@@ -1,18 +1,18 @@
 buildscript {
     repositories {
-        maven { url 'http://download.crashlytics.com/maven' }
         mavenCentral()
+        maven { url 'https://maven.fabric.io/public' }
     }
 
     dependencies {
-        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.14.3'
         classpath 'com.github.jcandksolutions.gradle:android-unit-test:2.1.1'
+        classpath 'io.fabric.tools:gradle:1.14.4'
     }
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
 apply plugin: 'hugo'
-apply plugin: 'crashlytics'
 apply plugin: 'monkey'
 
 def onCI = "CI".equals(System.getenv("SYSTEM_TYPE"))
@@ -139,8 +139,10 @@ dependencies {
     compile 'com.squareup.retrofit:converter-wire:1.7.0'
 
     // Logging
-    compile 'com.crashlytics.android:crashlytics:1.1.11'
     compile 'com.jakewharton.timber:timber:2.4.1'
+    compile('com.crashlytics.sdk.android:crashlytics:2.2.0@aar'){
+        transitive = true;
+    }
 
     // UI Utils
     compile 'com.volkhart:android-util:1.0.0-SNAPSHOT@aar'
@@ -170,10 +172,13 @@ dependencies {
 
     testCompile project(':testlib')
     testCompile 'org.mockito:mockito-core:1.10.8'
+    compile('com.twitter.sdk.android:twitter:1.1.1@aar') {
+        transitive = true;
+    }
 }
 
 repositories {
-    maven { url 'http://download.crashlytics.com/maven' }
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     jcenter()
+    maven { url 'https://maven.fabric.io/public' }
 }

@@ -19,6 +19,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
         LoggerStarter.start(this);
         graph = ObjectGraph.create(Modules.list(this));
     }
