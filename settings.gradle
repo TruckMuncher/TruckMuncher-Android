@@ -1,5 +1,4 @@
 include ':mobile'
 include ':facebook'
-include ':AndroidSocialNetworks'
 include ':minified-guava'
 include ':testlib'
