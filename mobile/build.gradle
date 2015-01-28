@@ -132,14 +132,14 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:6.5.87'
     compile 'com.google.maps.android:android-maps-utils:0.3.3'
     compile project(':facebook')
+    compile project(':api')
 
     // Network and Data stack
-    compile 'com.squareup.picasso:picasso:2.3.4'
-    compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
-    compile 'com.squareup.retrofit:converter-wire:1.7.0'
+    compile 'com.squareup.picasso:picasso:2.4.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.2.0'
 
     // Logging
-    compile 'com.jakewharton.timber:timber:2.4.1'
+    compile 'com.jakewharton.timber:timber:2.5.1'
     compile('com.crashlytics.sdk.android:crashlytics:2.2.0@aar') {
         transitive = true;
     }
@@ -158,13 +158,13 @@ dependencies {
 
     compile project(':minified-guava')
 
-    debugCompile 'com.squareup.retrofit:retrofit-mock:1.7.0'
+    debugCompile 'com.squareup.retrofit:retrofit-mock:1.9.0'
 
     androidTestCompile 'com.squareup.assertj:assertj-android:1.0.0'
     androidTestCompile('com.jakewharton.espresso:espresso:1.1-r3') {
         exclude group: 'com.squareup.dagger'
     }
-    androidTestCompile('com.squareup.okhttp:mockwebserver:2.0.0') {
+    androidTestCompile('com.squareup.okhttp:mockwebserver:2.2.0') {
         exclude group: 'com.squareup.okhttp', module: 'okhttp'
     }
     androidTestCompile 'org.mockito:mockito-core:1.10.8'

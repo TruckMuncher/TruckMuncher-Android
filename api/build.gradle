@@ -1,0 +1,9 @@
+apply plugin: 'java'
+
+dependencies {
+    compile 'com.squareup.retrofit:converter-wire:1.9.0'
+}
+
+repositories {
+    mavenCentral()
+}
