@@ -11,7 +11,7 @@
 
     <fragment
         android:id="@+id/customer_map_fragment"
-        android:name="com.truckmuncher.truckmuncher.customer.CustomerMapFragment"
+        android:name="com.truckmuncher.app.customer.CustomerMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="MainActivity" />
