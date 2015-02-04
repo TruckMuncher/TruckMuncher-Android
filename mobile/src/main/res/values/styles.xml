@@ -9,6 +9,19 @@
         <item name="android:fastScrollThumbDrawable">@drawable/fastscroll_thumb</item>
     </style>
 
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="android:spinnerItemStyle">@style/ActionBarSpinnerItem</item>
+    </style>
+
+    <style name="ActionBarSpinnerItem" parent="android:Widget.TextView.SpinnerItem">
+        <item name="android:textAppearance">@style/ActionBarTextAppearanceSpinnerItem</item>
+    </style>
+
+    <style name="ActionBarTextAppearanceSpinnerItem" parent="android:TextAppearance.Widget.TextView.SpinnerItem">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
     <style name="VendorHud">
         <item name="android:textColor">@color/mold</item>
         <item name="android:textSize">@dimen/vendor_hud_text_size</item>
