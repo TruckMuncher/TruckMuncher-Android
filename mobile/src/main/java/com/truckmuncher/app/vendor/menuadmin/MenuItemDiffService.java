@@ -1,6 +1,7 @@
 package com.truckmuncher.app.vendor.menuadmin;
 
 import android.app.IntentService;
+import android.app.Notification;
 import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,7 +9,10 @@ import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.os.Parcelable;
 import android.os.RemoteException;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 
+import com.truckmuncher.app.R;
 import com.truckmuncher.app.data.Contract;
 import com.truckmuncher.app.data.sql.WhereClause;
 
@@ -24,6 +28,7 @@ import static com.truckmuncher.app.data.sql.WhereClause.Operator.EQUALS;
 public class MenuItemDiffService extends IntentService {
 
     private static final String ARG_VALUES = "content_values";
+    private static final int NOTIFICATION_ID = 9876;
 
     public MenuItemDiffService() {
         super(MenuItemDiffService.class.getName());
@@ -63,7 +68,17 @@ public class MenuItemDiffService extends IntentService {
             getContentResolver().applyBatch(CONTENT_AUTHORITY, operations);
         } catch (RemoteException | OperationApplicationException e) {
             Timber.e(e, "Error applying the menu diff to the database");
-            // FIXME notification to the user
+
+            // TODO would be good if this had a pending intent that took the user to where they can resolve the issue
+            // The pending intent can also save the "transient" state and apply it on load?
+            Notification notification = new NotificationCompat.Builder(this)
+                    .setCategory(NotificationCompat.CATEGORY_ERROR)
+                    .setContentTitle(getString(R.string.title_menu_item_diff_notification))
+                    .setContentText(getString(R.string.error_menu_item_diff))
+                    .setSmallIcon(R.drawable.ic_notif_tm)
+                    .setColor(getResources().getColor(R.color.pink))
+                    .build();
+            NotificationManagerCompat.from(this).notify(NOTIFICATION_ID, notification);
         }
     }
 }

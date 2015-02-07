@@ -8,6 +8,7 @@
     <string name="search_hint">Search for trucks</string>
     <string name="title_sign_in">Log in</string>
     <string name="title_facebook_login">Log in with Facebook</string>
+    <string name="title_menu_item_diff_notification">Menu availability error</string>
 
     <!-- Actions -->
     <string name="action_settings">Settings</string>
@@ -22,4 +23,5 @@
     <string name="error_network">Oops, something went wrong. Please check your network connection and try again.</string>
     <string name="error_empty_vendor_menu">It looks like you have not yet added any menu items using the web interface. On Android you can only mark them as being in or out of stock.\n\nVisit the website at https://www.truckmuncher.com</string>
     <string name="error_twitter_auth">Twitter authentication failed. Please try again.</string>
+    <string name="error_menu_item_diff">We could not save your menu availability. Try again.</string>
 </resources>
