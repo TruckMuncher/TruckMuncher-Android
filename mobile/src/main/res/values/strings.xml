@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="auth_token_type_label">Full access to your TruckMuncher account\nYour social network credentials</string>
-    <string name="facebook">Facebook</string>
     <string name="serving_mode">Serving Mode</string>
-    <string name="twitter">Twitter</string>
     <string name="in_stock">In</string>
     <string name="out_of_stock">Out</string>
     <string name="search_title">Search</string>
     <string name="search_hint">Search for trucks</string>
     <string name="title_sign_in">Sign in</string>
+    <string name="title_facebook_login">Login with Facebook</string>
 
     <!-- Actions -->
     <string name="action_settings">Settings</string>
@@ -17,12 +16,9 @@
     <string name="action_menu">Edit menu</string>
 
     <!-- Accessibility -->
-    <string name="access_facebook_login">Login using Facebook</string>
-    <string name="access_twitter_login">Login using Twitter</string>
     <string name="access_vendor_marker_description">Your truck location</string>
 
     <!-- Errors -->
     <string name="error_network">Oops, something went wrong. Please check your network connection and try again.</string>
     <string name="error_empty_vendor_menu">It looks like you have not yet added any menu items using the web interface. On Android you can only mark them as being in or out of stock.\n\nVisit the website at https://www.truckmuncher.com</string>
-    <string name="title_facebook_login">Login with Facebook</string>
 </resources>
