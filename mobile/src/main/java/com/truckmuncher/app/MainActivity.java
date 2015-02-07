@@ -59,6 +59,10 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
+        if (BuildConfig.DEBUG) {
+            App.riseAndShine(this);
+        }
+
         AccountManager accountManager = AccountManager.get(this);
 
         Account[] accounts = accountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
