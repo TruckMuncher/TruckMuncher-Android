@@ -8,33 +8,29 @@
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_weight="3"
         android:layout_gravity="center_horizontal"
+        android:layout_weight="3"
         android:importantForAccessibility="no"
         android:src="@drawable/logo" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_weight="2">
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="2"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
         <com.twitter.sdk.android.core.identity.TwitterLoginButton
             android:id="@+id/twitter_login_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <com.facebook.widget.LoginButton
             android:id="@+id/facebook_login_button"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/twitter_login_button"
-            android:layout_alignLeft="@+id/twitter_login_button"
-            android:layout_alignRight="@+id/twitter_login_button"
-            android:layout_alignStart="@+id/twitter_login_button"
-            android:layout_below="@+id/twitter_login_button"
             android:layout_marginTop="8dp" />
-    </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>
