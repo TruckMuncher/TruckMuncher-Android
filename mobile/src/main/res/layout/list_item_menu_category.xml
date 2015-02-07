@@ -4,8 +4,6 @@
     android:id="@android:id/text1"
     android:layout_width="match_parent"
     android:layout_height="@dimen/list_item_two_line_height"
-    android:gravity="center_vertical"
-    android:paddingLeft="@dimen/list_item_text_padding"
-    android:paddingRight="@dimen/list_item_text_padding"
+    android:gravity="center"
     android:textAppearance="?android:attr/textAppearanceLarge"
     tools:text="Sandwiches" />

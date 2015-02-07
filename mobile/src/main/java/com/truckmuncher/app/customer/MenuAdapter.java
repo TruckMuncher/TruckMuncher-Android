@@ -2,7 +2,6 @@ package com.truckmuncher.app.customer;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.text.style.StrikethroughSpan;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,11 +23,11 @@ import butterknife.InjectView;
  */
 public class MenuAdapter extends SectionCursorAdapter {
 
-    private final String categoryColorHex;
+    private final int textColor;
 
-    public MenuAdapter(Context context, String categoryColorHex) {
+    public MenuAdapter(Context context, int textColor) {
         super(context, null, 0);
-        this.categoryColorHex = categoryColorHex;
+        this.textColor = textColor;
     }
 
     @Override
@@ -39,10 +38,7 @@ public class MenuAdapter extends SectionCursorAdapter {
     @Override
     protected View newSectionView(Context context, Object o, ViewGroup viewGroup) {
         TextView view = (TextView) getLayoutInflater().inflate(R.layout.list_item_menu_category, viewGroup, false);
-        if (categoryColorHex != null) {
-            view.setBackgroundColor(Color.parseColor(categoryColorHex));
-            view.setTextColor(ColorCorrector.calculateTextColor(categoryColorHex));
-        }
+        view.setTextColor(textColor);
         return view;
     }
 
@@ -54,7 +50,10 @@ public class MenuAdapter extends SectionCursorAdapter {
     @Override
     protected View newItemView(Context context, Cursor cursor, ViewGroup parent) {
         View view = getLayoutInflater().inflate(R.layout.list_item_menu_item, parent, false);
-        view.setTag(new ViewHolder(view));
+        ViewHolder holder = new ViewHolder(view);
+        holder.name.setTextColor(textColor);
+        holder.price.setTextColor(textColor);
+        view.setTag(holder);
         return view;
     }
 

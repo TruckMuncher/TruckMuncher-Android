@@ -43,7 +43,7 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
     @InjectView(R.id.header)
     View headerView;
     private MenuAdapter adapter;
-    private String truckSecondaryColor;
+    private String truckPrimaryColor;
 
     public static CustomerMenuFragment newInstance(String truckId) {
         Bundle args = new Bundle();
@@ -110,14 +110,24 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
                 if (data.moveToFirst()) {
 
                     // Wait to load the menu until we have a truck so that we for sure have the category color
-                    truckSecondaryColor = data.getString(TruckQuery.COLOR_SECONDARY);
+                    truckPrimaryColor = data.getString(TruckQuery.COLOR_PRIMARY);
                     getLoaderManager().initLoader(LOADER_MENU, getArguments(), this);
                     bindHeaderView(data);
+
+                    if (truckPrimaryColor != null) {
+                        getListView().setBackgroundColor(Color.parseColor(truckPrimaryColor));
+                    }
                 }
                 break;
             case LOADER_MENU:
                 if (adapter == null) {
-                    adapter = new MenuAdapter(getActivity(), truckSecondaryColor);
+                    int textColor;
+                    if (truckPrimaryColor != null) {
+                        textColor = ColorCorrector.calculateTextColor(truckPrimaryColor);
+                    } else {
+                        textColor = Color.BLACK;
+                    }
+                    adapter = new MenuAdapter(getActivity(), textColor);
                     setListAdapter(adapter);
                 }
                 adapter.swapCursor(data);
@@ -146,7 +156,7 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
             Picasso.with(getActivity()).load(imageUrl).into(truckImage);
         }
 
-        String backgroundColor = cursor.getString(TruckQuery.COLOR_PRIMARY);
+        String backgroundColor = cursor.getString(TruckQuery.COLOR_SECONDARY);
         if (backgroundColor != null) {
             headerView.setBackgroundColor(Color.parseColor(backgroundColor));
             int textColor = ColorCorrector.calculateTextColor(backgroundColor);
