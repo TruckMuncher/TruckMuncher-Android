@@ -76,8 +76,8 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         ButterKnife.reset(this);
+        super.onDestroyView();
     }
 
     @Override

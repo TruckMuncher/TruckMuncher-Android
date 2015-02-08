@@ -3,12 +3,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/list_item_two_line_height"
+    android:layout_height="wrap_content"
     android:gravity="center_vertical"
+    android:paddingBottom="8dp"
     android:paddingEnd="@dimen/list_item_text_padding"
     android:paddingLeft="@dimen/list_item_text_padding"
     android:paddingRight="@dimen/list_item_text_padding"
-    android:paddingStart="@dimen/list_item_text_padding">
+    android:paddingStart="@dimen/list_item_text_padding"
+    android:paddingTop="8dp">
 
     <TextView
         android:id="@+id/name"
@@ -24,9 +26,20 @@
         android:id="@+id/price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@id/name"
-        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold"
         tools:text="$4.25" />
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/name"
+        android:layout_marginTop="8dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textStyle="italic"
+        tools:text="Pulled Rotisserie Chicken, Blue Cheese Spread, Organic Mixed Greens, Bernie's Bacon, Avocado, Oven Roasted Tomatoes Topped With Truck-Made Hot Sauce" />
 </RelativeLayout>

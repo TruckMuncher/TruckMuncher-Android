@@ -1,9 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@android:id/text1"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/list_item_two_line_height"
-    android:gravity="center"
-    android:textAppearance="?android:attr/textAppearanceLarge"
-    tools:text="Sandwiches" />
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/list_item_two_line_height"
+    android:orientation="vertical"
+    android:paddingBottom="8dp"
+    android:paddingEnd="@dimen/list_item_text_padding"
+    android:paddingLeft="@dimen/list_item_text_padding"
+    android:paddingRight="@dimen/list_item_text_padding"
+    android:paddingStart="@dimen/list_item_text_padding"
+    android:paddingTop="8dp">
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="italic"
+        tools:text="Sandwiches" />
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textStyle="italic"
+        tools:text="NOT ALL SANDWICHES ARE AVAILABLE DAILY. GIVE US A CALL TO SEE WHAT WE HAVE ON THE MENU TODAY.\n All Sandwiches Are Served On Our Truck-Made From Scratch Bread\n Add Hand-Cut Russet Fries $1\n Add Hand-Cut Sweet Potato Fries $2\n Add Bernies Bacon $1\n Add Extra Veggies $1" />
+</LinearLayout>
