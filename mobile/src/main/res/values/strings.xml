@@ -9,6 +9,7 @@
     <string name="title_sign_in">Log in</string>
     <string name="title_facebook_login">Log in with Facebook</string>
     <string name="title_menu_item_diff_notification">Menu availability error</string>
+    <string name="saving_menu_availability">Saving menu item availability</string>
 
     <!-- Actions -->
     <string name="action_settings">Settings</string>
