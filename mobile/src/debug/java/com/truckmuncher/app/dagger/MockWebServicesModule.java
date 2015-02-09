@@ -16,16 +16,8 @@ import dagger.Provides;
 import retrofit.MockRestAdapter;
 import retrofit.RestAdapter;
 
-@Module(overrides = true, library = true, complete = false)
-public class MockNetworkModule {
-
-    @Singleton
-    @Provides
-    public RestAdapter provideRestAdapter(RestAdapter.Builder builder) {
-        return builder
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .build();
-    }
+@Module
+public class MockWebServicesModule {
 
     @Singleton
     @Provides
