@@ -1,7 +1,12 @@
 package com.truckmuncher.app;
 
 import android.content.Context;
-import android.test.AndroidTestCase;
+
+import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -12,16 +17,19 @@ import timber.log.Timber;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class LoggerStarterTest extends AndroidTestCase {
+@RunWith(ReadableRobolectricTestRunner.class)
+public class LoggerStarterTest {
 
-    public void testStartMethodIsSynchronized() throws NoSuchMethodException {
+    @Test
+    public void startMethodIsSynchronized() throws NoSuchMethodException {
         Method method = LoggerStarter.class.getMethod("start", Context.class);
         assertThat(Modifier.isSynchronized(method.getModifiers())).isTrue();
     }
 
-    public void testLoggersAreOnlyBeSetupOnce() throws NoSuchFieldException, IllegalAccessException {
-        LoggerStarter.start(getContext());
-        LoggerStarter.start(getContext());
+    @Test
+    public void loggersAreOnlySetupOnce() throws NoSuchFieldException, IllegalAccessException {
+        LoggerStarter.start(Robolectric.application);
+        LoggerStarter.start(Robolectric.application);
 
         Field loggers = Timber.class.getDeclaredField("FOREST");
         loggers.setAccessible(true);
