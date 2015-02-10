@@ -231,7 +231,7 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                String truckId = truckClusterItem.getTruck().id;
+                String truckId = truckClusterItem.getTruckId();
                 viewPager.setCurrentItem(pagerAdapter.getTruckPosition(truckId));
             }
         });
