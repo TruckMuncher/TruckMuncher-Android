@@ -163,6 +163,8 @@ public class VendorHomeActivity extends ActionBarActivity implements
             if (cursor.getCount() > 0 ) {
                 showWarning(cursor.getCount());
             }
+
+            cursor.close();
         }
     }
 
@@ -235,9 +237,8 @@ public class VendorHomeActivity extends ActionBarActivity implements
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.title_items_unavailable));
-        builder.setMessage(String.format(getResources().getQuantityString(R.plurals.items_unavailable_message, numItems, numItems)))
+        builder.setMessage(getResources().getQuantityString(R.plurals.items_unavailable_message, numItems, numItems))
                 .setView(checkBoxView)
-                .setCancelable(false)
                 .setPositiveButton(getString(R.string.items_unavailable_positive_button), listener)
                 .setNegativeButton(getString(R.string.items_unavailable_negative_button), listener).show();
     }

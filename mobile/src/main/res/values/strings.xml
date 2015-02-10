@@ -15,7 +15,7 @@
     <string name="setting_item_unavailable_warning_title">Item unavailable warning</string>
     <string name="setting_item_unavailable_warning_summary">Show when entering serving mode</string>
     <string name="dont_show_again">Don\'t show this message again</string>
-    <string name="title_items_unavailable">Items unavailable</string>
+    <string name="title_items_unavailable">Menu items unavailable</string>
     <string name="items_unavailable_positive_button">View menu</string>
     <string name="items_unavailable_negative_button">Ignore</string>
 
@@ -36,7 +36,7 @@
 
     <!-- Plurals-->
     <plurals name="items_unavailable_message">
-        <item quantity="one">You have %s item marked as unavailable. Would you like to double check your menu to review the items</item>
-        <item quantity="other">You have %s items marked as unavailable. Would you like to double check your menu to review the items</item>
+        <item quantity="one">You have %s menu item marked as unavailable. Would you like to double check your menu to review the items?</item>
+        <item quantity="other">You have %s menu items marked as unavailable. Would you like to double check your menu to review the items?</item>
     </plurals>
 </resources>
