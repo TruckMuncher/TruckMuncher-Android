@@ -2,12 +2,16 @@ package com.truckmuncher.app.vendor;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -15,6 +19,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
 
 import com.facebook.Session;
 import com.google.android.gms.maps.model.LatLng;
@@ -26,6 +32,7 @@ import com.truckmuncher.app.data.Contract;
 import com.truckmuncher.app.data.PublicContract;
 import com.truckmuncher.app.data.sql.WhereClause;
 import com.truckmuncher.app.vendor.menuadmin.MenuAdminFragment;
+import com.truckmuncher.app.vendor.settings.VendorSettingsActivity;
 import com.twitter.sdk.android.Twitter;
 
 import java.util.ArrayList;
@@ -43,6 +50,7 @@ public class VendorHomeActivity extends ActionBarActivity implements
     private Truck selectedTruck;
     private VendorHomeServiceHelper serviceHelper;
     private ResetVendorTrucksServiceHelper resetServiceHelper;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +65,8 @@ public class VendorHomeActivity extends ActionBarActivity implements
 
         // Kick off a refresh of the vendor data
         startService(new Intent(this, VendorTrucksService.class));
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     @Override
@@ -71,12 +81,11 @@ public class VendorHomeActivity extends ActionBarActivity implements
             doLogout();
             return true;
         } else if (item.getItemId() == R.id.action_menu) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(android.R.id.content, MenuAdminFragment.newInstance(selectedTruck.id), MenuAdminFragment.TAG)
-                    .addToBackStack(null)
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                    .commit();
+            showMenu();
             return true;
+        } else if (item.getItemId() == R.id.action_settings) {
+            Intent intent = new Intent(this, VendorSettingsActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
@@ -128,13 +137,35 @@ public class VendorHomeActivity extends ActionBarActivity implements
         serviceHelper.changeServingState(this, selectedTruck.id, enabled, currentLocation);
 
         final VendorMapFragment fragment = (VendorMapFragment) getSupportFragmentManager().findFragmentById(R.id.vendor_map_fragment);
-
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 fragment.setMapControlsEnabled(!enabled);
             }
         });
+
+        // If serving mode is being enabled and they have the item unavailable warning enabled,
+        // we need to check if there are any items marked as unavailable
+        if (enabled && sharedPreferences.getBoolean(getString(R.string.setting_item_unavailable_warning), true)) {
+            // Get menu items that are marked as out of stock for the current truck
+            WhereClause whereClause = new WhereClause.Builder()
+                    .where(PublicContract.Menu.TRUCK_ID, EQUALS, selectedTruck.id)
+                    .and()
+                    .where(PublicContract.Menu.IS_AVAILABLE, EQUALS, 0)
+                    .build();
+            String[] projection = ItemsOutOfStockQuery.PROJECTION;
+            Uri uri = PublicContract.MENU_URI;
+
+            Cursor cursor = getContentResolver().query(uri, projection,
+                    whereClause.selection, whereClause.selectionArgs, null);
+
+            // Show the warning if there are items out of stock
+            if (cursor.getCount() > 0 ) {
+                showWarning(cursor.getCount());
+            }
+
+            cursor.close();
+        }
     }
 
     @Override
@@ -178,6 +209,40 @@ public class VendorHomeActivity extends ActionBarActivity implements
         // no-op
     }
 
+    private void showMenu() {
+        getSupportFragmentManager().beginTransaction()
+                .add(android.R.id.content, MenuAdminFragment.newInstance(selectedTruck.id), MenuAdminFragment.TAG)
+                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .commit();
+    }
+
+    private void showWarning(int numItems) {
+        View checkBoxView = View.inflate(this, R.layout.dialog_items_unavailable_warning, null);
+        final CheckBox checkBox = (CheckBox) checkBoxView.findViewById(R.id.checkbox_dont_show_again);
+        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                if (checkBox.isChecked()) {
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean(getString(R.string.setting_item_unavailable_warning), false);
+                    editor.apply();
+                }
+
+                if (id == AlertDialog.BUTTON_POSITIVE) {
+                    showMenu();
+                }
+                dialog.cancel();
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.title_items_unavailable));
+        builder.setMessage(getResources().getQuantityString(R.plurals.items_unavailable_message, numItems, numItems))
+                .setView(checkBoxView)
+                .setPositiveButton(getString(R.string.items_unavailable_positive_button), listener)
+                .setNegativeButton(getString(R.string.items_unavailable_negative_button), listener).show();
+    }
+
     public interface TrucksOwnedByUserQuery {
 
         public static final String[] PROJECTION = new String[]{
@@ -194,5 +259,12 @@ public class VendorHomeActivity extends ActionBarActivity implements
         static final int KEYWORDS = 3;
         static final int COLOR_PRIMARY = 4;
         static final int COLOR_SECONDARY = 5;
+    }
+
+    public interface ItemsOutOfStockQuery {
+
+        public static final String[] PROJECTION = new String[]{
+                PublicContract.MenuItem._ID
+        };
     }
 }
