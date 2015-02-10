@@ -145,6 +145,7 @@ public class VendorHomeActivity extends ActionBarActivity implements
     @Override
     public void onServingModeChanged(final boolean enabled, Location currentLocation) {
         serviceHelper.changeServingState(this, selectedTruckId, enabled, currentLocation);
+        actionBarSpinner.setEnabled(!enabled);
 
         final VendorMapFragment fragment = (VendorMapFragment) getSupportFragmentManager().findFragmentById(R.id.vendor_map_fragment);
         runOnUiThread(new Runnable() {
