@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="vendor_hud_bottom_height">56dp</dimen>
+    <dimen name="vendor_hud_bottom_height_half">28dp</dimen>
+</resources>

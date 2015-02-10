@@ -48,7 +48,7 @@ public class ActiveTrucksService extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
-        App.inject(this, this);
+        App.get(this).networkComponent().inject(this);
     }
 
     @Override

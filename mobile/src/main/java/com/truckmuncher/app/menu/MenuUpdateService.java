@@ -44,7 +44,7 @@ public class MenuUpdateService extends Service implements GoogleApiClient.Connec
     @Override
     public void onCreate() {
         super.onCreate();
-        App.inject(this, this);
+        App.get(this).networkComponent().inject(this);
         apiClient = new GoogleApiClient.Builder(this, this, this)
                 .addApi(LocationServices.API)
                 .build();

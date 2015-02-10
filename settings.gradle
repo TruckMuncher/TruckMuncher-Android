@@ -1,5 +1,4 @@
 include ':mobile'
-include ':facebook'
 include ':minified-guava'
 include ':testlib'
 include ':api'

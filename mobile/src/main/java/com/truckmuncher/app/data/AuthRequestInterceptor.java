@@ -2,7 +2,6 @@ package com.truckmuncher.app.data;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.content.Context;
 
 import com.truckmuncher.app.authentication.AccountGeneral;
 
@@ -14,9 +13,9 @@ public class AuthRequestInterceptor extends ApiRequestInterceptor {
     private final AccountManager accountManager;
     private final Account account;
 
-    public AuthRequestInterceptor(Context context, Account account) {
+    public AuthRequestInterceptor(AccountManager accountManager, Account account) {
         super();
-        accountManager = AccountManager.get(context);
+        this.accountManager = accountManager;
         this.account = account;
     }
 
