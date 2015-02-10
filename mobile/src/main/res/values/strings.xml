@@ -11,6 +11,13 @@
     <string name="title_facebook_login">Log in with Facebook</string>
     <string name="title_menu_item_diff_notification">Menu availability error</string>
     <string name="saving_menu_availability">Saving menu item availability</string>
+    <string name="setting_item_unavailable_warning">setting_item_unavailable_warning</string>
+    <string name="setting_item_unavailable_warning_title">Item unavailable warning</string>
+    <string name="setting_item_unavailable_warning_summary">Show when entering serving mode</string>
+    <string name="dont_show_again">Don\'t show this message again</string>
+    <string name="title_items_unavailable">Items unavailable</string>
+    <string name="items_unavailable_positive_button">View menu</string>
+    <string name="items_unavailable_negative_button">Ignore</string>
 
     <!-- Actions -->
     <string name="action_settings">Settings</string>
@@ -24,15 +31,12 @@
     <!-- Errors -->
     <string name="error_network">Oops, something went wrong. Please check your network connection and try again.</string>
     <string name="error_empty_vendor_menu">It looks like you have not yet added any menu items using the web interface. On Android you can only mark them as being in or out of stock.\n\nVisit the website at https://www.truckmuncher.com</string>
-    <string name="setting_item_unavailable_warning">setting_item_unavailable_warning</string>
-    <string name="setting_item_unavailable_warning_title">Item Unavailable Warning</string>
-    <string name="setting_item_unavailable_warning_summary">Show when entering serving mode</string>
-    <string name="dont_show_again">Don\'t show this message again</string>
-    <string name="items_unavailable_message">You have %s item(s) marked as unavailable. Would you like to double check your menu to review the items?</string>
-    <string name="items_unavailable_title">Items Unavailable</string>
-    <string name="items_unavailable_positive_button">Ignore</string>
-    <string name="items_unavailable_negative_button">View Menu</string>
-
     <string name="error_twitter_auth">Twitter authentication failed. Please try again.</string>
     <string name="error_menu_item_diff">We could not save your menu availability. Try again.</string>
+
+    <!-- Plurals-->
+    <plurals name="items_unavailable_message">
+        <item quantity="one">You have %s item marked as unavailable. Would you like to double check your menu to review the items</item>
+        <item quantity="other">You have %s items marked as unavailable. Would you like to double check your menu to review the items</item>
+    </plurals>
 </resources>

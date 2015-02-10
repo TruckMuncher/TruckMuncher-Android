@@ -2,5 +2,4 @@
 <resources>
     <string name="twitter_token_format" formatted="false" translatable="false">oauth_token=%1$s,oauth_secret=%2$s</string>
     <string name="facebook_token_format" formatted="false" translatable="false">access_token=%s</string>
-    <bool name="setting_out_of_stock_warning_default" translatable="false">true</bool>
 </resources>

@@ -226,7 +226,7 @@ public class VendorHomeActivity extends ActionBarActivity implements
                     editor.apply();
                 }
 
-                if (id == AlertDialog.BUTTON_NEGATIVE) {
+                if (id == AlertDialog.BUTTON_POSITIVE) {
                     showMenu();
                 }
                 dialog.cancel();
@@ -234,8 +234,8 @@ public class VendorHomeActivity extends ActionBarActivity implements
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.items_unavailable_title));
-        builder.setMessage(String.format(getString(R.string.items_unavailable_message), numItems))
+        builder.setTitle(getString(R.string.title_items_unavailable));
+        builder.setMessage(String.format(getResources().getQuantityString(R.plurals.items_unavailable_message, numItems, numItems)))
                 .setView(checkBoxView)
                 .setCancelable(false)
                 .setPositiveButton(getString(R.string.items_unavailable_positive_button), listener)
