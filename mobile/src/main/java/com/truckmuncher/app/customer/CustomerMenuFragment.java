@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.truckmuncher.app.R;
@@ -28,6 +27,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import timber.log.Timber;
 
 import static com.guava.common.base.Preconditions.checkNotNull;
 import static com.truckmuncher.app.data.sql.WhereClause.Operator.EQUALS;
@@ -123,9 +123,8 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
                 } else {
 
                     // Invalid truck
-                    Toast.makeText(getActivity(), "Invalid truck", Toast.LENGTH_LONG).show();
-                    getActivity().finish();
-                    // FIXME the correct behavior is to notify the activity and let it handle this
+                    Timber.w("Tried to load an invalid truck with id %s", getArguments().getString(ARG_TRUCK_ID));
+                    ((OnTriedToLoadInvalidTruckListener) getActivity()).onTriedToLoadInvalidTruck();
                 }
                 break;
             case LOADER_MENU:
@@ -203,5 +202,9 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
         static final int KEYWORDS = 2;
         static final int COLOR_PRIMARY = 3;
         static final int COLOR_SECONDARY = 4;
+    }
+
+    public interface OnTriedToLoadInvalidTruckListener {
+        void onTriedToLoadInvalidTruck();
     }
 }
