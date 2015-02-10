@@ -1,12 +1,17 @@
 package com.truckmuncher.app.data;
 
-import junit.framework.TestCase;
+import com.truckmuncher.testlib.ReadableRunner;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ApiExceptionTest extends TestCase {
+@RunWith(ReadableRunner.class)
+public class ApiExceptionTest {
 
-    public void testGetMessage() {
+    @Test
+    public void getMessage() {
         String message = "My Message";
         ApiException e = new ApiException(message, null);
         assertThat(e.getMessage()).isEqualTo(message);
