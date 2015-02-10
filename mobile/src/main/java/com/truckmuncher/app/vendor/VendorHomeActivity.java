@@ -169,10 +169,8 @@ public class VendorHomeActivity extends ActionBarActivity implements
             Cursor cursor = getContentResolver().query(uri, projection,
                     whereClause.selection, whereClause.selectionArgs, null);
 
-            // Show the warning if there are items out of stock and the setting is enabled
-            boolean shouldShowWarning = true; /*cursor.getCount() > 0 */
-
-            if (shouldShowWarning) {
+            // Show the warning if there are items out of stock
+            if (cursor.getCount() > 0) {
                 showWarning(cursor.getCount());
             }
         }
