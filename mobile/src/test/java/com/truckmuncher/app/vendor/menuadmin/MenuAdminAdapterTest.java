@@ -6,8 +6,8 @@ import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.TextView;
 
-import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
 import com.truckmuncher.app.R;
+import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,13 +62,6 @@ public class MenuAdminAdapterTest {
         assertThat(ButterKnife.<TextView>findById(view, R.id.name).getText().toString()).isEqualTo("BLT");
         assertThat(ButterKnife.<TextView>findById(view, R.id.price).getText().toString()).isEqualTo("$6.55");
         assertThat(ButterKnife.<SwitchCompat>findById(view, R.id.isAvailableSwitch).isChecked()).isTrue();
-    }
-
-    @Test
-    public void getMenuItemAvailabilityDiffDoesDefensiveCopy() {
-        Cursor cursor = mock(Cursor.class);
-        MenuAdminAdapter adapter = new MenuAdminAdapter(Robolectric.application, cursor);
-        assertThat(adapter.getMenuItemAvailabilityDiff()).isNotSameAs(adapter.getMenuItemAvailabilityDiff());
     }
 
     @Test
