@@ -3,13 +3,14 @@ package com.truckmuncher.app.dagger;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import com.truckmuncher.app.authentication.AccountGeneral;
 
 import dagger.Module;
 import dagger.Provides;
 
-@Module(library = true)
+@Module
 public class UserModule {
 
     private final Context appContext;
@@ -19,6 +20,7 @@ public class UserModule {
     }
 
     @Provides
+    @Nullable
     public Account provideAccount(AccountManager accountManager) {
         return AccountGeneral.getStoredAccount(accountManager);
     }
