@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@android:id/text1"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/list_item_two_line_height"
+    android:gravity="center"
+    android:textAppearance="?android:attr/textAppearanceLarge"
+    android:textStyle="italic"
+    tools:text="Sandwiches" />

@@ -8,9 +8,9 @@ import com.truckmuncher.api.trucks.Truck;
 import com.truckmuncher.api.trucks.TruckService;
 import com.truckmuncher.api.trucks.TrucksForVendorRequest;
 import com.truckmuncher.api.trucks.TrucksForVendorResponse;
-import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
 import com.truckmuncher.app.data.PublicContract;
 import com.truckmuncher.app.test.VerifiableContentProvider;
+import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

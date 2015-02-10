@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.facebook.Request;
 import com.facebook.Response;
@@ -86,7 +87,8 @@ public class LoginFragment extends Fragment {
 
             @Override
             public void failure(TwitterException exception) {
-                Timber.e("Twitter login failed: %s", exception.getMessage());
+                Timber.e(exception, "Twitter login failed: %s", exception.getMessage());
+                Toast.makeText(getActivity(), R.string.error_twitter_auth, Toast.LENGTH_LONG).show();
             }
         });
 

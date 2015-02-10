@@ -1,19 +1,23 @@
 package com.truckmuncher.app.vendor.menuadmin;
 
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.net.Uri;
+import android.content.OperationApplicationException;
 import android.support.annotation.NonNull;
 
-import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
 import com.truckmuncher.app.data.Contract;
 import com.truckmuncher.app.data.PublicContract;
 import com.truckmuncher.app.test.VerifiableContentProvider;
+import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.shadows.ShadowContentResolver;
+
+import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,15 +39,17 @@ public class MenuItemDiffServiceTest {
     public void onHandleIntentPerformsBulkInsertWithSyncToNetworkDirective() {
         VerifiableContentProvider provider = new VerifiableContentProvider();
         ShadowContentResolver.registerProvider(PublicContract.CONTENT_AUTHORITY, provider);
-        provider.enqueue(new VerifiableContentProvider.BulkInsertEvent() {
+        provider.enqueue(new VerifiableContentProvider.ApplyBatchEvent() {
+            @NonNull
             @Override
-            public int onBulkInsert(Uri uri, @NonNull ContentValues[] values) {
-                assertThat(Contract.isSyncToNetwork(uri)).isTrue();
-                return 0;
+            public ContentProviderResult[] onApplyBatch(@NonNull ArrayList<ContentProviderOperation> operations) throws OperationApplicationException {
+                assertThat(operations).hasSize(1);
+                assertThat(Contract.isSyncToNetwork(operations.get(0).getUri())).isTrue();
+                return new ContentProviderResult[0];
             }
         });
 
-        Intent intent = MenuItemDiffService.newIntent(Robolectric.application, new ContentValues[0]);
+        Intent intent = MenuItemDiffService.newIntent(Robolectric.application, new ContentValues[]{new ContentValues()});
         MenuItemDiffService service = new MenuItemDiffService();
         service.onHandleIntent(intent);
 

@@ -1,7 +1,10 @@
 package com.truckmuncher.app.test;
 
 import android.content.ContentProvider;
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
 import android.content.ContentValues;
+import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -20,6 +23,7 @@ public class VerifiableContentProvider extends ContentProvider {
     private final Queue<InsertEvent> insertEvents = new LinkedList<>();
     private final Queue<DeleteEvent> deleteEvents = new LinkedList<>();
     private final Queue<BulkInsertEvent> bulkInsertEvents = new LinkedList<>();
+    private final Queue<ApplyBatchEvent> applyBatchEvents = new LinkedList<>();
     private final List<Cursor> expiredCursors = new ArrayList<>();
 
     @Override
@@ -28,7 +32,8 @@ public class VerifiableContentProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    @NonNull
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         QueryEvent event = queryEvents.poll();
         assertThat(event).isNotNull();
         Cursor cursor = event.onQuery(uri, projection, selection, selectionArgs, sortOrder);
@@ -37,7 +42,8 @@ public class VerifiableContentProvider extends ContentProvider {
     }
 
     @Override
-    public String getType(Uri uri) {
+    @NonNull
+    public String getType(@NonNull Uri uri) {
         throw new RuntimeException("Stub!");
     }
 
@@ -49,24 +55,32 @@ public class VerifiableContentProvider extends ContentProvider {
     }
 
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
+    public Uri insert(@NonNull Uri uri, ContentValues values) {
         InsertEvent event = insertEvents.poll();
         assertThat(event).isNotNull();
         return event.onInsert(uri, values);
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         DeleteEvent event = deleteEvents.poll();
         assertThat(event).isNotNull();
         return event.onDelete(uri, selection, selectionArgs);
     }
 
     @Override
-    public int bulkInsert(Uri uri, ContentValues[] values) {
+    public int bulkInsert(Uri uri, @NonNull ContentValues[] values) {
         BulkInsertEvent event = bulkInsertEvents.poll();
         assertThat(event).isNotNull();
         return event.onBulkInsert(uri, values);
+    }
+
+    @Override
+    @NonNull
+    public ContentProviderResult[] applyBatch(@NonNull ArrayList<ContentProviderOperation> operations) throws OperationApplicationException {
+        ApplyBatchEvent event = applyBatchEvents.poll();
+        assertThat(event).isNotNull();
+        return event.onApplyBatch(operations);
     }
 
     public VerifiableContentProvider enqueue(UpdateEvent event) {
@@ -91,6 +105,11 @@ public class VerifiableContentProvider extends ContentProvider {
 
     public VerifiableContentProvider enqueue(BulkInsertEvent event) {
         bulkInsertEvents.add(event);
+        return this;
+    }
+
+    public VerifiableContentProvider enqueue(ApplyBatchEvent event) {
+        applyBatchEvents.add(event);
         return this;
     }
 
@@ -139,5 +158,10 @@ public class VerifiableContentProvider extends ContentProvider {
 
     public interface BulkInsertEvent {
         int onBulkInsert(Uri uri, @NonNull ContentValues[] values);
+    }
+
+    public interface ApplyBatchEvent {
+        @NonNull
+        ContentProviderResult[] onApplyBatch(@NonNull ArrayList<ContentProviderOperation> operations) throws OperationApplicationException;
     }
 }

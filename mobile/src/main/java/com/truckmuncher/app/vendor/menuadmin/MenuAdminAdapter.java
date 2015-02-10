@@ -27,7 +27,7 @@ import butterknife.InjectView;
  */
 public class MenuAdminAdapter extends SectionCursorAdapter {
 
-    private final Map<String, Boolean> diff = new HashMap<>();
+    private Map<String, Boolean> diff = new HashMap<>();
 
     public MenuAdminAdapter(Context context, Cursor cursor) {
         super(context, cursor, 0);
@@ -40,7 +40,7 @@ public class MenuAdminAdapter extends SectionCursorAdapter {
 
     @Override
     protected View newSectionView(Context context, Object o, ViewGroup viewGroup) {
-        return getLayoutInflater().inflate(R.layout.list_item_menu_category, viewGroup, false);
+        return getLayoutInflater().inflate(R.layout.list_item_menu_category_admin, viewGroup, false);
     }
 
     @Override
@@ -89,11 +89,11 @@ public class MenuAdminAdapter extends SectionCursorAdapter {
 
     @NonNull
     Map<String, Boolean> getMenuItemAvailabilityDiff() {
-        return new HashMap<>(diff);
+        return diff;
     }
 
     void clearMenuItemAvailabilityDiff() {
-        diff.clear();
+        diff = new HashMap<>();
     }
 
     interface Query {
