@@ -40,7 +40,7 @@ public class MenuAdminAdapter extends SectionCursorAdapter {
 
     @Override
     protected View newSectionView(Context context, Object o, ViewGroup viewGroup) {
-        return getLayoutInflater().inflate(R.layout.list_item_menu_category, viewGroup, false);
+        return getLayoutInflater().inflate(R.layout.list_item_menu_category_admin, viewGroup, false);
     }
 
     @Override
