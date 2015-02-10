@@ -1,10 +1,11 @@
 package com.truckmuncher.app.data.sync;
 
 import android.content.ContentProviderClient;
+import android.content.ContentProviderOperation;
 import android.content.ContentValues;
+import android.content.OperationApplicationException;
 import android.content.SyncResult;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.RemoteException;
 
 import com.truckmuncher.api.menu.MenuItemAvailability;
@@ -62,20 +63,28 @@ public final class MenuItemAvailabilitySyncTask extends SyncTask {
             menuService.modifyMenuItemAvailability(request);
 
             // On a successful response, clear the dirty state, but only for values we synced. User might have changed others in the mean time.
-            ContentValues[] contentValues = new ContentValues[diff.size()];
-            for (int i = 0, max = diff.size(); i < max; i++) {
-                MenuItemAvailability availability = diff.get(i);
+            ArrayList<ContentProviderOperation> operations = new ArrayList<>(diff.size());
+            for (MenuItemAvailability availability : diff) {
                 ContentValues values = new ContentValues();
-                values.put(PublicContract.MenuItem.ID, availability.menuItemId);
                 values.put(Contract.MenuItem.IS_DIRTY, false);
-                contentValues[i] = values;
+                WhereClause where = new WhereClause.Builder()
+                        .where(PublicContract.MenuItem.ID, EQUALS, availability.menuItemId)
+                        .build();
+                operations.add(
+
+                        // Since we're clearing an internal state, don't notify listeners
+                        ContentProviderOperation.newUpdate(Contract.suppressNotify(PublicContract.MENU_ITEM_URI))
+                                .withSelection(where.selection, where.selectionArgs)
+                                .withValues(values)
+                                .build()
+                );
             }
 
-            // Since we're clearing an internal state, don't notify listeners
-            Uri uri = Contract.suppressNotify(PublicContract.MENU_ITEM_URI);
-            provider.bulkInsert(uri, contentValues);
+            provider.applyBatch(operations);
         } catch (ApiException e) {
             return apiExceptionResolver.resolve(e);
+        } catch (OperationApplicationException e) {
+            syncResult.stats.numIoExceptions++;
         }
         return ApiResult.OK;
     }

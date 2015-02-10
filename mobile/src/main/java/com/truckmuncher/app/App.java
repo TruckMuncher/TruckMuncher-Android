@@ -6,17 +6,20 @@ import android.content.Context;
 import android.os.PowerManager;
 import android.view.WindowManager;
 
-import com.truckmuncher.app.dagger.Modules;
-
-import dagger.ObjectGraph;
+import com.truckmuncher.app.dagger.Dagger_NetworkComponent;
+import com.truckmuncher.app.dagger.Dagger_UserComponent;
+import com.truckmuncher.app.dagger.NetworkComponent;
+import com.truckmuncher.app.dagger.NetworkModule;
+import com.truckmuncher.app.dagger.UserComponent;
+import com.truckmuncher.app.dagger.UserModule;
 
 public class App extends Application {
 
-    private ObjectGraph graph;
+    private NetworkComponent networkComponent;
+    private UserComponent userComponent;
 
-    public static void inject(Context context, Object target) {
-        App app = (App) context.getApplicationContext();
-        app.graph.inject(target);
+    public static App get(Context context) {
+        return (App) context.getApplicationContext();
     }
 
     /**
@@ -39,6 +42,21 @@ public class App extends Application {
         super.onCreate();
 
         LoggerStarter.start(this);
-        graph = ObjectGraph.create(Modules.list(this));
+
+        userComponent = Dagger_UserComponent.builder()
+                .userModule(new UserModule(this))
+                .build();
+        networkComponent = Dagger_NetworkComponent.builder()
+                .userComponent(userComponent)
+                .networkModule(new NetworkModule(this))
+                .build();
+    }
+
+    public UserComponent userComponent() {
+        return userComponent;
+    }
+
+    public NetworkComponent networkComponent() {
+        return networkComponent;
     }
 }

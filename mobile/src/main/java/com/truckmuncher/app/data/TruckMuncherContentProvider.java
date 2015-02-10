@@ -63,7 +63,7 @@ public class TruckMuncherContentProvider extends ContentProvider {
     }
 
     @Override
-    public Bundle call(String method, String arg, Bundle extras) {
+    public Bundle call(@NonNull String method, String arg, Bundle extras) {
         SQLiteDatabase db = database.getReadableDatabase();
         SQLiteStatement statement;
         String[] ids = extras != null ? extras.getStringArray(ARG_ID_ARRAY) : new String[]{};
@@ -204,6 +204,9 @@ public class TruckMuncherContentProvider extends ContentProvider {
         switch (uriMatcher.match(uri)) {
             case TRUCK_STATE:
                 rowsUpdated = db.update(Tables.TRUCK_STATE, values, selection, selectionArgs);
+                break;
+            case MENU_ITEM:
+                rowsUpdated = db.update(Tables.MENU_ITEM, values, selection, selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
