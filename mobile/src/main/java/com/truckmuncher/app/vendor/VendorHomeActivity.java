@@ -169,12 +169,12 @@ public class VendorHomeActivity extends ActionBarActivity implements
             Cursor cursor = getContentResolver().query(uri, projection,
                     whereClause.selection, whereClause.selectionArgs, null);
 
-            // Show the warning if there are items out of stock and the setting is enabled
-            boolean shouldShowWarning = true; /*cursor.getCount() > 0 */
-
-            if (shouldShowWarning) {
+            // Show the warning if there are items out of stock
+            if (cursor.getCount() > 0 ) {
                 showWarning(cursor.getCount());
             }
+
+            cursor.close();
         }
     }
 
@@ -245,7 +245,7 @@ public class VendorHomeActivity extends ActionBarActivity implements
                     editor.apply();
                 }
 
-                if (id == AlertDialog.BUTTON_NEGATIVE) {
+                if (id == AlertDialog.BUTTON_POSITIVE) {
                     showMenu();
                 }
                 dialog.cancel();
@@ -253,10 +253,9 @@ public class VendorHomeActivity extends ActionBarActivity implements
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.items_unavailable_title));
-        builder.setMessage(String.format(getString(R.string.items_unavailable_message), numItems))
+        builder.setTitle(getString(R.string.title_items_unavailable));
+        builder.setMessage(getResources().getQuantityString(R.plurals.items_unavailable_message, numItems, numItems))
                 .setView(checkBoxView)
-                .setCancelable(false)
                 .setPositiveButton(getString(R.string.items_unavailable_positive_button), listener)
                 .setNegativeButton(getString(R.string.items_unavailable_negative_button), listener).show();
     }

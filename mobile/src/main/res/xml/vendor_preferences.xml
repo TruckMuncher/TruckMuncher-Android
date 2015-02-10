@@ -5,6 +5,6 @@
         android:key="@string/setting_item_unavailable_warning"
         android:title="@string/setting_item_unavailable_warning_title"
         android:summary="@string/setting_item_unavailable_warning_summary"
-        android:defaultValue="@bool/setting_out_of_stock_warning_default"/>
+        android:defaultValue="true"/>
 
 </PreferenceScreen>
