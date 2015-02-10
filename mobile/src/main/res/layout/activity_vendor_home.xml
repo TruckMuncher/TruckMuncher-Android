@@ -12,12 +12,6 @@
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize">
 
-        <Spinner
-            android:id="@+id/truck_name_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:colorControlNormal="@android:color/white" />
-
     </android.support.v7.widget.Toolbar>
 
     <FrameLayout

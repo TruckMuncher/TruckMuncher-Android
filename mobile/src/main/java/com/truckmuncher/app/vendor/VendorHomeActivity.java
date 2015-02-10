@@ -37,16 +37,12 @@ import com.truckmuncher.app.vendor.menuadmin.MenuAdminFragment;
 import com.truckmuncher.app.vendor.settings.VendorSettingsActivity;
 import com.twitter.sdk.android.Twitter;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-
 import static com.truckmuncher.app.data.sql.WhereClause.Operator.EQUALS;
 
 public class VendorHomeActivity extends ActionBarActivity implements
         VendorMapFragment.OnMapLocationChangedListener, VendorHomeFragment.OnServingModeChangedListener,
         LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemSelectedListener {
 
-    @InjectView(R.id.truck_name_spinner)
     Spinner actionBarSpinner;
 
     private AccountManager accountManager;
@@ -61,11 +57,13 @@ public class VendorHomeActivity extends ActionBarActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vendor_home);
-        ButterKnife.inject(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(toolbar);
         setTitle("");
+
+        actionBarSpinner = new Spinner(getSupportActionBar().getThemedContext());
+        toolbar.addView(actionBarSpinner);
 
         getSupportLoaderManager().initLoader(0, savedInstanceState, this);
 
