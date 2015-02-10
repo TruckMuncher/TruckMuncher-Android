@@ -1,11 +1,16 @@
 package com.truckmuncher.app.data;
 
 import android.support.annotation.NonNull;
-import android.test.AndroidTestCase;
 
 import com.truckmuncher.api.exceptions.Error;
 import com.truckmuncher.api.menu.FullMenusResponse;
 import com.truckmuncher.app.R;
+import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -25,26 +30,28 @@ import retrofit.mime.TypedInput;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
-public class ApiErrorHandlerTest extends AndroidTestCase {
+@RunWith(ReadableRobolectricTestRunner.class)
+public class ApiErrorHandlerTest {
 
     ApiErrorHandler errorHandler;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        errorHandler = new ApiErrorHandler(mContext);
+    @Before
+    public void setUp() {
+        errorHandler = new ApiErrorHandler(Robolectric.application);
     }
 
-    public void testNetworkError() {
+    @Test
+    public void networkError() {
         RetrofitError error = RetrofitError.networkError("http://api.truckmuncher.com/com.truckmuncher.api.menu.MenuService/getFullMenus", new IOException("Failure message"));
         ApiException exception = errorHandler.handleError(error);
 
         assertThat(exception).isNotNull();
-        assertThat(exception.getMessage()).isEqualTo(mContext.getString(R.string.error_network));
+        assertThat(exception.getMessage()).isEqualTo(Robolectric.application.getString(R.string.error_network));
         assertThat(exception.getCause()).isEqualTo(error);
     }
 
-    public void testErrorWithEmptyBodyDoesntCrash() {
+    @Test
+    public void errorWithEmptyBodyDoesNotCrash() {
 
         TestClient client = new RestAdapter.Builder()
                 .setEndpoint("http://example.com")
@@ -68,7 +75,8 @@ public class ApiErrorHandlerTest extends AndroidTestCase {
         }
     }
 
-    public void testErrorWithBodyHasMessageAndCause() {
+    @Test
+    public void ErrorWithBodyHasMessageAndCause() {
         final String userMessage = "Test user message";
 
         TestClient client = new RestAdapter.Builder()
@@ -96,7 +104,8 @@ public class ApiErrorHandlerTest extends AndroidTestCase {
         }
     }
 
-    public void testUnauthorizedOnNonAuthRouteThrowsCorrectException() {
+    @Test
+    public void UnauthorizedOnNonAuthRouteThrowsCorrectException() {
         TestClient client = new RestAdapter.Builder()
                 .setEndpoint("http://example.com")
                 .setClient(new Client() {
