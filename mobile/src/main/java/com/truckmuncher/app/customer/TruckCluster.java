@@ -2,14 +2,13 @@ package com.truckmuncher.app.customer;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
-import com.truckmuncher.api.trucks.Truck;
 
-public class TruckCluster implements ClusterItem {
+public final class TruckCluster implements ClusterItem {
     private final LatLng position;
-    private Truck truck;
+    private final String truckId;
 
-    public TruckCluster(Truck truck, LatLng position) {
-        this.truck = truck;
+    TruckCluster(String truckId, LatLng position) {
+        this.truckId = truckId;
         this.position = position;
     }
 
@@ -18,7 +17,7 @@ public class TruckCluster implements ClusterItem {
         return position;
     }
 
-    public Truck getTruck() {
-        return truck;
+    public String getTruckId() {
+        return truckId;
     }
 }
