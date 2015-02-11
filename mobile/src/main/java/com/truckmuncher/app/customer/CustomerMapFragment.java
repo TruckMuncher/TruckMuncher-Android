@@ -58,6 +58,7 @@ public class CustomerMapFragment extends ApiClientFragment implements
     private Map<String, TruckCluster> activeTruckMarkers = Collections.emptyMap();
     private SimpleSearchServiceHelper serviceHelper;
     private OnTruckMarkerClickListener onTruckMarkerClickListener;
+    private OnLocationChangeListener onLocationChangeListener;
 
     @Override
     public void onAttach(Activity activity) {
@@ -66,6 +67,11 @@ public class CustomerMapFragment extends ApiClientFragment implements
             onTruckMarkerClickListener = (OnTruckMarkerClickListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException("Calling activity must implement " + OnTruckMarkerClickListener.class.getName());
+        }
+        try {
+            onLocationChangeListener = (OnLocationChangeListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Calling activity must implement " + OnLocationChangeListener.class.getName());
         }
     }
 
@@ -176,6 +182,8 @@ public class CustomerMapFragment extends ApiClientFragment implements
             loadActiveTrucks();
             getActivity().startService(GetTruckProfilesService.newIntent(getActivity(), currentLocation.latitude, currentLocation.longitude));
         }
+
+        onLocationChangeListener.onLocationChange((currentLocation));
     }
 
     @Override
@@ -285,6 +293,10 @@ public class CustomerMapFragment extends ApiClientFragment implements
         }
     }
 
+    public LatLng getCurrentLocation() {
+        return currentLocation;
+    }
+
     public interface ActiveTrucksQuery {
 
         public static final String[] PROJECTION = new String[]{
@@ -301,5 +313,9 @@ public class CustomerMapFragment extends ApiClientFragment implements
 
     public interface OnTruckMarkerClickListener {
         public void onTruckMarkerClick(TruckCluster truckClusterItem);
+    }
+
+    public interface OnLocationChangeListener {
+        public void onLocationChange(LatLng location);
     }
 }
