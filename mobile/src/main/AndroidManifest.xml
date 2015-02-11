@@ -61,10 +61,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.truckmuncher.app.MainActivity" />
         </activity>
-        <activity android:name="com.truckmuncher.app.vendor.settings.VendorSettingsActivity"
+        <activity
+            android:name=".vendor.settings.VendorSettingsActivity"
             android:label="@string/title_vendor_settings"
-            android:parentActivityName="com.truckmuncher.app.vendor.VendorHomeActivity">
-            <meta-data android:name="android.support.PARENT_ACTIVITY"
+            android:parentActivityName=".vendor.VendorHomeActivity"
+            tools:ignore="unusedAttribute">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.truckmuncher.app.vendor.VendorHomeActivity" />
         </activity>
         <activity
