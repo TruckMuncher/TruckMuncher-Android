@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
@@ -26,12 +27,14 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import timber.log.Timber;
 
+import static com.guava.common.base.Preconditions.checkNotNull;
 import static com.truckmuncher.app.data.sql.WhereClause.Operator.EQUALS;
 
 public class CustomerMenuFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    public static final String ARG_TRUCK_ID = "truck_id";
+    private static final String ARG_TRUCK_ID = "truck_id";
     private static final int LOADER_TRUCK = 0;
     private static final int LOADER_MENU = 1;
     @InjectView(R.id.truck_name)
@@ -45,9 +48,9 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
     private MenuAdapter adapter;
     private String truckPrimaryColor;
 
-    public static CustomerMenuFragment newInstance(String truckId) {
+    public static CustomerMenuFragment newInstance(@NonNull String truckId) {
         Bundle args = new Bundle();
-        args.putString(ARG_TRUCK_ID, truckId);
+        args.putString(ARG_TRUCK_ID, checkNotNull(truckId));
         CustomerMenuFragment fragment = new CustomerMenuFragment();
         fragment.setArguments(args);
         return fragment;
@@ -117,6 +120,11 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
                     if (truckPrimaryColor != null) {
                         getListView().setBackgroundColor(Color.parseColor(truckPrimaryColor));
                     }
+                } else {
+
+                    // Invalid truck
+                    Timber.w("Tried to load an invalid truck with id %s", getArguments().getString(ARG_TRUCK_ID));
+                    ((OnTriedToLoadInvalidTruckListener) getActivity()).onTriedToLoadInvalidTruck();
                 }
                 break;
             case LOADER_MENU:
@@ -194,5 +202,9 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
         static final int KEYWORDS = 2;
         static final int COLOR_PRIMARY = 3;
         static final int COLOR_SECONDARY = 4;
+    }
+
+    public interface OnTriedToLoadInvalidTruckListener {
+        void onTriedToLoadInvalidTruck();
     }
 }
