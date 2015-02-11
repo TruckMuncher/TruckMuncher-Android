@@ -1,8 +1,10 @@
 package com.truckmuncher.app.vendor;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 
 import com.truckmuncher.app.R;
@@ -75,8 +76,12 @@ public class VendorHomeFragment extends Fragment {
         onServingModeChangedListener = null;
     }
 
+    public void onLocationUpdate(Location location) {
+        currentLocation = location;
+    }
+
     @OnCheckedChanged(R.id.serving_mode)
-    void onServingModeToggled(CompoundButton servingModeSwitch, boolean isChecked) {
+    void onServingModeToggled(boolean isChecked) {
         int marker = isChecked ? R.drawable.map_marker_green : R.drawable.map_marker_gray;
 
         vendorMapMarker.setImageDrawable(getResources().getDrawable(marker));
@@ -84,10 +89,6 @@ public class VendorHomeFragment extends Fragment {
         updateAnimation(isChecked);
 
         onServingModeChangedListener.onServingModeChanged(isChecked, currentLocation);
-    }
-
-    public void onLocationUpdate(Location location) {
-        currentLocation = location;
     }
 
     private void updateAnimation(boolean servingModeEnabled) {
