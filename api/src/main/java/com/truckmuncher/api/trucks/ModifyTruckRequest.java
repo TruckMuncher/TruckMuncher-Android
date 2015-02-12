@@ -18,6 +18,8 @@ public final class ModifyTruckRequest extends Message {
     public static final List<String> DEFAULT_KEYWORDS = Collections.emptyList();
     public static final String DEFAULT_PRIMARYCOLOR = "";
     public static final String DEFAULT_SECONDARYCOLOR = "";
+    public static final String DEFAULT_DESCRIPTION = "";
+    public static final String DEFAULT_PHONENUMBER = "";
 
     /**
      * Suitable for unique identification. Will always be set on a response from the API.
@@ -46,16 +48,30 @@ public final class ModifyTruckRequest extends Message {
     @ProtoField(tag = 5, type = STRING)
     public final String secondaryColor;
 
-    public ModifyTruckRequest(String id, String name, List<String> keywords, String primaryColor, String secondaryColor) {
+    /**
+     * A free-form description of the truck
+     */
+    @ProtoField(tag = 6, type = STRING)
+    public final String description;
+
+    /**
+     * Should be in the format of (xxx) xxx-xxxx.
+     */
+    @ProtoField(tag = 7, type = STRING)
+    public final String phoneNumber;
+
+    public ModifyTruckRequest(String id, String name, List<String> keywords, String primaryColor, String secondaryColor, String description, String phoneNumber) {
         this.id = id;
         this.name = name;
         this.keywords = immutableCopyOf(keywords);
         this.primaryColor = primaryColor;
         this.secondaryColor = secondaryColor;
+        this.description = description;
+        this.phoneNumber = phoneNumber;
     }
 
     private ModifyTruckRequest(Builder builder) {
-        this(builder.id, builder.name, builder.keywords, builder.primaryColor, builder.secondaryColor);
+        this(builder.id, builder.name, builder.keywords, builder.primaryColor, builder.secondaryColor, builder.description, builder.phoneNumber);
         setBuilder(builder);
     }
 
@@ -68,7 +84,9 @@ public final class ModifyTruckRequest extends Message {
                 && equals(name, o.name)
                 && equals(keywords, o.keywords)
                 && equals(primaryColor, o.primaryColor)
-                && equals(secondaryColor, o.secondaryColor);
+                && equals(secondaryColor, o.secondaryColor)
+                && equals(description, o.description)
+                && equals(phoneNumber, o.phoneNumber);
     }
 
     @Override
@@ -80,6 +98,8 @@ public final class ModifyTruckRequest extends Message {
             result = result * 37 + (keywords != null ? keywords.hashCode() : 1);
             result = result * 37 + (primaryColor != null ? primaryColor.hashCode() : 0);
             result = result * 37 + (secondaryColor != null ? secondaryColor.hashCode() : 0);
+            result = result * 37 + (description != null ? description.hashCode() : 0);
+            result = result * 37 + (phoneNumber != null ? phoneNumber.hashCode() : 0);
             hashCode = result;
         }
         return result;
@@ -92,6 +112,8 @@ public final class ModifyTruckRequest extends Message {
         public List<String> keywords;
         public String primaryColor;
         public String secondaryColor;
+        public String description;
+        public String phoneNumber;
 
         public Builder() {
         }
@@ -104,6 +126,8 @@ public final class ModifyTruckRequest extends Message {
             this.keywords = copyOf(message.keywords);
             this.primaryColor = message.primaryColor;
             this.secondaryColor = message.secondaryColor;
+            this.description = message.description;
+            this.phoneNumber = message.phoneNumber;
         }
 
         /**
@@ -140,6 +164,22 @@ public final class ModifyTruckRequest extends Message {
          */
         public Builder secondaryColor(String secondaryColor) {
             this.secondaryColor = secondaryColor;
+            return this;
+        }
+
+        /**
+         * A free-form description of the truck
+         */
+        public Builder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        /**
+         * Should be in the format of (xxx) xxx-xxxx.
+         */
+        public Builder phoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
             return this;
         }
 

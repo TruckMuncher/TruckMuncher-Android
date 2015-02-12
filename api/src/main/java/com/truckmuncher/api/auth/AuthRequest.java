@@ -35,6 +35,6 @@ public final class AuthRequest extends Message {
         @Override
         public AuthRequest build() {
             return new AuthRequest(this);
-        }
+    }
     }
 }
