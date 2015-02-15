@@ -13,7 +13,7 @@ import com.truckmuncher.app.R;
 
 import static com.guava.common.base.Preconditions.checkNotNull;
 
-public class TruckProfileActivity extends ActionBarActivity implements CustomerMenuFragment.OnTriedToLoadInvalidTruckListener {
+public class TruckProfileActivity extends ActionBarActivity implements CustomerMenuLoaderHandler.OnTriedToLoadInvalidTruckListener {
 
     private static final String ARG_TRUCK_ID = "truck_id";
 
