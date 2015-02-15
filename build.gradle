@@ -11,6 +11,6 @@ buildscript {
         classpath 'com.jakewharton.hugo:hugo-plugin:1.1.0'
 
         // Monkey through Gradle
-        classpath 'com.autoscout24.gradle:gradle-monkey-plugin:0.7.1'
+        classpath 'com.autoscout24.gradle:gradle-monkey-plugin:1.1'
     }
 }
