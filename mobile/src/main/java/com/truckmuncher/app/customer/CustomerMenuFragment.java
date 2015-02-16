@@ -161,7 +161,11 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
         if (TextUtils.isEmpty(imageUrl)) {
             truckImage.setVisibility(View.GONE);
         } else {
-            Picasso.with(getActivity()).load(imageUrl).into(truckImage);
+            Picasso.with(getActivity())
+                    .load(imageUrl)
+                    .fit()
+                    .centerInside()
+                    .into(truckImage);
         }
 
         String backgroundColor = cursor.getString(TruckQuery.COLOR_SECONDARY);
