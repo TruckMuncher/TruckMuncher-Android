@@ -27,6 +27,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import timber.log.Timber;
 
 import static com.guava.common.base.Preconditions.checkNotNull;
@@ -150,6 +151,11 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
                 adapter.swapCursor(null);
                 break;
         }
+    }
+
+    @OnClick(R.id.header)
+    void onHeaderClick() {
+        startActivity(TruckProfileActivity.newIntent(getActivity(), getArguments().getString(ARG_TRUCK_ID)));
     }
 
     public View getHeaderView() {

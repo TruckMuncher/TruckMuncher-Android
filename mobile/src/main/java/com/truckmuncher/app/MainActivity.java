@@ -20,12 +20,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.android.gms.actions.SearchIntents;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.truckmuncher.app.authentication.AccountGeneral;
 import com.truckmuncher.app.authentication.AuthenticatorActivity;
 import com.truckmuncher.app.customer.CursorFragmentStatePagerAdapter;
 import com.truckmuncher.app.customer.CustomerMapFragment;
-import com.truckmuncher.app.customer.CustomerMenuFragment;
 import com.truckmuncher.app.customer.TruckCluster;
 import com.truckmuncher.app.data.PublicContract;
 import com.truckmuncher.app.data.sql.WhereClause;
@@ -45,8 +43,6 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
     @InjectView(R.id.view_pager)
     ViewPager viewPager;
-    @InjectView(R.id.sliding_panel)
-    SlidingUpPanelLayout slidingPanel;
 
     private SearchView searchView;
 
@@ -87,8 +83,8 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
                 super.onPageSelected(position);
 
                 // Set the new drag view so scrolling works nicely
-                CustomerMenuFragment fragment = pagerAdapter.getItem(position);
-                slidingPanel.setDragView(fragment.getHeaderView());
+//                CustomerMenuFragment fragment = pagerAdapter.getItem(position);
+//                slidingPanel.setDragView(fragment.getHeaderView());
 
                 // Change the focused truck
                 mapFragment.moveTo(pagerAdapter.getTruckId(position));
