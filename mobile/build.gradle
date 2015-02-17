@@ -30,7 +30,7 @@ monkey {
 
 // Manifest Information
 def versionMajor = 0
-def versionMinor = 3
+def versionMinor = 4
 def versionPatch = 0
 
 android {
