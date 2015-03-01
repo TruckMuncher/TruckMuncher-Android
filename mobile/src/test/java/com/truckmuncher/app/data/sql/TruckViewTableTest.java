@@ -3,11 +3,14 @@ package com.truckmuncher.app.data.sql;
 import android.database.Cursor;
 
 import com.truckmuncher.app.data.PublicContract;
+import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@RunWith(ReadableRobolectricTestRunner.class)
 public class TruckViewTableTest extends DatabaseTableTestCase {
 
     @Test
