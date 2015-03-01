@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +19,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
 
-public class VendorHomeFragment extends Fragment {
+public class VendorHomeFragment extends VendorMapFragment {
 
     private static final String ARG_CURRENT_LOCATION = "current_location";
 
@@ -79,14 +78,15 @@ public class VendorHomeFragment extends Fragment {
         super.onDetach();
     }
 
-    public void onLocationUpdate(Location location) {
+    @Override
+    void onLocationUpdate(Location location) {
         currentLocation = location;
     }
 
     @OnCheckedChanged(R.id.serving_mode)
     void onServingModeClicked(SwitchCompat view) {
         if (currentLocation == null) {
-            Toast.makeText(getActivity(), "We don't know where you are yet. Wait for GPS or use the map to set you location.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), R.string.error_serving_no_location, Toast.LENGTH_LONG).show();
 
             // Un-switch the switch
             view.toggle();
@@ -100,6 +100,7 @@ public class VendorHomeFragment extends Fragment {
 
         updateAnimation(isChecked);
 
+        setMapControlsEnabled(!isChecked);
         onServingModeChangedListener.onServingModeChanged(isChecked, currentLocation);
     }
 
