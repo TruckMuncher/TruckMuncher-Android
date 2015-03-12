@@ -34,6 +34,7 @@
     <string name="error_twitter_auth">Twitter authentication failed. Please try again.</string>
     <string name="error_menu_item_diff">We could not save your menu availability. Try again.</string>
     <string name="error_invalid_truck">Invalid truck</string>
+    <string name="error_serving_no_location">We don\'t know where you are yet. Wait for GPS or use the map to set you location.</string>
 
     <!-- Plurals-->
     <plurals name="items_unavailable_message">
