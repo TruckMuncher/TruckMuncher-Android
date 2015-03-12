@@ -66,6 +66,8 @@ public class GetTruckProfilesService extends IntentService {
             values.put(PublicContract.Truck.KEYWORDS, convertListToString(truck.keywords));
             values.put(PublicContract.Truck.COLOR_PRIMARY, truck.primaryColor);
             values.put(PublicContract.Truck.COLOR_SECONDARY, truck.secondaryColor);
+            values.put(PublicContract.Truck.DESCRIPTION, truck.description);
+            values.put(PublicContract.Truck.PHONE_NUMBER, truck.phoneNumber);
             contentValues[i] = values;
         }
 

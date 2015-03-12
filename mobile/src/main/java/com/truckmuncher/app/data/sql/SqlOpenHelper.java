@@ -18,7 +18,7 @@ import timber.log.Timber;
 
 public abstract class SqlOpenHelper extends SQLiteOpenHelper {
 
-    public static final int VERSION = 1;
+    public static final int VERSION = 2;
 
     private final Context context;
 
@@ -36,6 +36,9 @@ public abstract class SqlOpenHelper extends SQLiteOpenHelper {
 
         // Create structure
         readAndExecuteSQLScript(db, context, R.raw.truckmuncher);
+
+        // Apply any migration found. This way we don't have to rewrite the original and lose out history
+        onUpgrade(db, 1, VERSION);
     }
 
     @Override

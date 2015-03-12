@@ -25,7 +25,9 @@ public class TruckViewTableTest extends DatabaseTableTestCase {
                 PublicContract.Truck.COLOR_SECONDARY,
                 PublicContract.Truck.IS_SERVING,
                 PublicContract.Truck.LATITUDE,
-                PublicContract.Truck.LONGITUDE
+                PublicContract.Truck.LONGITUDE,
+                PublicContract.Truck.DESCRIPTION,
+                PublicContract.Truck.PHONE_NUMBER
         };
         Cursor cursor = db.query(Tables.TRUCK, projection, null, null, null, null, null);
         assertThat(cursor).isNotNull();
