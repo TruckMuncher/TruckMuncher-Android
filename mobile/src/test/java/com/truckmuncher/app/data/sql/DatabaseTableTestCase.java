@@ -3,17 +3,13 @@ package com.truckmuncher.app.data.sql;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
-
 import org.junit.After;
 import org.junit.Before;
-import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
 /**
  * Configures an in memory database with the latest migrations
  */
-@RunWith(ReadableRobolectricTestRunner.class)
 public class DatabaseTableTestCase {
 
     TestOpenHelper openHelper;
