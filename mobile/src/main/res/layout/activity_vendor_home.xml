@@ -3,16 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="vendor.VendorHomeActivity">
 
-    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_actionbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize">
-
-    </android.support.v7.widget.Toolbar>
+        android:minHeight="?attr/actionBarSize"/>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -20,16 +19,16 @@
 
         <fragment
             android:id="@+id/vendor_map_fragment"
+            tools:layout="@layout/fragment_vendor_map"
             android:name="com.truckmuncher.app.vendor.VendorMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context="vendor.VendorHomeActivity" />
+            android:layout_height="match_parent" />
 
         <fragment
             android:id="@+id/vendor_home_fragment"
+            tools:layout="@layout/fragment_vendor_home"
             android:name="com.truckmuncher.app.vendor.VendorHomeFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context="vendor.VendorHomeActivity" />
+            android:layout_height="match_parent" />
     </FrameLayout>
 </LinearLayout>

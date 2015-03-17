@@ -43,7 +43,7 @@ public class VendorHomeActivity extends ActionBarActivity implements
         VendorMapFragment.OnMapLocationChangedListener, VendorHomeFragment.OnServingModeChangedListener,
         LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemSelectedListener {
 
-    Spinner actionBarSpinner;
+    private Spinner actionBarSpinner;
 
     private AccountManager accountManager;
     private String selectedTruckId;
@@ -192,7 +192,7 @@ public class VendorHomeActivity extends ActionBarActivity implements
         truckIds = new String[cursor.getCount()];
 
         if (cursor.moveToFirst()) {
-            selectedTruckId = cursor.getString(TrucksOwnedByUserQuery.NAME);
+            selectedTruckId = cursor.getString(TrucksOwnedByUserQuery.ID);
 
             int counter = 0;
             do {
