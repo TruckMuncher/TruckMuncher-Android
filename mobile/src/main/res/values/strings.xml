@@ -34,6 +34,7 @@
     <string name="error_empty_vendor_menu">It looks like you have not yet added any menu items using the web interface. On Android you can only mark them as being in or out of stock.\n\nVisit the website at https://www.truckmuncher.com</string>
     <string name="error_twitter_auth">Twitter authentication failed. Please try again.</string>
     <string name="error_menu_item_diff">We could not save your menu availability. Try again.</string>
+    <string name="error_invalid_truck">Invalid truck</string>
 
     <!-- Plurals-->
     <plurals name="items_unavailable_message">
