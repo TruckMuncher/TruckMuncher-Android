@@ -6,8 +6,6 @@
         <item name="colorPrimaryDark">@color/pink_dark</item>
         <item name="colorAccent">@color/mold</item>
 
-        <item name="colorControlNormal">@android:color/white</item>
-
         <item name="android:fastScrollThumbDrawable">@drawable/fastscroll_thumb</item>
     </style>
 
