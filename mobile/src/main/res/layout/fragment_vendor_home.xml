@@ -1,7 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <android.support.v7.widget.SwitchCompat
+        android:id="@+id/serving_mode"
+        style="@style/VendorHud"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/vendor_hud_bottom_height"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:checked="false"
+        android:gravity="center"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:text="@string/serving_mode" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/serving_mode">
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            map:cameraTargetLat="43.039691"
+            map:cameraTargetLng="-87.905903"
+            map:cameraZoom="14"
+            map:uiTiltGestures="false" />
+
+        <View
+            android:id="@+id/mapGlass"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
 
     <!--This is just used as a reference point for the ImageView below. -->
     <View
@@ -32,18 +68,4 @@
         android:importantForAccessibility="no"
         android:src="@drawable/serving_mode_indicator"
         android:visibility="invisible" />
-
-    <android.support.v7.widget.SwitchCompat
-        android:id="@+id/serving_mode"
-        style="@style/VendorHud"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/vendor_hud_bottom_height"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:checked="false"
-        android:gravity="center"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:text="@string/serving_mode" />
 </RelativeLayout>

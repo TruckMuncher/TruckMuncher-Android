@@ -15,54 +15,54 @@ import static com.squareup.wire.Message.Label.REPEATED;
  */
 public final class FullMenusResponse extends Message {
 
-  public static final List<Menu> DEFAULT_MENUS = Collections.emptyList();
+    public static final List<Menu> DEFAULT_MENUS = Collections.emptyList();
 
-  @ProtoField(tag = 1, label = REPEATED)
-  public final List<Menu> menus;
+    @ProtoField(tag = 1, label = REPEATED)
+    public final List<Menu> menus;
 
-  public FullMenusResponse(List<Menu> menus) {
-    this.menus = immutableCopyOf(menus);
-  }
-
-  private FullMenusResponse(Builder builder) {
-    this(builder.menus);
-    setBuilder(builder);
-  }
-
-  @Override
-  public boolean equals(Object other) {
-    if (other == this) return true;
-    if (!(other instanceof FullMenusResponse)) return false;
-    return equals(menus, ((FullMenusResponse) other).menus);
-  }
-
-  @Override
-  public int hashCode() {
-    int result = hashCode;
-    return result != 0 ? result : (hashCode = menus != null ? menus.hashCode() : 1);
-  }
-
-  public static final class Builder extends Message.Builder<FullMenusResponse> {
-
-    public List<Menu> menus;
-
-    public Builder() {
+    public FullMenusResponse(List<Menu> menus) {
+        this.menus = immutableCopyOf(menus);
     }
 
-    public Builder(FullMenusResponse message) {
-      super(message);
-      if (message == null) return;
-      this.menus = copyOf(message.menus);
-    }
-
-    public Builder menus(List<Menu> menus) {
-      this.menus = checkForNulls(menus);
-      return this;
+    private FullMenusResponse(Builder builder) {
+        this(builder.menus);
+        setBuilder(builder);
     }
 
     @Override
-    public FullMenusResponse build() {
-      return new FullMenusResponse(this);
+    public boolean equals(Object other) {
+        if (other == this) return true;
+        if (!(other instanceof FullMenusResponse)) return false;
+        return equals(menus, ((FullMenusResponse) other).menus);
     }
-  }
+
+    @Override
+    public int hashCode() {
+        int result = hashCode;
+        return result != 0 ? result : (hashCode = menus != null ? menus.hashCode() : 1);
+    }
+
+    public static final class Builder extends Message.Builder<FullMenusResponse> {
+
+        public List<Menu> menus;
+
+        public Builder() {
+        }
+
+        public Builder(FullMenusResponse message) {
+            super(message);
+            if (message == null) return;
+            this.menus = copyOf(message.menus);
+        }
+
+        public Builder menus(List<Menu> menus) {
+            this.menus = checkForNulls(menus);
+            return this;
+        }
+
+        @Override
+        public FullMenusResponse build() {
+            return new FullMenusResponse(this);
+        }
+    }
 }

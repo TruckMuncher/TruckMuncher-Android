@@ -12,6 +12,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -28,6 +29,7 @@ import android.widget.Spinner;
 
 import com.facebook.Session;
 import com.google.android.gms.maps.model.LatLng;
+import com.truckmuncher.api.trucks.Truck;
 import com.truckmuncher.app.MainActivity;
 import com.truckmuncher.app.R;
 import com.truckmuncher.app.authentication.AccountGeneral;
@@ -41,7 +43,8 @@ import static com.truckmuncher.app.data.sql.WhereClause.Operator.EQUALS;
 
 public class VendorHomeActivity extends ActionBarActivity implements
         VendorMapFragment.OnMapLocationChangedListener, VendorHomeFragment.OnServingModeChangedListener,
-        LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemSelectedListener {
+        LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemSelectedListener,
+        VendorHomeFragment.OnServingModeChangedListener {
 
     private Spinner actionBarSpinner;
 
@@ -129,29 +132,9 @@ public class VendorHomeActivity extends ActionBarActivity implements
     }
 
     @Override
-    public void onMapLocationChanged(LatLng latLng) {
-        VendorHomeFragment fragment = (VendorHomeFragment) getSupportFragmentManager().findFragmentById(R.id.vendor_home_fragment);
-
-        if (fragment != null) {
-            Location location = new Location("");
-            location.setLatitude(latLng.latitude);
-            location.setLongitude(latLng.longitude);
-            fragment.onLocationUpdate(location);
-        }
-    }
-
-    @Override
     public void onServingModeChanged(final boolean enabled, Location currentLocation) {
         serviceHelper.changeServingState(this, selectedTruckId, enabled, currentLocation);
         actionBarSpinner.setEnabled(!enabled);
-
-        final VendorMapFragment fragment = (VendorMapFragment) getSupportFragmentManager().findFragmentById(R.id.vendor_map_fragment);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                fragment.setMapControlsEnabled(!enabled);
-            }
-        });
 
         // If serving mode is being enabled and they have the item unavailable warning enabled,
         // we need to check if there are any items marked as unavailable
@@ -169,7 +152,7 @@ public class VendorHomeActivity extends ActionBarActivity implements
                     whereClause.selection, whereClause.selectionArgs, null);
 
             // Show the warning if there are items out of stock
-            if (cursor.getCount() > 0 ) {
+            if (cursor.getCount() > 0) {
                 showWarning(cursor.getCount());
             }
 
@@ -237,7 +220,7 @@ public class VendorHomeActivity extends ActionBarActivity implements
         View checkBoxView = View.inflate(this, R.layout.dialog_items_unavailable_warning, null);
         final CheckBox checkBox = (CheckBox) checkBoxView.findViewById(R.id.checkbox_dont_show_again);
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
+            public void onClick(@NonNull DialogInterface dialog, int id) {
                 if (checkBox.isChecked()) {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putBoolean(getString(R.string.setting_item_unavailable_warning), false);

@@ -10,7 +10,6 @@ import android.support.v4.content.Loader;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.widget.Toast;
 
 import com.truckmuncher.app.R;
 import com.truckmuncher.app.data.Contract;
@@ -61,7 +60,6 @@ public class MenuAdminFragment extends ListFragment implements LoaderManager.Loa
         Map<String, Boolean> diff = adapter.getMenuItemAvailabilityDiff();
         adapter.clearMenuItemAvailabilityDiff();
         serviceHelper.persistMenuDiff(getActivity(), diff);
-        Toast.makeText(getActivity(), R.string.saving_menu_availability, Toast.LENGTH_SHORT).show();
     }
 
     @Override

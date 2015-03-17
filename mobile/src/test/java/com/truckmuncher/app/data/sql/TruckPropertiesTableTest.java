@@ -4,11 +4,14 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.truckmuncher.app.data.PublicContract;
+import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@RunWith(ReadableRobolectricTestRunner.class)
 public class TruckPropertiesTableTest extends DatabaseTableTestCase {
 
     @Test
@@ -20,6 +23,8 @@ public class TruckPropertiesTableTest extends DatabaseTableTestCase {
         values.put(PublicContract.Truck.KEYWORDS, "hello");
         values.put(PublicContract.Truck.COLOR_PRIMARY, "hello");
         values.put(PublicContract.Truck.COLOR_SECONDARY, "hello");
+        values.put(PublicContract.Truck.DESCRIPTION, "hello");
+        values.put(PublicContract.Truck.PHONE_NUMBER, "hello");
         assertThat(db.insert(Tables.TRUCK_PROPERTIES, null, values)).isEqualTo(1);
     }
 

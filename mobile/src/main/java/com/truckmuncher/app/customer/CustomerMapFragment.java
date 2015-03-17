@@ -276,7 +276,7 @@ public class CustomerMapFragment extends ApiClientFragment implements
         TruckCluster cluster = activeTruckMarkers.get(truckId);
 
         if (cluster != null) {
-            mapView.getMap().moveCamera(CameraUpdateFactory.newLatLng(cluster.getPosition()));
+            mapView.getMap().animateCamera(CameraUpdateFactory.newLatLng(cluster.getPosition()));
         }
     }
 

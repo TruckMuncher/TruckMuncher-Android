@@ -4,7 +4,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.widget.Toast;
 
+import com.truckmuncher.app.R;
 import com.truckmuncher.app.data.PublicContract;
 
 import java.util.Map;
@@ -29,5 +31,7 @@ public class MenuAdminServiceHelper {
 
         Intent intent = MenuItemDiffService.newIntent(context, contentValues);
         context.startService(intent);
+
+        Toast.makeText(context, R.string.saving_menu_availability, Toast.LENGTH_SHORT).show();
     }
 }
