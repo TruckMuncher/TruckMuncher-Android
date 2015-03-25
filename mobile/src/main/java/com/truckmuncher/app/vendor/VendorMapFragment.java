@@ -78,6 +78,14 @@ public abstract class VendorMapFragment extends ApiClientFragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Bundle mapState = new Bundle();
+        mapView.onSaveInstanceState(mapState);
+        outState.putParcelable(ARG_MAP_STATE, mapState);
+    }
+
+    @Override
     public void onPause() {
         mapView.onPause();
         super.onPause();
@@ -85,17 +93,11 @@ public abstract class VendorMapFragment extends ApiClientFragment {
 
     @Override
     public void onDestroyView() {
-        mapView.onDestroy();
+        if (mapView != null) {
+            mapView.onDestroy();
+        }
         ButterKnife.reset(this);
         super.onDestroyView();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Bundle mapState = new Bundle();
-        mapView.onSaveInstanceState(mapState);
-        outState.putParcelable(ARG_MAP_STATE, mapState);
     }
 
     @Override
