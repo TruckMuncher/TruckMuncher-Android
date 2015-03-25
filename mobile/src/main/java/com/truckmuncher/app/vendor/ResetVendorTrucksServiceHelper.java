@@ -10,16 +10,10 @@ import java.util.List;
 
 public class ResetVendorTrucksServiceHelper {
 
-    public void resetVendorTrucks(Context context, @NonNull List<Truck> vendorTrucks) {
+    public void resetVendorTrucks(Context context, String[] truckIds) {
         // Nothing to do if the list is empty
-        if (vendorTrucks.isEmpty()) {
+        if (truckIds == null || truckIds.length == 0) {
             return;
-        }
-
-        String[] truckIds = new String[vendorTrucks.size()];
-
-        for (int i = 0; i < vendorTrucks.size(); i++) {
-            truckIds[i] = vendorTrucks.get(i).id;
         }
 
         Intent intent = ResetVendorTrucksService.newIntent(context, truckIds);

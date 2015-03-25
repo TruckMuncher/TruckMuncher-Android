@@ -1,13 +1,8 @@
 package com.truckmuncher.app.vendor;
 
-import android.app.Activity;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
@@ -25,7 +20,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnTouch;
 
-public class VendorMapFragment extends ApiClientFragment {
+public abstract class VendorMapFragment extends ApiClientFragment {
 
     private static final String ARG_MAP_STATE = "map_state";
 
@@ -36,23 +31,11 @@ public class VendorMapFragment extends ApiClientFragment {
     MapView mapView;
 
     private boolean useMapLocation;
-    private OnMapLocationChangedListener onMapLocationChangedListener;
     private LocationRequest request;
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            onMapLocationChangedListener = (OnMapLocationChangedListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException("Calling activity must implement " + OnMapLocationChangedListener.class.getName());
-        }
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_vendor_map, container, false);
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
 
         if (savedInstanceState != null) {
@@ -66,18 +49,9 @@ public class VendorMapFragment extends ApiClientFragment {
                 .addApi(LocationServices.API)
                 .build();
 
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
         final GoogleMap map = mapView.getMap();
 
         // Configure map
-        int mapPaddingBottom = getResources().getDimensionPixelOffset(R.dimen.vendor_hud_bottom_height);
-        map.setPadding(0, 0, 0, mapPaddingBottom);
         map.setMyLocationEnabled(true);
 
         map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
@@ -95,12 +69,6 @@ public class VendorMapFragment extends ApiClientFragment {
             latLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
             map.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         }
-        mapView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-//                onMapLocationChangedListener.onMapLocationChanged(latLng);
-            }
-        }, 500);    // Need a delayed post so fragments have time to setup
     }
 
     @Override
@@ -110,26 +78,7 @@ public class VendorMapFragment extends ApiClientFragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        mapView.onPause();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mapView.onDestroy();
-        ButterKnife.reset(this);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        onMapLocationChangedListener = null;
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Bundle mapState = new Bundle();
         mapView.onSaveInstanceState(mapState);
@@ -137,9 +86,24 @@ public class VendorMapFragment extends ApiClientFragment {
     }
 
     @Override
+    public void onPause() {
+        mapView.onPause();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (mapView != null) {
+            mapView.onDestroy();
+        }
+        ButterKnife.reset(this);
+        super.onDestroyView();
+    }
+
+    @Override
     public void onLowMemory() {
-        super.onLowMemory();
         mapView.onLowMemory();
+        super.onLowMemory();
     }
 
     @OnTouch(R.id.mapGlass)
@@ -151,7 +115,10 @@ public class VendorMapFragment extends ApiClientFragment {
             @Override
             public void run() {
                 LatLng target = mapView.getMap().getCameraPosition().target;
-                onMapLocationChangedListener.onMapLocationChanged(target);
+                Location location = new Location("");
+                location.setLongitude(target.longitude);
+                location.setLatitude(target.latitude);
+                onLocationUpdate(location);
             }
         }, 1000);
 
@@ -166,7 +133,7 @@ public class VendorMapFragment extends ApiClientFragment {
                 LatLng latLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
                 MapsInitializer.initialize(getActivity());
                 mapView.getMap().animateCamera(CameraUpdateFactory.newLatLng(latLng));
-                onMapLocationChangedListener.onMapLocationChanged(latLng);
+                onLocationUpdate(myLocation);
             }
         }
 
@@ -178,11 +145,11 @@ public class VendorMapFragment extends ApiClientFragment {
     }
 
     @Override
-    public void onLocationChanged(Location location) {
+    public final void onLocationChanged(Location location) {
         if (!useMapLocation) {
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             mapView.getMap().animateCamera(CameraUpdateFactory.newLatLng(latLng));
-            onMapLocationChangedListener.onMapLocationChanged(latLng);
+            onLocationUpdate(location);
         }
     }
 
@@ -202,7 +169,5 @@ public class VendorMapFragment extends ApiClientFragment {
 
     }
 
-    interface OnMapLocationChangedListener {
-        void onMapLocationChanged(LatLng latLng);
-    }
+    abstract void onLocationUpdate(Location location);
 }

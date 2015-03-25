@@ -1,18 +1,17 @@
 package com.truckmuncher.app.vendor;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.truckmuncher.app.R;
 
@@ -20,7 +19,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
 
-public class VendorHomeFragment extends Fragment {
+public class VendorHomeFragment extends VendorMapFragment {
 
     private static final String ARG_CURRENT_LOCATION = "current_location";
 
@@ -29,6 +28,9 @@ public class VendorHomeFragment extends Fragment {
 
     @InjectView(R.id.vendor_map_marker_pulse)
     ImageView vendorMarkerPulse;
+
+    @InjectView(R.id.serving_mode)
+    SwitchCompat servingModeSwitch;
 
     private Location currentLocation;
     private OnServingModeChangedListener onServingModeChangedListener;
@@ -66,28 +68,39 @@ public class VendorHomeFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         ButterKnife.reset(this);
+        super.onDestroyView();
     }
 
     @Override
     public void onDetach() {
-        super.onDetach();
         onServingModeChangedListener = null;
+        super.onDetach();
     }
 
-    public void onLocationUpdate(Location location) {
+    @Override
+    void onLocationUpdate(Location location) {
         currentLocation = location;
     }
 
     @OnCheckedChanged(R.id.serving_mode)
-    void onServingModeToggled(boolean isChecked) {
+    void onServingModeClicked(SwitchCompat view) {
+        if (currentLocation == null) {
+            Toast.makeText(getActivity(), R.string.error_serving_no_location, Toast.LENGTH_LONG).show();
+
+            // Un-switch the switch
+            view.toggle();
+            return;
+        }
+
+        boolean isChecked = view.isChecked();
         int marker = isChecked ? R.drawable.map_marker_green : R.drawable.map_marker_gray;
 
         vendorMapMarker.setImageDrawable(getResources().getDrawable(marker));
 
         updateAnimation(isChecked);
 
+        setMapControlsEnabled(!isChecked);
         onServingModeChangedListener.onServingModeChanged(isChecked, currentLocation);
     }
 

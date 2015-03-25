@@ -5,8 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.github.jcandksolutions.gradle:android-unit-test:2.1.1'
-        classpath 'io.fabric.tools:gradle:1.15.1'
+        classpath 'io.fabric.tools:gradle:1.15.2'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
         classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.6'
     }
@@ -30,8 +29,8 @@ monkey {
 
 // Manifest Information
 def versionMajor = 0
-def versionMinor = 2
-def versionPatch = 2
+def versionMinor = 4
+def versionPatch = 0
 
 android {
     compileSdkVersion 21
@@ -137,8 +136,6 @@ apt {
     }
 }
 
-apply plugin: 'android-unit-test'
-
 dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.google.android.gms:play-services-maps:6.5.87'
@@ -178,7 +175,9 @@ dependencies {
 
     debugCompile 'com.squareup.retrofit:retrofit-mock:1.9.0'
 
-    androidTestCompile 'com.squareup.assertj:assertj-android:1.0.0'
+    androidTestCompile('com.squareup.assertj:assertj-android:1.0.0') {
+        exclude module: 'support-annotations'
+    }
     androidTestCompile('com.jakewharton.espresso:espresso:1.1-r3') {
         exclude group: 'com.squareup.dagger'
     }

@@ -25,6 +25,6 @@ public class TruckClusterRenderer<T extends ClusterItem> extends DefaultClusterR
 
     @Override
     protected void onBeforeClusterItemRendered(T item, MarkerOptions markerOptions) {
-        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker));
+        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker_unselected));
     }
 }
