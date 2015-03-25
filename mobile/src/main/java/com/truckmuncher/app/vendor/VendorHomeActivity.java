@@ -50,7 +50,6 @@ public class VendorHomeActivity extends ActionBarActivity implements
     private VendorHomeServiceHelper serviceHelper;
     private ResetVendorTrucksServiceHelper resetServiceHelper;
     private SharedPreferences sharedPreferences;
-    private SimpleCursorAdapter spinnerAdapter;
     private String[] truckIds;
 
     @Override
@@ -58,7 +57,7 @@ public class VendorHomeActivity extends ActionBarActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vendor_home);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle("");
 
@@ -183,7 +182,7 @@ public class VendorHomeActivity extends ActionBarActivity implements
 
         String[] adapterCols = {TrucksOwnedByUserQuery.PROJECTION[TrucksOwnedByUserQuery.NAME]};
         int[] adapterRowViews = new int[]{android.R.id.text1};
-        spinnerAdapter = new SimpleCursorAdapter(getSupportActionBar().getThemedContext(),
+        SimpleCursorAdapter spinnerAdapter = new SimpleCursorAdapter(getSupportActionBar().getThemedContext(),
                 android.R.layout.simple_spinner_item, cursor, adapterCols, adapterRowViews, 0);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         actionBarSpinner.setAdapter(spinnerAdapter);
