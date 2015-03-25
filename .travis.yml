@@ -16,8 +16,8 @@ android:
     # All the build system components should be at the latest version
     - tools
     - platform-tools
-    - build-tools-21.1.2
-    - android-21
+    - build-tools-22.0.1
+    - android-22
 
     # The libraries we can't get from Maven Central or similar
     - extra-android-support

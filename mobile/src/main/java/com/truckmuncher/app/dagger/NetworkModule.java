@@ -53,13 +53,9 @@ public class NetworkModule {
 
     protected static void configureHttpCache(Context context, OkHttpClient client) {
         // Install an HTTP cache in the application cache directory.
-        try {
-            File cacheDir = new File(context.getApplicationContext().getCacheDir(), "http");
-            Cache cache = new Cache(cacheDir, DISK_CACHE_SIZE);
-            client.setCache(cache);
-        } catch (IOException e) {
-            Timber.e(e, "Unable to install disk cache.");
-        }
+        File cacheDir = new File(context.getApplicationContext().getCacheDir(), "http");
+        Cache cache = new Cache(cacheDir, DISK_CACHE_SIZE);
+        client.setCache(cache);
     }
 
     private static void configureSsl(OkHttpClient client) {
