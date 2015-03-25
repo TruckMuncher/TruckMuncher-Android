@@ -28,8 +28,6 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 
 import com.facebook.Session;
-import com.google.android.gms.maps.model.LatLng;
-import com.truckmuncher.api.trucks.Truck;
 import com.truckmuncher.app.MainActivity;
 import com.truckmuncher.app.R;
 import com.truckmuncher.app.authentication.AccountGeneral;
@@ -42,7 +40,6 @@ import com.twitter.sdk.android.Twitter;
 import static com.truckmuncher.app.data.sql.WhereClause.Operator.EQUALS;
 
 public class VendorHomeActivity extends ActionBarActivity implements
-        VendorMapFragment.OnMapLocationChangedListener, VendorHomeFragment.OnServingModeChangedListener,
         LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemSelectedListener,
         VendorHomeFragment.OnServingModeChangedListener {
 
