@@ -81,7 +81,11 @@ public class CustomerMenuFragment extends ListFragment implements CustomerMenuLo
         if (TextUtils.isEmpty(imageUrl)) {
             truckImage.setVisibility(View.GONE);
         } else {
-            Picasso.with(getActivity()).load(imageUrl).into(truckImage);
+            Picasso.with(getActivity())
+                    .load(imageUrl)
+                    .fit()
+                    .centerInside()
+                    .into(truckImage);
         }
 
         if (headerColor != null) {

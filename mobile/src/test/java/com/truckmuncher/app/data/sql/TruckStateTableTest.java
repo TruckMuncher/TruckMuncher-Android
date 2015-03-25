@@ -5,11 +5,14 @@ import android.database.Cursor;
 
 import com.truckmuncher.app.data.Contract;
 import com.truckmuncher.app.data.PublicContract;
+import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@RunWith(ReadableRobolectricTestRunner.class)
 public class TruckStateTableTest extends DatabaseTableTestCase {
 
     @Test
