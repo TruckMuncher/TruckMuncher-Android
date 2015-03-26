@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.truckmuncher.app.data.PublicContract;
 
+import java.util.ArrayList;
+
 public class TruckHeaderPagerAdapter extends FragmentStatePagerAdapter {
 
     private final Cursor cursor;
@@ -40,6 +42,15 @@ public class TruckHeaderPagerAdapter extends FragmentStatePagerAdapter {
             }
         }
         return -1;
+    }
+
+    public ArrayList<String> getTruckIds() {
+        ArrayList<String> truckIds = new ArrayList<>(cursor.getCount());
+        cursor.moveToFirst();
+        do {
+            truckIds.add(cursor.getString(Query.TRUCK_ID));
+        } while (cursor.moveToNext());
+        return truckIds;
     }
 
     public interface Query {

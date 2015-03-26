@@ -18,7 +18,6 @@ import com.truckmuncher.app.R;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 
 import static com.guava.common.base.Preconditions.checkNotNull;
 
@@ -71,15 +70,6 @@ public class CustomerMenuFragment extends ListFragment implements TruckDataLoade
     public void onDestroyView() {
         ButterKnife.reset(this);
         super.onDestroyView();
-    }
-
-    @OnClick(R.id.header)
-    void onHeaderClick() {
-        startActivity(TruckDetailsActivity.newIntent(getActivity(), getArguments().getString(ARG_TRUCK_ID)));
-    }
-
-    public View getHeaderView() {
-        return headerView;
     }
 
     @Override

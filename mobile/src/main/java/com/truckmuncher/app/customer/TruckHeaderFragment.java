@@ -44,6 +44,8 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
     @InjectView(R.id.header)
     View headerView;
 
+    private OnTruckHeaderClickListener truckHeaderClickListener;
+
     public static TruckHeaderFragment newInstance(@NonNull String truckId) {
         Bundle args = new Bundle();
         args.putString(ARG_TRUCK_ID, checkNotNull(truckId));
@@ -56,6 +58,7 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_truck_header, container, false);
         ButterKnife.inject(this, view);
+        truckHeaderClickListener = (OnTruckHeaderClickListener) getActivity();
         return view;
     }
 
@@ -115,10 +118,10 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
 
     @OnClick(R.id.header)
     void onHeaderClick() {
-        startActivity(TruckDetailsActivity.newIntent(getActivity(), getArguments().getString(ARG_TRUCK_ID)));
+        truckHeaderClickListener.onTruckHeaderClick(getArguments().getString(ARG_TRUCK_ID));
     }
 
-    public void onTruckDataLoaded(String name, String keywords, String imageUrl, String headerColor) {
+    private void onTruckDataLoaded(String name, String keywords, String imageUrl, String headerColor) {
         if (TextUtils.isEmpty(imageUrl)) {
             truckImage.setVisibility(View.GONE);
         } else {
@@ -138,6 +141,10 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
 
         truckName.setText(name);
         truckKeywords.setText(keywords);
+    }
+
+    public interface OnTruckHeaderClickListener {
+        void onTruckHeaderClick(String currentTruck);
     }
 
     interface TruckQuery {

@@ -24,10 +24,14 @@ import com.truckmuncher.app.authentication.AccountGeneral;
 import com.truckmuncher.app.authentication.AuthenticatorActivity;
 import com.truckmuncher.app.customer.CustomerMapFragment;
 import com.truckmuncher.app.customer.TruckCluster;
+import com.truckmuncher.app.customer.TruckDetailsActivity;
+import com.truckmuncher.app.customer.TruckHeaderFragment;
 import com.truckmuncher.app.customer.TruckHeaderPagerAdapter;
 import com.truckmuncher.app.data.PublicContract;
 import com.truckmuncher.app.data.sql.WhereClause;
 import com.truckmuncher.app.vendor.VendorHomeActivity;
+
+import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -36,9 +40,10 @@ import timber.log.Timber;
 import static com.truckmuncher.app.data.sql.WhereClause.Operator.EQUALS;
 
 public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor>,
-        CustomerMapFragment.OnTruckMarkerClickListener {
+        CustomerMapFragment.OnTruckMarkerClickListener, TruckHeaderFragment.OnTruckHeaderClickListener {
 
     private static final int REQUEST_LOGIN = 1;
+    private static final int REQUEST_TRUCK_DETAILS = 2;
     private static final int LOADER_TRUCKS = 0;
 
     @InjectView(R.id.view_pager)
@@ -178,12 +183,20 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_LOGIN) {
-            if (resultCode == RESULT_OK) {
-                launchVendorMode();
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_LOGIN:
+                if (resultCode == RESULT_OK) {
+                    launchVendorMode();
+                }
+                break;
+            case REQUEST_TRUCK_DETAILS:
+                if (resultCode == RESULT_OK) {
+                    String lastTruckId = data.getStringExtra(TruckDetailsActivity.ARG_ENDING_TRUCK);
+                    viewPager.setCurrentItem(pagerAdapter.getTruckPosition(lastTruckId));
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -226,5 +239,11 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
                 viewPager.setCurrentItem(pagerAdapter.getTruckPosition(truckId));
             }
         });
+    }
+
+    @Override
+    public void onTruckHeaderClick(String currentTruck) {
+        ArrayList<String> truckIds = pagerAdapter.getTruckIds();
+        startActivityForResult(TruckDetailsActivity.newIntent(this, truckIds, currentTruck), REQUEST_TRUCK_DETAILS);
     }
 }
