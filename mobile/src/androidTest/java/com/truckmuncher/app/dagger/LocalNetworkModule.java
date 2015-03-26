@@ -1,6 +1,7 @@
 package com.truckmuncher.app.dagger;
 
 import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Context;
 
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -38,10 +39,10 @@ public class LocalNetworkModule {
 
     @Singleton
     @Provides
-    public AuthService provideAuthService(RestAdapter.Builder builder, Account account) {
+    public AuthService provideAuthService(RestAdapter.Builder builder, AccountManager accountManager, Account account) {
         builder.setLogLevel(RestAdapter.LogLevel.FULL)
                 .setErrorHandler(new AuthErrorHandler(appContext))
-                .setRequestInterceptor(new AuthRequestInterceptor(appContext, account))
+                .setRequestInterceptor(new AuthRequestInterceptor(accountManager, account))
                 .setEndpoint(server.getUrl("/").toString())
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setExecutors(new MainThreadExecutor(), new MainThreadExecutor());

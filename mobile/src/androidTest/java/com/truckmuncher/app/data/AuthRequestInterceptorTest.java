@@ -33,7 +33,7 @@ public class AuthRequestInterceptorTest extends AndroidTestCase {
         accountManager = AccountManager.get(getContext());
         accountManager.addAccountExplicitly(account, null, null);
 
-        interceptor = new AuthRequestInterceptor(getContext(), account);
+        interceptor = new AuthRequestInterceptor(accountManager, account);
     }
 
     @Override
