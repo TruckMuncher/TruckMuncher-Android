@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
@@ -29,7 +30,9 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import timber.log.Timber;
 
+import static com.guava.common.base.Preconditions.checkNotNull;
 import static com.truckmuncher.app.data.sql.WhereClause.Operator.EQUALS;
 
 public class CustomerMenuFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -54,9 +57,9 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
     private MenuAdapter adapter;
     private String truckPrimaryColor;
 
-    public static CustomerMenuFragment newInstance(String truckId, LatLng referenceLocation) {
+    public static CustomerMenuFragment newInstance(@NonNull String truckId, LatLng referenceLocation) {
         Bundle args = new Bundle();
-        args.putString(ARG_TRUCK_ID, truckId);
+        args.putString(ARG_TRUCK_ID, checkNotNull(truckId));
         if (referenceLocation != null) {
             args.putDouble(ARG_LATITUDE, referenceLocation.latitude);
             args.putDouble(ARG_LONGITUDE, referenceLocation.longitude);
@@ -130,6 +133,11 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
                     if (truckPrimaryColor != null) {
                         getListView().setBackgroundColor(Color.parseColor(truckPrimaryColor));
                     }
+                } else {
+
+                    // Invalid truck
+                    Timber.w("Tried to load an invalid truck with id %s", getArguments().getString(ARG_TRUCK_ID));
+                    ((OnTriedToLoadInvalidTruckListener) getActivity()).onTriedToLoadInvalidTruck();
                 }
                 break;
             case LOADER_MENU:
@@ -166,7 +174,11 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
         if (TextUtils.isEmpty(imageUrl)) {
             truckImage.setVisibility(View.GONE);
         } else {
-            Picasso.with(getActivity()).load(imageUrl).into(truckImage);
+            Picasso.with(getActivity())
+                    .load(imageUrl)
+                    .fit()
+                    .centerInside()
+                    .into(truckImage);
         }
 
         String backgroundColor = cursor.getString(TruckQuery.COLOR_SECONDARY);
@@ -223,5 +235,9 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
         static final int COLOR_SECONDARY = 4;
         static final int LATITUDE = 5;
         static final int LONGITUDE = 6;
+    }
+
+    public interface OnTriedToLoadInvalidTruckListener {
+        void onTriedToLoadInvalidTruck();
     }
 }

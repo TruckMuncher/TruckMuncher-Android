@@ -69,6 +69,8 @@ public class VendorTrucksService extends IntentService {
                 propertiesValues.put(PublicContract.Truck.KEYWORDS, Contract.convertListToString(truck.keywords));
                 propertiesValues.put(PublicContract.Truck.COLOR_PRIMARY, truck.primaryColor);
                 propertiesValues.put(PublicContract.Truck.COLOR_SECONDARY, truck.secondaryColor);
+                propertiesValues.put(PublicContract.Truck.DESCRIPTION, truck.description);
+                propertiesValues.put(PublicContract.Truck.PHONE_NUMBER, truck.phoneNumber);
                 propertiesContentValues[i] = propertiesValues;
 
                 ContentValues stateValues = new ContentValues();

@@ -24,7 +24,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.ClusterRenderer;
-import com.truckmuncher.api.trucks.Truck;
 import com.truckmuncher.app.ApiClientFragment;
 import com.truckmuncher.app.R;
 import com.truckmuncher.app.data.PublicContract;
@@ -54,7 +53,6 @@ public class CustomerMapFragment extends ApiClientFragment implements
 
     LatLng currentLocation;
     ClusterManager<TruckCluster> clusterManager;
-    private ClusterRenderer<TruckCluster> renderer;
     private Map<String, TruckCluster> activeTruckMarkers = Collections.emptyMap();
     private SimpleSearchServiceHelper serviceHelper;
     private OnTruckMarkerClickListener onTruckMarkerClickListener;
@@ -205,15 +203,12 @@ public class CustomerMapFragment extends ApiClientFragment implements
         activeTruckMarkers = new HashMap<>();
 
         while (cursor.moveToNext()) {
-            Truck truck = new Truck.Builder()
-                    .id(cursor.getString(ActiveTrucksQuery.ID))
-                    .name(cursor.getString(ActiveTrucksQuery.NAME))
-                    .build();
+            String truckId = cursor.getString(ActiveTrucksQuery.ID);
 
             LatLng location = new LatLng(cursor.getDouble(ActiveTrucksQuery.LATITUDE),
                     cursor.getDouble(ActiveTrucksQuery.LONGITUDE));
 
-            activeTruckMarkers.put(truck.id, new TruckCluster(truck, location));
+            activeTruckMarkers.put(truckId, new TruckCluster(truckId, location));
         }
 
         forceClusterRender(activeTruckMarkers.values());
@@ -266,7 +261,7 @@ public class CustomerMapFragment extends ApiClientFragment implements
         // Initialize the manager with the context and the map.
         clusterManager = new ClusterManager<>(getActivity(), map);
 
-        renderer = new TruckClusterRenderer<>(getActivity(), map, clusterManager);
+        ClusterRenderer<TruckCluster> renderer = new TruckClusterRenderer<>(getActivity(), map, clusterManager);
         clusterManager.setRenderer(renderer);
 
         clusterManager.setOnClusterClickListener(this);
@@ -289,7 +284,7 @@ public class CustomerMapFragment extends ApiClientFragment implements
         TruckCluster cluster = activeTruckMarkers.get(truckId);
 
         if (cluster != null) {
-            mapView.getMap().moveCamera(CameraUpdateFactory.newLatLng(cluster.getPosition()));
+            mapView.getMap().animateCamera(CameraUpdateFactory.newLatLng(cluster.getPosition()));
         }
     }
 
@@ -302,13 +297,11 @@ public class CustomerMapFragment extends ApiClientFragment implements
         public static final String[] PROJECTION = new String[]{
                 PublicContract.Truck.ID,
                 PublicContract.Truck.LATITUDE,
-                PublicContract.Truck.LONGITUDE,
-                PublicContract.Truck.NAME
+                PublicContract.Truck.LONGITUDE
         };
         static final int ID = 0;
         static final int LATITUDE = 1;
         static final int LONGITUDE = 2;
-        static final int NAME = 3;
     }
 
     public interface OnTruckMarkerClickListener {

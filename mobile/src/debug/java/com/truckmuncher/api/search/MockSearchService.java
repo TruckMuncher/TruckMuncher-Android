@@ -6,8 +6,10 @@ import com.truckmuncher.api.trucks.Truck;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import retrofit.Callback;
 import retrofit.http.Body;
 
 public class MockSearchService implements SearchService {
@@ -40,6 +42,11 @@ public class MockSearchService implements SearchService {
             searchResponseList.add(response);
         }
 
-        return new SimpleSearchResponse(searchResponseList);
+        return new SimpleSearchResponse(searchResponseList, request.query, Collections.<String>emptyList());
+    }
+
+    @Override
+    public void simpleSearch(@Body SimpleSearchRequest request, Callback<SimpleSearchResponse> callback) {
+        callback.success(simpleSearch(request), null);
     }
 }

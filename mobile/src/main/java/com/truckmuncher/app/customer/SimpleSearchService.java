@@ -50,7 +50,9 @@ public class SimpleSearchService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         String searchQuery = intent.getStringExtra(ARG_SEARCH_QUERY);
 
-        SimpleSearchRequest request = new SimpleSearchRequest(searchQuery, null, null);
+        SimpleSearchRequest request = new SimpleSearchRequest.Builder()
+                .query(searchQuery)
+                .build();
 
         try {
             SimpleSearchResponse response = searchService.simpleSearch(request);

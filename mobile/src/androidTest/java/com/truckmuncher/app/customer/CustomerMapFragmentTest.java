@@ -1,16 +1,11 @@
 package com.truckmuncher.app.customer;
 
-
 import android.app.Instrumentation;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.ActionBarActivity;
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.truckmuncher.app.MainActivity;
-import com.truckmuncher.app.R;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class CustomerMapFragmentTest extends ActivityInstrumentationTestCase2<MainActivity> {
 
@@ -36,24 +31,5 @@ public class CustomerMapFragmentTest extends ActivityInstrumentationTestCase2<Ma
         } catch (Exception e) {
             fail("Unexpected exception when rotating screen: " + e.getLocalizedMessage());
         }
-    }
-
-    public void testApiClientConnected() {
-        CustomerMapFragment mapFragment = (CustomerMapFragment) activity.getSupportFragmentManager()
-                .findFragmentById(R.id.customer_map_fragment);
-
-        assertThat(mapFragment.apiClient.isConnected()).isTrue();
-    }
-
-    public void testApiClientDisconnected() {
-        CustomerMapFragment mapFragment = (CustomerMapFragment) activity.getSupportFragmentManager()
-                .findFragmentById(R.id.customer_map_fragment);
-
-        GoogleApiClient apiClient = mapFragment.apiClient;
-
-        getInstrumentation().callActivityOnStop(activity);
-        getInstrumentation().waitForIdleSync();
-
-        assertThat(apiClient.isConnected()).isFalse();
     }
 }

@@ -91,6 +91,6 @@ public final class Menu extends Message {
         public Menu build() {
             checkRequiredFields();
             return new Menu(this);
-        }
     }
+  }
 }

@@ -12,50 +12,57 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
+import android.widget.SimpleCursorAdapter;
+import android.widget.Spinner;
 
 import com.facebook.Session;
-import com.google.android.gms.maps.model.LatLng;
-import com.truckmuncher.api.trucks.Truck;
 import com.truckmuncher.app.MainActivity;
 import com.truckmuncher.app.R;
 import com.truckmuncher.app.authentication.AccountGeneral;
-import com.truckmuncher.app.data.Contract;
 import com.truckmuncher.app.data.PublicContract;
 import com.truckmuncher.app.data.sql.WhereClause;
 import com.truckmuncher.app.vendor.menuadmin.MenuAdminFragment;
 import com.truckmuncher.app.vendor.settings.VendorSettingsActivity;
 import com.twitter.sdk.android.Twitter;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import static com.truckmuncher.app.data.sql.WhereClause.Operator.EQUALS;
 
 public class VendorHomeActivity extends ActionBarActivity implements
-        VendorMapFragment.OnMapLocationChangedListener, VendorHomeFragment.OnServingModeChangedListener,
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemSelectedListener,
+        VendorHomeFragment.OnServingModeChangedListener {
+
+    private Spinner actionBarSpinner;
 
     private AccountManager accountManager;
-    private List<Truck> trucksOwnedByUser = Collections.emptyList();
-    private Truck selectedTruck;
+    private String selectedTruckId;
     private VendorHomeServiceHelper serviceHelper;
     private ResetVendorTrucksServiceHelper resetServiceHelper;
     private SharedPreferences sharedPreferences;
+    private String[] truckIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vendor_home);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        setTitle("");
+
+        actionBarSpinner = new Spinner(getSupportActionBar().getThemedContext());
+        toolbar.addView(actionBarSpinner);
 
         getSupportLoaderManager().initLoader(0, savedInstanceState, this);
 
@@ -109,7 +116,7 @@ public class VendorHomeActivity extends ActionBarActivity implements
             facebookSession.close();
         }
 
-        resetServiceHelper.resetVendorTrucks(this, trucksOwnedByUser);
+        resetServiceHelper.resetVendorTrucks(this, truckIds);
 
         exitVendorMode();
     }
@@ -121,35 +128,16 @@ public class VendorHomeActivity extends ActionBarActivity implements
     }
 
     @Override
-    public void onMapLocationChanged(LatLng latLng) {
-        VendorHomeFragment fragment = (VendorHomeFragment) getSupportFragmentManager().findFragmentById(R.id.vendor_home_fragment);
-
-        if (fragment != null) {
-            Location location = new Location("");
-            location.setLatitude(latLng.latitude);
-            location.setLongitude(latLng.longitude);
-            fragment.onLocationUpdate(location);
-        }
-    }
-
-    @Override
     public void onServingModeChanged(final boolean enabled, Location currentLocation) {
-        serviceHelper.changeServingState(this, selectedTruck.id, enabled, currentLocation);
-
-        final VendorMapFragment fragment = (VendorMapFragment) getSupportFragmentManager().findFragmentById(R.id.vendor_map_fragment);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                fragment.setMapControlsEnabled(!enabled);
-            }
-        });
+        serviceHelper.changeServingState(this, selectedTruckId, enabled, currentLocation);
+        actionBarSpinner.setEnabled(!enabled);
 
         // If serving mode is being enabled and they have the item unavailable warning enabled,
         // we need to check if there are any items marked as unavailable
         if (enabled && sharedPreferences.getBoolean(getString(R.string.setting_item_unavailable_warning), true)) {
             // Get menu items that are marked as out of stock for the current truck
             WhereClause whereClause = new WhereClause.Builder()
-                    .where(PublicContract.Menu.TRUCK_ID, EQUALS, selectedTruck.id)
+                    .where(PublicContract.Menu.TRUCK_ID, EQUALS, selectedTruckId)
                     .and()
                     .where(PublicContract.Menu.IS_AVAILABLE, EQUALS, 0)
                     .build();
@@ -160,7 +148,7 @@ public class VendorHomeActivity extends ActionBarActivity implements
                     whereClause.selection, whereClause.selectionArgs, null);
 
             // Show the warning if there are items out of stock
-            if (cursor.getCount() > 0 ) {
+            if (cursor.getCount() > 0) {
                 showWarning(cursor.getCount());
             }
 
@@ -180,28 +168,25 @@ public class VendorHomeActivity extends ActionBarActivity implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        cursor.moveToPosition(-1);
+        truckIds = new String[cursor.getCount()];
 
-        trucksOwnedByUser = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            selectedTruckId = cursor.getString(TrucksOwnedByUserQuery.ID);
 
-        while (cursor.moveToNext()) {
-            Truck truck = new Truck.Builder()
-                    .id(cursor.getString(TrucksOwnedByUserQuery.ID))
-                    .name(cursor.getString(TrucksOwnedByUserQuery.NAME))
-                    .imageUrl(cursor.getString(TrucksOwnedByUserQuery.IMAGE_URL))
-                    .keywords(Contract.convertStringToList(cursor.getString(TrucksOwnedByUserQuery.KEYWORDS)))
-                    .primaryColor(cursor.getString(TrucksOwnedByUserQuery.COLOR_PRIMARY))
-                    .secondaryColor(cursor.getString(TrucksOwnedByUserQuery.COLOR_SECONDARY))
-                    .build();
-
-            trucksOwnedByUser.add(truck);
+            int counter = 0;
+            do {
+                truckIds[counter] = cursor.getString(TrucksOwnedByUserQuery.ID);
+                counter++;
+            } while (cursor.moveToNext());
         }
 
-        if (trucksOwnedByUser.size() > 0) {
-            selectedTruck = trucksOwnedByUser.get(0);
-            setTitle(selectedTruck.name);
-        }
-
+        String[] adapterCols = {TrucksOwnedByUserQuery.PROJECTION[TrucksOwnedByUserQuery.NAME]};
+        int[] adapterRowViews = new int[]{android.R.id.text1};
+        SimpleCursorAdapter spinnerAdapter = new SimpleCursorAdapter(getSupportActionBar().getThemedContext(),
+                android.R.layout.simple_spinner_item, cursor, adapterCols, adapterRowViews, 0);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        actionBarSpinner.setAdapter(spinnerAdapter);
+        actionBarSpinner.setOnItemSelectedListener(this);
     }
 
     @Override
@@ -209,9 +194,19 @@ public class VendorHomeActivity extends ActionBarActivity implements
         // no-op
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        selectedTruckId = truckIds[position];
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        // no-op
+    }
+
     private void showMenu() {
         getSupportFragmentManager().beginTransaction()
-                .add(android.R.id.content, MenuAdminFragment.newInstance(selectedTruck.id), MenuAdminFragment.TAG)
+                .add(android.R.id.content, MenuAdminFragment.newInstance(selectedTruckId), MenuAdminFragment.TAG)
                 .addToBackStack(null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit();
@@ -221,7 +216,7 @@ public class VendorHomeActivity extends ActionBarActivity implements
         View checkBoxView = View.inflate(this, R.layout.dialog_items_unavailable_warning, null);
         final CheckBox checkBox = (CheckBox) checkBoxView.findViewById(R.id.checkbox_dont_show_again);
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
+            public void onClick(@NonNull DialogInterface dialog, int id) {
                 if (checkBox.isChecked()) {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putBoolean(getString(R.string.setting_item_unavailable_warning), false);
@@ -246,19 +241,13 @@ public class VendorHomeActivity extends ActionBarActivity implements
     public interface TrucksOwnedByUserQuery {
 
         public static final String[] PROJECTION = new String[]{
+                PublicContract.Truck._ID,
                 PublicContract.Truck.ID,
-                PublicContract.Truck.NAME,
-                PublicContract.Truck.IMAGE_URL,
-                PublicContract.Truck.KEYWORDS,
-                PublicContract.Truck.COLOR_PRIMARY,
-                PublicContract.Truck.COLOR_SECONDARY
+                PublicContract.Truck.NAME
         };
-        static final int ID = 0;
-        static final int NAME = 1;
-        static final int IMAGE_URL = 2;
-        static final int KEYWORDS = 3;
-        static final int COLOR_PRIMARY = 4;
-        static final int COLOR_SECONDARY = 5;
+        static final int _ID = 0;
+        static final int ID = 1;
+        static final int NAME = 2;
     }
 
     public interface ItemsOutOfStockQuery {

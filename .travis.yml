@@ -30,7 +30,7 @@ android:
     # - $ANDROID_SYS_IMG
 
 script:
-  - ./gradlew clean assembleProductionRelease testProductionDebug  # Make sure we can build and run tests
+  - ./gradlew assembleProductionRelease assembleProductionDebugAndroidTest testProductionDebug  # Make sure we can build and run tests
 
 # Emulator Management: Create, Start and Wait
 # before_script:

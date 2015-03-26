@@ -143,14 +143,6 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     }
 
     /**
-     * Handles any intents that are passed to this activity by identifying them and taking the
-     * appropriate action. Currently only the {@link Intent#ACTION_SEARCH} and
-     * {@link SearchIntents#ACTION_SEARCH} intents are supported to filter food trucks by the given
-     * search query.
-     *
-     * @param intent An intent that was passed to this activity that should be handled.
-     */
-    /**
      * If the provided intent is a search intent, the query operation it contains will be performed.
      * Currently only the {@link Intent#ACTION_SEARCH} and {@link SearchIntents#ACTION_SEARCH}
      * intents are supported to filter food trucks by the given search query.
@@ -251,7 +243,7 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                String truckId = truckClusterItem.getTruck().id;
+                String truckId = truckClusterItem.getTruckId();
                 viewPager.setCurrentItem(pagerAdapter.getTruckPosition(truckId));
             }
         });
