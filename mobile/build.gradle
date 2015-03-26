@@ -176,7 +176,7 @@ dependencies {
     debugCompile 'com.squareup.retrofit:retrofit-mock:1.9.0'
 
     androidTestCompile('com.squareup.assertj:assertj-android:1.0.0') {
-        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude module: 'support-annotations'
     }
     androidTestCompile('com.jakewharton.espresso:espresso:1.1-r3') {
         exclude group: 'com.squareup.dagger'
