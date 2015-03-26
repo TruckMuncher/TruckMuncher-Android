@@ -75,7 +75,7 @@ public class CustomerMenuFragment extends ListFragment implements TruckDataLoade
 
     @OnClick(R.id.header)
     void onHeaderClick() {
-        startActivity(TruckProfileActivity.newIntent(getActivity(), getArguments().getString(ARG_TRUCK_ID)));
+        startActivity(TruckDetailsActivity.newIntent(getActivity(), getArguments().getString(ARG_TRUCK_ID)));
     }
 
     public View getHeaderView() {
