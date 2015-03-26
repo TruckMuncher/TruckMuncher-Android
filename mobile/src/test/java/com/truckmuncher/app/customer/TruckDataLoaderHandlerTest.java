@@ -16,12 +16,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(ReadableRobolectricTestRunner.class)
-public class CustomerMenuLoaderHandlerTest {
+public class TruckDataLoaderHandlerTest {
 
     @Mock
-    CustomerMenuLoaderHandler.DataDestination dataDestination;
+    TruckDataLoaderHandler.DataDestination dataDestination;
     @Mock
-    CustomerMenuLoaderHandler.OnTriedToLoadInvalidTruckListener invalidTruckListener;
+    TruckDataLoaderHandler.OnTriedToLoadInvalidTruckListener invalidTruckListener;
 
     @Before
     public void setUp() {
@@ -34,9 +34,9 @@ public class CustomerMenuLoaderHandlerTest {
         when(dataDestination.getLoaderManager()).thenReturn(loaderManager);
 
         String truckId = "";
-        CustomerMenuLoaderHandler handler = new CustomerMenuLoaderHandler(Robolectric.application, dataDestination, truckId, invalidTruckListener);
+        TruckDataLoaderHandler handler = new TruckDataLoaderHandler(Robolectric.application, dataDestination, truckId, invalidTruckListener);
         handler.load();
 
-        verify(loaderManager).initLoader(CustomerMenuLoaderHandler.DataDestination.LOADER_TRUCK, null, handler);
+        verify(loaderManager).initLoader(TruckDataLoaderHandler.DataDestination.LOADER_TRUCK, null, handler);
     }
 }

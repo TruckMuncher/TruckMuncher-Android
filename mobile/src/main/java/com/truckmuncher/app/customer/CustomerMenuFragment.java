@@ -19,11 +19,10 @@ import com.truckmuncher.app.R;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import timber.log.Timber;
 
 import static com.guava.common.base.Preconditions.checkNotNull;
 
-public class CustomerMenuFragment extends ListFragment implements CustomerMenuLoaderHandler.DataDestination {
+public class CustomerMenuFragment extends ListFragment implements TruckDataLoaderHandler.DataDestination {
 
     private static final String ARG_TRUCK_ID = "truck_id";
     @InjectView(R.id.truck_name)
@@ -63,8 +62,8 @@ public class CustomerMenuFragment extends ListFragment implements CustomerMenuLo
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        CustomerMenuLoaderHandler loaderHandler =
-                new CustomerMenuLoaderHandler(getActivity(), this, getArguments().getString(ARG_TRUCK_ID), (CustomerMenuLoaderHandler.OnTriedToLoadInvalidTruckListener) getActivity());
+        TruckDataLoaderHandler loaderHandler =
+                new TruckDataLoaderHandler(getActivity(), this, getArguments().getString(ARG_TRUCK_ID), (TruckDataLoaderHandler.OnTriedToLoadInvalidTruckListener) getActivity());
         loaderHandler.load();
     }
 

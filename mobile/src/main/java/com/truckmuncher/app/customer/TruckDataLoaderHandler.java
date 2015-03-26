@@ -18,14 +18,14 @@ import timber.log.Timber;
 
 import static com.truckmuncher.app.data.sql.WhereClause.Operator.EQUALS;
 
-final class CustomerMenuLoaderHandler implements LoaderManager.LoaderCallbacks<Cursor> {
+final class TruckDataLoaderHandler implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private final Context context;
     private final String truckId;
     private final DataDestination dataDestination;
     private final OnTriedToLoadInvalidTruckListener invalidTruckListener;
 
-    CustomerMenuLoaderHandler(Context context, DataDestination dataDestination, String truckId, OnTriedToLoadInvalidTruckListener invalidTruckListener) {
+    TruckDataLoaderHandler(Context context, DataDestination dataDestination, String truckId, OnTriedToLoadInvalidTruckListener invalidTruckListener) {
         this.context = context;
         this.truckId = truckId;
         this.dataDestination = dataDestination;

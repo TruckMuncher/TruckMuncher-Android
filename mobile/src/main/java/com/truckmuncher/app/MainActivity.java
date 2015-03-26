@@ -22,9 +22,9 @@ import android.view.MenuItem;
 import com.google.android.gms.actions.SearchIntents;
 import com.truckmuncher.app.authentication.AccountGeneral;
 import com.truckmuncher.app.authentication.AuthenticatorActivity;
-import com.truckmuncher.app.customer.CursorFragmentStatePagerAdapter;
 import com.truckmuncher.app.customer.CustomerMapFragment;
 import com.truckmuncher.app.customer.TruckCluster;
+import com.truckmuncher.app.customer.TruckHeaderPagerAdapter;
 import com.truckmuncher.app.data.PublicContract;
 import com.truckmuncher.app.data.sql.WhereClause;
 import com.truckmuncher.app.vendor.VendorHomeActivity;
@@ -47,7 +47,7 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     private SearchView searchView;
 
     private String lastQuery;
-    private CursorFragmentStatePagerAdapter pagerAdapter;
+    private TruckHeaderPagerAdapter pagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,10 +81,6 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-
-                // Set the new drag view so scrolling works nicely
-//                CustomerMenuFragment fragment = pagerAdapter.getItem(position);
-//                slidingPanel.setDragView(fragment.getHeaderView());
 
                 // Change the focused truck
                 mapFragment.moveTo(pagerAdapter.getTruckId(position));
@@ -202,10 +198,9 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
             case LOADER_TRUCKS:
                 WhereClause whereClause = new WhereClause.Builder()
                         .where(PublicContract.Truck.IS_SERVING, EQUALS, true)
-                        .and()
                         .where(PublicContract.Truck.MATCHED_SEARCH, EQUALS, true)
                         .build();
-                return new CursorLoader(this, PublicContract.TRUCK_URI, CursorFragmentStatePagerAdapter.Query.PROJECTION, whereClause.selection, whereClause.selectionArgs, null);
+                return new CursorLoader(this, PublicContract.TRUCK_URI, TruckHeaderPagerAdapter.Query.PROJECTION, whereClause.selection, whereClause.selectionArgs, null);
             default:
                 throw new RuntimeException("Invalid loader id: " + i);
         }
@@ -213,7 +208,7 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        pagerAdapter = new CursorFragmentStatePagerAdapter(getSupportFragmentManager(), cursor);
+        pagerAdapter = new TruckHeaderPagerAdapter(getSupportFragmentManager(), cursor);
         viewPager.setAdapter(pagerAdapter);
     }
 
