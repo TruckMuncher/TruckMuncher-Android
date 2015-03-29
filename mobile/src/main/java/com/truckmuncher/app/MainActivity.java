@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.SphericalUtil;
 import com.truckmuncher.app.authentication.AccountGeneral;
 import com.truckmuncher.app.authentication.AuthenticatorActivity;
+import com.truckmuncher.app.common.RateUs;
 import com.truckmuncher.app.customer.CustomerMapFragment;
 import com.truckmuncher.app.customer.TruckCluster;
 import com.truckmuncher.app.customer.TruckDetailsActivity;
@@ -79,6 +80,7 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
             // If we get an authToken the user is signed in and we can go straight to vendor mode
             if (!TextUtils.isEmpty(authToken)) {
                 launchVendorMode();
+                return;
             }
         }
 
@@ -96,6 +98,8 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
                 mapFragment.moveTo(pagerAdapter.getTruckId(position));
             }
         });
+
+        RateUs.check(this);
     }
 
     @Override
