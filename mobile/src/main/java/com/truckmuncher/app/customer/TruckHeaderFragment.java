@@ -139,6 +139,7 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
                     .load(imageUrl)
                     .fit()
                     .centerInside()
+                    .transform(new CircleTransform())
                     .into(truckImage);
         }
 
