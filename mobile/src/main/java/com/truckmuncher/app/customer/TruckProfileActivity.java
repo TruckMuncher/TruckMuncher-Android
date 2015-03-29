@@ -41,7 +41,7 @@ public class TruckProfileActivity extends ActionBarActivity implements CustomerM
         }
 
         getSupportFragmentManager().beginTransaction()
-                .replace(android.R.id.content, CustomerMenuFragment.newInstance(truckId))
+                .replace(android.R.id.content, CustomerMenuFragment.newInstance(truckId, null))
                 .commit();
     }
 

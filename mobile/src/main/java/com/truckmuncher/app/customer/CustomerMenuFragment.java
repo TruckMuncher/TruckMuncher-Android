@@ -17,12 +17,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.SphericalUtil;
 import com.squareup.picasso.Picasso;
 import com.truckmuncher.app.R;
 import com.truckmuncher.app.data.Contract;
 import com.truckmuncher.app.data.PublicContract;
 import com.truckmuncher.app.data.sql.WhereClause;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -34,13 +37,19 @@ import static com.truckmuncher.app.data.sql.WhereClause.Operator.EQUALS;
 
 public class CustomerMenuFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final String ARG_TRUCK_ID = "truck_id";
+    private static final double METERS_TO_MILES = 0.000621371;
+
+    public static final String ARG_TRUCK_ID = "truck_id";
+    public static final String ARG_LATITUDE = "latitude";
+    public static final String ARG_LONGITUDE = "longitude";
     private static final int LOADER_TRUCK = 0;
     private static final int LOADER_MENU = 1;
     @InjectView(R.id.truck_name)
     TextView truckName;
     @InjectView(R.id.truck_keywords)
     TextView truckKeywords;
+    @InjectView(R.id.distance_from_location)
+    TextView distanceFromLocation;
     @InjectView(R.id.truck_image)
     ImageView truckImage;
     @InjectView(R.id.header)
@@ -48,9 +57,13 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
     private MenuAdapter adapter;
     private String truckPrimaryColor;
 
-    public static CustomerMenuFragment newInstance(@NonNull String truckId) {
+    public static CustomerMenuFragment newInstance(@NonNull String truckId, LatLng referenceLocation) {
         Bundle args = new Bundle();
         args.putString(ARG_TRUCK_ID, checkNotNull(truckId));
+        if (referenceLocation != null) {
+            args.putDouble(ARG_LATITUDE, referenceLocation.latitude);
+            args.putDouble(ARG_LONGITUDE, referenceLocation.longitude);
+        }
         CustomerMenuFragment fragment = new CustomerMenuFragment();
         fragment.setArguments(args);
         return fragment;
@@ -174,11 +187,23 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
             int textColor = ColorCorrector.calculateTextColor(backgroundColor);
             truckName.setTextColor(textColor);
             truckKeywords.setTextColor(textColor);
+            distanceFromLocation.setTextColor(textColor);
         }
 
         truckName.setText(cursor.getString(TruckQuery.NAME));
         truckKeywords.setText(cursor.getString(TruckQuery.KEYWORDS));
         truckName.setText(cursor.getString(TruckQuery.NAME));
+
+        LatLng location = new LatLng(cursor.getFloat(TruckQuery.LATITUDE), cursor.getFloat(TruckQuery.LONGITUDE));
+        LatLng referenceLocation = new LatLng(getArguments().getDouble(ARG_LATITUDE), getArguments().getDouble(ARG_LONGITUDE));
+
+        // distance in meters
+        double delta = SphericalUtil.computeDistanceBetween(location, referenceLocation);
+        // convert to miles
+        delta *= METERS_TO_MILES;
+
+        distanceFromLocation.setText(new DecimalFormat("0.0").format(delta) + " mi");
+
 
         // Split the keywords and format them in a way that is user friendly
         String keywordsString = cursor.getString(TruckQuery.KEYWORDS);
@@ -199,13 +224,17 @@ public class CustomerMenuFragment extends ListFragment implements LoaderManager.
                 PublicContract.Truck.IMAGE_URL,
                 PublicContract.Truck.KEYWORDS,
                 PublicContract.Truck.COLOR_PRIMARY,
-                PublicContract.Truck.COLOR_SECONDARY
+                PublicContract.Truck.COLOR_SECONDARY,
+                PublicContract.Truck.LATITUDE,
+                PublicContract.Truck.LONGITUDE
         };
         static final int NAME = 0;
         static final int IMAGE_URL = 1;
         static final int KEYWORDS = 2;
         static final int COLOR_PRIMARY = 3;
         static final int COLOR_SECONDARY = 4;
+        static final int LATITUDE = 5;
+        static final int LONGITUDE = 6;
     }
 
     public interface OnTriedToLoadInvalidTruckListener {
