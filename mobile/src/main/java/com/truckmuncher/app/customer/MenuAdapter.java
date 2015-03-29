@@ -2,6 +2,9 @@ package com.truckmuncher.app.customer;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Typeface;
+import android.support.annotation.StringRes;
+import android.text.TextUtils;
 import android.text.style.StrikethroughSpan;
 import android.util.Pair;
 import android.view.View;
@@ -14,6 +17,8 @@ import com.twotoasters.sectioncursoradapter.SectionCursorAdapter;
 import com.volkhart.androidutil.text.Truss;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.ButterKnife;
@@ -25,10 +30,12 @@ import butterknife.InjectView;
 public class MenuAdapter extends SectionCursorAdapter {
 
     private final int textColor;
+    private final Typeface fontFamily;
 
     public MenuAdapter(Context context, int textColor) {
         super(context, null, 0);
         this.textColor = textColor;
+        fontFamily = Typeface.createFromAsset(context.getAssets(), "flaticon.tff");
     }
 
     @Override
@@ -61,6 +68,8 @@ public class MenuAdapter extends SectionCursorAdapter {
         holder.name.setTextColor(textColor);
         holder.price.setTextColor(textColor);
         holder.description.setTextColor(textColor);
+        holder.tagsView.setTextColor(textColor);
+        holder.tagsView.setTypeface(fontFamily);
         view.setTag(holder);
         return view;
     }
@@ -96,6 +105,54 @@ public class MenuAdapter extends SectionCursorAdapter {
         holder.name.setText(name);
         holder.price.setText(price);
         holder.description.setText(description);
+
+        String tagsText = cursor.getString(Query.TAGS);
+        if (!TextUtils.isEmpty(tagsText)) {
+            String[] tags = tagsText.split(",");
+            holder.tags = MenuItemTag.convertToTags(tags);
+
+            StringBuilder tagsBuilder = new StringBuilder();
+            for (MenuItemTag tag : holder.tags) {
+                tagsBuilder.append(tag.fontCharacter);
+            }
+            holder.tagsView.setText(tagsBuilder.toString());
+            holder.tagsView.setVisibility(View.VISIBLE);
+        } else {
+            holder.tagsView.setVisibility(View.GONE);
+            holder.tagsView.setText(null);
+            holder.tags = null;
+        }
+    }
+
+    static enum MenuItemTag {
+        /*
+         * These names have to match the keys used by the web, otherwise we won't match the tags correctly
+         */
+        gluten("\ue004", R.string.menu_item_tag_gluten),
+        vegetarian("\ue000", R.string.menu_item_tag_vegetarian),
+        vegan("\ue001", R.string.menu_item_tag_vegan),
+        peanuts("\ue002", R.string.menu_item_tag_peanuts),
+        raw("\ue003", R.string.menu_item_tag_raw);
+
+        final String fontCharacter;
+        @StringRes
+        final int description;
+
+        private MenuItemTag(String fontCharacter, @StringRes int description) {
+            this.fontCharacter = fontCharacter;
+            this.description = description;
+        }
+
+        static List<MenuItemTag> convertToTags(String[] tags) {
+            List<MenuItemTag> list = new ArrayList<>(tags.length);
+            for (String tag : tags) {
+                try {
+                    list.add(valueOf(tag.trim()));
+                } catch (IllegalArgumentException ignored) {
+                }
+            }
+            return list;
+        }
     }
 
     interface Query {
@@ -108,7 +165,8 @@ public class MenuAdapter extends SectionCursorAdapter {
                 PublicContract.Menu.IS_AVAILABLE,
                 PublicContract.Menu.CATEGORY_NAME,
                 PublicContract.Menu.MENU_ITEM_NOTES,
-                PublicContract.Menu.CATEGORY_NOTES
+                PublicContract.Menu.CATEGORY_NOTES,
+                PublicContract.Menu.MENU_ITEM_TAGS
         };
         static final int ID = 1;
         static final int NAME = 2;
@@ -117,6 +175,7 @@ public class MenuAdapter extends SectionCursorAdapter {
         static final int CATEGORY_NAME = 5;
         static final int DESCRIPTION = 6;
         static final int CATEGORY_NOTES = 7;
+        static final int TAGS = 8;
     }
 
     static class ItemViewHolder {
@@ -124,8 +183,11 @@ public class MenuAdapter extends SectionCursorAdapter {
         TextView name;
         @InjectView(R.id.price)
         TextView price;
+        @InjectView(R.id.tags)
+        TextView tagsView;
         @InjectView(R.id.description)
         TextView description;
+        List<MenuItemTag> tags;
 
         private ItemViewHolder(View view) {
             ButterKnife.inject(this, view);
