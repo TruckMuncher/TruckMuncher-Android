@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 import com.truckmuncher.api.auth.AuthService;
+import com.truckmuncher.api.gcm.GcmService;
 import com.truckmuncher.api.menu.MenuService;
 import com.truckmuncher.api.search.SearchService;
 import com.truckmuncher.api.trucks.TruckService;
@@ -145,5 +146,10 @@ public class NetworkModule {
     @Provides
     public SearchService provideSearchService(RestAdapter adapter) {
         return adapter.create(SearchService.class);
+    }
+
+    @Provides
+    public GcmService provideGcmService(RestAdapter adapter) {
+        return adapter.create(GcmService.class);
     }
 }

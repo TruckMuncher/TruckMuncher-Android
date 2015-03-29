@@ -48,6 +48,7 @@ android {
 
         buildConfigField "String", "TWITTER_API_KEY", "\"${TRUCK_MUNCHER_TWITTER_API_KEY}\""
         buildConfigField "String", "TWITTER_API_SECRET", "\"${TRUCK_MUNCHER_TWITTER_API_SECRET}\""
+        buildConfigField "String", "GCM_SENDER_ID", "\"${TRUCK_MUNCHER_GCM_SENDER_ID}\""
     }
 
     signingConfigs {
@@ -172,6 +173,8 @@ dependencies {
         transitive = true;
     }
     compile 'com.facebook.android:facebook-android-sdk:3.23.0'
+
+    compile 'info.metadude.android:typed-preferences:2.0.0'
 
     debugCompile 'com.squareup.retrofit:retrofit-mock:1.9.0'
 

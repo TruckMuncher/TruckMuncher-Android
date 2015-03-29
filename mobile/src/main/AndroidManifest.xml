@@ -23,6 +23,13 @@
     <!-- Sync Framework -->
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
 
+    <!-- GCM -->
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <permission
+        android:name="com.truckmuncher.app.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="com.truckmuncher.app.permission.C2D_MESSAGE" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -176,6 +183,18 @@
 
         <service
             android:name=".customer.GetTruckProfilesService"
+            android:exported="false" />
+
+        <receiver
+            android:name=".gcm.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="com.truckmuncher.app" />
+            </intent-filter>
+        </receiver>
+        <service
+            android:name=".gcm.GcmRegistrationService"
             android:exported="false" />
     </application>
 

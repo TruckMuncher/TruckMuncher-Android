@@ -18,8 +18,11 @@ import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.gms.actions.SearchIntents;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.truckmuncher.app.authentication.AccountGeneral;
 import com.truckmuncher.app.authentication.AuthenticatorActivity;
@@ -29,6 +32,7 @@ import com.truckmuncher.app.customer.CustomerMenuFragment;
 import com.truckmuncher.app.customer.TruckCluster;
 import com.truckmuncher.app.data.PublicContract;
 import com.truckmuncher.app.data.sql.WhereClause;
+import com.truckmuncher.app.gcm.GcmRegistrationService;
 import com.truckmuncher.app.vendor.VendorHomeActivity;
 
 import butterknife.ButterKnife;
@@ -41,6 +45,7 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
         CustomerMapFragment.OnTruckMarkerClickListener {
 
     private static final int REQUEST_LOGIN = 1;
+    private static final int REQUEST_PLAY_SERVICES_RESOLUTION = 2;
     private static final int LOADER_TRUCKS = 0;
 
     @InjectView(R.id.view_pager)
@@ -62,6 +67,11 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
         if (BuildConfig.DEBUG) {
             App.riseAndShine(this);
         }
+
+        if (!checkPlayServices()) {
+            return;
+        }
+        startService(GcmRegistrationService.newIntent(this));
 
         AccountManager accountManager = AccountManager.get(this);
 
@@ -94,6 +104,12 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
                 mapFragment.moveTo(pagerAdapter.getTruckId(position));
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkPlayServices();
     }
 
     @Override
@@ -235,5 +251,25 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
                 viewPager.setCurrentItem(pagerAdapter.getTruckPosition(truckId));
             }
         });
+    }
+
+    /**
+     * Check the device to make sure it has the Google Play Services APK. If
+     * it doesn't, display a dialog that allows users to download the APK from
+     * the Google Play Store or enable it in the device's system settings.
+     */
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this, REQUEST_PLAY_SERVICES_RESOLUTION).show();
+            } else {
+                Timber.e("This device is not supported.");
+                Toast.makeText(this, R.string.error_missing_play_services, Toast.LENGTH_LONG).show();
+                finish();
+            }
+            return false;
+        }
+        return true;
     }
 }
