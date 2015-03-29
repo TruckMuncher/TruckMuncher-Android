@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.1.2'
+        classpath 'com.android.tools.build:gradle:1.1.3'
 
         // Compile-time debugging code injections
         classpath 'com.jakewharton.hugo:hugo-plugin:1.2.1'
