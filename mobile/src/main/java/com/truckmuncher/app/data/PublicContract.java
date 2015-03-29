@@ -71,5 +71,6 @@ public class PublicContract {
         public static final String CATEGORY_NOTES = "category_notes";
         public static final String ORDER_IN_MENU = "order_in_menu";
         public static final String TRUCK_ID = "truck_id";
+        public static final String MENU_ITEM_TAGS = "menu_item_tags";
     }
 }
