@@ -4,21 +4,24 @@ import android.database.Cursor;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.truckmuncher.app.data.PublicContract;
 
 public class CursorFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 
     private final Cursor cursor;
+    private final LatLng referenceLocation;
 
-    public CursorFragmentStatePagerAdapter(FragmentManager fm, Cursor cursor) {
+    public CursorFragmentStatePagerAdapter(FragmentManager fm, Cursor cursor, LatLng referenceLocation) {
         super(fm);
         this.cursor = cursor;
+        this.referenceLocation = referenceLocation;
     }
 
     @Override
     public CustomerMenuFragment getItem(int i) {
         cursor.moveToPosition(i);
-        return CustomerMenuFragment.newInstance(cursor.getString(Query.TRUCK_ID));
+        return CustomerMenuFragment.newInstance(cursor.getString(Query.TRUCK_ID), referenceLocation);
     }
 
     @Override
