@@ -9,7 +9,9 @@ CREATE TABLE `truck_properties` (
 	`image_url`	                TEXT,
 	`keywords`	                TEXT,
 	`color_primary`	            TEXT,
-	`color_secondary`	        TEXT
+	`color_secondary`	        TEXT,
+	`phone_number`              TEXT,
+	`description`               TEXT
 );
 
 CREATE INDEX `idx_truck_properties_id` ON `truck_properties` (
@@ -38,6 +40,8 @@ CREATE VIEW `truck` AS SELECT
     `keywords`,
     `color_primary`,
     `color_secondary`,
+    `description`,
+    `phone_number`,
 
     `truck_state`.`_id` AS `_id`,
     `is_serving`,
@@ -86,6 +90,7 @@ CREATE VIEW `menu` AS SELECT
     `menu_item`.`notes` AS `menu_item_notes`,
     `order_in_category`,
     `is_available`,
+    `menu_item`.`tags` AS `menu_item_tags`,
 
     `category`.`name` AS `category_name`,
     `category`.`id` AS `category_id`,

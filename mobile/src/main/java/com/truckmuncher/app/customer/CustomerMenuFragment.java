@@ -13,8 +13,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.SphericalUtil;
 import com.squareup.picasso.Picasso;
 import com.truckmuncher.app.R;
+
+import java.text.DecimalFormat;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -23,11 +28,18 @@ import static com.guava.common.base.Preconditions.checkNotNull;
 
 public class CustomerMenuFragment extends ListFragment implements TruckDataLoaderHandler.DataDestination {
 
+    private static final double METERS_TO_MILES = 0.000621371;
+    
     private static final String ARG_TRUCK_ID = "truck_id";
+    private static final String ARG_LOCATION = "location";
+    private static final int LOADER_TRUCK = 0;
+    private static final int LOADER_MENU = 1;
     @InjectView(R.id.truck_name)
     TextView truckName;
     @InjectView(R.id.truck_keywords)
     TextView truckKeywords;
+    @InjectView(R.id.distance_from_location)
+    TextView distanceFromLocation;
     @InjectView(R.id.truck_image)
     ImageView truckImage;
     @InjectView(R.id.header)
@@ -35,9 +47,12 @@ public class CustomerMenuFragment extends ListFragment implements TruckDataLoade
     private MenuAdapter adapter;
     private String menuBackgroundColor;
 
-    public static CustomerMenuFragment newInstance(@NonNull String truckId) {
+    public static CustomerMenuFragment newInstance(@NonNull String truckId, LatLng referenceLocation) {
         Bundle args = new Bundle();
         args.putString(ARG_TRUCK_ID, checkNotNull(truckId));
+        if (referenceLocation != null) {
+            args.putParcelable(ARG_LOCATION, referenceLocation);
+        }
         CustomerMenuFragment fragment = new CustomerMenuFragment();
         fragment.setArguments(args);
         return fragment;
@@ -73,7 +88,7 @@ public class CustomerMenuFragment extends ListFragment implements TruckDataLoade
     }
 
     @Override
-    public void onTruckDataLoaded(String name, String keywords, String imageUrl, String menuBackgroundColor, String headerColor) {
+    public void onTruckDataLoaded(String name, String keywords, String imageUrl, String menuBackgroundColor, String headerColor, LatLng truckLocation) {
         if (TextUtils.isEmpty(imageUrl)) {
             truckImage.setVisibility(View.GONE);
         } else {
@@ -89,6 +104,7 @@ public class CustomerMenuFragment extends ListFragment implements TruckDataLoade
             int textColor = ColorCorrector.calculateTextColor(headerColor);
             truckName.setTextColor(textColor);
             truckKeywords.setTextColor(textColor);
+            distanceFromLocation.setTextColor(textColor);
         }
 
         truckName.setText(name);
@@ -98,6 +114,15 @@ public class CustomerMenuFragment extends ListFragment implements TruckDataLoade
             this.menuBackgroundColor = menuBackgroundColor;
             getListView().setBackgroundColor(Color.parseColor(menuBackgroundColor));
         }
+
+        LatLng referenceLocation = getArguments().getParcelable(ARG_LOCATION);
+
+        // distance in meters
+        double delta = SphericalUtil.computeDistanceBetween(truckLocation, referenceLocation);
+        // convert to miles
+        delta *= METERS_TO_MILES;
+
+        distanceFromLocation.setText(new DecimalFormat("0.0").format(delta) + " mi");
     }
 
     @Override

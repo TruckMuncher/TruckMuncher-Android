@@ -20,6 +20,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.android.gms.actions.SearchIntents;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.SphericalUtil;
 import com.truckmuncher.app.authentication.AccountGeneral;
 import com.truckmuncher.app.authentication.AuthenticatorActivity;
 import com.truckmuncher.app.customer.CustomerMapFragment;
@@ -40,11 +42,13 @@ import timber.log.Timber;
 import static com.truckmuncher.app.data.sql.WhereClause.Operator.EQUALS;
 
 public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor>,
-        CustomerMapFragment.OnTruckMarkerClickListener, TruckHeaderFragment.OnTruckHeaderClickListener {
+        CustomerMapFragment.OnTruckMarkerClickListener, CustomerMapFragment.OnLocationChangeListener, TruckHeaderFragment.OnTruckHeaderClickListener {
 
     private static final int REQUEST_LOGIN = 1;
     private static final int REQUEST_TRUCK_DETAILS = 2;
     private static final int LOADER_TRUCKS = 0;
+
+    private static final int MIN_LOCATION_CHANGE = 500; // meters
 
     @InjectView(R.id.view_pager)
     ViewPager viewPager;
@@ -53,6 +57,7 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
     private String lastQuery;
     private TruckHeaderPagerAdapter pagerAdapter;
+    private LatLng currentLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,14 +140,6 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     }
 
     /**
-     * Handles any intents that are passed to this activity by identifying them and taking the
-     * appropriate action. Currently only the {@link Intent#ACTION_SEARCH} and
-     * {@link SearchIntents#ACTION_SEARCH} intents are supported to filter food trucks by the given
-     * search query.
-     *
-     * @param intent An intent that was passed to this activity that should be handled.
-     */
-    /**
      * If the provided intent is a search intent, the query operation it contains will be performed.
      * Currently only the {@link Intent#ACTION_SEARCH} and {@link SearchIntents#ACTION_SEARCH}
      * intents are supported to filter food trucks by the given search query.
@@ -209,11 +206,24 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         switch (i) {
             case LOADER_TRUCKS:
+                String orderBy = null;
+
+                if (currentLocation != null) {
+                    // We want the trucks to be ordered by their distance from the user's current location.
+                    // Sqlite is relatively limited in its computational powers, so we'll use a modified
+                    // Pythagorean Theorem equation to calculate the distance.
+                    double longitudeAdjustment = Math.pow(Math.cos(Math.toRadians(currentLocation.latitude)), 2);
+                    orderBy = String.format("((%f - latitude) * (%f - latitude) + (%f - longitude) * (%f - longitude) * %f) ASC",
+                            currentLocation.latitude, currentLocation.latitude, currentLocation.longitude,
+                            currentLocation.longitude, longitudeAdjustment);
+                }
+
                 WhereClause whereClause = new WhereClause.Builder()
                         .where(PublicContract.Truck.IS_SERVING, EQUALS, true)
                         .where(PublicContract.Truck.MATCHED_SEARCH, EQUALS, true)
                         .build();
-                return new CursorLoader(this, PublicContract.TRUCK_URI, TruckHeaderPagerAdapter.Query.PROJECTION, whereClause.selection, whereClause.selectionArgs, null);
+                
+                return new CursorLoader(this, PublicContract.TRUCK_URI, TruckHeaderPagerAdapter.Query.PROJECTION, whereClause.selection, whereClause.selectionArgs, orderBy);
             default:
                 throw new RuntimeException("Invalid loader id: " + i);
         }
@@ -221,8 +231,10 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        pagerAdapter = new TruckHeaderPagerAdapter(getSupportFragmentManager(), cursor);
-        viewPager.setAdapter(pagerAdapter);
+        if (currentLocation != null) {
+            pagerAdapter = new TruckHeaderPagerAdapter(getSupportFragmentManager(), cursor, currentLocation);
+            viewPager.setAdapter(pagerAdapter);
+        }
     }
 
     @Override
@@ -245,5 +257,16 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     public void onTruckHeaderClick(String currentTruck) {
         ArrayList<String> truckIds = pagerAdapter.getTruckIds();
         startActivityForResult(TruckDetailsActivity.newIntent(this, truckIds, currentTruck), REQUEST_TRUCK_DETAILS);
+    }
+
+    @Override
+    public void onLocationChange(LatLng location) {
+        LatLng lastLocation = currentLocation;
+        currentLocation = location;
+
+        if (lastLocation == null ||
+                SphericalUtil.computeDistanceBetween(lastLocation, currentLocation) > MIN_LOCATION_CHANGE) {
+            getSupportLoaderManager().restartLoader(LOADER_TRUCKS, null, this);
+        }
     }
 }

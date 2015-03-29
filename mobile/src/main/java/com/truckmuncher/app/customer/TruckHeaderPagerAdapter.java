@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.truckmuncher.app.data.PublicContract;
 
 import java.util.ArrayList;
@@ -11,16 +12,18 @@ import java.util.ArrayList;
 public class TruckHeaderPagerAdapter extends FragmentStatePagerAdapter {
 
     private final Cursor cursor;
+    private final LatLng referenceLocation;
 
-    public TruckHeaderPagerAdapter(FragmentManager fm, Cursor cursor) {
+    public TruckHeaderPagerAdapter(FragmentManager fm, Cursor cursor, LatLng referenceLocation) {
         super(fm);
         this.cursor = cursor;
+        this.referenceLocation = referenceLocation;
     }
 
     @Override
     public TruckHeaderFragment getItem(int i) {
         cursor.moveToPosition(i);
-        return TruckHeaderFragment.newInstance(cursor.getString(Query.TRUCK_ID));
+        return TruckHeaderFragment.newInstance(cursor.getString(Query.TRUCK_ID), referenceLocation);
     }
 
     @Override

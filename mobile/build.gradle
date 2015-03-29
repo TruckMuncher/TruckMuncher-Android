@@ -33,13 +33,13 @@ def versionMinor = 4
 def versionPatch = 0
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
 
     defaultConfig {
         applicationId "com.truckmuncher.app"
         minSdkVersion 15
-        targetSdkVersion 21
+        targetSdkVersion 22
         versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
         testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
 
@@ -137,19 +137,19 @@ apt {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:21.0.3'
-    compile 'com.google.android.gms:play-services-maps:6.5.87'
-    compile 'com.google.android.gms:play-services-location:6.5.87'
+    compile 'com.android.support:appcompat-v7:22.0.0'
+    compile 'com.google.android.gms:play-services-maps:7.0.0'
+    compile 'com.google.android.gms:play-services-location:7.0.0'
     compile 'com.google.maps.android:android-maps-utils:0.3.3'
     compile project(':api')
 
     // Network and Data stack
-    compile 'com.squareup.picasso:picasso:2.4.0'
-    compile 'com.squareup.okhttp:okhttp-urlconnection:2.2.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.squareup.okhttp:okhttp:2.3.0'
 
     // Logging
-    compile 'com.jakewharton.timber:timber:2.5.1'
-    compile('com.crashlytics.sdk.android:crashlytics:2.2.1@aar') {
+    compile 'com.jakewharton.timber:timber:2.7.1'
+    compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {
         transitive = true;
     }
 
@@ -167,10 +167,10 @@ dependencies {
 
     compile project(':minified-guava')
 
-    compile('com.twitter.sdk.android:twitter:1.3.0@aar') {
+    compile('com.twitter.sdk.android:twitter:1.3.2@aar') {
         transitive = true;
     }
-    compile 'com.facebook.android:facebook-android-sdk:3.23.0'
+    compile 'com.facebook.android:facebook-android-sdk:3.23.1'
 
     debugCompile 'com.squareup.retrofit:retrofit-mock:1.9.0'
 
@@ -180,7 +180,7 @@ dependencies {
     androidTestCompile('com.jakewharton.espresso:espresso:1.1-r3') {
         exclude group: 'com.squareup.dagger'
     }
-    androidTestCompile('com.squareup.okhttp:mockwebserver:2.2.0') {
+    androidTestCompile('com.squareup.okhttp:mockwebserver:2.3.0') {
         exclude group: 'com.squareup.okhttp', module: 'okhttp'
     }
     androidTestCompile 'org.mockito:mockito-core:1.10.8'
