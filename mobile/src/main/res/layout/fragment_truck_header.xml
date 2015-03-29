@@ -49,4 +49,10 @@
             android:textStyle="italic"
             tools:text="Greek" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/distance_from_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="1.4 mi" />
 </LinearLayout>

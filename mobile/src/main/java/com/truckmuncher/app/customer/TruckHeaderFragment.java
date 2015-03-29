@@ -16,12 +16,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.SphericalUtil;
 import com.squareup.picasso.Picasso;
 import com.truckmuncher.app.R;
 import com.truckmuncher.app.data.Contract;
 import com.truckmuncher.app.data.PublicContract;
 import com.truckmuncher.app.data.sql.WhereClause;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -34,11 +37,15 @@ import static com.truckmuncher.app.data.sql.WhereClause.Operator.EQUALS;
 
 public class TruckHeaderFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private static final double METERS_TO_MILES = 0.000621371;
     private static final String ARG_TRUCK_ID = "truck_id";
+    private static final String ARG_LOCATION = "location";
     @InjectView(R.id.truck_name)
     TextView truckName;
     @InjectView(R.id.truck_keywords)
     TextView truckKeywords;
+    @InjectView(R.id.distance_from_location)
+    TextView distanceFromLocation;
     @InjectView(R.id.truck_image)
     ImageView truckImage;
     @InjectView(R.id.header)
@@ -46,9 +53,11 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
 
     private OnTruckHeaderClickListener truckHeaderClickListener;
 
-    public static TruckHeaderFragment newInstance(@NonNull String truckId) {
+    // TODO use a dynamic user location instead of a static one
+    public static TruckHeaderFragment newInstance(@NonNull String truckId, LatLng userLocation) {
         Bundle args = new Bundle();
         args.putString(ARG_TRUCK_ID, checkNotNull(truckId));
+        args.putParcelable(ARG_LOCATION, userLocation);
         TruckHeaderFragment fragment = new TruckHeaderFragment();
         fragment.setArguments(args);
         return fragment;
@@ -102,7 +111,8 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
             String truckKeywords = builder.toString();
             String imageUrl = cursor.getString(TruckQuery.IMAGE_URL);
             String secondaryColor = cursor.getString(TruckQuery.COLOR_SECONDARY);
-            onTruckDataLoaded(truckName, truckKeywords, imageUrl, secondaryColor);
+            LatLng truckLocation = new LatLng(cursor.getDouble(TruckQuery.LATITUDE), cursor.getDouble(TruckQuery.LONGITUDE));
+            onTruckDataLoaded(truckName, truckKeywords, imageUrl, secondaryColor, truckLocation);
         } else {
 
             // Invalid truck
@@ -121,7 +131,7 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
         truckHeaderClickListener.onTruckHeaderClick(getArguments().getString(ARG_TRUCK_ID));
     }
 
-    private void onTruckDataLoaded(String name, String keywords, String imageUrl, String headerColor) {
+    private void onTruckDataLoaded(String name, String keywords, String imageUrl, String headerColor, LatLng truckLocation) {
         if (TextUtils.isEmpty(imageUrl)) {
             truckImage.setVisibility(View.GONE);
         } else {
@@ -141,6 +151,19 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
 
         truckName.setText(name);
         truckKeywords.setText(keywords);
+
+        LatLng referenceLocation = getArguments().getParcelable(ARG_LOCATION);
+        if (referenceLocation != null) {
+            // distance in meters
+            double delta = SphericalUtil.computeDistanceBetween(truckLocation, referenceLocation);
+            // convert to miles
+            delta *= METERS_TO_MILES;
+
+            distanceFromLocation.setText(new DecimalFormat("0.0").format(delta) + " mi");
+            distanceFromLocation.setVisibility(View.VISIBLE);
+        } else {
+            distanceFromLocation.setVisibility(View.GONE);
+        }
     }
 
     public interface OnTruckHeaderClickListener {
@@ -152,11 +175,15 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
                 PublicContract.Truck.NAME,
                 PublicContract.Truck.IMAGE_URL,
                 PublicContract.Truck.KEYWORDS,
-                PublicContract.Truck.COLOR_SECONDARY
+                PublicContract.Truck.COLOR_SECONDARY,
+                PublicContract.Truck.LATITUDE,
+                PublicContract.Truck.LONGITUDE
         };
         int NAME = 0;
         int IMAGE_URL = 1;
         int KEYWORDS = 2;
         int COLOR_SECONDARY = 3;
+        int LATITUDE = 4;
+        int LONGITUDE = 5;
     }
 }

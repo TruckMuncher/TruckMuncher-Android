@@ -11,6 +11,7 @@ import android.widget.SimpleCursorAdapter;
 
 import com.truckmuncher.app.data.PublicContract;
 
+// TODO @Marius finish the implementation related to this
 public class TruckProfileListingFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private SimpleCursorAdapter adapter;

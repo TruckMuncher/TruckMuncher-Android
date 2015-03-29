@@ -12,12 +12,11 @@ import com.truckmuncher.app.data.Contract;
 import com.truckmuncher.app.data.PublicContract;
 import com.truckmuncher.app.data.sql.WhereClause;
 
-import java.util.List;
-
 import timber.log.Timber;
 
 import static com.truckmuncher.app.data.sql.WhereClause.Operator.EQUALS;
 
+// TODO this class is way more complex than it needs to be at this point
 final class TruckDataLoaderHandler implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private final Context context;
@@ -76,23 +75,8 @@ final class TruckDataLoaderHandler implements LoaderManager.LoaderCallbacks<Curs
             // Wait to load the menu until we have a truck so that we for sure have the category color
             dataDestination.getLoaderManager().initLoader(DataDestination.LOADER_MENU, null, this);
 
-            // Split the keywords and format them in a way that is user friendly
-            String keywordsString = cursor.getString(TruckQuery.KEYWORDS);
-            List<String> keywords = Contract.convertStringToList(keywordsString);
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < keywords.size(); i++) {
-                builder.append(keywords.get(i));
-                if (i < keywords.size() - 1) {
-                    builder.append(", ");
-                }
-            }
-
-            String truckName = cursor.getString(TruckQuery.NAME);
-            String truckKeywords = builder.toString();
-            String imageUrl = cursor.getString(TruckQuery.IMAGE_URL);
             String primaryColor = cursor.getString(TruckQuery.COLOR_PRIMARY);
-            String secondaryColor = cursor.getString(TruckQuery.COLOR_SECONDARY);
-            dataDestination.onTruckDataLoaded(truckName, truckKeywords, imageUrl, primaryColor, secondaryColor);
+            dataDestination.onTruckDataLoaded(primaryColor);
         } else {
 
             // Invalid truck
@@ -114,7 +98,7 @@ final class TruckDataLoaderHandler implements LoaderManager.LoaderCallbacks<Curs
         int LOADER_TRUCK = 0;
         int LOADER_MENU = 1;
 
-        void onTruckDataLoaded(String truckName, String keywords, String imageUrl, String menuBackgroundColor, String headerColor);
+        void onTruckDataLoaded(String menuBackgroundColor);
 
         void onMenuDataLoaded(Cursor data);
 
@@ -123,17 +107,9 @@ final class TruckDataLoaderHandler implements LoaderManager.LoaderCallbacks<Curs
 
     interface TruckQuery {
         String[] PROJECTION = new String[]{
-                PublicContract.Truck.NAME,
-                PublicContract.Truck.IMAGE_URL,
-                PublicContract.Truck.KEYWORDS,
-                PublicContract.Truck.COLOR_PRIMARY,
-                PublicContract.Truck.COLOR_SECONDARY
+                PublicContract.Truck.COLOR_PRIMARY
         };
-        int NAME = 0;
-        int IMAGE_URL = 1;
-        int KEYWORDS = 2;
-        int COLOR_PRIMARY = 3;
-        int COLOR_SECONDARY = 4;
+        int COLOR_PRIMARY = 0;
     }
 
     public interface OnTriedToLoadInvalidTruckListener {

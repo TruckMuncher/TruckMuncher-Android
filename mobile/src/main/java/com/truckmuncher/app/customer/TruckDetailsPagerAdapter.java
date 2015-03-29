@@ -15,8 +15,8 @@ public class TruckDetailsPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     @Override
-    public CustomerMenuFragment getItem(int i) {
-        return CustomerMenuFragment.newInstance(truckIds.get(i));
+    public TruckDetailsFragment getItem(int i) {
+        return TruckDetailsFragment.newInstance(truckIds.get(i));
     }
 
     @Override

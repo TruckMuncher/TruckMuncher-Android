@@ -73,7 +73,7 @@ public class TruckDetailsActivity extends ActionBarActivity implements TruckData
                 int size = segments.length;
 
                 if (size < 2 || !segments[size - 2].equalsIgnoreCase("trucks")) {
-                    throw new URISyntaxException("", "Can't handle this uri");
+                    throw new URISyntaxException(javaUri.toString(), "Segment structure not what we expected");
                 }
                 startingTruck = segments[size - 1];
                 truckIds = Collections.singletonList(startingTruck);
