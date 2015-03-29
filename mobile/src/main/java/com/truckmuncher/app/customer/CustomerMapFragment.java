@@ -253,7 +253,7 @@ public class CustomerMapFragment extends ApiClientFragment implements
 
     private void loadActiveTrucks() {
         // Kick off a refresh of the vendor data
-        getActivity().startService(ActiveTrucksService.newIntent(getActivity(), currentLocation.latitude, currentLocation.longitude));
+        getActivity().startService(ActiveTrucksService.newIntent(getActivity(), currentLocation));
     }
 
     private void setUpClusterer() {
