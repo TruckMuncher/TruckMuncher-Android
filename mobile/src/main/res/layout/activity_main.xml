@@ -5,18 +5,37 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/view_pager"
+    <FrameLayout
+        android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="@dimen/menu_pull_up_header_height"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/mold"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center"
+            android:text="@string/error_no_serving_trucks"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:textColor="@android:color/white"
+            android:textStyle="italic"
+            android:visibility="gone" />
+    </FrameLayout>
 
     <fragment
         android:id="@+id/customer_map_fragment"
         android:name="com.truckmuncher.app.customer.CustomerMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/view_pager"
+        android:layout_above="@+id/footer"
         tools:layout="@layout/fragment_customer_map" />
 
 </RelativeLayout>

@@ -18,6 +18,7 @@ import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.android.gms.actions.SearchIntents;
 import com.google.android.gms.maps.model.LatLng;
@@ -235,9 +236,16 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        if (currentLocation != null) {
-            pagerAdapter = new TruckHeaderPagerAdapter(getSupportFragmentManager(), cursor, currentLocation);
-            viewPager.setAdapter(pagerAdapter);
+        if (cursor.getCount() == 0) {
+            findViewById(R.id.empty).setVisibility(View.VISIBLE);
+            viewPager.setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.empty).setVisibility(View.GONE);
+            viewPager.setVisibility(View.VISIBLE);
+            if (currentLocation != null) {
+                pagerAdapter = new TruckHeaderPagerAdapter(getSupportFragmentManager(), cursor, currentLocation);
+                viewPager.setAdapter(pagerAdapter);
+            }
         }
     }
 
