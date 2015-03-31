@@ -67,7 +67,9 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_truck_header, container, false);
         ButterKnife.inject(this, view);
-        truckHeaderClickListener = (OnTruckHeaderClickListener) getActivity();
+        if (getActivity() instanceof OnTruckHeaderClickListener) {
+            truckHeaderClickListener = (OnTruckHeaderClickListener) getActivity();
+        }
         return view;
     }
 
@@ -128,7 +130,9 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
 
     @OnClick(R.id.header)
     void onHeaderClick() {
-        truckHeaderClickListener.onTruckHeaderClick(getArguments().getString(ARG_TRUCK_ID));
+        if (truckHeaderClickListener != null) {
+            truckHeaderClickListener.onTruckHeaderClick(getArguments().getString(ARG_TRUCK_ID));
+        }
     }
 
     private void onTruckDataLoaded(String name, String keywords, String imageUrl, String headerColor, LatLng truckLocation) {
