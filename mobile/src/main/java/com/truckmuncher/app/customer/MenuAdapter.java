@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.truckmuncher.app.R;
+import com.truckmuncher.app.data.Contract;
 import com.truckmuncher.app.data.PublicContract;
 import com.twotoasters.sectioncursoradapter.SectionCursorAdapter;
 import com.volkhart.androidutil.text.Truss;
@@ -23,6 +24,7 @@ import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import timber.log.Timber;
 
 /**
  * @see <a href="https://github.com/twotoasters/SectionCursorAdapter">GitHub Project</a>
@@ -35,7 +37,7 @@ public class MenuAdapter extends SectionCursorAdapter {
     public MenuAdapter(Context context, int textColor) {
         super(context, null, 0);
         this.textColor = textColor;
-        fontFamily = Typeface.createFromAsset(context.getAssets(), "flaticon.tff");
+        fontFamily = Typeface.createFromAsset(context.getAssets(), "flaticon.ttf");
     }
 
     @Override
@@ -107,10 +109,13 @@ public class MenuAdapter extends SectionCursorAdapter {
         holder.description.setText(description);
 
         String tagsText = cursor.getString(Query.TAGS);
+        Timber.d("Text: (%s)", tagsText);
         if (!TextUtils.isEmpty(tagsText)) {
-            String[] tags = tagsText.split(",");
+            List<String> tags = Contract.convertStringToList(tagsText);
             holder.tags = MenuItemTag.convertToTags(tags);
+        }
 
+        if (holder.tags != null && !holder.tags.isEmpty()) {
             StringBuilder tagsBuilder = new StringBuilder();
             for (MenuItemTag tag : holder.tags) {
                 tagsBuilder.append(tag.fontCharacter);
@@ -128,27 +133,28 @@ public class MenuAdapter extends SectionCursorAdapter {
         /*
          * These names have to match the keys used by the web, otherwise we won't match the tags correctly
          */
-        gluten("\ue004", R.string.menu_item_tag_gluten),
-        vegetarian("\ue000", R.string.menu_item_tag_vegetarian),
-        vegan("\ue001", R.string.menu_item_tag_vegan),
-        peanuts("\ue002", R.string.menu_item_tag_peanuts),
-        raw("\ue003", R.string.menu_item_tag_raw);
+        GLUTEN("gluten free", "\ue004", R.string.menu_item_tag_gluten),
+        VEGETARIAN("vegetarian", "\ue000", R.string.menu_item_tag_vegetarian),
+        VEGAN("vegan", "\ue001", R.string.menu_item_tag_vegan),
+        PEANUTS("contains peanuts", "\ue002", R.string.menu_item_tag_peanuts),
+        RAW("raw", "\ue003", R.string.menu_item_tag_raw);
 
+        final String apiKey;
         final String fontCharacter;
         @StringRes
         final int description;
 
-        private MenuItemTag(String fontCharacter, @StringRes int description) {
+        private MenuItemTag(String apiKey, String fontCharacter, @StringRes int description) {
+            this.apiKey = apiKey;
             this.fontCharacter = fontCharacter;
             this.description = description;
         }
 
-        static List<MenuItemTag> convertToTags(String[] tags) {
-            List<MenuItemTag> list = new ArrayList<>(tags.length);
-            for (String tag : tags) {
-                try {
-                    list.add(valueOf(tag.trim()));
-                } catch (IllegalArgumentException ignored) {
+        static List<MenuItemTag> convertToTags(List<String> tags) {
+            List<MenuItemTag> list = new ArrayList<>(tags.size());
+            for (MenuItemTag menuItemTag : MenuItemTag.values()) {
+                if (tags.contains(menuItemTag.apiKey)) {
+                    list.add(menuItemTag);
                 }
             }
             return list;
