@@ -34,6 +34,7 @@ monkey {
 // Manifest Information
 def versionMajor = 1
 def versionMinor = 0
+def versionPatch = 0
 
 android {
     compileSdkVersion 22
@@ -43,7 +44,7 @@ android {
         applicationId "com.truckmuncher.app"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode versionMajor * 100 + versionMinor
+        versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
         testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
 
         resConfigs "en"
@@ -88,11 +89,11 @@ android {
     productFlavors {
         production {
             buildConfigField "String", "API_ENDPOINT", "\"https://api.truckmuncher.com:8443\""
-            versionName "${versionMajor}.${versionMinor}"
+            versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         }
         dev {
             buildConfigField "String", "API_ENDPOINT", "\"http://truckmuncher:8443\""
-            versionName "${versionMajor}.${versionMinor}.dev"
+            versionName "${versionMajor}.${versionMinor}.${versionPatch}.dev"
         }
 
         // Temporarily disabled. Need either Kotlin delegate functions or Dagger 1
