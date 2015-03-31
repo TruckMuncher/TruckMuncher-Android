@@ -18,20 +18,24 @@ import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.android.gms.actions.SearchIntents;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.SphericalUtil;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.truckmuncher.app.authentication.AccountGeneral;
 import com.truckmuncher.app.authentication.AuthenticatorActivity;
-import com.truckmuncher.app.customer.CursorFragmentStatePagerAdapter;
+import com.truckmuncher.app.common.RateUs;
 import com.truckmuncher.app.customer.CustomerMapFragment;
-import com.truckmuncher.app.customer.CustomerMenuFragment;
 import com.truckmuncher.app.customer.TruckCluster;
+import com.truckmuncher.app.customer.TruckDetailsActivity;
+import com.truckmuncher.app.customer.TruckHeaderFragment;
+import com.truckmuncher.app.customer.TruckHeaderPagerAdapter;
 import com.truckmuncher.app.data.PublicContract;
 import com.truckmuncher.app.data.sql.WhereClause;
 import com.truckmuncher.app.vendor.VendorHomeActivity;
+
+import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -40,22 +44,21 @@ import timber.log.Timber;
 import static com.truckmuncher.app.data.sql.WhereClause.Operator.EQUALS;
 
 public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor>,
-        CustomerMapFragment.OnTruckMarkerClickListener, CustomerMapFragment.OnLocationChangeListener {
+        CustomerMapFragment.OnTruckMarkerClickListener, CustomerMapFragment.OnLocationChangeListener, TruckHeaderFragment.OnTruckHeaderClickListener {
 
     private static final int REQUEST_LOGIN = 1;
+    private static final int REQUEST_TRUCK_DETAILS = 2;
     private static final int LOADER_TRUCKS = 0;
 
     private static final int MIN_LOCATION_CHANGE = 500; // meters
 
     @InjectView(R.id.view_pager)
     ViewPager viewPager;
-    @InjectView(R.id.sliding_panel)
-    SlidingUpPanelLayout slidingPanel;
 
     private SearchView searchView;
 
     private String lastQuery;
-    private CursorFragmentStatePagerAdapter pagerAdapter;
+    private TruckHeaderPagerAdapter pagerAdapter;
     private LatLng currentLocation;
 
     @Override
@@ -78,6 +81,7 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
             // If we get an authToken the user is signed in and we can go straight to vendor mode
             if (!TextUtils.isEmpty(authToken)) {
                 launchVendorMode();
+                return;
             }
         }
 
@@ -91,14 +95,12 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
 
-                // Set the new drag view so scrolling works nicely
-                CustomerMenuFragment fragment = pagerAdapter.getItem(position);
-                slidingPanel.setDragView(fragment.getHeaderView());
-
                 // Change the focused truck
                 mapFragment.moveTo(pagerAdapter.getTruckId(position));
             }
         });
+
+        RateUs.check(this);
     }
 
     @Override
@@ -183,12 +185,20 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_LOGIN) {
-            if (resultCode == RESULT_OK) {
-                launchVendorMode();
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_LOGIN:
+                if (resultCode == RESULT_OK) {
+                    launchVendorMode();
+                }
+                break;
+            case REQUEST_TRUCK_DETAILS:
+                if (resultCode == RESULT_OK) {
+                    String lastTruckId = data.getStringExtra(TruckDetailsActivity.ARG_ENDING_TRUCK);
+                    viewPager.setCurrentItem(pagerAdapter.getTruckPosition(lastTruckId));
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -215,11 +225,10 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
                 WhereClause whereClause = new WhereClause.Builder()
                         .where(PublicContract.Truck.IS_SERVING, EQUALS, true)
-                        .and()
                         .where(PublicContract.Truck.MATCHED_SEARCH, EQUALS, true)
                         .build();
-
-                return new CursorLoader(this, PublicContract.TRUCK_URI, CursorFragmentStatePagerAdapter.Query.PROJECTION, whereClause.selection, whereClause.selectionArgs, orderBy);
+                
+                return new CursorLoader(this, PublicContract.TRUCK_URI, TruckHeaderPagerAdapter.Query.PROJECTION, whereClause.selection, whereClause.selectionArgs, orderBy);
             default:
                 throw new RuntimeException("Invalid loader id: " + i);
         }
@@ -227,9 +236,16 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        if (currentLocation != null) {
-            pagerAdapter = new CursorFragmentStatePagerAdapter(getSupportFragmentManager(), cursor, currentLocation);
-            viewPager.setAdapter(pagerAdapter);
+        if (cursor.getCount() == 0) {
+            findViewById(R.id.empty).setVisibility(View.VISIBLE);
+            viewPager.setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.empty).setVisibility(View.GONE);
+            viewPager.setVisibility(View.VISIBLE);
+            if (currentLocation != null) {
+                pagerAdapter = new TruckHeaderPagerAdapter(getSupportFragmentManager(), cursor, currentLocation);
+                viewPager.setAdapter(pagerAdapter);
+            }
         }
     }
 
@@ -247,6 +263,12 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
                 viewPager.setCurrentItem(pagerAdapter.getTruckPosition(truckId));
             }
         });
+    }
+
+    @Override
+    public void onTruckHeaderClick(String currentTruck) {
+        ArrayList<String> truckIds = pagerAdapter.getTruckIds();
+        startActivityForResult(TruckDetailsActivity.newIntent(this, truckIds, currentTruck), REQUEST_TRUCK_DETAILS);
     }
 
     @Override

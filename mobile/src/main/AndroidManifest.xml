@@ -72,7 +72,7 @@
                 android:value="com.truckmuncher.app.vendor.VendorHomeActivity" />
         </activity>
         <activity
-            android:name=".customer.TruckProfileActivity"
+            android:name=".customer.TruckDetailsActivity"
             android:parentActivityName=".MainActivity"
             tools:ignore="unusedAttribute">
             <meta-data
@@ -86,19 +86,15 @@
 
                 <data
                     android:host="truckmuncher.com"
-                    android:pathPrefix="/trucks"
                     android:scheme="http" />
                 <data
                     android:host="www.truckmuncher.com"
-                    android:pathPrefix="/trucks"
                     android:scheme="http" />
                 <data
                     android:host="truckmuncher.com"
-                    android:pathPrefix="/trucks"
                     android:scheme="https" />
                 <data
                     android:host="www.truckmuncher.com"
-                    android:pathPrefix="/trucks"
                     android:scheme="https" />
             </intent-filter>
         </activity>

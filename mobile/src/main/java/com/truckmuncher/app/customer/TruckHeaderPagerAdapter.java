@@ -7,21 +7,23 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import com.google.android.gms.maps.model.LatLng;
 import com.truckmuncher.app.data.PublicContract;
 
-public class CursorFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
+import java.util.ArrayList;
+
+public class TruckHeaderPagerAdapter extends FragmentStatePagerAdapter {
 
     private final Cursor cursor;
     private final LatLng referenceLocation;
 
-    public CursorFragmentStatePagerAdapter(FragmentManager fm, Cursor cursor, LatLng referenceLocation) {
+    public TruckHeaderPagerAdapter(FragmentManager fm, Cursor cursor, LatLng referenceLocation) {
         super(fm);
         this.cursor = cursor;
         this.referenceLocation = referenceLocation;
     }
 
     @Override
-    public CustomerMenuFragment getItem(int i) {
+    public TruckHeaderFragment getItem(int i) {
         cursor.moveToPosition(i);
-        return CustomerMenuFragment.newInstance(cursor.getString(Query.TRUCK_ID), referenceLocation);
+        return TruckHeaderFragment.newInstance(cursor.getString(Query.TRUCK_ID), referenceLocation);
     }
 
     @Override
@@ -43,6 +45,15 @@ public class CursorFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
             }
         }
         return -1;
+    }
+
+    public ArrayList<String> getTruckIds() {
+        ArrayList<String> truckIds = new ArrayList<>(cursor.getCount());
+        cursor.moveToFirst();
+        do {
+            truckIds.add(cursor.getString(Query.TRUCK_ID));
+        } while (cursor.moveToNext());
+        return truckIds;
     }
 
     public interface Query {
