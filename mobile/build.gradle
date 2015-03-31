@@ -8,6 +8,9 @@ buildscript {
         classpath 'io.fabric.tools:gradle:1.15.2'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
         classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.6'
+        classpath('com.github.triplet.gradle:play-publisher:1.0.2') {
+            exclude group: 'com.google.guava'
+        }
     }
 }
 
@@ -17,6 +20,7 @@ apply plugin: 'hugo'
 apply plugin: 'com.autoscout24.gradle.monkey'
 apply plugin: 'android-apt'
 apply plugin: 'errorprone'
+apply plugin: 'play'
 
 def onCI = "CI".equals(System.getenv("SYSTEM_TYPE"))
 
@@ -30,7 +34,6 @@ monkey {
 // Manifest Information
 def versionMajor = 1
 def versionMinor = 0
-def versionPatch = 0
 
 android {
     compileSdkVersion 22
@@ -40,7 +43,7 @@ android {
         applicationId "com.truckmuncher.app"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
+        versionCode versionMajor * 100 + versionMinor
         testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
 
         resConfigs "en"
@@ -85,11 +88,11 @@ android {
     productFlavors {
         production {
             buildConfigField "String", "API_ENDPOINT", "\"https://api.truckmuncher.com:8443\""
-            versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+            versionName "${versionMajor}.${versionMinor}"
         }
         dev {
             buildConfigField "String", "API_ENDPOINT", "\"http://truckmuncher:8443\""
-            versionName "${versionMajor}.${versionMinor}.${versionPatch}.dev"
+            versionName "${versionMajor}.${versionMinor}.dev"
         }
 
         // Temporarily disabled. Need either Kotlin delegate functions or Dagger 1
@@ -127,6 +130,12 @@ android {
         exclude 'NOTICE'
         exclude 'asm-license.txt'
     }
+}
+
+play {
+    serviceAccountEmail = TRUCK_MUNCHER_PLAY_EMAIL_ADDRESS
+    pk12File = file(TRUCK_MUNCHER_PLAY_PK12_FILE_PATH)
+    uploadImages = true
 }
 
 apt {
