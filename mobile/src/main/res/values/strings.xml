@@ -30,7 +30,7 @@
     <string name="access_vendor_marker_description">Your truck location</string>
 
     <!-- AppRate -->
-    <string name="app_rate_prompt">Enjoying TruckMuncher? Help us spread the word!</string>
+    <string name="app_rate_prompt">How are we doing? Drop us a line!</string>
     <string name="app_rate_rate_us">Rate it</string>
     <string name="app_rate_later">Later</string>
     <string name="app_rate_never">Never</string>
