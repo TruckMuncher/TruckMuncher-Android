@@ -28,8 +28,8 @@ monkey {
 }
 
 // Manifest Information
-def versionMajor = 0
-def versionMinor = 4
+def versionMajor = 1
+def versionMinor = 0
 def versionPatch = 0
 
 android {
