@@ -31,6 +31,7 @@ import com.facebook.Session;
 import com.truckmuncher.app.MainActivity;
 import com.truckmuncher.app.R;
 import com.truckmuncher.app.authentication.AccountGeneral;
+import com.truckmuncher.app.common.RateUs;
 import com.truckmuncher.app.data.PublicContract;
 import com.truckmuncher.app.data.sql.WhereClause;
 import com.truckmuncher.app.vendor.menuadmin.MenuAdminFragment;
@@ -74,6 +75,8 @@ public class VendorHomeActivity extends ActionBarActivity implements
         startService(new Intent(this, VendorTrucksService.class));
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        RateUs.check(this);
     }
 
     @Override

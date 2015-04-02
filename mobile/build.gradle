@@ -8,6 +8,9 @@ buildscript {
         classpath 'io.fabric.tools:gradle:1.15.2'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
         classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.6'
+        classpath('com.github.triplet.gradle:play-publisher:1.0.2') {
+            exclude group: 'com.google.guava'
+        }
     }
 }
 
@@ -17,6 +20,7 @@ apply plugin: 'hugo'
 apply plugin: 'com.autoscout24.gradle.monkey'
 apply plugin: 'android-apt'
 apply plugin: 'errorprone'
+apply plugin: 'play'
 
 def onCI = "CI".equals(System.getenv("SYSTEM_TYPE"))
 
@@ -28,8 +32,8 @@ monkey {
 }
 
 // Manifest Information
-def versionMajor = 0
-def versionMinor = 4
+def versionMajor = 1
+def versionMinor = 0
 def versionPatch = 0
 
 android {
@@ -92,7 +96,7 @@ android {
             versionName "${versionMajor}.${versionMinor}.${versionPatch}.dev"
         }
 
-        // Temporarily disabled
+        // Temporarily disabled. Need either Kotlin delegate functions or Dagger 1
 //        mock {
 //            buildConfigField "String", "API_ENDPOINT", "\"mock://\""
 //            versionName "${versionMajor}.${versionMinor}.${versionPatch}.mock"
@@ -129,6 +133,12 @@ android {
     }
 }
 
+play {
+    serviceAccountEmail = TRUCK_MUNCHER_PLAY_EMAIL_ADDRESS
+    pk12File = file(TRUCK_MUNCHER_PLAY_PK12_FILE_PATH)
+    uploadImages = true
+}
+
 apt {
     arguments {
         androidManifestFile variant.outputs[0].processResources.manifestFile
@@ -160,7 +170,7 @@ dependencies {
 
     // UI Components
     compile 'com.twotoasters.SectionCursorAdapter:library:1.0.1'
-    compile 'com.sothree.slidinguppanel:library:2.0.4'
+    compile 'fr.nicolaspomepuy:discreetapprate:2.0.3@aar'
 
     compile 'com.google.dagger:dagger:2.0-SNAPSHOT'
     apt 'com.google.dagger:dagger-compiler:2.0-SNAPSHOT'
@@ -172,6 +182,8 @@ dependencies {
         transitive = true;
     }
     compile 'com.facebook.android:facebook-android-sdk:3.23.1'
+
+    compile 'info.metadude.android:typed-preferences:2.0.0'
 
     debugCompile 'com.squareup.retrofit:retrofit-mock:1.9.0'
 

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.truckmuncher.api.trucks.ActiveTrucksRequest;
 import com.truckmuncher.api.trucks.ActiveTrucksResponse;
 import com.truckmuncher.api.trucks.TruckService;
@@ -22,13 +23,10 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-import static com.guava.common.base.Preconditions.checkArgument;
-
 public class ActiveTrucksService extends IntentService {
 
     public static final String ARG_MESSAGE = "user_message";
-    public static final String ARG_LATITUDE = "latitude";
-    public static final String ARG_LONGITUDE = "longitude";
+    public static final String ARG_LOCATION = "location";
     public static final String ARG_SEARCH_QUERY = "search_query";
 
     @Inject
@@ -38,10 +36,9 @@ public class ActiveTrucksService extends IntentService {
         super(ActiveTrucksService.class.getSimpleName());
     }
 
-    public static Intent newIntent(Context context, double latitude, double longitude) {
+    public static Intent newIntent(Context context, LatLng location) {
         Intent intent = new Intent(context, ActiveTrucksService.class);
-        intent.putExtra(ARG_LATITUDE, latitude);
-        intent.putExtra(ARG_LONGITUDE, longitude);
+        intent.putExtra(ARG_LOCATION, location);
         return intent;
     }
 
@@ -54,14 +51,14 @@ public class ActiveTrucksService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        double latitude = intent.getDoubleExtra(ARG_LATITUDE, Double.MAX_VALUE);
-        double longitude = intent.getDoubleExtra(ARG_LONGITUDE, Double.MAX_VALUE);
+        LatLng location = intent.getParcelableExtra(ARG_LOCATION);
         String searchQuery = intent.getStringExtra(ARG_SEARCH_QUERY);
 
-        checkArgument(latitude != Double.MAX_VALUE, "Latitude not provided");
-        checkArgument(longitude != Double.MAX_VALUE, "Longitude not provided");
-
-        ActiveTrucksRequest request = new ActiveTrucksRequest(latitude, longitude, searchQuery);
+        ActiveTrucksRequest request = new ActiveTrucksRequest.Builder()
+                .latitude(location.latitude)
+                .longitude(location.longitude)
+                .searchQuery(searchQuery)
+                .build();
 
         try {
             ActiveTrucksResponse response = truckService.getActiveTrucks(request);

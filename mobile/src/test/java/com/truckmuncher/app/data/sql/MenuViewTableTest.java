@@ -27,7 +27,8 @@ public class MenuViewTableTest extends DatabaseTableTestCase {
                 PublicContract.Menu.CATEGORY_ID,
                 PublicContract.Menu.CATEGORY_NOTES,
                 PublicContract.Menu.ORDER_IN_MENU,
-                PublicContract.Menu.TRUCK_ID
+                PublicContract.Menu.TRUCK_ID,
+                PublicContract.Menu.MENU_ITEM_TAGS
         };
         Cursor cursor = db.query(Tables.MENU, projection, null, null, null, null, null);
         assertThat(cursor).isNotNull();

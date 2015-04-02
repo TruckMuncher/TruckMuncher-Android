@@ -1,24 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/sliding_panel"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="bottom"
-    app:panelHeight="@dimen/menu_pull_up_header_height"
-    app:shadowHeight="4dp">
+    tools:context=".MainActivity">
+
+    <FrameLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/menu_pull_up_header_height"
+        android:layout_alignParentBottom="true">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/mold"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center"
+            android:text="@string/error_no_serving_trucks"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:textColor="@android:color/white"
+            android:textStyle="italic"
+            android:visibility="gone" />
+    </FrameLayout>
 
     <fragment
         android:id="@+id/customer_map_fragment"
         android:name="com.truckmuncher.app.customer.CustomerMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="MainActivity" />
+        android:layout_above="@+id/footer"
+        tools:layout="@layout/fragment_customer_map" />
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/view_pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-</com.sothree.slidinguppanel.SlidingUpPanelLayout>
+</RelativeLayout>
