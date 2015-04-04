@@ -24,7 +24,7 @@ public final class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     public SyncAdapter(Context context, boolean autoInitialize, boolean allowParallelSyncs) {
         super(context, autoInitialize, allowParallelSyncs);
-        App.get(context).networkComponent().inject(this);
+        App.get(context).inject(this);
     }
 
     @Override

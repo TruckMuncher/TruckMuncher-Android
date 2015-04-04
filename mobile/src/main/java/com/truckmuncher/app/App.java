@@ -6,17 +6,13 @@ import android.content.Context;
 import android.os.PowerManager;
 import android.view.WindowManager;
 
-import com.truckmuncher.app.dagger.Dagger_NetworkComponent;
-import com.truckmuncher.app.dagger.Dagger_UserComponent;
-import com.truckmuncher.app.dagger.NetworkComponent;
-import com.truckmuncher.app.dagger.NetworkModule;
-import com.truckmuncher.app.dagger.UserComponent;
-import com.truckmuncher.app.dagger.UserModule;
+import com.truckmuncher.app.dagger.Modules;
+
+import dagger.ObjectGraph;
 
 public class App extends Application {
 
-    private NetworkComponent networkComponent;
-    private UserComponent userComponent;
+    private ObjectGraph objectGraph;
 
     public static App get(Context context) {
         return (App) context.getApplicationContext();
@@ -42,21 +38,14 @@ public class App extends Application {
         super.onCreate();
 
         LoggerStarter.start(this);
-
-        userComponent = Dagger_UserComponent.builder()
-                .userModule(new UserModule(this))
-                .build();
-        networkComponent = Dagger_NetworkComponent.builder()
-                .userComponent(userComponent)
-                .networkModule(new NetworkModule(this))
-                .build();
+        objectGraph = ObjectGraph.create(Modules.list(this));
     }
 
-    public UserComponent userComponent() {
-        return userComponent;
+    public void inject(Object injectable) {
+        objectGraph.inject(injectable);
     }
 
-    public NetworkComponent networkComponent() {
-        return networkComponent;
+    public ObjectGraph appGraph() {
+        return objectGraph;
     }
 }

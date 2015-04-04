@@ -16,7 +16,7 @@ import dagger.Provides;
 import retrofit.MockRestAdapter;
 import retrofit.RestAdapter;
 
-@Module
+@Module(complete = false, library = true)
 public class MockWebServicesModule {
 
     @Singleton

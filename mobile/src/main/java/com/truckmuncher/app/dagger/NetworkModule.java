@@ -12,16 +12,21 @@ import com.truckmuncher.api.menu.MenuService;
 import com.truckmuncher.api.search.SearchService;
 import com.truckmuncher.api.trucks.TruckService;
 import com.truckmuncher.app.BuildConfig;
+import com.truckmuncher.app.customer.ActiveTrucksService;
+import com.truckmuncher.app.customer.GetTruckProfilesService;
+import com.truckmuncher.app.customer.SimpleSearchService;
 import com.truckmuncher.app.data.ApiErrorHandler;
 import com.truckmuncher.app.data.AuthErrorHandler;
 import com.truckmuncher.app.data.AuthRequestInterceptor;
 import com.truckmuncher.app.data.AuthenticatedRequestInterceptor;
 import com.truckmuncher.app.data.PRNGFixes;
+import com.truckmuncher.app.data.sync.SyncAdapter;
+import com.truckmuncher.app.menu.MenuUpdateService;
+import com.truckmuncher.app.vendor.VendorTrucksService;
 
 import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 
 import java.io.File;
-import java.io.IOException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 
@@ -37,7 +42,14 @@ import retrofit.client.OkClient;
 import retrofit.converter.WireConverter;
 import timber.log.Timber;
 
-@Module
+@Module(injects = {
+        ActiveTrucksService.class,
+        GetTruckProfilesService.class,
+        MenuUpdateService.class,
+        SimpleSearchService.class,
+        SyncAdapter.class,
+        VendorTrucksService.class
+}, includes = UserModule.class)
 public class NetworkModule {
 
     private static final int DISK_CACHE_SIZE = 50 * 1024 * 1024; // 50MB
@@ -51,14 +63,14 @@ public class NetworkModule {
         }
     }
 
-    protected static void configureHttpCache(Context context, OkHttpClient client) {
+    public static void configureHttpCache(Context context, OkHttpClient client) {
         // Install an HTTP cache in the application cache directory.
         File cacheDir = new File(context.getApplicationContext().getCacheDir(), "http");
         Cache cache = new Cache(cacheDir, DISK_CACHE_SIZE);
         client.setCache(cache);
     }
 
-    private static void configureSsl(OkHttpClient client) {
+    public static void configureSsl(OkHttpClient client) {
         try {
             TrustManager[] trustAllCerts = new TrustManager[]{
                     new X509TrustManager() {

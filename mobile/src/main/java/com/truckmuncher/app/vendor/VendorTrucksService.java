@@ -37,6 +37,7 @@ public class VendorTrucksService extends IntentService {
     TruckService truckService;
     @Inject
     AuthService authService;
+    @Inject
     AccountManager accountManager;
 
     public VendorTrucksService() {
@@ -46,9 +47,7 @@ public class VendorTrucksService extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
-        App app = App.get(this);
-        app.networkComponent().inject(this);
-        accountManager = app.userComponent().accountManager();
+        App.get(this).inject(this);
     }
 
     @Override

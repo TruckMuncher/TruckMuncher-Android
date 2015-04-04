@@ -43,7 +43,7 @@ public class SimpleSearchService extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
-        App.get(this).networkComponent().inject(this);
+        App.get(this).inject(this);
     }
 
     @Override

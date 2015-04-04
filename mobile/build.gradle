@@ -6,7 +6,6 @@ buildscript {
 
     dependencies {
         classpath 'io.fabric.tools:gradle:1.15.2'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
         classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.6'
         classpath('com.github.triplet.gradle:play-publisher:1.0.2') {
             exclude group: 'com.google.guava'
@@ -18,7 +17,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 apply plugin: 'hugo'
 apply plugin: 'com.autoscout24.gradle.monkey'
-apply plugin: 'android-apt'
 apply plugin: 'errorprone'
 apply plugin: 'play'
 
@@ -139,13 +137,6 @@ play {
     uploadImages = true
 }
 
-apt {
-    arguments {
-        androidManifestFile variant.outputs[0].processResources.manifestFile
-        resourcePackageName 'com.truckmuncher.app'
-    }
-}
-
 dependencies {
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile 'com.google.android.gms:play-services-maps:7.0.0'
@@ -172,9 +163,8 @@ dependencies {
     compile 'com.twotoasters.SectionCursorAdapter:library:1.0.1'
     compile 'fr.nicolaspomepuy:discreetapprate:2.0.3@aar'
 
-    compile 'com.google.dagger:dagger:2.0-SNAPSHOT'
-    apt 'com.google.dagger:dagger-compiler:2.0-SNAPSHOT'
-    provided 'org.glassfish:javax.annotation:10.0-b28'
+    compile 'com.squareup.dagger:dagger:1.2.2'
+    provided 'com.squareup.dagger:dagger-compiler:1.2.2'
 
     compile project(':minified-guava')
 
@@ -186,6 +176,9 @@ dependencies {
     compile 'info.metadude.android:typed-preferences:2.0.0'
 
     debugCompile 'com.squareup.retrofit:retrofit-mock:1.9.0'
+    debugCompile('com.facebook.stetho:stetho-okhttp:1.0.1') {
+        exclude group: 'com.google.code.findbugs'
+    }
 
     androidTestCompile('com.squareup.assertj:assertj-android:1.0.0') {
         exclude module: 'support-annotations'

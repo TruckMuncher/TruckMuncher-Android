@@ -10,7 +10,7 @@ import com.truckmuncher.app.authentication.AccountGeneral;
 import dagger.Module;
 import dagger.Provides;
 
-@Module
+@Module(library = true)
 public class UserModule {
 
     private final Context appContext;
