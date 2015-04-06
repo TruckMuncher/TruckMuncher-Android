@@ -61,12 +61,14 @@ public class TruckMuncherContentProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         LoggerStarter.start(getContext());
-        App.get(getContext()).inject(this);
         return true;
     }
 
     @Override
     public Bundle call(@NonNull String method, String arg, Bundle extras) {
+        if (database == null) {
+            App.get(getContext()).inject(this);
+        }
         SQLiteDatabase db = database.getReadableDatabase();
         SQLiteStatement statement;
         String[] ids = extras != null ? extras.getStringArray(ARG_ID_ARRAY) : new String[]{};
@@ -111,6 +113,9 @@ public class TruckMuncherContentProvider extends ContentProvider {
     @Override
     @NonNull
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        if (database == null) {
+            App.get(getContext()).inject(this);
+        }
         SQLiteDatabase db = database.getReadableDatabase();
 
         String tableName;
@@ -179,6 +184,9 @@ public class TruckMuncherContentProvider extends ContentProvider {
     @DebugLog
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
+        if (database == null) {
+            App.get(getContext()).inject(this);
+        }
         SQLiteDatabase db = database.getWritableDatabase();
         int rowsDeleted;
 
@@ -201,6 +209,9 @@ public class TruckMuncherContentProvider extends ContentProvider {
     @DebugLog
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        if (database == null) {
+            App.get(getContext()).inject(this);
+        }
         SQLiteDatabase db = database.getWritableDatabase();
         int rowsUpdated;
 
@@ -226,6 +237,9 @@ public class TruckMuncherContentProvider extends ContentProvider {
     @DebugLog
     @Override
     public int bulkInsert(Uri uri, @NonNull ContentValues[] valuesList) {
+        if (database == null) {
+            App.get(getContext()).inject(this);
+        }
         SQLiteDatabase db = database.getWritableDatabase();
         int returnCount = 0;
         boolean suppressNotification = Contract.isSuppressNotify(uri);
