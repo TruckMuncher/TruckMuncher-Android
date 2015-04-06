@@ -7,6 +7,7 @@ The project uses the default code style of Android Studio. Please adhere to it a
 
 ## Method Ordering
 The AS standards apply first. For all remaining:
+
 1. Lifecycle methods, in order of occurrence (see [guide](https://github.com/xxv/android-lifecycle))
 2. Methods overridden from parent class
 3. Methods overridden from interfaces
