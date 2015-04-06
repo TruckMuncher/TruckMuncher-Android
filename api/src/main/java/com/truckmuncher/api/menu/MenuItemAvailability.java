@@ -11,80 +11,80 @@ import static com.squareup.wire.Message.Label.REQUIRED;
 
 public final class MenuItemAvailability extends Message {
 
-    public static final String DEFAULT_MENUITEMID = "";
-    public static final Boolean DEFAULT_ISAVAILABLE = false;
+  public static final String DEFAULT_MENUITEMID = "";
+  public static final Boolean DEFAULT_ISAVAILABLE = false;
+
+  /**
+   * Suitable for unique identification.
+   */
+  @ProtoField(tag = 1, type = STRING, label = REQUIRED)
+  public final String menuItemId;
+
+  @ProtoField(tag = 2, type = BOOL, label = REQUIRED)
+  public final Boolean isAvailable;
+
+  public MenuItemAvailability(String menuItemId, Boolean isAvailable) {
+    this.menuItemId = menuItemId;
+    this.isAvailable = isAvailable;
+  }
+
+  private MenuItemAvailability(Builder builder) {
+    this(builder.menuItemId, builder.isAvailable);
+    setBuilder(builder);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (other == this) return true;
+    if (!(other instanceof MenuItemAvailability)) return false;
+    MenuItemAvailability o = (MenuItemAvailability) other;
+    return equals(menuItemId, o.menuItemId)
+        && equals(isAvailable, o.isAvailable);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = hashCode;
+    if (result == 0) {
+      result = menuItemId != null ? menuItemId.hashCode() : 0;
+      result = result * 37 + (isAvailable != null ? isAvailable.hashCode() : 0);
+      hashCode = result;
+    }
+    return result;
+  }
+
+  public static final class Builder extends Message.Builder<MenuItemAvailability> {
+
+    public String menuItemId;
+    public Boolean isAvailable;
+
+    public Builder() {
+    }
+
+    public Builder(MenuItemAvailability message) {
+      super(message);
+      if (message == null) return;
+      this.menuItemId = message.menuItemId;
+      this.isAvailable = message.isAvailable;
+    }
 
     /**
      * Suitable for unique identification.
      */
-    @ProtoField(tag = 1, type = STRING, label = REQUIRED)
-    public final String menuItemId;
-
-    @ProtoField(tag = 2, type = BOOL, label = REQUIRED)
-    public final Boolean isAvailable;
-
-    public MenuItemAvailability(String menuItemId, Boolean isAvailable) {
-        this.menuItemId = menuItemId;
-        this.isAvailable = isAvailable;
+    public Builder menuItemId(String menuItemId) {
+      this.menuItemId = menuItemId;
+      return this;
     }
 
-    private MenuItemAvailability(Builder builder) {
-        this(builder.menuItemId, builder.isAvailable);
-        setBuilder(builder);
+    public Builder isAvailable(Boolean isAvailable) {
+      this.isAvailable = isAvailable;
+      return this;
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == this) return true;
-        if (!(other instanceof MenuItemAvailability)) return false;
-        MenuItemAvailability o = (MenuItemAvailability) other;
-        return equals(menuItemId, o.menuItemId)
-                && equals(isAvailable, o.isAvailable);
+    public MenuItemAvailability build() {
+      checkRequiredFields();
+      return new MenuItemAvailability(this);
     }
-
-    @Override
-    public int hashCode() {
-        int result = hashCode;
-        if (result == 0) {
-            result = menuItemId != null ? menuItemId.hashCode() : 0;
-            result = result * 37 + (isAvailable != null ? isAvailable.hashCode() : 0);
-            hashCode = result;
-        }
-        return result;
-    }
-
-    public static final class Builder extends Message.Builder<MenuItemAvailability> {
-
-        public String menuItemId;
-        public Boolean isAvailable;
-
-        public Builder() {
-        }
-
-        public Builder(MenuItemAvailability message) {
-            super(message);
-            if (message == null) return;
-            this.menuItemId = message.menuItemId;
-            this.isAvailable = message.isAvailable;
-        }
-
-        /**
-         * Suitable for unique identification.
-         */
-        public Builder menuItemId(String menuItemId) {
-            this.menuItemId = menuItemId;
-            return this;
-        }
-
-        public Builder isAvailable(Boolean isAvailable) {
-            this.isAvailable = isAvailable;
-            return this;
-        }
-
-        @Override
-        public MenuItemAvailability build() {
-            checkRequiredFields();
-            return new MenuItemAvailability(this);
-        }
-    }
+  }
 }

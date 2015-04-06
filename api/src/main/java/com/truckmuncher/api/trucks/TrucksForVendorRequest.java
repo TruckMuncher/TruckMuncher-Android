@@ -6,35 +6,35 @@ import com.squareup.wire.Message;
 
 public final class TrucksForVendorRequest extends Message {
 
-    public TrucksForVendorRequest() {
+  public TrucksForVendorRequest() {
+  }
+
+  private TrucksForVendorRequest(Builder builder) {
+    setBuilder(builder);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    return other instanceof TrucksForVendorRequest;
+  }
+
+  @Override
+  public int hashCode() {
+    return 0;
+  }
+
+  public static final class Builder extends Message.Builder<TrucksForVendorRequest> {
+
+    public Builder() {
     }
 
-    private TrucksForVendorRequest(Builder builder) {
-        setBuilder(builder);
+    public Builder(TrucksForVendorRequest message) {
+      super(message);
     }
 
     @Override
-    public boolean equals(Object other) {
-        return other instanceof TrucksForVendorRequest;
+    public TrucksForVendorRequest build() {
+      return new TrucksForVendorRequest(this);
     }
-
-    @Override
-    public int hashCode() {
-        return 0;
-    }
-
-    public static final class Builder extends Message.Builder<TrucksForVendorRequest> {
-
-        public Builder() {
-        }
-
-        public Builder(TrucksForVendorRequest message) {
-            super(message);
-        }
-
-        @Override
-        public TrucksForVendorRequest build() {
-            return new TrucksForVendorRequest(this);
-        }
-    }
+  }
 }

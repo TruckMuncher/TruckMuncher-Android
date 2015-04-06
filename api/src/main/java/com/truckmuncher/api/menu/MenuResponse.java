@@ -9,53 +9,53 @@ import static com.squareup.wire.Message.Label.REQUIRED;
 
 public final class MenuResponse extends Message {
 
-    @ProtoField(tag = 1, label = REQUIRED)
-    public final Menu menu;
+  @ProtoField(tag = 1, label = REQUIRED)
+  public final Menu menu;
 
-    public MenuResponse(Menu menu) {
-        this.menu = menu;
+  public MenuResponse(Menu menu) {
+    this.menu = menu;
+  }
+
+  private MenuResponse(Builder builder) {
+    this(builder.menu);
+    setBuilder(builder);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (other == this) return true;
+    if (!(other instanceof MenuResponse)) return false;
+    return equals(menu, ((MenuResponse) other).menu);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = hashCode;
+    return result != 0 ? result : (hashCode = menu != null ? menu.hashCode() : 0);
+  }
+
+  public static final class Builder extends Message.Builder<MenuResponse> {
+
+    public Menu menu;
+
+    public Builder() {
     }
 
-    private MenuResponse(Builder builder) {
-        this(builder.menu);
-        setBuilder(builder);
+    public Builder(MenuResponse message) {
+      super(message);
+      if (message == null) return;
+      this.menu = message.menu;
+    }
+
+    public Builder menu(Menu menu) {
+      this.menu = menu;
+      return this;
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == this) return true;
-        if (!(other instanceof MenuResponse)) return false;
-        return equals(menu, ((MenuResponse) other).menu);
+    public MenuResponse build() {
+      checkRequiredFields();
+      return new MenuResponse(this);
     }
-
-    @Override
-    public int hashCode() {
-        int result = hashCode;
-        return result != 0 ? result : (hashCode = menu != null ? menu.hashCode() : 0);
-    }
-
-    public static final class Builder extends Message.Builder<MenuResponse> {
-
-        public Menu menu;
-
-        public Builder() {
-        }
-
-        public Builder(MenuResponse message) {
-            super(message);
-            if (message == null) return;
-            this.menu = message.menu;
-        }
-
-        public Builder menu(Menu menu) {
-            this.menu = menu;
-            return this;
-        }
-
-        @Override
-        public MenuResponse build() {
-            checkRequiredFields();
-            return new MenuResponse(this);
-        }
-    }
+  }
 }

@@ -11,29 +11,28 @@ import retrofit.http.POST;
  * The AuthService is used to sign in and out of TruckMuncher.
  */
 public interface AuthService {
-    /**
-     * Returns the full User model plus a session token.
-     */
-    @POST("/com.truckmuncher.api.auth.AuthService/getAuth")
-    AuthResponse getAuth(@Body AuthRequest request)
-            throws RetrofitError;
+  /**
+   * Returns the full User model plus a session token.
+   */
+  @POST("/com.truckmuncher.api.auth.AuthService/getAuth")
+  AuthResponse getAuth(@Body AuthRequest request)
+      throws RetrofitError;
 
-    /**
-     * Returns the full User model plus a session token.
-     */
-    @POST("/com.truckmuncher.api.auth.AuthService/getAuth")
-    void getAuth(@Body AuthRequest request, Callback<AuthResponse> callback);
+  /**
+   * Returns the full User model plus a session token.
+   */
+  @POST("/com.truckmuncher.api.auth.AuthService/getAuth")
+  void getAuth(@Body AuthRequest request, Callback<AuthResponse> callback);
+  /**
+   * Deletes an existing session if it exists.
+   */
+  @POST("/com.truckmuncher.api.auth.AuthService/deleteAuth")
+  DeleteAuthResponse deleteAuth(@Body AuthRequest request)
+      throws RetrofitError;
 
-    /**
-     * Deletes an existing session if it exists.
-     */
-    @POST("/com.truckmuncher.api.auth.AuthService/deleteAuth")
-    DeleteAuthResponse deleteAuth(@Body AuthRequest request)
-            throws RetrofitError;
-
-    /**
-     * Deletes an existing session if it exists.
-     */
-    @POST("/com.truckmuncher.api.auth.AuthService/deleteAuth")
-    void deleteAuth(@Body AuthRequest request, Callback<DeleteAuthResponse> callback);
+  /**
+   * Deletes an existing session if it exists.
+   */
+  @POST("/com.truckmuncher.api.auth.AuthService/deleteAuth")
+  void deleteAuth(@Body AuthRequest request, Callback<DeleteAuthResponse> callback);
 }

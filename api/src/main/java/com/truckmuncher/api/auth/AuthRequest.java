@@ -6,35 +6,35 @@ import com.squareup.wire.Message;
 
 public final class AuthRequest extends Message {
 
-    public AuthRequest() {
+  public AuthRequest() {
+  }
+
+  private AuthRequest(Builder builder) {
+    setBuilder(builder);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    return other instanceof AuthRequest;
+  }
+
+  @Override
+  public int hashCode() {
+    return 0;
+  }
+
+  public static final class Builder extends Message.Builder<AuthRequest> {
+
+    public Builder() {
     }
 
-    private AuthRequest(Builder builder) {
-        setBuilder(builder);
+    public Builder(AuthRequest message) {
+      super(message);
     }
 
     @Override
-    public boolean equals(Object other) {
-        return other instanceof AuthRequest;
+    public AuthRequest build() {
+      return new AuthRequest(this);
     }
-
-    @Override
-    public int hashCode() {
-        return 0;
-    }
-
-    public static final class Builder extends Message.Builder<AuthRequest> {
-
-        public Builder() {
-        }
-
-        public Builder(AuthRequest message) {
-            super(message);
-        }
-
-        @Override
-        public AuthRequest build() {
-            return new AuthRequest(this);
-    }
-    }
+  }
 }

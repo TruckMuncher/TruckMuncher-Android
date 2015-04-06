@@ -13,86 +13,86 @@ import static com.squareup.wire.Message.Label.REQUIRED;
  */
 public final class Error extends Message {
 
-    public static final String DEFAULT_INTERNALCODE = "";
-    public static final String DEFAULT_USERMESSAGE = "";
+  public static final String DEFAULT_INTERNALCODE = "";
+  public static final String DEFAULT_USERMESSAGE = "";
+
+  /**
+   * An internal code with which we can quickly scan logs. This is different from the HTTP response code. Log this value.
+   */
+  @ProtoField(tag = 1, type = STRING, label = REQUIRED)
+  public final String internalCode;
+
+  /**
+   * A human-consumable message explaining the error.
+   */
+  @ProtoField(tag = 2, type = STRING, label = REQUIRED)
+  public final String userMessage;
+
+  public Error(String internalCode, String userMessage) {
+    this.internalCode = internalCode;
+    this.userMessage = userMessage;
+  }
+
+  private Error(Builder builder) {
+    this(builder.internalCode, builder.userMessage);
+    setBuilder(builder);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (other == this) return true;
+    if (!(other instanceof Error)) return false;
+    Error o = (Error) other;
+    return equals(internalCode, o.internalCode)
+        && equals(userMessage, o.userMessage);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = hashCode;
+    if (result == 0) {
+      result = internalCode != null ? internalCode.hashCode() : 0;
+      result = result * 37 + (userMessage != null ? userMessage.hashCode() : 0);
+      hashCode = result;
+    }
+    return result;
+  }
+
+  public static final class Builder extends Message.Builder<Error> {
+
+    public String internalCode;
+    public String userMessage;
+
+    public Builder() {
+    }
+
+    public Builder(Error message) {
+      super(message);
+      if (message == null) return;
+      this.internalCode = message.internalCode;
+      this.userMessage = message.userMessage;
+    }
 
     /**
      * An internal code with which we can quickly scan logs. This is different from the HTTP response code. Log this value.
      */
-    @ProtoField(tag = 1, type = STRING, label = REQUIRED)
-    public final String internalCode;
+    public Builder internalCode(String internalCode) {
+      this.internalCode = internalCode;
+      return this;
+    }
 
     /**
      * A human-consumable message explaining the error.
      */
-    @ProtoField(tag = 2, type = STRING, label = REQUIRED)
-    public final String userMessage;
-
-    public Error(String internalCode, String userMessage) {
-        this.internalCode = internalCode;
-        this.userMessage = userMessage;
-    }
-
-    private Error(Builder builder) {
-        this(builder.internalCode, builder.userMessage);
-        setBuilder(builder);
+    public Builder userMessage(String userMessage) {
+      this.userMessage = userMessage;
+      return this;
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == this) return true;
-        if (!(other instanceof Error)) return false;
-        Error o = (Error) other;
-        return equals(internalCode, o.internalCode)
-                && equals(userMessage, o.userMessage);
+    public Error build() {
+      checkRequiredFields();
+      return new Error(this);
     }
-
-    @Override
-    public int hashCode() {
-        int result = hashCode;
-        if (result == 0) {
-            result = internalCode != null ? internalCode.hashCode() : 0;
-            result = result * 37 + (userMessage != null ? userMessage.hashCode() : 0);
-            hashCode = result;
-        }
-        return result;
-    }
-
-    public static final class Builder extends Message.Builder<Error> {
-
-        public String internalCode;
-        public String userMessage;
-
-        public Builder() {
-        }
-
-        public Builder(Error message) {
-            super(message);
-            if (message == null) return;
-            this.internalCode = message.internalCode;
-            this.userMessage = message.userMessage;
-        }
-
-        /**
-         * An internal code with which we can quickly scan logs. This is different from the HTTP response code. Log this value.
-         */
-        public Builder internalCode(String internalCode) {
-            this.internalCode = internalCode;
-            return this;
-        }
-
-        /**
-         * A human-consumable message explaining the error.
-         */
-        public Builder userMessage(String userMessage) {
-            this.userMessage = userMessage;
-            return this;
-        }
-
-        @Override
-        public Error build() {
-            checkRequiredFields();
-            return new Error(this);
-        }
-    }
+  }
 }

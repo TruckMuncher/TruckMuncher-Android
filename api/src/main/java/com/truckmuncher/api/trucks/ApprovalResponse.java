@@ -4,18 +4,18 @@ package com.truckmuncher.api.trucks;
 
 import com.squareup.wire.Message;
 
-public final class ServingModeResponse extends Message {
+public final class ApprovalResponse extends Message {
 
-  public ServingModeResponse() {
+  public ApprovalResponse() {
   }
 
-  private ServingModeResponse(Builder builder) {
+  private ApprovalResponse(Builder builder) {
     setBuilder(builder);
   }
 
   @Override
   public boolean equals(Object other) {
-    return other instanceof ServingModeResponse;
+    return other instanceof ApprovalResponse;
   }
 
   @Override
@@ -23,18 +23,18 @@ public final class ServingModeResponse extends Message {
     return 0;
   }
 
-  public static final class Builder extends Message.Builder<ServingModeResponse> {
+  public static final class Builder extends Message.Builder<ApprovalResponse> {
 
     public Builder() {
     }
 
-    public Builder(ServingModeResponse message) {
+    public Builder(ApprovalResponse message) {
       super(message);
     }
 
     @Override
-    public ServingModeResponse build() {
-      return new ServingModeResponse(this);
+    public ApprovalResponse build() {
+      return new ApprovalResponse(this);
     }
   }
 }

@@ -8,82 +8,110 @@ import retrofit.http.Body;
 import retrofit.http.POST;
 
 public interface TruckService {
-    /**
-     * Get the locations of active food trucks in the Region in which the search is performed.
-     */
-    @POST("/com.truckmuncher.api.trucks.TruckService/getActiveTrucks")
-    ActiveTrucksResponse getActiveTrucks(@Body ActiveTrucksRequest request)
-            throws RetrofitError;
+  /**
+   * Get the locations of active food trucks in the Region in which the search is performed.
+   */
+  @POST("/com.truckmuncher.api.trucks.TruckService/getActiveTrucks")
+  ActiveTrucksResponse getActiveTrucks(@Body ActiveTrucksRequest request)
+      throws RetrofitError;
 
-    /**
-     * Get the locations of active food trucks in the Region in which the search is performed.
-     */
-    @POST("/com.truckmuncher.api.trucks.TruckService/getActiveTrucks")
-    void getActiveTrucks(@Body ActiveTrucksRequest request, Callback<ActiveTrucksResponse> callback);
+  /**
+   * Get the locations of active food trucks in the Region in which the search is performed.
+   */
+  @POST("/com.truckmuncher.api.trucks.TruckService/getActiveTrucks")
+  void getActiveTrucks(@Body ActiveTrucksRequest request, Callback<ActiveTrucksResponse> callback);
+  /**
+   * Returns all trucks for the currently logged in user. A new truck will **not** be created
+   * if one did not previously exist.
+   *
+   * This call requires Vendor authorization
+   */
+  @POST("/com.truckmuncher.api.trucks.TruckService/getTrucksForVendor")
+  TrucksForVendorResponse getTrucksForVendor(@Body TrucksForVendorRequest request)
+      throws RetrofitError;
 
-    /**
-     * If a truck for the vendor does not exist, a new truck will be created.
-     * When using from a native app, check the response and handle the case of an incomplete truck.
-     * <p/>
-     * This call requires Vendor authorization
-     */
-    @POST("/com.truckmuncher.api.trucks.TruckService/getTrucksForVendor")
-    TrucksForVendorResponse getTrucksForVendor(@Body TrucksForVendorRequest request)
-            throws RetrofitError;
+  /**
+   * Returns all trucks for the currently logged in user. A new truck will **not** be created
+   * if one did not previously exist.
+   *
+   * This call requires Vendor authorization
+   */
+  @POST("/com.truckmuncher.api.trucks.TruckService/getTrucksForVendor")
+  void getTrucksForVendor(@Body TrucksForVendorRequest request, Callback<TrucksForVendorResponse> callback);
+  /**
+   * Get the profiles of all the food trucks in the user's Region.
+   */
+  @POST("/com.truckmuncher.api.trucks.TruckService/getTruckProfiles")
+  TruckProfilesResponse getTruckProfiles(@Body TruckProfilesRequest request)
+      throws RetrofitError;
 
-    /**
-     * If a truck for the vendor does not exist, a new truck will be created.
-     * When using from a native app, check the response and handle the case of an incomplete truck.
-     * <p/>
-     * This call requires Vendor authorization
-     */
-    @POST("/com.truckmuncher.api.trucks.TruckService/getTrucksForVendor")
-    void getTrucksForVendor(@Body TrucksForVendorRequest request, Callback<TrucksForVendorResponse> callback);
+  /**
+   * Get the profiles of all the food trucks in the user's Region.
+   */
+  @POST("/com.truckmuncher.api.trucks.TruckService/getTruckProfiles")
+  void getTruckProfiles(@Body TruckProfilesRequest request, Callback<TruckProfilesResponse> callback);
+  /**
+   * Use this to create or update a truck. Any data sent in the request will be used, even if the truck did not previously exist.
+   *
+   * This call requires Vendor authorization
+   */
+  @POST("/com.truckmuncher.api.trucks.TruckService/modifyTruckProfile")
+  Truck modifyTruckProfile(@Body ModifyTruckRequest request)
+      throws RetrofitError;
 
-    /**
-     * Get the profiles of all the food trucks in the user's Region.
-     */
-    @POST("/com.truckmuncher.api.trucks.TruckService/getTruckProfiles")
-    TruckProfilesResponse getTruckProfiles(@Body TruckProfilesRequest request)
-            throws RetrofitError;
+  /**
+   * Use this to create or update a truck. Any data sent in the request will be used, even if the truck did not previously exist.
+   *
+   * This call requires Vendor authorization
+   */
+  @POST("/com.truckmuncher.api.trucks.TruckService/modifyTruckProfile")
+  void modifyTruckProfile(@Body ModifyTruckRequest request, Callback<Truck> callback);
+  /**
+   * Modify the serving mode for a truck.
+   *
+   * This call requires Vendor authorization
+   */
+  @POST("/com.truckmuncher.api.trucks.TruckService/modifyServingMode")
+  ServingModeResponse modifyServingMode(@Body ServingModeRequest request)
+      throws RetrofitError;
 
-    /**
-     * Get the profiles of all the food trucks in the user's Region.
-     */
-    @POST("/com.truckmuncher.api.trucks.TruckService/getTruckProfiles")
-    void getTruckProfiles(@Body TruckProfilesRequest request, Callback<TruckProfilesResponse> callback);
+  /**
+   * Modify the serving mode for a truck.
+   *
+   * This call requires Vendor authorization
+   */
+  @POST("/com.truckmuncher.api.trucks.TruckService/modifyServingMode")
+  void modifyServingMode(@Body ServingModeRequest request, Callback<ServingModeResponse> callback);
+  /**
+   * Requests that a truck gets approval from a member of our team to go live and get placed on the map.
+   *
+   * This call requires Vendor authorization
+   */
+  @POST("/com.truckmuncher.api.trucks.TruckService/requestApproval")
+  ApprovalResponse requestApproval(@Body ApprovalRequest request)
+      throws RetrofitError;
 
-    /**
-     * Use this to create or update a truck. Any data sent in the request will be used, even if the truck did not previously exist.
-     * <p/>
-     * This call requires Vendor authorization
-     */
-    @POST("/com.truckmuncher.api.trucks.TruckService/modifyTruckProfile")
-    Truck modifyTruckProfile(@Body ModifyTruckRequest request)
-            throws RetrofitError;
+  /**
+   * Requests that a truck gets approval from a member of our team to go live and get placed on the map.
+   *
+   * This call requires Vendor authorization
+   */
+  @POST("/com.truckmuncher.api.trucks.TruckService/requestApproval")
+  void requestApproval(@Body ApprovalRequest request, Callback<ApprovalResponse> callback);
+  /**
+   * Requests the current status of your truck's approval process. 
+   *
+   * This call requires Vendor authorization
+   */
+  @POST("/com.truckmuncher.api.trucks.TruckService/checkApprovalStatus")
+  ApprovalStatusResponse checkApprovalStatus(@Body ApprovalStatusRequest request)
+      throws RetrofitError;
 
-    /**
-     * Use this to create or update a truck. Any data sent in the request will be used, even if the truck did not previously exist.
-     * <p/>
-     * This call requires Vendor authorization
-     */
-    @POST("/com.truckmuncher.api.trucks.TruckService/modifyTruckProfile")
-    void modifyTruckProfile(@Body ModifyTruckRequest request, Callback<Truck> callback);
-
-    /**
-     * Modify the serving mode for a truck.
-     * <p/>
-     * This call requires Vendor authorization
-     */
-    @POST("/com.truckmuncher.api.trucks.TruckService/modifyServingMode")
-    ServingModeResponse modifyServingMode(@Body ServingModeRequest request)
-            throws RetrofitError;
-
-    /**
-     * Modify the serving mode for a truck.
-     * <p/>
-     * This call requires Vendor authorization
-     */
-    @POST("/com.truckmuncher.api.trucks.TruckService/modifyServingMode")
-    void modifyServingMode(@Body ServingModeRequest request, Callback<ServingModeResponse> callback);
+  /**
+   * Requests the current status of your truck's approval process. 
+   *
+   * This call requires Vendor authorization
+   */
+  @POST("/com.truckmuncher.api.trucks.TruckService/checkApprovalStatus")
+  void checkApprovalStatus(@Body ApprovalStatusRequest request, Callback<ApprovalStatusResponse> callback);
 }

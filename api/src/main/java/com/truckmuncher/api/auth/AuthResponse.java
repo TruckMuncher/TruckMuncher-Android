@@ -4,6 +4,7 @@ package com.truckmuncher.api.auth;
 
 import com.squareup.wire.Message;
 import com.squareup.wire.ProtoField;
+import com.truckmuncher.api.user.User;
 
 import static com.squareup.wire.Message.Datatype.STRING;
 import static com.squareup.wire.Message.Label.REQUIRED;
@@ -13,106 +14,125 @@ import static com.squareup.wire.Message.Label.REQUIRED;
  */
 public final class AuthResponse extends Message {
 
-    public static final String DEFAULT_USERID = "";
-    public static final String DEFAULT_USERNAME = "";
-    public static final String DEFAULT_SESSIONTOKEN = "";
+  public static final String DEFAULT_USERID = "";
+  public static final String DEFAULT_USERNAME = "";
+  public static final String DEFAULT_SESSIONTOKEN = "";
+
+  /**
+   * Uniquely identifies the logged in user. This field is no longer used, see #4.
+   */
+  @ProtoField(tag = 1, type = STRING, label = REQUIRED)
+  public final String userId;
+
+  /**
+   * The Twitter or Facebook username. This field is no longer used, see #4.
+   */
+  @ProtoField(tag = 2, type = STRING, label = REQUIRED)
+  public final String username;
+
+  /**
+   * The session token used on all further requests.
+   */
+  @ProtoField(tag = 3, type = STRING, label = REQUIRED)
+  public final String sessionToken;
+
+  /**
+   * The new User model.
+   */
+  @ProtoField(tag = 4)
+  public final User user;
+
+  public AuthResponse(String userId, String username, String sessionToken, User user) {
+    this.userId = userId;
+    this.username = username;
+    this.sessionToken = sessionToken;
+    this.user = user;
+  }
+
+  private AuthResponse(Builder builder) {
+    this(builder.userId, builder.username, builder.sessionToken, builder.user);
+    setBuilder(builder);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (other == this) return true;
+    if (!(other instanceof AuthResponse)) return false;
+    AuthResponse o = (AuthResponse) other;
+    return equals(userId, o.userId)
+        && equals(username, o.username)
+        && equals(sessionToken, o.sessionToken)
+        && equals(user, o.user);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = hashCode;
+    if (result == 0) {
+      result = userId != null ? userId.hashCode() : 0;
+      result = result * 37 + (username != null ? username.hashCode() : 0);
+      result = result * 37 + (sessionToken != null ? sessionToken.hashCode() : 0);
+      result = result * 37 + (user != null ? user.hashCode() : 0);
+      hashCode = result;
+    }
+    return result;
+  }
+
+  public static final class Builder extends Message.Builder<AuthResponse> {
+
+    public String userId;
+    public String username;
+    public String sessionToken;
+    public User user;
+
+    public Builder() {
+    }
+
+    public Builder(AuthResponse message) {
+      super(message);
+      if (message == null) return;
+      this.userId = message.userId;
+      this.username = message.username;
+      this.sessionToken = message.sessionToken;
+      this.user = message.user;
+    }
 
     /**
-     * Uniquely identifies the logged in user.
+     * Uniquely identifies the logged in user. This field is no longer used, see #4.
      */
-    @ProtoField(tag = 1, type = STRING, label = REQUIRED)
-    public final String userId;
+    public Builder userId(String userId) {
+      this.userId = userId;
+      return this;
+    }
 
     /**
-     * The Twitter or Facebook username.
+     * The Twitter or Facebook username. This field is no longer used, see #4.
      */
-    @ProtoField(tag = 2, type = STRING, label = REQUIRED)
-    public final String username;
+    public Builder username(String username) {
+      this.username = username;
+      return this;
+    }
 
     /**
      * The session token used on all further requests.
      */
-    @ProtoField(tag = 3, type = STRING, label = REQUIRED)
-    public final String sessionToken;
-
-    public AuthResponse(String userId, String username, String sessionToken) {
-        this.userId = userId;
-        this.username = username;
-        this.sessionToken = sessionToken;
+    public Builder sessionToken(String sessionToken) {
+      this.sessionToken = sessionToken;
+      return this;
     }
 
-    private AuthResponse(Builder builder) {
-        this(builder.userId, builder.username, builder.sessionToken);
-        setBuilder(builder);
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (other == this) return true;
-        if (!(other instanceof AuthResponse)) return false;
-        AuthResponse o = (AuthResponse) other;
-        return equals(userId, o.userId)
-                && equals(username, o.username)
-                && equals(sessionToken, o.sessionToken);
+    /**
+     * The new User model.
+     */
+    public Builder user(User user) {
+      this.user = user;
+      return this;
     }
 
     @Override
-    public int hashCode() {
-        int result = hashCode;
-        if (result == 0) {
-            result = userId != null ? userId.hashCode() : 0;
-            result = result * 37 + (username != null ? username.hashCode() : 0);
-            result = result * 37 + (sessionToken != null ? sessionToken.hashCode() : 0);
-            hashCode = result;
-        }
-        return result;
+    public AuthResponse build() {
+      checkRequiredFields();
+      return new AuthResponse(this);
     }
-
-    public static final class Builder extends Message.Builder<AuthResponse> {
-
-        public String userId;
-        public String username;
-        public String sessionToken;
-
-        public Builder() {
-        }
-
-        public Builder(AuthResponse message) {
-            super(message);
-            if (message == null) return;
-            this.userId = message.userId;
-            this.username = message.username;
-            this.sessionToken = message.sessionToken;
-        }
-
-        /**
-         * Uniquely identifies the logged in user.
-         */
-        public Builder userId(String userId) {
-            this.userId = userId;
-            return this;
-        }
-
-        /**
-         * The Twitter or Facebook username.
-         */
-        public Builder username(String username) {
-            this.username = username;
-            return this;
-        }
-
-        /**
-         * The session token used on all further requests.
-         */
-        public Builder sessionToken(String sessionToken) {
-            this.sessionToken = sessionToken;
-            return this;
-        }
-
-        @Override
-        public AuthResponse build() {
-            checkRequiredFields();
-            return new AuthResponse(this);
-        }
-    }
+  }
 }
