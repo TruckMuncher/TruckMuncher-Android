@@ -5,6 +5,9 @@ import android.provider.BaseColumns;
 
 import com.truckmuncher.app.BuildConfig;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class PublicContract {
 
     public static final String CONTENT_AUTHORITY = BuildConfig.APPLICATION_ID + ".provider";
@@ -16,6 +19,32 @@ public class PublicContract {
     public static final String URI_TYPE_MENU_ITEM = "vnd.android.cursor.dir/vnd.truckmuncher.menu_item";
     public static final String URI_TYPE_TRUCK = "vnd.android.cursor.dir/vnd.truckmuncher.truck";
     public static final String URI_TYPE_MENU = "vnd.android.cursor.dir/vnd.truckmuncher.menu";
+    private static final String STRING_SEPARATOR = ",";
+
+    /**
+     * Used to store a list representation as a single string
+     *
+     * @see #convertStringToList(String)
+     */
+    public static String convertListToString(List<String> list) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0, max = list.size(); i < max; i++) {
+            builder.append(list.get(i));
+            if (i < list.size() - 1) {
+                builder.append(STRING_SEPARATOR);
+            }
+        }
+        return builder.toString();
+    }
+
+    /**
+     * Used to parse a lis that has been stored as a single string
+     *
+     * @see #convertListToString(java.util.List)
+     */
+    public static List<String> convertStringToList(String string) {
+        return Arrays.asList(string.split(STRING_SEPARATOR));
+    }
 
     public interface Category {
         public static final String _ID = BaseColumns._ID;
@@ -39,23 +68,79 @@ public class PublicContract {
     }
 
     public interface Truck {
+        /**
+         * Do <b>NOT</b> use this for uniquely identifying trucks. This value is only useful for
+         * use in adapters and the like.
+         * <p/>
+         * Type: long
+         */
         public static final String _ID = BaseColumns._ID;
+        /**
+         * Use this for uniquely identifying trucks.
+         * <p/>
+         * Type: String
+         */
         public static final String ID = "id";
+        /**
+         * Type: String
+         */
         public static final String NAME = "name";
+        /**
+         * Type: String
+         */
         public static final String IMAGE_URL = "image_url";
+        /**
+         * List of keywords, stored as a list
+         * <p/>
+         * Type: String
+         *
+         * @see com.truckmuncher.app.data.PublicContract#convertStringToList(String)
+         */
         public static final String KEYWORDS = "keywords";
+        /**
+         * Type: String
+         */
         public static final String COLOR_PRIMARY = "color_primary";
+        /**
+         * Type: String
+         */
         public static final String COLOR_SECONDARY = "color_secondary";
+        /**
+         * Type: boolean
+         */
         public static final String IS_SERVING = "is_serving";
+        /**
+         * Type: boolean
+         */
+        // TODO we should see if there is a more transient way for us to do this
         public static final String MATCHED_SEARCH = "matched_search";
+        /**
+         * Type: double
+         */
         public static final String LATITUDE = "latitude";
+        /**
+         * Type: double
+         */
         public static final String LONGITUDE = "longitude";
+        /**
+         * Type: boolean
+         */
+        // TODO this mechanism is becoming really sketch now that we are getting user support for non-trucks. Should see if there is a better way of doing this.
         public static final String OWNED_BY_CURRENT_USER = "owned_by_current_user";
+        /**
+         * Type: String
+         */
         public static final String DESCRIPTION = "description";
         /**
          * Formatted as (xxx) xxx-xxxx
+         * <p/>
+         * Type: String
          */
         public static final String PHONE_NUMBER = "phone_number";
+        /**
+         * Type: String
+         */
+        public static final String WEBSITE = "website";
     }
 
     public interface Menu {

@@ -93,6 +93,26 @@ public class MockTruckService implements TruckService {
         callback.success(modifyServingMode(request), null);
     }
 
+    @Override
+    public ApprovalResponse requestApproval(@Body ApprovalRequest request) throws RetrofitError {
+        return null;
+    }
+
+    @Override
+    public void requestApproval(@Body ApprovalRequest request, Callback<ApprovalResponse> callback) {
+
+    }
+
+    @Override
+    public ApprovalStatusResponse checkApprovalStatus(@Body ApprovalStatusRequest request) throws RetrofitError {
+        return null;
+    }
+
+    @Override
+    public void checkApprovalStatus(@Body ApprovalStatusRequest request, Callback<ApprovalStatusResponse> callback) {
+
+    }
+
     /**
      * Generates a random latitude between 43.03 and 43.05 (somewhere in Milwaukee).
      *

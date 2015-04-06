@@ -12,10 +12,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.truckmuncher.app.App;
 import com.truckmuncher.app.LoggerStarter;
-import com.truckmuncher.app.data.sql.SqlOpenHelper;
 import com.truckmuncher.app.data.sql.Tables;
 import com.truckmuncher.app.menu.MenuUpdateService;
+
+import javax.inject.Inject;
 
 import hugo.weaving.DebugLog;
 import timber.log.Timber;
@@ -39,7 +41,8 @@ public class TruckMuncherContentProvider extends ContentProvider {
     // TODO this is not OK. We need push messages
     private static boolean hasAlreadySyncedMenuThisSession = false;
 
-    private SQLiteOpenHelper database;
+    @Inject
+    SQLiteOpenHelper database;
 
     private static UriMatcher buildUriMatcher() {
         UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -58,7 +61,7 @@ public class TruckMuncherContentProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         LoggerStarter.start(getContext());
-        database = SqlOpenHelper.newInstance(getContext());
+        App.get(getContext()).inject(this);
         return true;
     }
 

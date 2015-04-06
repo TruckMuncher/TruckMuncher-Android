@@ -2,35 +2,16 @@ package com.truckmuncher.app.data;
 
 import android.net.Uri;
 
-import java.util.Arrays;
-import java.util.List;
-
 public final class Contract {
 
     public static final Uri TRUCK_STATE_URI = Uri.parse("content://" + PublicContract.CONTENT_AUTHORITY + "/truck_state");
     public static final Uri TRUCK_PROPERTIES_URI = Uri.parse("content://" + PublicContract.CONTENT_AUTHORITY + "/truck_properties");
-    private static final String STRING_SEPARATOR = ",";
     private static final String PARAM_NOTIFY = "notify";
     private static final String PARAM_SYNC_TO_NETWORK = "sync_to_network";
     private static final String PARAM_SYNC_FROM_NETWORK = "sync_from_network";
 
     private Contract() {
         // No instances
-    }
-
-    public static String convertListToString(List<String> list) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0, max = list.size(); i < max; i++) {
-            builder.append(list.get(i));
-            if (i < list.size() - 1) {
-                builder.append(STRING_SEPARATOR);
-            }
-        }
-        return builder.toString();
-    }
-
-    public static List<String> convertStringToList(String string) {
-        return Arrays.asList(string.split(STRING_SEPARATOR));
     }
 
     /**

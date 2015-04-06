@@ -17,9 +17,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
-
-import static com.truckmuncher.app.data.Contract.convertListToString;
+import static com.truckmuncher.app.data.PublicContract.convertListToString;
 
 public class GetTruckProfilesService extends IntentService {
 
@@ -53,7 +51,6 @@ public class GetTruckProfilesService extends IntentService {
                 .longitude(intent.getDoubleExtra(ARG_LONGITUDE, 0.0))
                 .build();
         TruckProfilesResponse truckProfilesResponse = truckService.getTruckProfiles(request);
-        Timber.d("Response: %s", truckProfilesResponse.toString());
 
         List<Truck> trucks = truckProfilesResponse.trucks;
         ContentValues[] contentValues = new ContentValues[trucks.size()];

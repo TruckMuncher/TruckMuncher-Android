@@ -11,7 +11,6 @@ import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -28,6 +27,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 
 import com.facebook.Session;
+import com.truckmuncher.app.App;
 import com.truckmuncher.app.MainActivity;
 import com.truckmuncher.app.R;
 import com.truckmuncher.app.authentication.AccountGeneral;
@@ -38,19 +38,23 @@ import com.truckmuncher.app.vendor.menuadmin.MenuAdminFragment;
 import com.truckmuncher.app.vendor.settings.VendorSettingsActivity;
 import com.twitter.sdk.android.Twitter;
 
+import javax.inject.Inject;
+
 import static com.truckmuncher.app.data.sql.WhereClause.Operator.EQUALS;
 
 public class VendorHomeActivity extends ActionBarActivity implements
         LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemSelectedListener,
         VendorHomeFragment.OnServingModeChangedListener {
 
-    private Spinner actionBarSpinner;
+    @Inject
+    SharedPreferences sharedPreferences;
+    @Inject
+    AccountManager accountManager;
 
-    private AccountManager accountManager;
+    private Spinner actionBarSpinner;
     private String selectedTruckId;
     private VendorHomeServiceHelper serviceHelper;
     private ResetVendorTrucksServiceHelper resetServiceHelper;
-    private SharedPreferences sharedPreferences;
     private String[] truckIds;
 
     @Override
@@ -65,16 +69,15 @@ public class VendorHomeActivity extends ActionBarActivity implements
         actionBarSpinner = new Spinner(getSupportActionBar().getThemedContext());
         toolbar.addView(actionBarSpinner);
 
+        App.get(this).inject(this);
+
         getSupportLoaderManager().initLoader(0, savedInstanceState, this);
 
         serviceHelper = new VendorHomeServiceHelper();
         resetServiceHelper = new ResetVendorTrucksServiceHelper();
-        accountManager = AccountManager.get(this);
 
         // Kick off a refresh of the vendor data
-        startService(new Intent(this, VendorTrucksService.class));
-
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        startService(VendorTrucksService.newIntent(this));
 
         RateUs.check(this);
     }
@@ -94,8 +97,8 @@ public class VendorHomeActivity extends ActionBarActivity implements
             showMenu();
             return true;
         } else if (item.getItemId() == R.id.action_settings) {
-            Intent intent = new Intent(this, VendorSettingsActivity.class);
-            startActivity(intent);
+            startActivity(VendorSettingsActivity.newIntent(this));
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

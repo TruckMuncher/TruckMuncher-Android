@@ -1,11 +1,10 @@
 package com.truckmuncher.app.data.sql;
 
 public interface Tables {
-
-    public static final String TRUCK_PROPERTIES = "truck_properties";
-    public static final String TRUCK_STATE = "truck_state";
-    public static final String CATEGORY = "category";
-    public static final String MENU_ITEM = "menu_item";
-    public static final String TRUCK = "truck";
-    public static final String MENU = "menu";
+    String TRUCK_PROPERTIES = "truck_properties";
+    String TRUCK_STATE = "truck_state";
+    String CATEGORY = "category";
+    String MENU_ITEM = "menu_item";
+    String TRUCK = "truck";
+    String MENU = "menu";
 }

@@ -67,10 +67,6 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
-        if (BuildConfig.DEBUG) {
-            App.riseAndShine(this);
-        }
-
         AccountManager accountManager = AccountManager.get(this);
 
         Account[] accounts = accountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
@@ -227,7 +223,7 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
                         .where(PublicContract.Truck.IS_SERVING, EQUALS, true)
                         .where(PublicContract.Truck.MATCHED_SEARCH, EQUALS, true)
                         .build();
-                
+
                 return new CursorLoader(this, PublicContract.TRUCK_URI, TruckHeaderPagerAdapter.Query.PROJECTION, whereClause.selection, whereClause.selectionArgs, orderBy);
             default:
                 throw new RuntimeException("Invalid loader id: " + i);

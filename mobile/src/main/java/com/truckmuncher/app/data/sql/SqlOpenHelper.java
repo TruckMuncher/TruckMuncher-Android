@@ -18,7 +18,7 @@ import timber.log.Timber;
 
 public abstract class SqlOpenHelper extends SQLiteOpenHelper {
 
-    public static final int VERSION = 1;
+    public static final int VERSION = 2;
 
     private final Context context;
 

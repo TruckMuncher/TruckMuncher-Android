@@ -21,7 +21,6 @@ import com.truckmuncher.api.menu.Menu;
 import com.truckmuncher.api.menu.MenuItem;
 import com.truckmuncher.api.menu.MenuService;
 import com.truckmuncher.app.App;
-import com.truckmuncher.app.data.Contract;
 import com.truckmuncher.app.data.PublicContract;
 
 import java.util.ArrayList;
@@ -134,7 +133,7 @@ public class MenuUpdateService extends Service implements GoogleApiClient.Connec
                                     itemValues.put(PublicContract.MenuItem.ORDER_IN_CATEGORY, item.orderInCategory);
                                     itemValues.put(PublicContract.MenuItem.NOTES, item.notes);
                                     itemValues.put(PublicContract.MenuItem.NAME, item.name);
-                                    itemValues.put(PublicContract.MenuItem.TAGS, Contract.convertListToString(item.tags));
+                                    itemValues.put(PublicContract.MenuItem.TAGS, PublicContract.convertListToString(item.tags));
                                     itemValues.put(PublicContract.MenuItem.CATEGORY_ID, category.id);
                                     menuItemContentValues.add(itemValues);
                                 }

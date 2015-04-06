@@ -20,7 +20,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.SphericalUtil;
 import com.squareup.picasso.Picasso;
 import com.truckmuncher.app.R;
-import com.truckmuncher.app.data.Contract;
 import com.truckmuncher.app.data.PublicContract;
 import com.truckmuncher.app.data.sql.WhereClause;
 
@@ -100,7 +99,7 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
 
             // Split the keywords and format them in a way that is user friendly
             String keywordsString = cursor.getString(TruckQuery.KEYWORDS);
-            List<String> keywords = Contract.convertStringToList(keywordsString);
+            List<String> keywords = PublicContract.convertStringToList(keywordsString);
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < keywords.size(); i++) {
                 builder.append(keywords.get(i));

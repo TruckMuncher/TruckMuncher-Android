@@ -1,48 +1,70 @@
 package com.truckmuncher.app.vendor;
 
+import android.accounts.AccountManager;
 import android.content.ContentValues;
-import android.net.Uri;
-import android.support.annotation.NonNull;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 
+import com.truckmuncher.api.auth.AuthService;
 import com.truckmuncher.api.trucks.Truck;
 import com.truckmuncher.api.trucks.TruckService;
 import com.truckmuncher.api.trucks.TrucksForVendorRequest;
 import com.truckmuncher.api.trucks.TrucksForVendorResponse;
 import com.truckmuncher.app.data.PublicContract;
-import com.truckmuncher.app.test.VerifiableContentProvider;
+import com.truckmuncher.app.data.sql.Tables;
 import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.shadows.ShadowContentResolver;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(ReadableRobolectricTestRunner.class)
 public class VendorTrucksServiceTest {
 
-    @Test
-    public void onCreateInjectsService() {
-        VendorTrucksService service = new VendorTrucksService();
-        assertThat(service.truckService).isNull();
-        assertThat(service.authService).isNull();
-        assertThat(service.accountManager).isNull();
+    @Mock
+    TruckService truckService;
+    @Mock
+    AuthService authService;
+    @Mock
+    AccountManager accountManager;
+    @Mock
+    SQLiteOpenHelper openHelper;
+    VendorTrucksService service;
 
-        service.onCreate();
-        assertThat(service.truckService).isNotNull();
-        assertThat(service.authService).isNotNull();
-        assertThat(service.accountManager).isNotNull();
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        service = new VendorTrucksService();
+        service.truckService = truckService;
+        service.authService = authService;
+        service.accountManager = accountManager;
+        service.openHelper = openHelper;
+    }
+
+    @Test
+    public void resultsAreNotStoredWhenRequestCreatesNewTruck() {
+        TrucksForVendorResponse response = new TrucksForVendorResponse.Builder()
+                .isNew(true)
+                .build();
+        when(truckService.getTrucksForVendor(any(TrucksForVendorRequest.class))).thenReturn(response);
+        verifyZeroInteractions(openHelper);
     }
 
     @Test
     public void onHandleIntentPerformsBulkInsertWithFetchedData() {
-        VendorTrucksService service = new VendorTrucksService();
-        service.truckService = mock(TruckService.class);
         TrucksForVendorResponse response = new TrucksForVendorResponse.Builder()
                 .trucks(Arrays.asList(new Truck.Builder()
                                         .id("ID")
@@ -56,36 +78,29 @@ public class VendorTrucksServiceTest {
                 )
                 .isNew(false)
                 .build();
-        when(service.truckService.getTrucksForVendor(any(TrucksForVendorRequest.class)))
-                .thenReturn(response);
+        when(service.truckService.getTrucksForVendor(any(TrucksForVendorRequest.class))).thenReturn(response);
 
-        VerifiableContentProvider provider = new VerifiableContentProvider();
-        ShadowContentResolver.registerProvider(PublicContract.CONTENT_AUTHORITY, provider);
-        provider.enqueue(new VerifiableContentProvider.BulkInsertEvent() {
-            @Override
-            public int onBulkInsert(Uri uri, @NonNull ContentValues[] values) {
-                assertThat(values[0].getAsString(PublicContract.Truck.ID)).isEqualTo("ID");
-                assertThat(values[0].getAsString(PublicContract.Truck.NAME)).isEqualTo("My Truck");
-                assertThat(values[0].getAsString(PublicContract.Truck.IMAGE_URL)).isEqualTo("http://truckmuncher/images/my_truck");
-                assertThat(values[0].getAsString(PublicContract.Truck.KEYWORDS)).isEqualTo("food");
-                assertThat(values[0].getAsString(PublicContract.Truck.COLOR_PRIMARY)).isEqualTo("#000000");
-                assertThat(values[0].getAsString(PublicContract.Truck.COLOR_SECONDARY)).isEqualTo("#FFFFFF");
-                return 0;
-            }
-        });
-        provider.enqueue(new VerifiableContentProvider.BulkInsertEvent() {
-
-            @Override
-            public int onBulkInsert(Uri uri, @NonNull ContentValues[] values) {
-                assertThat(values[0].getAsString(PublicContract.Truck.ID)).isEqualTo("ID");
-                assertThat(values[0].getAsBoolean(PublicContract.Truck.OWNED_BY_CURRENT_USER)).isEqualTo(true);
-                return 0;
-            }
-        });
+        SQLiteDatabase db = mock(SQLiteDatabase.class);
+        when(openHelper.getWritableDatabase()).thenReturn(db);
 
         service.onHandleIntent(null);
 
-        provider.assertThatCursorsAreClosed();
-        provider.assertThatQueuesAreEmpty();
+        ArgumentCaptor<String> tableCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<ContentValues> valuesCaptor = ArgumentCaptor.forClass(ContentValues.class);
+        ArgumentCaptor<String> whereClauseCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String[]> whereArgsCaptor = ArgumentCaptor.forClass(String[].class);
+        verify(db, times(2)).update(tableCaptor.capture(), valuesCaptor.capture(), whereClauseCaptor.capture(), whereArgsCaptor.capture());
+
+        // Make sure that all old items are cleared
+        assertThat(tableCaptor.getAllValues().get(0)).isEqualTo(Tables.TRUCK_STATE);
+        assertThat(valuesCaptor.getAllValues().get(0).getAsBoolean(PublicContract.Truck.OWNED_BY_CURRENT_USER)).isFalse();
+        assertThat(whereClauseCaptor.getAllValues().get(0)).isNull();
+        assertThat(whereArgsCaptor.getAllValues().get(0)).isNull();
+
+        // Make sure that the new item is added
+        assertThat(tableCaptor.getAllValues().get(1)).isEqualTo(Tables.TRUCK_STATE);
+        assertThat(valuesCaptor.getAllValues().get(1).getAsBoolean(PublicContract.Truck.OWNED_BY_CURRENT_USER)).isTrue();
+        assertThat(whereClauseCaptor.getAllValues().get(1)).isEqualTo("id=?");
+        assertThat(whereArgsCaptor.getAllValues().get(1)).containsExactly("ID");
     }
 }

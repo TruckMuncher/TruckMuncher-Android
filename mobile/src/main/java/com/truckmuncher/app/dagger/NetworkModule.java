@@ -3,6 +3,9 @@ package com.truckmuncher.app.dagger;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 
 import com.squareup.okhttp.Cache;
@@ -20,34 +23,32 @@ import com.truckmuncher.app.data.AuthErrorHandler;
 import com.truckmuncher.app.data.AuthRequestInterceptor;
 import com.truckmuncher.app.data.AuthenticatedRequestInterceptor;
 import com.truckmuncher.app.data.PRNGFixes;
+import com.truckmuncher.app.data.TruckMuncherContentProvider;
+import com.truckmuncher.app.data.sql.SqlOpenHelper;
 import com.truckmuncher.app.data.sync.SyncAdapter;
 import com.truckmuncher.app.menu.MenuUpdateService;
+import com.truckmuncher.app.vendor.VendorHomeActivity;
 import com.truckmuncher.app.vendor.VendorTrucksService;
 
-import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
-
 import java.io.File;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
 
 import javax.inject.Singleton;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 import dagger.Module;
 import dagger.Provides;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 import retrofit.converter.WireConverter;
-import timber.log.Timber;
 
+// TODO rename. Does more than just networking now
 @Module(injects = {
         ActiveTrucksService.class,
         GetTruckProfilesService.class,
         MenuUpdateService.class,
         SimpleSearchService.class,
         SyncAdapter.class,
+        TruckMuncherContentProvider.class,
+        VendorHomeActivity.class,
         VendorTrucksService.class
 }, includes = UserModule.class)
 public class NetworkModule {
@@ -70,40 +71,10 @@ public class NetworkModule {
         client.setCache(cache);
     }
 
-    public static void configureSsl(OkHttpClient client) {
-        try {
-            TrustManager[] trustAllCerts = new TrustManager[]{
-                    new X509TrustManager() {
-                        public X509Certificate[] getAcceptedIssuers() {
-                            return new X509Certificate[0];
-                        }
-
-                        @Override
-                        public void checkClientTrusted(X509Certificate[] certs, String authType) {
-                        }
-
-                        @Override
-                        public void checkServerTrusted(X509Certificate[] certs, String authType) {
-                        }
-                    }
-            };
-
-            SSLContext sc = SSLContext.getInstance("TLS");
-            sc.init(null, trustAllCerts, new SecureRandom());
-            client.setSslSocketFactory(sc.getSocketFactory());
-            client.setHostnameVerifier(new AllowAllHostnameVerifier());
-        } catch (Exception e) {
-            Timber.e(e, "Couldn't configure SSL");
-        }
-    }
-
     @Provides
     public OkHttpClient provideOkHttpClient() {
         OkHttpClient client = new OkHttpClient();
         configureHttpCache(appContext, client);
-        if (BuildConfig.DEBUG) {
-            configureSsl(client);
-        }
         return client;
     }
 
@@ -153,5 +124,16 @@ public class NetworkModule {
     @Provides
     public SearchService provideSearchService(RestAdapter adapter) {
         return adapter.create(SearchService.class);
+    }
+
+    @Singleton
+    @Provides
+    public SQLiteOpenHelper provideSQLiteOpenHelper() {
+        return SqlOpenHelper.newInstance(appContext);
+    }
+
+    @Provides
+    public SharedPreferences provideSharedPreferences() {
+        return PreferenceManager.getDefaultSharedPreferences(appContext);
     }
 }

@@ -2,40 +2,16 @@ package com.truckmuncher.app.data;
 
 import android.net.Uri;
 
-import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
 import com.truckmuncher.app.test.Assertions;
+import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.Arrays;
-import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(ReadableRobolectricTestRunner.class)
 public class ContractTest {
-
-    @Test
-    public void convertListToStringWorks() {
-        // Test none
-        assertThat(Contract.convertListToString(Collections.<String>emptyList()))
-                .isEmpty();
-
-        // Test single
-        assertThat(Contract.convertListToString(Arrays.asList("cat")))
-                .isEqualTo("cat");
-
-        // Test multiple
-        assertThat(Contract.convertListToString(Arrays.asList("cat", "dog")))
-                .isEqualTo("cat,dog");
-    }
-
-    @Test
-    public void convertStringToListWorks() {
-        String input = "cat,dog,horse";
-        assertThat(Contract.convertStringToList(input)).containsExactly("cat", "dog", "horse");
-    }
 
     @Test
     public void suppressNotifyDirectiveWorksBothWays() {

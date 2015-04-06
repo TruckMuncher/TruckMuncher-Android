@@ -1,35 +1,73 @@
 package com.truckmuncher.app.dagger;
 
+import android.app.Application;
 import android.content.Context;
 
 import com.facebook.stetho.Stetho;
 import com.squareup.okhttp.OkHttpClient;
-import com.truckmuncher.app.BuildConfig;
+import com.truckmuncher.debug.RiseAndShine;
+
+import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
+
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import dagger.Module;
 import dagger.Provides;
+import timber.log.Timber;
 
 @Module(overrides = true, library = true)
 public class DebugModule {
 
     private final Context context;
 
-    public DebugModule(Context context) {
-        this.context = context.getApplicationContext();
+    public DebugModule(Application context) {
+        this.context = context;
         Stetho.initialize(
                 Stetho.newInitializerBuilder(context)
                         .enableDumpapp(Stetho.defaultDumperPluginsProvider(context))
                         .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(context))
                         .build());
+
+        context.registerActivityLifecycleCallbacks(new RiseAndShine());
+    }
+
+    private static void configureSsl(OkHttpClient client) {
+        try {
+            TrustManager[] trustAllCerts = new TrustManager[]{
+                    new X509TrustManager() {
+                        public X509Certificate[] getAcceptedIssuers() {
+                            return new X509Certificate[0];
+                        }
+
+                        @Override
+                        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                        }
+
+                        @Override
+                        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                        }
+                    }
+            };
+
+            SSLContext sc = SSLContext.getInstance("TLS");
+            sc.init(null, trustAllCerts, new SecureRandom());
+            client.setSslSocketFactory(sc.getSocketFactory());
+            client.setHostnameVerifier(new AllowAllHostnameVerifier());
+        } catch (Exception e) {
+            Timber.e(e, "Couldn't configure SSL");
+        }
     }
 
     @Provides
     public OkHttpClient provideOkHttpClient() {
         OkHttpClient client = new OkHttpClient();
         NetworkModule.configureHttpCache(context, client);
-        if (BuildConfig.DEBUG) {
-            NetworkModule.configureSsl(client);
-        }
+        configureSsl(client);
         return client;
     }
 }

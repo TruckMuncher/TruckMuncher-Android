@@ -1,10 +1,17 @@
 package com.truckmuncher.app.data;
 
-import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
+import android.net.Uri;
+
 import com.truckmuncher.app.BuildConfig;
+import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Locale;
 
 import static com.truckmuncher.app.test.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,95 +24,72 @@ public class PublicContractTest {
         assertThat(PublicContract.CONTENT_AUTHORITY).isEqualTo(BuildConfig.APPLICATION_ID + ".provider");
     }
 
-    /*
-     * CATEGORY
-     */
     @Test
-    public void categoryUriHasContentScheme() {
-        assertThat(PublicContract.CATEGORY_URI).hasContentScheme();
+    public void urisHaveCorrectAuthority() throws IllegalAccessException {
+        Field[] fields = PublicContract.class.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.getName().endsWith("_URI")) {
+                Uri uriField = (Uri) field.get(null);
+                assertThat(uriField).hasAuthority(PublicContract.CONTENT_AUTHORITY);
+            }
+        }
     }
 
     @Test
-    public void categoryUriHasCorrectPath() {
-        assertThat(PublicContract.CATEGORY_URI).hasPath("/category");
+    public void urisHaveContentScheme() throws IllegalAccessException {
+        Field[] fields = PublicContract.class.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.getName().endsWith("_URI")) {
+                Uri uriField = (Uri) field.get(null);
+                assertThat(uriField).hasContentScheme();
+            }
+        }
     }
 
     @Test
-    public void categoryUriHasCorrectAuthority() {
-        assertThat(PublicContract.CATEGORY_URI).hasAuthority(PublicContract.CONTENT_AUTHORITY);
+    public void uriPathMatchesTableName() throws IllegalAccessException {
+        Field[] fields = PublicContract.class.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.getName().endsWith("_URI")) {
+                String tableName = field.getName().replaceAll("_URI", "");
+
+                Uri uriField = (Uri) field.get(null);
+                assertThat(uriField).hasPath("/" + tableName);
+            }
+        }
     }
 
     @Test
-    public void categoryTypeIsCorrect() {
-        assertThat(PublicContract.URI_TYPE_CATEGORY).isEqualTo("vnd.android.cursor.dir/vnd.truckmuncher.category");
-    }
+    public void typeMatchesTableName() throws IllegalAccessException {
+        Field[] fields = PublicContract.class.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.getName().startsWith("URI_TYPE")) {
+                String tableName = field.getName().replaceAll("URI_TYPE_", "").toLowerCase(Locale.US);
 
-    /*
-     * MENU ITEM
-     */
-    @Test
-    public void menuItemUriHasContentScheme() {
-        assertThat(PublicContract.MENU_ITEM_URI).hasContentScheme();
-    }
-
-    @Test
-    public void menuItemUriHasCorrectPath() {
-        assertThat(PublicContract.MENU_ITEM_URI).hasPath("/menu_item");
+                String type = (String) field.get(null);
+                assertThat(type).isEqualTo("vnd.android.cursor.dir/vnd.truckmuncher." + tableName);
+            }
+        }
     }
 
     @Test
-    public void menuItemUriHasCorrectAuthority() {
-        assertThat(PublicContract.MENU_ITEM_URI).hasAuthority(PublicContract.CONTENT_AUTHORITY);
+    public void convertListToStringWorks() {
+        // Test none
+        assertThat(PublicContract.convertListToString(Collections.<String>emptyList()))
+                .isEmpty();
+
+        // Test single
+        assertThat(PublicContract.convertListToString(Arrays.asList("cat")))
+                .isEqualTo("cat");
+
+        // Test multiple
+        assertThat(PublicContract.convertListToString(Arrays.asList("cat", "dog")))
+                .isEqualTo("cat,dog");
     }
 
     @Test
-    public void menuItemTypeIsCorrect() {
-        assertThat(PublicContract.URI_TYPE_MENU_ITEM).isEqualTo("vnd.android.cursor.dir/vnd.truckmuncher.menu_item");
-    }
-
-    /*
-     * TRUCK
-     */
-    @Test
-    public void truckUriHasContentScheme() {
-        assertThat(PublicContract.TRUCK_URI).hasContentScheme();
-    }
-
-    @Test
-    public void truckUriHasCorrectPath() {
-        assertThat(PublicContract.TRUCK_URI).hasPath("/truck");
-    }
-
-    @Test
-    public void truckUriHasCorrectAuthority() {
-        assertThat(PublicContract.TRUCK_URI).hasAuthority(PublicContract.CONTENT_AUTHORITY);
-    }
-
-    @Test
-    public void truckTypeIsCorrect() {
-        assertThat(PublicContract.URI_TYPE_TRUCK).isEqualTo("vnd.android.cursor.dir/vnd.truckmuncher.truck");
-    }
-
-    /*
-     * MENU
-     */
-    @Test
-    public void menuUriHasContentScheme() {
-        assertThat(PublicContract.MENU_URI).hasContentScheme();
-    }
-
-    @Test
-    public void menuUriHasCorrectPath() {
-        assertThat(PublicContract.MENU_URI).hasPath("/menu");
-    }
-
-    @Test
-    public void menuUriHasCorrectAuthority() {
-        assertThat(PublicContract.MENU_URI).hasAuthority(PublicContract.CONTENT_AUTHORITY);
-    }
-
-    @Test
-    public void menuTypeIsCorrect() {
-        assertThat(PublicContract.URI_TYPE_MENU).isEqualTo("vnd.android.cursor.dir/vnd.truckmuncher.menu");
+    public void convertStringToListWorks() {
+        String input = "cat,dog,horse";
+        assertThat(PublicContract.convertStringToList(input)).containsExactly("cat", "dog", "horse");
     }
 }
