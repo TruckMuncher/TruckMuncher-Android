@@ -84,7 +84,7 @@ public abstract class SqlOpenHelper extends SQLiteOpenHelper {
             statement.append("\n");
             if (line.endsWith(";")) {
                 String toExec = statement.toString();
-                Timber.d("Executing script: %s", toExec);
+                Timber.d("Executing script: \n%s", toExec);
                 db.execSQL(toExec);
                 statement = new StringBuilder();
             }
