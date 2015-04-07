@@ -94,13 +94,6 @@ public class CustomerMapFragment extends ApiClientFragment implements
         } else {
             mapView.onCreate(null);
         }
-
-        mapView.getMap().getUiSettings().setZoomControlsEnabled(true);
-
-        apiClient = new GoogleApiClient.Builder(getActivity(), this, this)
-                .addApi(LocationServices.API)
-                .build();
-
         return view;
     }
 
@@ -108,7 +101,12 @@ public class CustomerMapFragment extends ApiClientFragment implements
     public void onViewCreated(View view, Bundle savedInstanceState) {
         GoogleMap map = mapView.getMap();
 
+        apiClient = new GoogleApiClient.Builder(getActivity(), this, this)
+                .addApi(LocationServices.API)
+                .build();
+
         if (map != null) {
+            map.getUiSettings().setZoomControlsEnabled(true);
             map.setMyLocationEnabled(true);
             setUpClusterer();
         }
