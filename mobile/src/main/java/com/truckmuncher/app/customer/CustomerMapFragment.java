@@ -46,7 +46,7 @@ public class CustomerMapFragment extends ApiClientFragment implements
     private static final String ARG_MAP_STATE = "map_state";
 
     private static final int REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes
-    private static final int FASTEST_REFRESH_INTERVAL = 1 * 60 * 1000; // 1 minute
+    private static final int FASTEST_REFRESH_INTERVAL = 60 * 1000; // 1 minute
 
     @InjectView(R.id.customer_map)
     MapView mapView;
@@ -292,21 +292,21 @@ public class CustomerMapFragment extends ApiClientFragment implements
 
     public interface ActiveTrucksQuery {
 
-        public static final String[] PROJECTION = new String[]{
+        String[] PROJECTION = new String[]{
                 PublicContract.Truck.ID,
                 PublicContract.Truck.LATITUDE,
                 PublicContract.Truck.LONGITUDE
         };
-        static final int ID = 0;
-        static final int LATITUDE = 1;
-        static final int LONGITUDE = 2;
+        int ID = 0;
+        int LATITUDE = 1;
+        int LONGITUDE = 2;
     }
 
     public interface OnTruckMarkerClickListener {
-        public void onTruckMarkerClick(TruckCluster truckClusterItem);
+        void onTruckMarkerClick(TruckCluster truckClusterItem);
     }
 
     public interface OnLocationChangeListener {
-        public void onLocationChange(LatLng location);
+        void onLocationChange(LatLng location);
     }
 }
