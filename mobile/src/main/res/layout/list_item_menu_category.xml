@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textStyle="italic"
         tools:text="NOT ALL SANDWICHES ARE AVAILABLE DAILY. GIVE US A CALL TO SEE WHAT WE HAVE ON THE MENU TODAY.\n All Sandwiches Are Served On Our Truck-Made From Scratch Bread\n Add Hand-Cut Russet Fries $1\n Add Hand-Cut Sweet Potato Fries $2\n Add Bernies Bacon $1\n Add Extra Veggies $1" />

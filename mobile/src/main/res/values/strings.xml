@@ -20,6 +20,12 @@
     <string name="items_unavailable_positive_button">View menu</string>
     <string name="items_unavailable_negative_button">Ignore</string>
 
+    <string name="menu_item_tag_gluten">Gluten free</string>
+    <string name="menu_item_tag_vegetarian">Vegetarian</string>
+    <string name="menu_item_tag_vegan">Vegan</string>
+    <string name="menu_item_tag_peanuts">Contains peanuts</string>
+    <string name="menu_item_tag_raw">Served raw</string>
+
     <!-- Actions -->
     <string name="action_settings">Settings</string>
     <string name="action_vendor_mode">Vendor login</string>
