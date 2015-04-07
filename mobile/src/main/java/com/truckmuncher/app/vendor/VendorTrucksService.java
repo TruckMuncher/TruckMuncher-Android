@@ -100,33 +100,29 @@ public class VendorTrucksService extends IntentService {
 
         SQLiteDatabase database = openHelper.getWritableDatabase();
         try {
-            try {
-                database.beginTransaction();
+            database.beginTransaction();
 
-                // We need to clear the state of any trucks that were previously assigned to us since they might no longer be.
-                // Only then can we assign the new trucks.
-                ContentValues ownerColumn = new ContentValues(1);
-                ownerColumn.put(PublicContract.Truck.OWNED_BY_CURRENT_USER, false);
-                database.update(Tables.TRUCK_STATE, ownerColumn, null, null);
+            // We need to clear the state of any trucks that were previously assigned to us since they might no longer be.
+            // Only then can we assign the new trucks.
+            ContentValues ownerColumn = new ContentValues(1);
+            ownerColumn.put(PublicContract.Truck.OWNED_BY_CURRENT_USER, false);
+            database.update(Tables.TRUCK_STATE, ownerColumn, null, null);
 
-                // Now that we have valid trucks that belong to us, assign them to the user. Other parts of the system
-                // already take care of keep truck data fresh. It's sent in the response only because the web needs it.
-                ownerColumn = new ContentValues(1);
-                ownerColumn.put(PublicContract.Truck.OWNED_BY_CURRENT_USER, true);
-                for (Truck truck : response.trucks) {
-                    WhereClause where = new WhereClause.Builder()
-                            .where(PublicContract.Truck.ID, EQUALS, truck.id)
-                            .build();
-                    database.update(Tables.TRUCK_STATE, ownerColumn, where.selection, where.selectionArgs);
-                }
-
-                database.setTransactionSuccessful();
-                getContentResolver().notifyChange(PublicContract.TRUCK_URI, null);
-            } finally {
-                database.endTransaction();
+            // Now that we have valid trucks that belong to us, assign them to the user. Other parts of the system
+            // already take care of keep truck data fresh. It's sent in the response only because the web needs it.
+            ownerColumn = new ContentValues(1);
+            ownerColumn.put(PublicContract.Truck.OWNED_BY_CURRENT_USER, true);
+            for (Truck truck : response.trucks) {
+                WhereClause where = new WhereClause.Builder()
+                        .where(PublicContract.Truck.ID, EQUALS, truck.id)
+                        .build();
+                database.update(Tables.TRUCK_STATE, ownerColumn, where.selection, where.selectionArgs);
             }
+
+            database.setTransactionSuccessful();
+            getContentResolver().notifyChange(PublicContract.TRUCK_URI, null);
         } finally {
-            database.close();
+            database.endTransaction();
         }
     }
 }

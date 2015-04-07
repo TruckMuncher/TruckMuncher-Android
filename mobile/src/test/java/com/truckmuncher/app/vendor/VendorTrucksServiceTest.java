@@ -64,7 +64,7 @@ public class VendorTrucksServiceTest {
     }
 
     @Test
-    public void onHandleIntentPerformsBulkInsertWithFetchedData() {
+    public void oldDataGetsClearedAndNewDataGetsStored() {
         TrucksForVendorResponse response = new TrucksForVendorResponse.Builder()
                 .trucks(Arrays.asList(new Truck.Builder()
                                         .id("ID")

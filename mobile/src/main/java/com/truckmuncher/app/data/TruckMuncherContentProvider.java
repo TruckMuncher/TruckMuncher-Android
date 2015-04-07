@@ -252,10 +252,6 @@ public class TruckMuncherContentProvider extends ContentProvider {
             case CATEGORY:
                 tableName = Tables.CATEGORY;
                 break;
-            case TRUCK_PROPERTIES:
-                tableName = Tables.TRUCK_PROPERTIES;
-                uri = suppressNotification ? Contract.suppressNotify(PublicContract.TRUCK_URI) : PublicContract.TRUCK_URI;
-                break;
             case TRUCK_STATE:
                 tableName = Tables.TRUCK_STATE;
                 uri = suppressNotification ? Contract.suppressNotify(PublicContract.TRUCK_URI) : PublicContract.TRUCK_URI;

@@ -1,6 +1,5 @@
 package com.truckmuncher.app.data.sql;
 
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import org.junit.After;
@@ -26,12 +25,4 @@ public class DatabaseTableTestCase {
         openHelper.close();
     }
 
-    /**
-     * Creates an in-memory database that is configured the same way as the production one
-     */
-    private class TestOpenHelper extends SqlOpenHelper {
-        public TestOpenHelper(Context context) {
-            super(context, null, SqlOpenHelper.VERSION);
-        }
-    }
 }

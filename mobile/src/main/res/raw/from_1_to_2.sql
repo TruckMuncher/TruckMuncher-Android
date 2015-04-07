@@ -2,6 +2,7 @@
  * Introduced for version 1.1.0
  */
 ALTER TABLE `truck_properties` ADD COLUMN `website` TEXT;
+ALTER TABLE `truck_properties` ADD COLUMN `is_dirty` INTEGER;
 
 DROP VIEW `truck`;
 
@@ -21,7 +22,7 @@ CREATE VIEW `truck` AS SELECT
     `matched_search`,
     `latitude`,
     `longitude`,
-    `is_dirty`,
+    `truck_state`.`is_dirty` AS `is_dirty`,
     `owned_by_current_user`
 
     FROM

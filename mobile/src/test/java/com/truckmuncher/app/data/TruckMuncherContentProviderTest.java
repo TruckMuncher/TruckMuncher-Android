@@ -6,10 +6,10 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
 import com.truckmuncher.app.data.sql.SqlOpenHelper;
 import com.truckmuncher.app.data.sql.Tables;
 import com.truckmuncher.app.data.sql.WhereClause;
+import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -302,43 +302,6 @@ public class TruckMuncherContentProviderTest {
         cursor.moveToFirst();
         assertThat(cursor.getString(cursor.getColumnIndex(PublicContract.Category.ID))).isEqualTo("Sandwiches");
         assertThat(cursor.getInt(cursor.getColumnIndex(PublicContract.Category.ORDER_IN_MENU))).isEqualTo(2);
-    }
-
-    @Test
-    public void bulkInsertTruckPropertiesAddsNewData() {
-        ContentValues sandwiches = new ContentValues();
-        sandwiches.put(PublicContract.Truck.ID, "The Sandwich Makers");
-        ContentValues soups = new ContentValues();
-        soups.put(PublicContract.Truck.ID, "The Soup Makers");
-        ContentValues[] valuesList = new ContentValues[]{sandwiches, soups};
-
-        int inserted = resolver.bulkInsert(Contract.TRUCK_PROPERTIES_URI, valuesList);
-        assertThat(inserted).isEqualTo(2);
-    }
-
-    @Test
-    public void bulkInsertTruckPropertiesUpdatesOldData() {
-
-        // Add some "existing" mock data
-        ContentValues existing = new ContentValues();
-        existing.put(PublicContract.Truck.ID, "The Sandwich Makers");
-        existing.put(PublicContract.Truck.KEYWORDS, "sandwiches");
-        assertThat(SqlOpenHelper.newInstance(Robolectric.application).getWritableDatabase().insert(Tables.TRUCK_PROPERTIES, null, existing)).isEqualTo(1);
-
-        // Update the mock data
-        ContentValues updated = new ContentValues();
-        updated.put(PublicContract.Truck.ID, "The Sandwich Makers");
-        updated.put(PublicContract.Truck.KEYWORDS, "sandwiches,soups");
-        int inserted = resolver.bulkInsert(Contract.TRUCK_PROPERTIES_URI, new ContentValues[]{updated});
-        assertThat(inserted).isEqualTo(1);
-
-        // Verify that the mock data indeed exists
-        Cursor cursor = SqlOpenHelper.newInstance(Robolectric.application).getReadableDatabase().query(Tables.TRUCK_PROPERTIES, null, null, null, null, null, null);
-        assertThat(cursor).isNotNull();
-        assertThat(cursor.getCount()).isEqualTo(1);
-        cursor.moveToFirst();
-        assertThat(cursor.getString(cursor.getColumnIndex(PublicContract.Truck.ID))).isEqualTo("The Sandwich Makers");
-        assertThat(cursor.getString(cursor.getColumnIndex(PublicContract.Truck.KEYWORDS))).isEqualTo("sandwiches,soups");
     }
 
     @Test

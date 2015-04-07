@@ -71,6 +71,10 @@ public final class Contract {
         public static final String IS_DIRTY = "is_dirty";
     }
 
+    public interface TruckProperties {
+        public static final String IS_DIRTY = "is_dirty";
+    }
+
     public interface MenuItem {
         public static final String IS_DIRTY = "is_dirty";
     }
