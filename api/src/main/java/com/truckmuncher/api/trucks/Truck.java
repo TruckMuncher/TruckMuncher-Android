@@ -23,6 +23,7 @@ public final class Truck extends Message {
   public static final String DEFAULT_PHONENUMBER = "";
   public static final Boolean DEFAULT_APPROVED = false;
   public static final Boolean DEFAULT_APPROVALPENDING = false;
+  public static final String DEFAULT_WEBSITE = "";
 
   /**
    * Suitable for unique identification. Will always be set on a response from the API.
@@ -72,7 +73,10 @@ public final class Truck extends Message {
   @ProtoField(tag = 10, type = BOOL)
   public final Boolean approvalPending;
 
-  public Truck(String id, String name, String imageUrl, List<String> keywords, String primaryColor, String secondaryColor, String description, String phoneNumber, Boolean approved, Boolean approvalPending) {
+  @ProtoField(tag = 11, type = STRING)
+  public final String website;
+
+  public Truck(String id, String name, String imageUrl, List<String> keywords, String primaryColor, String secondaryColor, String description, String phoneNumber, Boolean approved, Boolean approvalPending, String website) {
     this.id = id;
     this.name = name;
     this.imageUrl = imageUrl;
@@ -83,10 +87,11 @@ public final class Truck extends Message {
     this.phoneNumber = phoneNumber;
     this.approved = approved;
     this.approvalPending = approvalPending;
+    this.website = website;
   }
 
   private Truck(Builder builder) {
-    this(builder.id, builder.name, builder.imageUrl, builder.keywords, builder.primaryColor, builder.secondaryColor, builder.description, builder.phoneNumber, builder.approved, builder.approvalPending);
+    this(builder.id, builder.name, builder.imageUrl, builder.keywords, builder.primaryColor, builder.secondaryColor, builder.description, builder.phoneNumber, builder.approved, builder.approvalPending, builder.website);
     setBuilder(builder);
   }
 
@@ -104,7 +109,8 @@ public final class Truck extends Message {
         && equals(description, o.description)
         && equals(phoneNumber, o.phoneNumber)
         && equals(approved, o.approved)
-        && equals(approvalPending, o.approvalPending);
+        && equals(approvalPending, o.approvalPending)
+        && equals(website, o.website);
   }
 
   @Override
@@ -121,6 +127,7 @@ public final class Truck extends Message {
       result = result * 37 + (phoneNumber != null ? phoneNumber.hashCode() : 0);
       result = result * 37 + (approved != null ? approved.hashCode() : 0);
       result = result * 37 + (approvalPending != null ? approvalPending.hashCode() : 0);
+      result = result * 37 + (website != null ? website.hashCode() : 0);
       hashCode = result;
     }
     return result;
@@ -138,6 +145,7 @@ public final class Truck extends Message {
     public String phoneNumber;
     public Boolean approved;
     public Boolean approvalPending;
+    public String website;
 
     public Builder() {
     }
@@ -155,6 +163,7 @@ public final class Truck extends Message {
       this.phoneNumber = message.phoneNumber;
       this.approved = message.approved;
       this.approvalPending = message.approvalPending;
+      this.website = message.website;
     }
 
     /**
@@ -222,6 +231,11 @@ public final class Truck extends Message {
 
     public Builder approvalPending(Boolean approvalPending) {
       this.approvalPending = approvalPending;
+      return this;
+    }
+
+    public Builder website(String website) {
+      this.website = website;
       return this;
     }
 

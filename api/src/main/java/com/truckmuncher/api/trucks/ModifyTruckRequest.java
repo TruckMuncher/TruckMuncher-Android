@@ -19,6 +19,7 @@ public final class ModifyTruckRequest extends Message {
   public static final String DEFAULT_SECONDARYCOLOR = "";
   public static final String DEFAULT_DESCRIPTION = "";
   public static final String DEFAULT_PHONENUMBER = "";
+  public static final String DEFAULT_WEBSITE = "";
 
   /**
    * Suitable for unique identification. Will always be set on a response from the API.
@@ -59,7 +60,10 @@ public final class ModifyTruckRequest extends Message {
   @ProtoField(tag = 7, type = STRING)
   public final String phoneNumber;
 
-  public ModifyTruckRequest(String id, String name, List<String> keywords, String primaryColor, String secondaryColor, String description, String phoneNumber) {
+  @ProtoField(tag = 8, type = STRING)
+  public final String website;
+
+  public ModifyTruckRequest(String id, String name, List<String> keywords, String primaryColor, String secondaryColor, String description, String phoneNumber, String website) {
     this.id = id;
     this.name = name;
     this.keywords = immutableCopyOf(keywords);
@@ -67,10 +71,11 @@ public final class ModifyTruckRequest extends Message {
     this.secondaryColor = secondaryColor;
     this.description = description;
     this.phoneNumber = phoneNumber;
+    this.website = website;
   }
 
   private ModifyTruckRequest(Builder builder) {
-    this(builder.id, builder.name, builder.keywords, builder.primaryColor, builder.secondaryColor, builder.description, builder.phoneNumber);
+    this(builder.id, builder.name, builder.keywords, builder.primaryColor, builder.secondaryColor, builder.description, builder.phoneNumber, builder.website);
     setBuilder(builder);
   }
 
@@ -85,7 +90,8 @@ public final class ModifyTruckRequest extends Message {
         && equals(primaryColor, o.primaryColor)
         && equals(secondaryColor, o.secondaryColor)
         && equals(description, o.description)
-        && equals(phoneNumber, o.phoneNumber);
+        && equals(phoneNumber, o.phoneNumber)
+        && equals(website, o.website);
   }
 
   @Override
@@ -99,6 +105,7 @@ public final class ModifyTruckRequest extends Message {
       result = result * 37 + (secondaryColor != null ? secondaryColor.hashCode() : 0);
       result = result * 37 + (description != null ? description.hashCode() : 0);
       result = result * 37 + (phoneNumber != null ? phoneNumber.hashCode() : 0);
+      result = result * 37 + (website != null ? website.hashCode() : 0);
       hashCode = result;
     }
     return result;
@@ -113,6 +120,7 @@ public final class ModifyTruckRequest extends Message {
     public String secondaryColor;
     public String description;
     public String phoneNumber;
+    public String website;
 
     public Builder() {
     }
@@ -127,6 +135,7 @@ public final class ModifyTruckRequest extends Message {
       this.secondaryColor = message.secondaryColor;
       this.description = message.description;
       this.phoneNumber = message.phoneNumber;
+      this.website = message.website;
     }
 
     /**
@@ -179,6 +188,11 @@ public final class ModifyTruckRequest extends Message {
      */
     public Builder phoneNumber(String phoneNumber) {
       this.phoneNumber = phoneNumber;
+      return this;
+    }
+
+    public Builder website(String website) {
+      this.website = website;
       return this;
     }
 
