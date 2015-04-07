@@ -14,6 +14,7 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.truckmuncher.app.R;
 import com.truckmuncher.app.data.Contract;
+import com.truckmuncher.app.data.PublicContract.MenuItem;
 import com.truckmuncher.app.data.sql.WhereClause;
 
 import java.util.ArrayList;
@@ -22,7 +23,6 @@ import timber.log.Timber;
 
 import static com.truckmuncher.app.data.PublicContract.CONTENT_AUTHORITY;
 import static com.truckmuncher.app.data.PublicContract.MENU_ITEM_URI;
-import static com.truckmuncher.app.data.PublicContract.MenuItem;
 import static com.truckmuncher.app.data.sql.WhereClause.Operator.EQUALS;
 
 public class MenuItemDiffService extends IntentService {
