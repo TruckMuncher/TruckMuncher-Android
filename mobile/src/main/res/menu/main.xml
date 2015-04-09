@@ -8,6 +8,11 @@
         android:title="@string/action_vendor_mode"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_all_trucks"
+        android:orderInCategory="25"
+        android:title="@string/all_trucks"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_search"
         android:icon="@android:drawable/ic_menu_search"
         android:title="@string/search_title"

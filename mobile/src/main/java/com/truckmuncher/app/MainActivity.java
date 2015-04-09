@@ -26,6 +26,7 @@ import com.google.maps.android.SphericalUtil;
 import com.truckmuncher.app.authentication.AccountGeneral;
 import com.truckmuncher.app.authentication.AuthenticatorActivity;
 import com.truckmuncher.app.common.RateUs;
+import com.truckmuncher.app.customer.AllTrucksActivity;
 import com.truckmuncher.app.customer.CustomerMapFragment;
 import com.truckmuncher.app.customer.TruckCluster;
 import com.truckmuncher.app.customer.TruckDetailsActivity;
@@ -48,6 +49,7 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
     private static final int REQUEST_LOGIN = 1;
     private static final int REQUEST_TRUCK_DETAILS = 2;
+    private static final int REQUEST_ALL_TRUCKS = 3;
     private static final int LOADER_TRUCKS = 0;
 
     private static final int MIN_LOCATION_CHANGE = 500; // meters
@@ -123,14 +125,18 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_vendor_mode) {
-            // TODO: @marius said this was wrong :(
-            Intent intent = new Intent(this, AuthenticatorActivity.class);
-            startActivityForResult(intent, REQUEST_LOGIN);
+        switch (item.getItemId()) {
+            case R.id.action_vendor_mode:
+                // TODO: @marius said this was wrong :(
+                Intent intent = new Intent(this, AuthenticatorActivity.class);
+                startActivityForResult(intent, REQUEST_LOGIN);
 
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
+                return true;
+            case R.id.action_all_trucks:
+                startActivityForResult(new Intent(this, AllTrucksActivity.class), REQUEST_ALL_TRUCKS);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
