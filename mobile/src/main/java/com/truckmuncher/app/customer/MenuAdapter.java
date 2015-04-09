@@ -19,6 +19,7 @@ import com.volkhart.androidutil.text.Truss;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -111,7 +112,7 @@ public class MenuAdapter extends SectionCursorAdapter {
         String tagsText = cursor.getString(Query.TAGS);
         Timber.d("Text: (%s)", tagsText);
         if (!TextUtils.isEmpty(tagsText)) {
-            List<String> tags = Contract.convertStringToList(tagsText);
+            List<String> tags = Arrays.asList(tagsText.split(","));
             holder.tags = MenuItemTag.convertToTags(tags);
         }
 

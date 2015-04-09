@@ -165,6 +165,11 @@ public class CustomerMapFragment extends ApiClientFragment implements
                 .setFastestInterval(FASTEST_REFRESH_INTERVAL)
                 .setInterval(REFRESH_INTERVAL);
         LocationServices.FusedLocationApi.requestLocationUpdates(apiClient, request, this);
+        Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(apiClient);
+
+        if (lastLocation != null) {
+            onLocationChanged(lastLocation);
+        }
     }
 
     @Override

@@ -238,10 +238,8 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
         } else {
             findViewById(R.id.empty).setVisibility(View.GONE);
             viewPager.setVisibility(View.VISIBLE);
-            if (currentLocation != null) {
-                pagerAdapter = new TruckHeaderPagerAdapter(getSupportFragmentManager(), cursor, currentLocation);
-                viewPager.setAdapter(pagerAdapter);
-            }
+            pagerAdapter = new TruckHeaderPagerAdapter(getSupportFragmentManager(), cursor, currentLocation);
+            viewPager.setAdapter(pagerAdapter);
         }
     }
 

@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -24,6 +25,7 @@ import com.truckmuncher.app.data.PublicContract;
 import com.truckmuncher.app.data.sql.WhereClause;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -42,13 +44,15 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
     @InjectView(R.id.truck_name)
     TextView truckName;
     @InjectView(R.id.truck_keywords)
-    TextView truckKeywords;
+    LinearLayout truckKeywords;
     @InjectView(R.id.distance_from_location)
     TextView distanceFromLocation;
     @InjectView(R.id.truck_image)
     ImageView truckImage;
     @InjectView(R.id.header)
     View headerView;
+
+    private LayoutInflater inflater;
 
     private OnTruckHeaderClickListener truckHeaderClickListener;
 
@@ -64,6 +68,7 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        this.inflater = inflater;
         View view = inflater.inflate(R.layout.fragment_truck_header, container, false);
         ButterKnife.inject(this, view);
         if (getActivity() instanceof OnTruckHeaderClickListener) {
@@ -146,15 +151,29 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
                     .into(truckImage);
         }
 
+        String[] keywordsArray = keywords.split(",");
+        List<TextView> keywordViews = new ArrayList<>();
+
+        for (String keyword : keywordsArray) {
+            View view = inflater.inflate(R.layout.keyword, truckKeywords, false);
+            truckKeywords.addView(view);
+
+            TextView textView = (TextView) view.findViewById(R.id.truck_keyword);
+            textView.setText(keyword);
+            keywordViews.add(textView);
+        }
+
         if (headerColor != null) {
             headerView.setBackgroundColor(Color.parseColor(headerColor));
             int textColor = ColorCorrector.calculateTextColor(headerColor);
             truckName.setTextColor(textColor);
-            truckKeywords.setTextColor(textColor);
+
+            for (TextView textView : keywordViews) {
+                textView.setTextColor(textColor);
+            }
         }
 
         truckName.setText(name);
-        truckKeywords.setText(keywords);
 
         LatLng referenceLocation = getArguments().getParcelable(ARG_LOCATION);
         if (referenceLocation != null) {
