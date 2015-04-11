@@ -2,6 +2,7 @@ package com.truckmuncher.app.authentication;
 
 import android.accounts.Account;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,10 @@ public class AuthenticatorActivity extends ActionBarActivity
         implements LoginFragment.LoginSuccessCallback {
 
     private Fragment fragment;
+
+    public static Intent newIntent(Context context) {
+        return new Intent(context, AuthenticatorActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

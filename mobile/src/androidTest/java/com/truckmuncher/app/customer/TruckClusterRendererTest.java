@@ -21,12 +21,12 @@ public class TruckClusterRendererTest extends AndroidTestCase {
 
         GoogleMap map = new MapView(mContext).getMap();
 
-        ClusterManager clusterManager = new ClusterManager<>(mContext, map);
-        clusterRenderer = new TruckClusterRenderer<TruckCluster>(mContext, map, clusterManager);
+        ClusterManager<TruckCluster> clusterManager = new ClusterManager<>(mContext, map);
+        clusterRenderer = new TruckClusterRenderer<>(mContext, map, clusterManager);
     }
 
     public void testShouldRenderAsCluster() {
-        Cluster cluster = mock(Cluster.class);
+        Cluster<TruckCluster> cluster = mock(Cluster.class);
 
         when(cluster.getSize())
                 .thenReturn(1)

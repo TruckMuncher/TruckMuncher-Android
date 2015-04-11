@@ -119,10 +119,7 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_vendor_mode) {
-            // TODO: @marius said this was wrong :(
-            Intent intent = new Intent(this, AuthenticatorActivity.class);
-            startActivityForResult(intent, REQUEST_LOGIN);
-
+            startActivityForResult(AuthenticatorActivity.newIntent(this), REQUEST_LOGIN);
             return true;
         } else {
             return super.onOptionsItemSelected(item);
