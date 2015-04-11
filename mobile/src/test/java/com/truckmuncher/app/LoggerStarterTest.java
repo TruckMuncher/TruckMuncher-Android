@@ -2,6 +2,7 @@ package com.truckmuncher.app;
 
 import android.content.Context;
 
+import com.truckmuncher.app.common.LoggerStarter;
 import com.truckmuncher.testlib.ReadableRobolectricTestRunner;
 
 import org.junit.Test;
