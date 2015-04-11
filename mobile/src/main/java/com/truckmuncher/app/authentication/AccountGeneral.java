@@ -18,10 +18,6 @@ public final class AccountGeneral {
         // No instances
     }
 
-    public static String getAuthTokenTypeLabel(Context context) {
-        return context.getString(R.string.auth_token_type_label);
-    }
-
     /**
      * @return An account for a stored username. Null if none has been stored
      */
@@ -39,7 +35,7 @@ public final class AccountGeneral {
      * Creates an account for the given username. Neither the username or the account are stored
      * or cached anywhere.
      */
-    public static Account getAccount(String username) {
-        return new Account(username, ACCOUNT_TYPE);
+    public static Account getAccount(Context context) {
+        return new Account(context.getString(R.string.app_name), ACCOUNT_TYPE);
     }
 }

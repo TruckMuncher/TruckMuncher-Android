@@ -5,6 +5,8 @@ import android.content.Context;
 import com.truckmuncher.api.exceptions.Error;
 import com.truckmuncher.app.R;
 
+import javax.inject.Inject;
+
 import retrofit.ErrorHandler;
 import retrofit.RetrofitError;
 import timber.log.Timber;
@@ -13,8 +15,9 @@ public class ApiErrorHandler implements ErrorHandler {
 
     private final Context context;
 
+    @Inject
     public ApiErrorHandler(Context context) {
-        this.context = context.getApplicationContext();
+        this.context = context;
     }
 
     @Override

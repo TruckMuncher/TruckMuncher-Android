@@ -217,7 +217,7 @@ public final class PRNGFixes {
     }
 
     /**
-     * {@link java.security.SecureRandomSpi} which passes all requests to the Linux PRNG
+     * {@link SecureRandomSpi} which passes all requests to the Linux PRNG
      * ({@code /dev/urandom}).
      */
     public static class LinuxPRNGSecureRandom extends SecureRandomSpi {

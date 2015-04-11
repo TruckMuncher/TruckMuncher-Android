@@ -1,24 +1,19 @@
 package com.truckmuncher.app.authentication;
 
 import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 
 import com.truckmuncher.app.data.PublicContract;
 
-public class AuthenticatorActivity extends ActionBarAccountAuthenticatorActivity
+public class AuthenticatorActivity extends ActionBarActivity
         implements LoginFragment.LoginSuccessCallback {
 
-    public final static String ARG_ACCOUNT_TYPE = "account_type";
-    public final static String ARG_AUTH_TYPE = "auth_type";
-    public final static String ARG_IS_ADDING_NEW_ACCOUNT = "is_adding_account";
-
-    private AccountManager accountManager;
     private Fragment fragment;
 
     @Override
@@ -31,8 +26,6 @@ public class AuthenticatorActivity extends ActionBarAccountAuthenticatorActivity
         getSupportFragmentManager().beginTransaction()
                 .add(android.R.id.content, fragment)
                 .commit();
-
-        accountManager = AccountManager.get(this);
     }
 
     @Override
@@ -47,26 +40,14 @@ public class AuthenticatorActivity extends ActionBarAccountAuthenticatorActivity
     }
 
     @Override
-    public void onLoginSuccess(String userName, String authToken) {
-        Intent intent = new Intent();
+    public void onLoginSuccess() {
 
-        Bundle result = new Bundle();
-        result.putString(AccountManager.KEY_ACCOUNT_NAME, userName);
-        result.putString(AccountManager.KEY_ACCOUNT_TYPE, AccountGeneral.ACCOUNT_TYPE);
-        result.putString(AccountManager.KEY_AUTHTOKEN, authToken);
-
-        Account account = AccountGeneral.getAccount(userName);
-
-        // Setup the account to be syncable
+        // FIXME Setup the account to be syncable. Needs to be made generic
+        Account account = AccountGeneral.getAccount(this);
         ContentResolver.setSyncAutomatically(account, PublicContract.CONTENT_AUTHORITY, true);
         ContentResolver.setIsSyncable(account, PublicContract.CONTENT_AUTHORITY, 1);
 
-        accountManager.addAccountExplicitly(account, null, null);
-        accountManager.setAuthToken(account, AccountGeneral.AUTH_TOKEN_TYPE, authToken);
-
-        intent.putExtras(result);
-        setAccountAuthenticatorResult(result);
-        setResult(RESULT_OK, intent);
+        setResult(RESULT_OK);
         finish();
     }
 

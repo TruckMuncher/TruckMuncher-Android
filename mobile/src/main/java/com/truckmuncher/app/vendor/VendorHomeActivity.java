@@ -1,7 +1,5 @@
 package com.truckmuncher.app.vendor;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -18,7 +16,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,17 +24,15 @@ import android.widget.CheckBox;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 
-import com.facebook.login.LoginManager;
 import com.truckmuncher.app.App;
 import com.truckmuncher.app.MainActivity;
 import com.truckmuncher.app.R;
-import com.truckmuncher.app.authentication.AccountGeneral;
+import com.truckmuncher.app.authentication.UserAccount;
 import com.truckmuncher.app.common.RateUs;
 import com.truckmuncher.app.data.PublicContract;
 import com.truckmuncher.app.data.sql.WhereClause;
 import com.truckmuncher.app.vendor.menuadmin.MenuAdminFragment;
 import com.truckmuncher.app.vendor.settings.VendorSettingsActivity;
-import com.twitter.sdk.android.Twitter;
 
 import javax.inject.Inject;
 
@@ -50,7 +45,7 @@ public class VendorHomeActivity extends ActionBarActivity implements
     @Inject
     SharedPreferences sharedPreferences;
     @Inject
-    AccountManager accountManager;
+    UserAccount account;
 
     private Spinner actionBarSpinner;
     private String selectedTruckId;
@@ -110,18 +105,7 @@ public class VendorHomeActivity extends ActionBarActivity implements
     }
 
     private void doLogout() {
-        Account[] accounts = accountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
-
-        if (accounts.length > 0) {
-            String authToken = accountManager.peekAuthToken(accounts[0], AccountGeneral.AUTH_TOKEN_TYPE);
-
-            if (!TextUtils.isEmpty(authToken)) {
-                accountManager.invalidateAuthToken(AccountGeneral.ACCOUNT_TYPE, authToken);
-            }
-        }
-
-        Twitter.getSessionManager().clearActiveSession();
-        LoginManager.getInstance().logOut();
+        account.logout();
 
         resetServiceHelper.resetVendorTrucks(this, truckIds);
 

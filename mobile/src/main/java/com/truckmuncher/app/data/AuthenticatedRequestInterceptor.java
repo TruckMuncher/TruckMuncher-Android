@@ -1,9 +1,8 @@
 package com.truckmuncher.app.data;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
+import com.truckmuncher.app.authentication.SessionTokenPreference;
 
-import com.truckmuncher.app.authentication.AccountGeneral;
+import javax.inject.Inject;
 
 /**
  * Used once the user has a session token. Basically on any route except /auth.
@@ -12,11 +11,12 @@ public class AuthenticatedRequestInterceptor extends ApiRequestInterceptor {
 
     public static final String SESSION_TOKEN = "session_token";
 
-    private final AccountManager accountManager;
+    private final SessionTokenPreference preference;
 
-    public AuthenticatedRequestInterceptor(AccountManager accountManager) {
+    @Inject
+    public AuthenticatedRequestInterceptor(SessionTokenPreference preference) {
         super();
-        this.accountManager = accountManager;
+        this.preference = preference;
     }
 
     @Override
@@ -24,10 +24,9 @@ public class AuthenticatedRequestInterceptor extends ApiRequestInterceptor {
         super.intercept(request);
 
         // Authorization
-        Account account = AccountGeneral.getStoredAccount(accountManager);
-        if (account != null) {
-            String sessionToken = accountManager.getUserData(account, AccountGeneral.USER_DATA_SESSION);
-            request.addHeader(HEADER_AUTHORIZATION, SESSION_TOKEN + "=" + sessionToken);
+        String token = preference.get();
+        if (token != null) {
+            request.addHeader(HEADER_AUTHORIZATION, SESSION_TOKEN + "=" + token);
         }
     }
 }
