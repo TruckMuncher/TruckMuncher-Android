@@ -3,14 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.truckmuncher.app.MainActivity">
     <item
+        android:id="@+id/action_search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:orderInCategory="25"
+        android:title="@string/search_title"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/action_vendor_mode"
         android:orderInCategory="50"
         android:title="@string/action_vendor_mode"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/action_search"
-        android:icon="@android:drawable/ic_menu_search"
-        android:title="@string/search_title"
-        app:actionViewClass="android.support.v7.widget.SearchView"
-        app:showAsAction="ifRoom" />
 </menu>
