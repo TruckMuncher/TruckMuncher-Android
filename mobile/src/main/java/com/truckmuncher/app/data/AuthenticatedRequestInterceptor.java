@@ -25,8 +25,6 @@ public class AuthenticatedRequestInterceptor extends ApiRequestInterceptor {
 
         // Authorization
         String token = preference.get();
-        if (token != null) {
-            request.addHeader(HEADER_AUTHORIZATION, SESSION_TOKEN + "=" + token);
-        }
+        request.addHeader(HEADER_AUTHORIZATION, SESSION_TOKEN + "=" + token);
     }
 }

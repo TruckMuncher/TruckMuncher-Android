@@ -91,7 +91,9 @@ public class LoginFragment extends Fragment {
             @Override
             public void failure(TwitterException exception) {
                 Timber.e(exception, "Twitter login failed");
-                Toast.makeText(getActivity(), R.string.error_twitter_auth, Toast.LENGTH_LONG).show();
+                if (!exception.getMessage().contains("canceled")) {
+                    Toast.makeText(getActivity(), R.string.error_twitter_auth, Toast.LENGTH_LONG).show();
+                }
             }
         });
 
