@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.truckmuncher.app.R;
-import com.truckmuncher.app.data.Contract;
 import com.truckmuncher.app.data.PublicContract;
 import com.twotoasters.sectioncursoradapter.SectionCursorAdapter;
 import com.volkhart.androidutil.text.Truss;
@@ -112,7 +111,7 @@ public class MenuAdapter extends SectionCursorAdapter {
         String tagsText = cursor.getString(Query.TAGS);
         Timber.d("Text: (%s)", tagsText);
         if (!TextUtils.isEmpty(tagsText)) {
-            List<String> tags = Arrays.asList(tagsText.split(","));
+            List<String> tags = PublicContract.convertStringToList(tagsText);
             holder.tags = MenuItemTag.convertToTags(tags);
         }
 
@@ -164,7 +163,7 @@ public class MenuAdapter extends SectionCursorAdapter {
 
     interface Query {
 
-        static final String[] PROJECTION = new String[]{
+        String[] PROJECTION = new String[]{
                 PublicContract.Menu._ID,
                 PublicContract.Menu.MENU_ITEM_ID,
                 PublicContract.Menu.MENU_ITEM_NAME,
@@ -175,14 +174,14 @@ public class MenuAdapter extends SectionCursorAdapter {
                 PublicContract.Menu.CATEGORY_NOTES,
                 PublicContract.Menu.MENU_ITEM_TAGS
         };
-        static final int ID = 1;
-        static final int NAME = 2;
-        static final int PRICE = 3;
-        static final int IS_AVAILABLE = 4;
-        static final int CATEGORY_NAME = 5;
-        static final int DESCRIPTION = 6;
-        static final int CATEGORY_NOTES = 7;
-        static final int TAGS = 8;
+        int ID = 1;
+        int NAME = 2;
+        int PRICE = 3;
+        int IS_AVAILABLE = 4;
+        int CATEGORY_NAME = 5;
+        int DESCRIPTION = 6;
+        int CATEGORY_NOTES = 7;
+        int TAGS = 8;
     }
 
     static class ItemViewHolder {
