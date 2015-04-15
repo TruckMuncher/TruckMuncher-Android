@@ -4,7 +4,7 @@
     android:id="@+id/all_trucks_grid"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:columnWidth="100dp"
+    android:columnWidth="@dimen/all_trucks_column_width"
     android:numColumns="auto_fit"
     android:verticalSpacing="10dp"
     android:horizontalSpacing="10dp"

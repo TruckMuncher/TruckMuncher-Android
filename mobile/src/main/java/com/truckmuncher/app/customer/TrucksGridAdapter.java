@@ -60,15 +60,11 @@ public class TrucksGridAdapter extends SimpleCursorAdapter {
                 PublicContract.Truck._ID,
                 PublicContract.Truck.ID,
                 PublicContract.Truck.NAME,
-                PublicContract.Truck.IMAGE_URL,
-                PublicContract.Truck.KEYWORDS,
-                PublicContract.Truck.COLOR_SECONDARY
+                PublicContract.Truck.IMAGE_URL
         };
         int _ID = 0;
         int ID = 1;
         int NAME = 2;
         int IMAGE_URL = 3;
-        int KEYWORDS = 4;
-        int COLOR_SECONDARY = 5;
     }
 }

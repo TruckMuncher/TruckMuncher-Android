@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.truckmuncher.app.R;
+import com.truckmuncher.app.data.Contract;
 import com.truckmuncher.app.data.PublicContract;
 
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class AllTrucksActivity extends ActionBarActivity
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, PublicContract.TRUCK_URI, TrucksGridAdapter.TruckQuery.PROJECTION,
+        return new CursorLoader(this, Contract.TRUCK_PROPERTIES_URI, TrucksGridAdapter.TruckQuery.PROJECTION,
                 null, new String[]{}, null);
     }
 

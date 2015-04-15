@@ -18,7 +18,6 @@ import com.volkhart.androidutil.text.Truss;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
