@@ -7,6 +7,7 @@ import android.content.OperationApplicationException;
 import android.content.SyncResult;
 import android.database.Cursor;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
 
 import com.truckmuncher.api.menu.MenuItemAvailability;
 import com.truckmuncher.api.menu.MenuService;
@@ -33,6 +34,7 @@ public final class MenuItemAvailabilitySyncTask extends SyncTask {
         this.apiExceptionResolver = apiExceptionResolver;
     }
 
+    @NonNull
     @Override
     public ApiResult sync(SyncResult syncResult) throws RemoteException {
         WhereClause whereClause = new WhereClause.Builder()
@@ -90,11 +92,11 @@ public final class MenuItemAvailabilitySyncTask extends SyncTask {
     }
 
     interface MenuItemAvailabilityQuery {
-        static final String[] PROJECTION = new String[]{
+        String[] PROJECTION = new String[]{
                 PublicContract.MenuItem.ID,
                 PublicContract.MenuItem.IS_AVAILABLE
         };
-        static final int ID = 0;
-        static final int IS_AVAILABLE = 1;
+        int ID = 0;
+        int IS_AVAILABLE = 1;
     }
 }

@@ -7,4 +7,5 @@ public interface Tables {
     String MENU_ITEM = "menu_item";
     String TRUCK = "truck";
     String MENU = "menu";
+    String FAVORITE_TRUCK = "favorite_truck";
 }

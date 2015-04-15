@@ -2,6 +2,7 @@ package com.truckmuncher.app.data.sync;
 
 import android.content.SyncResult;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
 
 public abstract class SyncTask {
 
@@ -14,6 +15,7 @@ public abstract class SyncTask {
         }
     }
 
+    @NonNull
     protected abstract ApiResult sync(SyncResult syncResult) throws RemoteException;
 
     private void translateApiResultToSyncResult(ApiResult apiResult, SyncResult syncResult) {

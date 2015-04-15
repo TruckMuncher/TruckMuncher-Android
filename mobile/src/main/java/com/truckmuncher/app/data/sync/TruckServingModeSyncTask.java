@@ -6,6 +6,7 @@ import android.content.SyncResult;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
 
 import com.truckmuncher.api.trucks.ServingModeRequest;
 import com.truckmuncher.api.trucks.TruckService;
@@ -29,6 +30,7 @@ public final class TruckServingModeSyncTask extends SyncTask {
         this.apiExceptionResolver = apiExceptionResolver;
     }
 
+    @NonNull
     @Override
     protected ApiResult sync(SyncResult syncResult) throws RemoteException {
         WhereClause whereClause = new WhereClause.Builder()
@@ -87,15 +89,15 @@ public final class TruckServingModeSyncTask extends SyncTask {
     }
 
     interface TruckServingModeQuery {
-        static final String[] PROJECTION = new String[]{
+        String[] PROJECTION = new String[]{
                 PublicContract.Truck.ID,
                 PublicContract.Truck.IS_SERVING,
                 PublicContract.Truck.LATITUDE,
                 PublicContract.Truck.LONGITUDE
         };
-        static final int ID = 0;
-        static final int IS_SERVING = 1;
-        static final int LATITUDE = 2;
-        static final int LONGITUDE = 3;
+        int ID = 0;
+        int IS_SERVING = 1;
+        int LATITUDE = 2;
+        int LONGITUDE = 3;
     }
 }

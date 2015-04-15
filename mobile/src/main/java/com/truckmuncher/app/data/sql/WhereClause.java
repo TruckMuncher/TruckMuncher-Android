@@ -35,6 +35,32 @@ public final class WhereClause {
         this.selectionArgs = selectionArgs;
     }
 
+    public static WhereClause where(String column, String operand, boolean arg) {
+        return where(column, operand, arg ? "1" : "0");
+    }
+
+    public static WhereClause where(String column, String operand, int arg) {
+        return where(column, operand, Integer.toString(arg));
+    }
+
+    public static WhereClause where(String column, String operand, long arg) {
+        return where(column, operand, Long.toString(arg));
+    }
+
+    public static WhereClause where(String column, String operand, float arg) {
+        return where(column, operand, Float.toString(arg));
+    }
+
+    public static WhereClause where(String column, String operand, double arg) {
+        return where(column, operand, Double.toString(arg));
+    }
+
+    public static WhereClause where(String column, String operand, String arg) {
+        return new Builder()
+                .where(column, operand, arg)
+                .build();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -67,15 +93,15 @@ public final class WhereClause {
      * lot of queries.
      */
     public interface Operator {
-        public String EQUALS = "=";
-        public String NOT_EQUALS = "!=";
-        public String GREATER_THAN = ">";
-        public String LESS_THAN = "<";
-        public String GREATER_THAN_EQUALS = ">=";
-        public String LESS_THAN_EQUALS = "<=";
-        public String LIKE = " LIKE ";
-        public String IS = " IS ";
-        public String IS_NOT = " IS NOT ";
+        String EQUALS = "=";
+        String NOT_EQUALS = "!=";
+        String GREATER_THAN = ">";
+        String LESS_THAN = "<";
+        String GREATER_THAN_EQUALS = ">=";
+        String LESS_THAN_EQUALS = "<=";
+        String LIKE = " LIKE ";
+        String IS = " IS ";
+        String IS_NOT = " IS NOT ";
     }
 
     public static class Builder {

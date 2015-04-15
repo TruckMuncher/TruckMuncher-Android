@@ -29,3 +29,9 @@ CREATE VIEW `truck` AS SELECT
     `truck_properties`INNER JOIN `truck_state`
     ON `truck_properties`.`id` = `truck_state`.`id`
 ;
+
+CREATE TABLE `favorite_truck` (
+    `truck_id`      TEXT PRIMARY KEY,
+    `is_favorite`   INTEGER,
+    `is_dirty`      INTEGER DEFAULT 0
+);

@@ -68,14 +68,34 @@ public final class Contract {
      * Stores the temporary state. You must use this to do writes to the db, but should not use this for queries.
      */
     public interface TruckState {
-        public static final String IS_DIRTY = "is_dirty";
+        String IS_DIRTY = "is_dirty";
     }
 
     public interface TruckProperties {
-        public static final String IS_DIRTY = "is_dirty";
+        String IS_DIRTY = "is_dirty";
     }
 
     public interface MenuItem {
-        public static final String IS_DIRTY = "is_dirty";
+        String IS_DIRTY = "is_dirty";
+    }
+
+    public interface FavoriteTruck {
+        /**
+         * Type: String
+         */
+        String TRUCK_ID = "truck_id";
+        /**
+         * This column exists to determine the state change that needs to be relayed to the server.
+         * It also needs to be respected on the UI
+         * <p/>
+         * Type: boolean
+         */
+        String IS_FAVORITE = "is_favorite";
+        /**
+         * If {@code true} then the record needs to be uploaded to the API
+         * <p/>
+         * Type: boolean
+         */
+        String IS_DIRTY = "is_dirty";
     }
 }
