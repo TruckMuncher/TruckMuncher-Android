@@ -46,7 +46,7 @@ public class AllTrucksActivity extends ActionBarActivity
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(this, Contract.TRUCK_PROPERTIES_URI, TrucksGridAdapter.TruckQuery.PROJECTION,
-                null, new String[]{}, null);
+                null, new String[]{}, PublicContract.Truck.NAME);
     }
 
     @Override
