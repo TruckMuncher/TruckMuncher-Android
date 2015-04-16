@@ -8,7 +8,7 @@
  * freely, as long as the origin is not misrepresented.
  */
 
-package com.truckmuncher.app.data;
+package com.truckmuncher.app.common;
 
 import android.os.Build;
 import android.os.Process;
