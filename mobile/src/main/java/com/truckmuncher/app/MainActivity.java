@@ -199,7 +199,7 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     }
 
     private void launchVendorMode() {
-        startActivity(new Intent(this, VendorHomeActivity.class));
+        startActivity(VendorHomeActivity.newIntent(this));
         finish();
     }
 

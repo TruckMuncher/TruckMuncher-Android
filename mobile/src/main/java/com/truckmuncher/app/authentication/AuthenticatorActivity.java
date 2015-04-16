@@ -2,10 +2,10 @@ package com.truckmuncher.app.authentication;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.Fragment;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
@@ -28,7 +28,7 @@ public class AuthenticatorActivity extends ActionBarAccountAuthenticatorActivity
 
         fragment = LoginFragment.newInstance();
 
-        getFragmentManager().beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                 .add(android.R.id.content, fragment)
                 .commit();
 

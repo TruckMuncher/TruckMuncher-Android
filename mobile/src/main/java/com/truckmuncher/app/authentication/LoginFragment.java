@@ -1,22 +1,19 @@
 package com.truckmuncher.app.authentication;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.UiLifecycleHelper;
-import com.facebook.model.GraphUser;
-import com.facebook.widget.LoginButton;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.truckmuncher.app.R;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -36,36 +33,10 @@ public class LoginFragment extends Fragment {
     @InjectView(R.id.facebook_login_button)
     LoginButton facebookLoginButton;
     private LoginSuccessCallback loginSuccessCallback;
-    private Session.StatusCallback callback;
-    private UiLifecycleHelper uiLifecycleHelper;
+    private CallbackManager callbackManager;
 
     public static LoginFragment newInstance() {
         return new LoginFragment();
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            loginSuccessCallback = (LoginSuccessCallback) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException("Calling activity must implement " + LoginSuccessCallback.class.getName());
-        }
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        callback = new Session.StatusCallback() {
-            @Override
-            public void call(Session session, SessionState state, Exception exception) {
-                onSessionStateChange(session, state, exception);
-            }
-        };
-
-        uiLifecycleHelper = new UiLifecycleHelper(getActivity(), callback);
-        uiLifecycleHelper.onCreate(savedInstanceState);
     }
 
     @Override
@@ -73,7 +44,31 @@ public class LoginFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.inject(this, view);
 
-        facebookLoginButton.setPublishPermissions("public_profile");
+        loginSuccessCallback = (LoginSuccessCallback) getActivity();
+
+        facebookLoginButton.setReadPermissions("public_profile");
+        facebookLoginButton.setFragment(this);
+
+        callbackManager = CallbackManager.Factory.create();
+        facebookLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                String tokenString = String.format(getString(R.string.facebook_token_format), loginResult.getAccessToken().getToken());
+
+                loginSuccessCallback.onLoginSuccess(loginResult.getAccessToken().getUserId(), tokenString);
+            }
+
+            @Override
+            public void onCancel() {
+                // No-op
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+                Timber.e(e, "Facebook login failed");
+                Toast.makeText(getActivity(), R.string.error_facebook_auth, Toast.LENGTH_LONG).show();
+            }
+        });
 
         twitterLoginButton.setCallback(new Callback<TwitterSession>() {
             @Override
@@ -87,7 +82,7 @@ public class LoginFragment extends Fragment {
 
             @Override
             public void failure(TwitterException exception) {
-                Timber.e(exception, "Twitter login failed: %s", exception.getMessage());
+                Timber.e(exception, "Twitter login failed");
                 Toast.makeText(getActivity(), R.string.error_twitter_auth, Toast.LENGTH_LONG).show();
             }
         });
@@ -96,79 +91,16 @@ public class LoginFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-        // For scenarios where the main activity is launched and user
-        // session is not null, the session state change notification
-        // may not be triggered. Trigger it if it's open/closed.
-        Session session = Session.getActiveSession();
-        if (session != null &&
-                (session.isOpened() || session.isClosed())) {
-            onSessionStateChange(session, session.getState(), null);
-        }
-
-        uiLifecycleHelper.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        uiLifecycleHelper.onPause();
-    }
-
-    @Override
     public void onDestroyView() {
-        super.onDestroyView();
         ButterKnife.reset(this);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        uiLifecycleHelper.onDestroy();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        loginSuccessCallback = null;
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle state) {
-        super.onSaveInstanceState(state);
-        uiLifecycleHelper.onSaveInstanceState(state);
+        super.onDestroyView();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         twitterLoginButton.onActivityResult(requestCode, resultCode, data);
-        uiLifecycleHelper.onActivityResult(requestCode, resultCode, data);
-    }
-
-    private void onSessionStateChange(final Session session, SessionState state, Exception exception) {
-        if (exception != null) {
-            Timber.e("Facebook error: %s", exception.getMessage());
-        }
-
-        if (state.isOpened()) {
-            Request request = Request.newMeRequest(session, new Request.GraphUserCallback() {
-                @Override
-                public void onCompleted(GraphUser user, Response response) {
-                    if (session.equals(Session.getActiveSession()) && user != null) {
-                        String name = user.getName();
-
-                        String tokenString = String.format(getString(R.string.facebook_token_format), session.getAccessToken());
-
-                        loginSuccessCallback.onLoginSuccess(name, tokenString);
-                    }
-                }
-            });
-
-            Request.executeBatchAsync(request);
-        }
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     interface LoginSuccessCallback {

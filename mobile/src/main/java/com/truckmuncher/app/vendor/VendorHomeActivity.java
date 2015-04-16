@@ -4,6 +4,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,7 +27,7 @@ import android.widget.CheckBox;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 
-import com.facebook.Session;
+import com.facebook.login.LoginManager;
 import com.truckmuncher.app.App;
 import com.truckmuncher.app.MainActivity;
 import com.truckmuncher.app.R;
@@ -56,6 +57,10 @@ public class VendorHomeActivity extends ActionBarActivity implements
     private VendorHomeServiceHelper serviceHelper;
     private ResetVendorTrucksServiceHelper resetServiceHelper;
     private String[] truckIds;
+
+    public static Intent newIntent(Context context) {
+        return new Intent(context, VendorHomeActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,11 +121,7 @@ public class VendorHomeActivity extends ActionBarActivity implements
         }
 
         Twitter.getSessionManager().clearActiveSession();
-        Session facebookSession = Session.getActiveSession();
-
-        if (facebookSession != null && facebookSession.isOpened()) {
-            facebookSession.close();
-        }
+        LoginManager.getInstance().logOut();
 
         resetServiceHelper.resetVendorTrucks(this, truckIds);
 
@@ -246,19 +247,19 @@ public class VendorHomeActivity extends ActionBarActivity implements
 
     public interface TrucksOwnedByUserQuery {
 
-        public static final String[] PROJECTION = new String[]{
+        String[] PROJECTION = new String[]{
                 PublicContract.Truck._ID,
                 PublicContract.Truck.ID,
                 PublicContract.Truck.NAME
         };
-        static final int _ID = 0;
-        static final int ID = 1;
-        static final int NAME = 2;
+        int _ID = 0;
+        int ID = 1;
+        int NAME = 2;
     }
 
     public interface ItemsOutOfStockQuery {
 
-        public static final String[] PROJECTION = new String[]{
+        String[] PROJECTION = new String[]{
                 PublicContract.MenuItem._ID
         };
     }

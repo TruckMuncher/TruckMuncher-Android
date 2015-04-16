@@ -1,4 +1,4 @@
-package com.truckmuncher.app;
+package com.truckmuncher.app.common;
 
 import android.content.Context;
 
