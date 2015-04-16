@@ -2,6 +2,7 @@ package com.truckmuncher.app.dagger;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.facebook.stetho.Stetho;
 import com.squareup.okhttp.OkHttpClient;
@@ -45,11 +46,11 @@ public class DebugModule {
                         }
 
                         @Override
-                        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                        public void checkClientTrusted(@NonNull X509Certificate[] certs, @NonNull String authType) {
                         }
 
                         @Override
-                        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                        public void checkServerTrusted(@NonNull X509Certificate[] certs, @NonNull String authType) {
                         }
                     }
             };
@@ -66,7 +67,7 @@ public class DebugModule {
     @Provides
     public OkHttpClient provideOkHttpClient() {
         OkHttpClient client = new OkHttpClient();
-        NetworkModule.configureHttpCache(context, client);
+        GlobalModule.configureHttpCache(context, client);
         configureSsl(client);
         return client;
     }

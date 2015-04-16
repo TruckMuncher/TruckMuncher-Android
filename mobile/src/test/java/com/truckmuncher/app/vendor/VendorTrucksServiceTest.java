@@ -1,11 +1,9 @@
 package com.truckmuncher.app.vendor;
 
-import android.accounts.AccountManager;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.truckmuncher.api.auth.AuthService;
 import com.truckmuncher.api.trucks.Truck;
 import com.truckmuncher.api.trucks.TruckService;
 import com.truckmuncher.api.trucks.TrucksForVendorRequest;
@@ -37,10 +35,6 @@ public class VendorTrucksServiceTest {
     @Mock
     TruckService truckService;
     @Mock
-    AuthService authService;
-    @Mock
-    AccountManager accountManager;
-    @Mock
     SQLiteOpenHelper openHelper;
     VendorTrucksService service;
 
@@ -49,8 +43,6 @@ public class VendorTrucksServiceTest {
         MockitoAnnotations.initMocks(this);
         service = new VendorTrucksService();
         service.truckService = truckService;
-        service.authService = authService;
-        service.accountManager = accountManager;
         service.openHelper = openHelper;
     }
 

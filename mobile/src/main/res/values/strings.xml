@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="auth_token_type_label">Full access to your TruckMuncher account\nYour social network credentials</string>
     <string name="serving_mode">Serving Mode</string>
     <string name="in_stock">In</string>
     <string name="out_of_stock">Out</string>

@@ -6,6 +6,7 @@ import android.content.Context;
 import com.facebook.FacebookSdk;
 import com.truckmuncher.app.common.FabricKits;
 import com.truckmuncher.app.common.LoggerStarter;
+import com.truckmuncher.app.common.PRNGFixes;
 import com.truckmuncher.app.dagger.Modules;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 
@@ -29,7 +30,10 @@ public class App extends Application {
         Fabric.with(this, FabricKits.list(authConfig));
 
         LoggerStarter.start(this);
+
+        PRNGFixes.apply();
         objectGraph = ObjectGraph.create(Modules.list(this));
+
         FacebookSdk.sdkInitialize(this);
     }
 

@@ -14,6 +14,7 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.truckmuncher.app.App;
 import com.truckmuncher.app.R;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -21,6 +22,8 @@ import com.twitter.sdk.android.core.TwitterAuthToken;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -32,6 +35,8 @@ public class LoginFragment extends Fragment {
     TwitterLoginButton twitterLoginButton;
     @InjectView(R.id.facebook_login_button)
     LoginButton facebookLoginButton;
+    @Inject
+    UserAccount userAccount;
     private LoginSuccessCallback loginSuccessCallback;
     private CallbackManager callbackManager;
 
@@ -43,6 +48,7 @@ public class LoginFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.inject(this, view);
+        App.get(getActivity()).inject(this);
 
         loginSuccessCallback = (LoginSuccessCallback) getActivity();
 
@@ -55,7 +61,8 @@ public class LoginFragment extends Fragment {
             public void onSuccess(LoginResult loginResult) {
                 String tokenString = String.format(getString(R.string.facebook_token_format), loginResult.getAccessToken().getToken());
 
-                loginSuccessCallback.onLoginSuccess(loginResult.getAccessToken().getUserId(), tokenString);
+                userAccount.login(tokenString);
+                loginSuccessCallback.onLoginSuccess();
             }
 
             @Override
@@ -77,13 +84,16 @@ public class LoginFragment extends Fragment {
 
                 String tokenString = String.format(getString(R.string.twitter_token_format), authToken.token, authToken.secret);
 
-                loginSuccessCallback.onLoginSuccess(result.data.getUserName(), tokenString);
+                userAccount.login(tokenString);
+                loginSuccessCallback.onLoginSuccess();
             }
 
             @Override
             public void failure(TwitterException exception) {
                 Timber.e(exception, "Twitter login failed");
-                Toast.makeText(getActivity(), R.string.error_twitter_auth, Toast.LENGTH_LONG).show();
+                if (!exception.getMessage().contains("canceled")) {
+                    Toast.makeText(getActivity(), R.string.error_twitter_auth, Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -104,6 +114,6 @@ public class LoginFragment extends Fragment {
     }
 
     interface LoginSuccessCallback {
-        void onLoginSuccess(String userName, String authToken);
+        void onLoginSuccess();
     }
 }

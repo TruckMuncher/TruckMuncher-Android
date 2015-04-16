@@ -1,22 +1,20 @@
 package com.truckmuncher.app.data;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
+import com.truckmuncher.app.authentication.UserAccount;
 
-import com.truckmuncher.app.authentication.AccountGeneral;
+import javax.inject.Inject;
 
 /**
  * Used for the /auth route of the api
  */
 public class AuthRequestInterceptor extends ApiRequestInterceptor {
 
-    private final AccountManager accountManager;
-    private final Account account;
+    private final UserAccount userAccount;
 
-    public AuthRequestInterceptor(AccountManager accountManager, Account account) {
+    @Inject
+    public AuthRequestInterceptor(UserAccount userAccount) {
         super();
-        this.accountManager = accountManager;
-        this.account = account;
+        this.userAccount = userAccount;
     }
 
     @Override
@@ -24,7 +22,6 @@ public class AuthRequestInterceptor extends ApiRequestInterceptor {
         super.intercept(request);
 
         // Authorization
-        String authToken = accountManager.peekAuthToken(account, AccountGeneral.AUTH_TOKEN_TYPE);
-        request.addHeader(HEADER_AUTHORIZATION, authToken);
+        request.addHeader(HEADER_AUTHORIZATION, userAccount.getAuthToken());
     }
 }

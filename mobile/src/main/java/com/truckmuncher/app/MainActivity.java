@@ -1,7 +1,5 @@
 package com.truckmuncher.app;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -23,8 +21,8 @@ import android.view.View;
 import com.google.android.gms.actions.SearchIntents;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.SphericalUtil;
-import com.truckmuncher.app.authentication.AccountGeneral;
 import com.truckmuncher.app.authentication.AuthenticatorActivity;
+import com.truckmuncher.app.authentication.UserAccount;
 import com.truckmuncher.app.common.RateUs;
 import com.truckmuncher.app.customer.CustomerMapFragment;
 import com.truckmuncher.app.customer.TruckCluster;
@@ -36,6 +34,8 @@ import com.truckmuncher.app.data.sql.WhereClause;
 import com.truckmuncher.app.vendor.VendorHomeActivity;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -54,6 +54,8 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
     @InjectView(R.id.view_pager)
     ViewPager viewPager;
+    @Inject
+    UserAccount userAccount;
 
     private SearchView searchView;
 
@@ -66,19 +68,12 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
+        App.get(this).inject(this);
 
-        AccountManager accountManager = AccountManager.get(this);
-
-        Account[] accounts = accountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
-
-        if (accounts.length > 0) {
-            String authToken = accountManager.peekAuthToken(accounts[0], AccountGeneral.AUTH_TOKEN_TYPE);
-
-            // If we get an authToken the user is signed in and we can go straight to vendor mode
-            if (!TextUtils.isEmpty(authToken)) {
-                launchVendorMode();
-                return;
-            }
+        // If we get an authToken the user is signed in and we can go straight to vendor mode
+        if (!TextUtils.isEmpty(userAccount.getAuthToken())) {
+            launchVendorMode();
+            return;
         }
 
         handleSearchIntent(getIntent());
@@ -124,10 +119,7 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_vendor_mode) {
-            // TODO: @marius said this was wrong :(
-            Intent intent = new Intent(this, AuthenticatorActivity.class);
-            startActivityForResult(intent, REQUEST_LOGIN);
-
+            startActivityForResult(AuthenticatorActivity.newIntent(this), REQUEST_LOGIN);
             return true;
         } else {
             return super.onOptionsItemSelected(item);
