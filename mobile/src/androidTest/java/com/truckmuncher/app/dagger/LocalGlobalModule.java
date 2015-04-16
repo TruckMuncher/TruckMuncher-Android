@@ -1,9 +1,5 @@
 package com.truckmuncher.app.dagger;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.content.Context;
-
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import com.truckmuncher.api.auth.AuthService;
 import com.truckmuncher.app.data.AuthErrorHandler;
@@ -17,14 +13,12 @@ import retrofit.RestAdapter;
 import retrofit.android.MainThreadExecutor;
 
 @Module(overrides = true, library = true, complete = false)
-public class LocalNetworkModule {
+public class LocalGlobalModule {
 
     private final MockWebServer server;
-    private final Context appContext;
 
-    public LocalNetworkModule(Context context, MockWebServer server) {
+    public LocalGlobalModule(MockWebServer server) {
         this.server = server;
-        this.appContext = context.getApplicationContext();
     }
 
     @Singleton
@@ -39,10 +33,10 @@ public class LocalNetworkModule {
 
     @Singleton
     @Provides
-    public AuthService provideAuthService(RestAdapter.Builder builder, AccountManager accountManager, Account account) {
+    public AuthService provideAuthService(RestAdapter.Builder builder, AuthErrorHandler errorHandler, AuthRequestInterceptor interceptor) {
         builder.setLogLevel(RestAdapter.LogLevel.FULL)
-                .setErrorHandler(new AuthErrorHandler(appContext))
-                .setRequestInterceptor(new AuthRequestInterceptor(accountManager, account))
+                .setErrorHandler(errorHandler)
+                .setRequestInterceptor(interceptor)
                 .setEndpoint(server.getUrl("/").toString())
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setExecutors(new MainThreadExecutor(), new MainThreadExecutor());

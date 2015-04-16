@@ -1,12 +1,9 @@
 package com.truckmuncher.app.dagger;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
 
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
@@ -15,6 +12,8 @@ import com.truckmuncher.api.menu.MenuService;
 import com.truckmuncher.api.search.SearchService;
 import com.truckmuncher.api.trucks.TruckService;
 import com.truckmuncher.app.BuildConfig;
+import com.truckmuncher.app.MainActivity;
+import com.truckmuncher.app.authentication.LoginFragment;
 import com.truckmuncher.app.customer.ActiveTrucksService;
 import com.truckmuncher.app.customer.GetTruckProfilesService;
 import com.truckmuncher.app.customer.SimpleSearchService;
@@ -22,7 +21,6 @@ import com.truckmuncher.app.data.ApiErrorHandler;
 import com.truckmuncher.app.data.AuthErrorHandler;
 import com.truckmuncher.app.data.AuthRequestInterceptor;
 import com.truckmuncher.app.data.AuthenticatedRequestInterceptor;
-import com.truckmuncher.app.data.PRNGFixes;
 import com.truckmuncher.app.data.TruckMuncherContentProvider;
 import com.truckmuncher.app.data.sql.SqlOpenHelper;
 import com.truckmuncher.app.data.sync.SyncAdapter;
@@ -40,28 +38,26 @@ import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 import retrofit.converter.WireConverter;
 
-// TODO rename. Does more than just networking now
 @Module(injects = {
         ActiveTrucksService.class,
         GetTruckProfilesService.class,
+        LoginFragment.class,
+        MainActivity.class,
         MenuUpdateService.class,
         SimpleSearchService.class,
         SyncAdapter.class,
         TruckMuncherContentProvider.class,
         VendorHomeActivity.class,
         VendorTrucksService.class
-}, includes = UserModule.class)
-public class NetworkModule {
+})
+public class GlobalModule {
 
     private static final int DISK_CACHE_SIZE = 50 * 1024 * 1024; // 50MB
 
     private final Context appContext;
 
-    public NetworkModule(Context context) {
+    public GlobalModule(Context context) {
         appContext = context.getApplicationContext();
-        if (!BuildConfig.DEBUG) {   // Work around for robolectric
-            PRNGFixes.apply();  // Fix SecureRandom
-        }
     }
 
     public static void configureHttpCache(Context context, OkHttpClient client) {
@@ -72,9 +68,14 @@ public class NetworkModule {
     }
 
     @Provides
-    public OkHttpClient provideOkHttpClient() {
+    public Context provideContext() {
+        return appContext;
+    }
+
+    @Provides
+    public OkHttpClient provideOkHttpClient(Context context) {
         OkHttpClient client = new OkHttpClient();
-        configureHttpCache(appContext, client);
+        configureHttpCache(context, client);
         return client;
     }
 
@@ -93,10 +94,10 @@ public class NetworkModule {
 
     @Singleton
     @Provides
-    public RestAdapter provideRestAdapter(RestAdapter.Builder builder, AccountManager accountManager) {
+    public RestAdapter provideRestAdapter(RestAdapter.Builder builder, AuthenticatedRequestInterceptor interceptor, ApiErrorHandler errorHandler) {
         return builder
-                .setRequestInterceptor(new AuthenticatedRequestInterceptor(accountManager))
-                .setErrorHandler(new ApiErrorHandler(appContext))
+                .setRequestInterceptor(interceptor)
+                .setErrorHandler(errorHandler)
                 .build();
     }
 
@@ -114,9 +115,9 @@ public class NetworkModule {
 
     @Singleton
     @Provides
-    public AuthService provideAuthService(RestAdapter.Builder builder, AccountManager accountManager, @Nullable Account account) {
-        builder.setErrorHandler(new AuthErrorHandler(appContext))
-                .setRequestInterceptor(new AuthRequestInterceptor(accountManager, account));
+    public AuthService provideAuthService(RestAdapter.Builder builder, AuthErrorHandler errorHandler, AuthRequestInterceptor interceptor) {
+        builder.setErrorHandler(errorHandler)
+                .setRequestInterceptor(interceptor);
         return builder.build().create(AuthService.class);
     }
 
@@ -128,12 +129,12 @@ public class NetworkModule {
 
     @Singleton
     @Provides
-    public SQLiteOpenHelper provideSQLiteOpenHelper() {
-        return SqlOpenHelper.newInstance(appContext);
+    public SQLiteOpenHelper provideSQLiteOpenHelper(Context context) {
+        return SqlOpenHelper.newInstance(context);
     }
 
     @Provides
-    public SharedPreferences provideSharedPreferences() {
-        return PreferenceManager.getDefaultSharedPreferences(appContext);
+    public SharedPreferences provideSharedPreferences(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context);
     }
 }

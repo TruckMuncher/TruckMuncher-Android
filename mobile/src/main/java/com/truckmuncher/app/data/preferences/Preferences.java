@@ -1,5 +1,7 @@
 package com.truckmuncher.app.data.preferences;
 
 public interface Preferences {
-    public static final String APP_RATE_SHOWN_COUNT = "app_rate_shown_count";
+    String APP_RATE_SHOWN_COUNT = "app_rate_shown_count";
+    String AUTH_TOKEN = "auth_token";
+    String SESSION_TOKEN = "session_token";
 }

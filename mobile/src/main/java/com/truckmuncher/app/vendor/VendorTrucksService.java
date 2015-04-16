@@ -1,7 +1,5 @@
 package com.truckmuncher.app.vendor;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,22 +9,17 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.squareup.wire.Wire;
-import com.truckmuncher.api.auth.AuthRequest;
-import com.truckmuncher.api.auth.AuthResponse;
-import com.truckmuncher.api.auth.AuthService;
 import com.truckmuncher.api.trucks.Truck;
 import com.truckmuncher.api.trucks.TruckService;
 import com.truckmuncher.api.trucks.TrucksForVendorRequest;
 import com.truckmuncher.api.trucks.TrucksForVendorResponse;
 import com.truckmuncher.app.App;
-import com.truckmuncher.app.authentication.AccountGeneral;
 import com.truckmuncher.app.data.ApiException;
-import com.truckmuncher.app.data.AuthenticatedRequestInterceptor;
-import com.truckmuncher.app.data.ExpiredSessionException;
 import com.truckmuncher.app.data.PublicContract;
-import com.truckmuncher.app.data.SocialCredentialsException;
 import com.truckmuncher.app.data.sql.Tables;
 import com.truckmuncher.app.data.sql.WhereClause;
+import com.truckmuncher.app.data.sync.ApiExceptionResolver;
+import com.truckmuncher.app.data.sync.ApiResult;
 
 import javax.inject.Inject;
 
@@ -41,9 +34,7 @@ public class VendorTrucksService extends IntentService {
     @Inject
     TruckService truckService;
     @Inject
-    AuthService authService;
-    @Inject
-    AccountManager accountManager;
+    ApiExceptionResolver exceptionResolver;
     @Inject
     SQLiteOpenHelper openHelper;
 
@@ -66,30 +57,23 @@ public class VendorTrucksService extends IntentService {
         TrucksForVendorResponse response;
         try {
             response = truckService.getTrucksForVendor(new TrucksForVendorRequest());
-        } catch (SocialCredentialsException sce) {
-            // TODO Implement
-            throw new UnsupportedOperationException("not yet implemented");
-//            Account account = AccountGeneral.getStoredAccount(accountManager);
-//            accountManager.getAuthToken(
-//                    account,
-//                    AccountGeneral.AUTH_TOKEN_TYPE,
-//                    null,
-//                    true,
-//                    null,
-//                    null
-//            );
-        } catch (ExpiredSessionException ese) {
-            AuthResponse authResponse = authService.getAuth(new AuthRequest());
-            Account account = AccountGeneral.getStoredAccount(accountManager);
-            accountManager.setUserData(account, AuthenticatedRequestInterceptor.SESSION_TOKEN, authResponse.sessionToken);
-            startService(intent);   // Start self
-            return;
         } catch (ApiException e) {
-            Timber.e("Got an error while getting trucks for vendor.");
-            Intent errorIntent = new Intent();
-            errorIntent.putExtra(ARG_MESSAGE, e.getMessage());
-            LocalBroadcastManager.getInstance(this).sendBroadcast(errorIntent);
-            return;
+            ApiResult result = exceptionResolver.resolve(e);
+            switch (result) {
+                case SHOULD_RETRY:  // Fall through
+                case TEMPORARY_ERROR:
+                    startService(intent);   // Start self
+                    return;
+                case PERMANENT_ERROR:  // Fall through
+                case NEEDS_USER_INPUT:
+                    Timber.e(e, "Got an error while getting trucks for vendor.");
+                    Intent errorIntent = new Intent();
+                    errorIntent.putExtra(ARG_MESSAGE, e.getMessage());
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(errorIntent);
+                    return;
+                default:
+                    throw new IllegalStateException("Not expecting this result", e);
+            }
         }
 
         if (Wire.get(response.isNew, TrucksForVendorResponse.DEFAULT_ISNEW)) {

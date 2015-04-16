@@ -13,7 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.truckmuncher.app.App;
-import com.truckmuncher.app.LoggerStarter;
+import com.truckmuncher.app.common.LoggerStarter;
 import com.truckmuncher.app.data.sql.Tables;
 import com.truckmuncher.app.menu.MenuUpdateService;
 

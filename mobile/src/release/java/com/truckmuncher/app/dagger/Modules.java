@@ -9,8 +9,7 @@ public final class Modules {
 
     public static Object[] list(Application app) {
         return new Object[] {
-                new UserModule(app),
-                new NetworkModule(app)
+                new GlobalModule(app)
         };
     }
 }

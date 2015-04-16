@@ -22,7 +22,7 @@ public abstract class ApiRequestInterceptor implements RequestInterceptor {
     private final byte[] bytes = new byte[32];
 
     public ApiRequestInterceptor() {
-        formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
+        formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
         generator = new SecureRandom();
     }

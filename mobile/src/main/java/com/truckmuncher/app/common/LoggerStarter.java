@@ -1,13 +1,10 @@
-package com.truckmuncher.app;
+package com.truckmuncher.app.common;
 
 import android.content.Context;
 
-import com.crashlytics.android.Crashlytics;
-import com.twitter.sdk.android.Twitter;
-import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.truckmuncher.app.BuildConfig;
 import com.volkhart.androidutil.reporting.CrashlyticsTree;
 
-import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 /**
@@ -28,22 +25,11 @@ public final class LoggerStarter {
             throw new IllegalArgumentException("Context may not be null");
         }
         if (!hasStarted) {
-            TwitterAuthConfig authConfig = new TwitterAuthConfig(BuildConfig.TWITTER_API_KEY, BuildConfig.TWITTER_API_SECRET);
-            Fabric fabric;
-
             if (BuildConfig.DEBUG) {
                 Timber.plant(new Timber.DebugTree());
-                fabric = new Fabric.Builder(context)
-                        .kits(new Twitter(authConfig))
-                        .build();
             } else {
-                fabric = new Fabric.Builder(context)
-                        .kits(new Twitter(authConfig), new Crashlytics())
-                        .build();
                 Timber.plant(new CrashlyticsTree());
             }
-
-            Fabric.with(fabric);
 
             hasStarted = true;
         }

@@ -1,16 +1,10 @@
 package com.truckmuncher.app.data.sync;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.os.Bundle;
-
 import com.truckmuncher.api.auth.AuthRequest;
 import com.truckmuncher.api.auth.AuthResponse;
 import com.truckmuncher.api.auth.AuthService;
-import com.truckmuncher.app.authentication.AccountGeneral;
-import com.truckmuncher.app.authentication.Authenticator;
+import com.truckmuncher.app.authentication.SessionTokenPreference;
 import com.truckmuncher.app.data.ApiException;
-import com.truckmuncher.app.data.AuthenticatedRequestInterceptor;
 import com.truckmuncher.app.data.ExpiredSessionException;
 import com.truckmuncher.app.data.SocialCredentialsException;
 
@@ -22,19 +16,19 @@ import timber.log.Timber;
 public final class ApiExceptionResolver {
 
     private final AuthService authService;
-    private final AccountManager accountManager;
+    private final SessionTokenPreference sessionTokenPreference;
 
     @Inject
-    public ApiExceptionResolver(AuthService authService, AccountManager accountManager) {
+    public ApiExceptionResolver(AuthService authService, SessionTokenPreference sessionTokenPreference) {
         this.authService = authService;
-        this.accountManager = accountManager;
+        this.sessionTokenPreference = sessionTokenPreference;
     }
 
     public ApiResult resolve(ApiException exception) {
         if (exception instanceof ExpiredSessionException) {
-            return handleExpiredSessionException((ExpiredSessionException) exception);
+            return handleExpiredSessionException();
         } else if (exception instanceof SocialCredentialsException) {
-            return handleSocialCredentialsException((SocialCredentialsException) exception);
+            return ApiResult.NEEDS_USER_INPUT;
         } else {
             Throwable t = exception.getCause();
             if (t instanceof RetrofitError) {
@@ -55,29 +49,13 @@ public final class ApiExceptionResolver {
         }
     }
 
-    private ApiResult handleExpiredSessionException(ExpiredSessionException exception) {
+    private ApiResult handleExpiredSessionException() {
         try {
             AuthResponse response = authService.getAuth(new AuthRequest());
-            Account account = AccountGeneral.getStoredAccount(accountManager);
-            accountManager.setUserData(account, AuthenticatedRequestInterceptor.SESSION_TOKEN, response.sessionToken);
+            sessionTokenPreference.set(response.sessionToken);
             return ApiResult.SHOULD_RETRY;
         } catch (SocialCredentialsException e) {
             return resolve(e);
         }
-    }
-
-    private ApiResult handleSocialCredentialsException(SocialCredentialsException exception) {
-        Bundle options = new Bundle();
-        options.putBoolean(Authenticator.ARG_NEEDS_SYNC, true);
-        Account account = AccountGeneral.getStoredAccount(accountManager);
-        accountManager.getAuthToken(
-                account,
-                AccountGeneral.AUTH_TOKEN_TYPE,
-                options,
-                true,
-                null,
-                null
-        );
-        return ApiResult.NEEDS_USER_INPUT;
     }
 }

@@ -2,10 +2,13 @@ package com.truckmuncher.app.data;
 
 import android.content.Context;
 
+import javax.inject.Inject;
+
 import retrofit.RetrofitError;
 
 public class AuthErrorHandler extends ApiErrorHandler {
 
+    @Inject
     public AuthErrorHandler(Context context) {
         super(context);
     }
