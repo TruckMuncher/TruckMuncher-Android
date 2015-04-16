@@ -1,5 +1,6 @@
 package com.truckmuncher.app.customer;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -64,5 +65,19 @@ public class AllTrucksActivity extends ActionBarActivity
         String currentTruck = gridAdapter.getTruckId(i);
         ArrayList<String> truckIds = gridAdapter.getTruckIds();
         startActivityForResult(TruckDetailsActivity.newIntent(this, truckIds, currentTruck), REQUEST_TRUCK_DETAILS);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_TRUCK_DETAILS:
+                if (resultCode == RESULT_OK) {
+                    String lastTruckId = data.getStringExtra(TruckDetailsActivity.ARG_ENDING_TRUCK);
+                    gridView.smoothScrollToPosition(gridAdapter.getTruckPosition(lastTruckId));
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

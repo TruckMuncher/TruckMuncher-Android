@@ -95,7 +95,14 @@ public class TruckDetailsActivity extends ActionBarActivity implements TruckData
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                Intent parent = NavUtils.getParentActivityIntent(this);
+                if (NavUtils.shouldUpRecreateTask(this, parent)) {
+                    NavUtils.navigateUpTo(this, parent);
+                } else {
+                    TaskStackBuilder.create(this)
+                            .addParentStack(this)
+                            .startActivities();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -41,6 +41,18 @@ public class TrucksGridAdapter extends SimpleCursorAdapter {
                 .into(imageView);
     }
 
+    public int getTruckPosition(String truckId) {
+        Cursor cursor = getCursor();
+        for (int i = 0; i < getCount(); i++) {
+            cursor.moveToPosition(i);
+
+            if (cursor.getString(TruckQuery.ID).equals(truckId)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public String getTruckId(int position) {
         getCursor().moveToPosition(position);
         return getCursor().getString(TruckQuery.ID);
