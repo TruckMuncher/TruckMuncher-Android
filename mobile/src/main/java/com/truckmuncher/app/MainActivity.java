@@ -3,67 +3,61 @@ package com.truckmuncher.app;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.google.android.gms.actions.SearchIntents;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.maps.android.SphericalUtil;
 import com.truckmuncher.app.authentication.AuthenticatorActivity;
 import com.truckmuncher.app.authentication.UserAccount;
 import com.truckmuncher.app.common.RateUs;
-import com.truckmuncher.app.customer.AllTrucksActivity;
+import com.truckmuncher.app.customer.AllTrucksFragment;
 import com.truckmuncher.app.customer.CustomerMapFragment;
-import com.truckmuncher.app.customer.TruckCluster;
-import com.truckmuncher.app.customer.TruckDetailsActivity;
-import com.truckmuncher.app.customer.TruckHeaderFragment;
-import com.truckmuncher.app.customer.TruckHeaderPagerAdapter;
-import com.truckmuncher.app.data.PublicContract;
-import com.truckmuncher.app.data.sql.WhereClause;
+import com.truckmuncher.app.customer.Searchable;
 import com.truckmuncher.app.vendor.VendorHomeActivity;
-
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import timber.log.Timber;
 
-import static com.truckmuncher.app.data.sql.WhereClause.Operator.EQUALS;
-
-public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor>,
-        CustomerMapFragment.OnTruckMarkerClickListener, CustomerMapFragment.OnLocationChangeListener, TruckHeaderFragment.OnTruckHeaderClickListener {
+public class MainActivity extends ActionBarActivity implements ListView.OnItemClickListener {
 
     private static final int REQUEST_LOGIN = 1;
-    private static final int REQUEST_TRUCK_DETAILS = 2;
-    private static final int REQUEST_ALL_TRUCKS = 3;
-    private static final int LOADER_TRUCKS = 0;
 
-    private static final int MIN_LOCATION_CHANGE = 500; // meters
+    private static final int ITEM_MAP = 0;
+    private static final int ITEM_ALL_TRUCKS = 1;
+    private static final int ITEM_LOGIN = 2;
 
-    @InjectView(R.id.view_pager)
-    ViewPager viewPager;
+    private static final String CONTENT_TAG = "drawer_content";
+    private static final String ARG_POSITION = "position";
+
     @Inject
     UserAccount userAccount;
 
     private SearchView searchView;
-
+    private ListView drawerList;
+    private DrawerLayout drawerLayout;
+    private ArrayAdapter<String> drawerListAdapter;
+    private ActionBarDrawerToggle drawerToggle;
     private String lastQuery;
-    private TruckHeaderPagerAdapter pagerAdapter;
-    private LatLng currentLocation;
+    private int currentPosition;
+    private Fragment currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,22 +72,29 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
             return;
         }
 
+        if (savedInstanceState != null && savedInstanceState.containsKey(ARG_POSITION)) {
+            currentPosition = savedInstanceState.getInt(ARG_POSITION);
+        }
+
+        setupNavigationDrawer();
+
         handleSearchIntent(getIntent());
 
-        getSupportLoaderManager().initLoader(LOADER_TRUCKS, null, MainActivity.this);
-
-        final CustomerMapFragment mapFragment = (CustomerMapFragment) getSupportFragmentManager().findFragmentById(R.id.customer_map_fragment);
-        viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-
-                // Change the focused truck
-                mapFragment.moveTo(pagerAdapter.getTruckId(position));
-            }
-        });
-
+        selectItem(currentPosition);
         RateUs.check(this);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerList.setSelection(0);
+        drawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        drawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -120,22 +121,21 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_vendor_mode:
-                startActivityForResult(AuthenticatorActivity.newIntent(this), REQUEST_LOGIN);
-                return true;
-            case R.id.action_all_trucks:
-                startActivityForResult(new Intent(this, AllTrucksActivity.class), REQUEST_ALL_TRUCKS);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        return drawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         handleSearchIntent(intent);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(ARG_POSITION, currentPosition);
     }
 
     /**
@@ -167,10 +167,9 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
                 // Don't need to redo the search if it's the same as last time
                 if (!repeatQuery) {
-                    CustomerMapFragment mapFragment = (CustomerMapFragment)
-                            getSupportFragmentManager().findFragmentById(R.id.customer_map_fragment);
-
-                    mapFragment.searchTrucks(query);
+                    if (currentFragment instanceof Searchable) {
+                        ((Searchable) currentFragment).doSearch(query);
+                    }
 
                     lastQuery = query;
                 }
@@ -185,12 +184,6 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
                     launchVendorMode();
                 }
                 break;
-            case REQUEST_TRUCK_DETAILS:
-                if (resultCode == RESULT_OK) {
-                    String lastTruckId = data.getStringExtra(TruckDetailsActivity.ARG_ENDING_TRUCK);
-                    viewPager.setCurrentItem(pagerAdapter.getTruckPosition(lastTruckId));
-                }
-                break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
         }
@@ -202,75 +195,73 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        switch (i) {
-            case LOADER_TRUCKS:
-                String orderBy = null;
-
-                if (currentLocation != null) {
-                    // We want the trucks to be ordered by their distance from the user's current location.
-                    // Sqlite is relatively limited in its computational powers, so we'll use a modified
-                    // Pythagorean Theorem equation to calculate the distance.
-                    double longitudeAdjustment = Math.pow(Math.cos(Math.toRadians(currentLocation.latitude)), 2);
-                    orderBy = String.format("((%f - latitude) * (%f - latitude) + (%f - longitude) * (%f - longitude) * %f) ASC",
-                            currentLocation.latitude, currentLocation.latitude, currentLocation.longitude,
-                            currentLocation.longitude, longitudeAdjustment);
-                }
-
-                WhereClause whereClause = new WhereClause.Builder()
-                        .where(PublicContract.Truck.IS_SERVING, EQUALS, true)
-                        .where(PublicContract.Truck.MATCHED_SEARCH, EQUALS, true)
-                        .build();
-
-                return new CursorLoader(this, PublicContract.TRUCK_URI, TruckHeaderPagerAdapter.Query.PROJECTION, whereClause.selection, whereClause.selectionArgs, orderBy);
-            default:
-                throw new RuntimeException("Invalid loader id: " + i);
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        if  (position == currentPosition) {
+            drawerLayout.closeDrawer(drawerList);
+            return;
         }
+
+        selectItem(position);
     }
 
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        if (cursor.getCount() == 0) {
-            findViewById(R.id.empty).setVisibility(View.VISIBLE);
-            viewPager.setVisibility(View.GONE);
-        } else {
-            findViewById(R.id.empty).setVisibility(View.GONE);
-            viewPager.setVisibility(View.VISIBLE);
-            pagerAdapter = new TruckHeaderPagerAdapter(getSupportFragmentManager(), cursor, currentLocation);
-            viewPager.setAdapter(pagerAdapter);
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-        pagerAdapter = null;
-    }
-
-    @Override
-    public void onTruckMarkerClick(final TruckCluster truckClusterItem) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                String truckId = truckClusterItem.getTruckId();
-                viewPager.setCurrentItem(pagerAdapter.getTruckPosition(truckId));
+    private void setupNavigationDrawer() {
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerList = (ListView) findViewById(R.id.left_drawer);
+        drawerListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
+                getResources().getStringArray(R.array.navigation_drawer_items));
+        drawerList.setAdapter(drawerListAdapter);
+        drawerList.setOnItemClickListener(this);
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
+                R.string.drawer_open, R.string.drawer_closed) {
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
             }
-        });
-    }
 
-    @Override
-    public void onTruckHeaderClick(String currentTruck) {
-        ArrayList<String> truckIds = pagerAdapter.getTruckIds();
-        startActivityForResult(TruckDetailsActivity.newIntent(this, truckIds, currentTruck), REQUEST_TRUCK_DETAILS);
-    }
+            public void onDrawerOpened(View view) {
+                super.onDrawerOpened(view);
+            }
+        };
 
-    @Override
-    public void onLocationChange(LatLng location) {
-        LatLng lastLocation = currentLocation;
-        currentLocation = location;
+        drawerLayout.setDrawerListener(drawerToggle);
 
-        if (lastLocation == null ||
-                SphericalUtil.computeDistanceBetween(lastLocation, currentLocation) > MIN_LOCATION_CHANGE) {
-            getSupportLoaderManager().restartLoader(LOADER_TRUCKS, null, this);
+        ActionBar bar = getSupportActionBar();
+
+        if (bar != null) {
+            bar.setDisplayHomeAsUpEnabled(true);
+            bar.setHomeButtonEnabled(true);
         }
+    }
+
+    private void selectItem(int position) {
+        Fragment fragment = null;
+
+        switch(position) {
+            case ITEM_MAP:
+                fragment = new CustomerMapFragment();
+                break;
+            case ITEM_ALL_TRUCKS:
+                fragment = new AllTrucksFragment();
+                break;
+            case ITEM_LOGIN:
+                startActivityForResult(AuthenticatorActivity.newIntent(this), REQUEST_LOGIN);
+                break;
+            default:
+                throw new UnsupportedOperationException("Invalid menu item selected");
+        }
+
+        if (fragment != null) {
+            // Insert the fragment by replacing any existing fragment
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, fragment, CONTENT_TAG)
+                    .commit();
+
+            currentFragment = fragment;
+        }
+
+        // Highlight the selected item, update the title, and close the drawer
+        drawerList.setItemChecked(position, true);
+        drawerLayout.closeDrawer(drawerList);
+        currentPosition = position;
     }
 }

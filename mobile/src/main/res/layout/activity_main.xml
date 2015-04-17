@@ -1,41 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
-
+    android:layout_height="match_parent">
+    <!-- The main content view -->
     <FrameLayout
-        android:id="@+id/footer"
+        android:id="@+id/content_frame"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/menu_pull_up_header_height"
-        android:layout_alignParentBottom="true">
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/view_pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TextView
-            android:id="@+id/empty"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/mold"
-            android:fontFamily="sans-serif-light"
-            android:gravity="center"
-            android:text="@string/error_no_serving_trucks"
-            android:textAppearance="@android:style/TextAppearance.Large"
-            android:textColor="@android:color/white"
-            android:textStyle="italic"
-            android:visibility="gone" />
-    </FrameLayout>
-
-    <fragment
-        android:id="@+id/customer_map_fragment"
-        android:name="com.truckmuncher.app.customer.CustomerMapFragment"
-        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <!-- The navigation drawer -->
+    <ListView android:id="@+id/left_drawer"
+        android:layout_width="240dp"
         android:layout_height="match_parent"
-        android:layout_above="@+id/footer"
-        tools:layout="@layout/fragment_customer_map" />
-
-</RelativeLayout>
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="1dp"
+        android:background="@android:color/white"/>
+</android.support.v4.widget.DrawerLayout>

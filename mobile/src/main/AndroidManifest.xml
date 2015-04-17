@@ -97,13 +97,6 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".customer.AllTrucksActivity"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.truckmuncher.app.MainActivity" />
-        </activity>
 
         <!-- Facebook documentation says we have to exlude these configChanges. Gross -->
         <activity
