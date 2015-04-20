@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/all_trucks_grid"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:columnWidth="@dimen/all_trucks_column_width"
+    android:numColumns="auto_fit"
+    android:verticalSpacing="10dp"
+    android:horizontalSpacing="10dp"
+    android:stretchMode="columnWidth"
+    android:gravity="center"
+    tools:listitem="@layout/fragment_truck_grid_cell" />

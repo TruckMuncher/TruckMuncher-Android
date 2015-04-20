@@ -1,9 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <FrameLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/menu_pull_up_header_height"
+        android:layout_alignParentBottom="true">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/mold"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center"
+            android:text="@string/error_no_serving_trucks"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:textColor="@android:color/white"
+            android:textStyle="italic"
+            android:visibility="visible" />
+    </FrameLayout>
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/customer_map"
@@ -13,5 +39,8 @@
         map:cameraTargetLng="-87.905903"
         map:cameraZoom="14"
         map:uiTiltGestures="false"
-        map:uiZoomControls="true" />
-</FrameLayout>
+        map:uiZoomControls="true"
+        android:layout_above="@+id/footer" />
+
+</RelativeLayout>
+

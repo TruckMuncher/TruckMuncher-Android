@@ -2,6 +2,7 @@ package com.truckmuncher.app.customer;
 
 import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,6 +21,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.SphericalUtil;
 import com.squareup.picasso.Picasso;
 import com.truckmuncher.app.R;
+import com.truckmuncher.app.data.Contract;
 import com.truckmuncher.app.data.PublicContract;
 import com.truckmuncher.app.data.sql.WhereClause;
 
@@ -51,6 +53,7 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
     View headerView;
 
     private OnTruckHeaderClickListener truckHeaderClickListener;
+    private LatLng referenceLocation;
 
     // TODO use a dynamic user location instead of a static one
     public static TruckHeaderFragment newInstance(@NonNull String truckId, LatLng userLocation) {
@@ -66,9 +69,8 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_truck_header, container, false);
         ButterKnife.inject(this, view);
-        if (getActivity() instanceof OnTruckHeaderClickListener) {
-            truckHeaderClickListener = (OnTruckHeaderClickListener) getActivity();
-        }
+
+        referenceLocation = getArguments().getParcelable(ARG_LOCATION);
         return view;
     }
 
@@ -90,7 +92,20 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
         WhereClause whereClause = new WhereClause.Builder()
                 .where(PublicContract.Truck.ID, EQUALS, truckId)
                 .build();
-        return new CursorLoader(getActivity(), PublicContract.TRUCK_URI, TruckQuery.PROJECTION, whereClause.selection, whereClause.selectionArgs, null);
+        Uri uri;
+        String[] projection;
+
+        // Necessary for trucks that are approved by haven't gone into serving mode at all yet.
+        // This should only be when accessing a truck via deep linking or from the all trucks list,
+        // so the location isn't needed anyway.
+        if (referenceLocation == null) {
+            uri = Contract.TRUCK_PROPERTIES_URI;
+            projection = TruckQuery.PROJECTION;
+        } else {
+            uri = PublicContract.TRUCK_URI;
+            projection = TruckQueryWithLocation.PROJECTION;
+        }
+        return new CursorLoader(getActivity(), uri, projection, whereClause.selection, whereClause.selectionArgs, null);
     }
 
     @Override
@@ -112,7 +127,9 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
             String truckKeywords = builder.toString();
             String imageUrl = cursor.getString(TruckQuery.IMAGE_URL);
             String secondaryColor = cursor.getString(TruckQuery.COLOR_SECONDARY);
-            LatLng truckLocation = new LatLng(cursor.getDouble(TruckQuery.LATITUDE), cursor.getDouble(TruckQuery.LONGITUDE));
+            LatLng truckLocation = referenceLocation == null ? null :
+                    new LatLng(cursor.getDouble(TruckQueryWithLocation.LATITUDE),
+                            cursor.getDouble(TruckQueryWithLocation.LONGITUDE));
             onTruckDataLoaded(truckName, truckKeywords, imageUrl, secondaryColor, truckLocation);
         } else {
 
@@ -132,6 +149,10 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
         if (truckHeaderClickListener != null) {
             truckHeaderClickListener.onTruckHeaderClick(getArguments().getString(ARG_TRUCK_ID));
         }
+    }
+
+    public void setOnTruckHeaderClickListener(OnTruckHeaderClickListener listener) {
+        truckHeaderClickListener = listener;
     }
 
     private void onTruckDataLoaded(String name, String keywords, String imageUrl, String headerColor, LatLng truckLocation) {
@@ -156,7 +177,6 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
         truckName.setText(name);
         truckKeywords.setText(keywords);
 
-        LatLng referenceLocation = getArguments().getParcelable(ARG_LOCATION);
         if (referenceLocation != null) {
             // distance in meters
             double delta = SphericalUtil.computeDistanceBetween(truckLocation, referenceLocation);
@@ -175,6 +195,19 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
     }
 
     interface TruckQuery {
+        String[] PROJECTION = new String[]{
+                PublicContract.Truck.NAME,
+                PublicContract.Truck.IMAGE_URL,
+                PublicContract.Truck.KEYWORDS,
+                PublicContract.Truck.COLOR_SECONDARY,
+        };
+        int NAME = 0;
+        int IMAGE_URL = 1;
+        int KEYWORDS = 2;
+        int COLOR_SECONDARY = 3;
+    }
+
+    interface TruckQueryWithLocation {
         String[] PROJECTION = new String[]{
                 PublicContract.Truck.NAME,
                 PublicContract.Truck.IMAGE_URL,

@@ -42,7 +42,7 @@ final class TruckDataLoaderHandler implements LoaderManager.LoaderCallbacks<Curs
                 WhereClause whereClause = new WhereClause.Builder()
                         .where(PublicContract.Truck.ID, EQUALS, truckId)
                         .build();
-                return new CursorLoader(context, PublicContract.TRUCK_URI, TruckQuery.PROJECTION, whereClause.selection, whereClause.selectionArgs, null);
+                return new CursorLoader(context, Contract.TRUCK_PROPERTIES_URI, TruckQuery.PROJECTION, whereClause.selection, whereClause.selectionArgs, null);
             }
             case DataDestination.LOADER_MENU: {
                 WhereClause whereClause = new WhereClause.Builder()
