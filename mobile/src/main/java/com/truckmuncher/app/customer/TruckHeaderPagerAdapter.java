@@ -13,17 +13,23 @@ public class TruckHeaderPagerAdapter extends FragmentStatePagerAdapter {
 
     private final Cursor cursor;
     private final LatLng referenceLocation;
+    private final TruckHeaderFragment.OnTruckHeaderClickListener listener;
 
-    public TruckHeaderPagerAdapter(FragmentManager fm, Cursor cursor, LatLng referenceLocation) {
+    public TruckHeaderPagerAdapter(FragmentManager fm, Cursor cursor, LatLng referenceLocation,
+                                   TruckHeaderFragment.OnTruckHeaderClickListener listener) {
         super(fm);
         this.cursor = cursor;
         this.referenceLocation = referenceLocation;
+        this.listener = listener;
     }
 
     @Override
     public TruckHeaderFragment getItem(int i) {
         cursor.moveToPosition(i);
-        return TruckHeaderFragment.newInstance(cursor.getString(Query.TRUCK_ID), referenceLocation);
+        TruckHeaderFragment fragment = TruckHeaderFragment.newInstance(cursor.getString(Query.TRUCK_ID), referenceLocation);
+        fragment.setOnTruckHeaderClickListener(listener);
+
+        return fragment;
     }
 
     @Override

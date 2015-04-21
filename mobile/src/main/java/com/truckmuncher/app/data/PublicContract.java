@@ -47,24 +47,24 @@ public class PublicContract {
     }
 
     public interface Category {
-        public static final String _ID = BaseColumns._ID;
-        public static final String ID = "id";
-        public static final String NAME = "name";
-        public static final String NOTES = "notes";
-        public static final String ORDER_IN_MENU = "order_in_menu";
-        public static final String TRUCK_ID = "truck_id";
+        String _ID = BaseColumns._ID;
+        String ID = "id";
+        String NAME = "name";
+        String NOTES = "notes";
+        String ORDER_IN_MENU = "order_in_menu";
+        String TRUCK_ID = "truck_id";
     }
 
     public interface MenuItem {
-        public static final String _ID = BaseColumns._ID;
-        public static final String ID = "id";
-        public static final String NAME = "name";
-        public static final String PRICE = "price";
-        public static final String IS_AVAILABLE = "is_available";
-        public static final String NOTES = "notes";
-        public static final String TAGS = "tags";
-        public static final String ORDER_IN_CATEGORY = "order_in_category";
-        public static final String CATEGORY_ID = "category_id";
+        String _ID = BaseColumns._ID;
+        String ID = "id";
+        String NAME = "name";
+        String PRICE = "price";
+        String IS_AVAILABLE = "is_available";
+        String NOTES = "notes";
+        String TAGS = "tags";
+        String ORDER_IN_CATEGORY = "order_in_category";
+        String CATEGORY_ID = "category_id";
     }
 
     public interface Truck {
@@ -74,21 +74,21 @@ public class PublicContract {
          * <p/>
          * Type: long
          */
-        public static final String _ID = BaseColumns._ID;
+        String _ID = BaseColumns._ID;
         /**
          * Use this for uniquely identifying trucks.
          * <p/>
          * Type: String
          */
-        public static final String ID = "id";
+        String ID = "id";
         /**
          * Type: String
          */
-        public static final String NAME = "name";
+        String NAME = "name";
         /**
          * Type: String
          */
-        public static final String IMAGE_URL = "image_url";
+        String IMAGE_URL = "image_url";
         /**
          * List of keywords, stored as a list
          * <p/>
@@ -96,66 +96,66 @@ public class PublicContract {
          *
          * @see com.truckmuncher.app.data.PublicContract#convertStringToList(String)
          */
-        public static final String KEYWORDS = "keywords";
+        String KEYWORDS = "keywords";
         /**
          * Type: String
          */
-        public static final String COLOR_PRIMARY = "color_primary";
+        String COLOR_PRIMARY = "color_primary";
         /**
          * Type: String
          */
-        public static final String COLOR_SECONDARY = "color_secondary";
+        String COLOR_SECONDARY = "color_secondary";
         /**
          * Type: boolean
          */
-        public static final String IS_SERVING = "is_serving";
+        String IS_SERVING = "is_serving";
         /**
          * Type: boolean
          */
         // TODO we should see if there is a more transient way for us to do this
-        public static final String MATCHED_SEARCH = "matched_search";
+        String MATCHED_SEARCH = "matched_search";
         /**
          * Type: double
          */
-        public static final String LATITUDE = "latitude";
+        String LATITUDE = "latitude";
         /**
          * Type: double
          */
-        public static final String LONGITUDE = "longitude";
+        String LONGITUDE = "longitude";
         /**
          * Type: boolean
          */
         // TODO this mechanism is becoming really sketch now that we are getting user support for non-trucks. Should see if there is a better way of doing this.
-        public static final String OWNED_BY_CURRENT_USER = "owned_by_current_user";
+        String OWNED_BY_CURRENT_USER = "owned_by_current_user";
         /**
          * Type: String
          */
-        public static final String DESCRIPTION = "description";
+        String DESCRIPTION = "description";
         /**
          * Formatted as (xxx) xxx-xxxx
          * <p/>
          * Type: String
          */
-        public static final String PHONE_NUMBER = "phone_number";
+        String PHONE_NUMBER = "phone_number";
         /**
          * Type: String
          */
-        public static final String WEBSITE = "website";
+        String WEBSITE = "website";
     }
 
     public interface Menu {
-        public static final String _ID = BaseColumns._ID;
-        public static final String MENU_ITEM_ID = "menu_item_id";
-        public static final String MENU_ITEM_NAME = "menu_item_name";
-        public static final String PRICE = "price";
-        public static final String MENU_ITEM_NOTES = "menu_item_notes";
-        public static final String ORDER_IN_CATEGORY = "order_in_category";
-        public static final String IS_AVAILABLE = "is_available";
-        public static final String CATEGORY_NAME = "category_name";
-        public static final String CATEGORY_ID = "category_id";
-        public static final String CATEGORY_NOTES = "category_notes";
-        public static final String ORDER_IN_MENU = "order_in_menu";
-        public static final String TRUCK_ID = "truck_id";
-        public static final String MENU_ITEM_TAGS = "menu_item_tags";
+        String _ID = BaseColumns._ID;
+        String MENU_ITEM_ID = "menu_item_id";
+        String MENU_ITEM_NAME = "menu_item_name";
+        String PRICE = "price";
+        String MENU_ITEM_NOTES = "menu_item_notes";
+        String ORDER_IN_CATEGORY = "order_in_category";
+        String IS_AVAILABLE = "is_available";
+        String CATEGORY_NAME = "category_name";
+        String CATEGORY_ID = "category_id";
+        String CATEGORY_NOTES = "category_notes";
+        String ORDER_IN_MENU = "order_in_menu";
+        String TRUCK_ID = "truck_id";
+        String MENU_ITEM_TAGS = "menu_item_tags";
     }
 }
