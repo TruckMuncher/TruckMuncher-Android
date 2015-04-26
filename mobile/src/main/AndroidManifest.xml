@@ -142,9 +142,6 @@
             android:name=".vendor.VendorTrucksService"
             android:exported="false" />
         <service
-            android:name=".vendor.ResetVendorTrucksService"
-            android:exported="false" />
-        <service
             android:name=".menu.MenuUpdateService"
             android:exported="false" />
         <service

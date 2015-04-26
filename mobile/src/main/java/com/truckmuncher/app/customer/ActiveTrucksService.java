@@ -63,6 +63,10 @@ public class ActiveTrucksService extends IntentService {
         try {
             ActiveTrucksResponse response = truckService.getActiveTrucks(request);
 
+            if (response == null) {
+                return;
+            }
+
             List<ActiveTrucksResponse.Truck> trucks = response.trucks;
             ContentValues[] contentValues = new ContentValues[trucks.size()];
             String[] truckIds = new String[trucks.size()];

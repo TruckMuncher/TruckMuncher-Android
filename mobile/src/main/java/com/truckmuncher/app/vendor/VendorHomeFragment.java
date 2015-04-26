@@ -29,9 +29,6 @@ public class VendorHomeFragment extends VendorMapFragment {
     @InjectView(R.id.vendor_map_marker_pulse)
     ImageView vendorMarkerPulse;
 
-    @InjectView(R.id.serving_mode)
-    SwitchCompat servingModeSwitch;
-
     private Location currentLocation;
     private OnServingModeChangedListener onServingModeChangedListener;
 

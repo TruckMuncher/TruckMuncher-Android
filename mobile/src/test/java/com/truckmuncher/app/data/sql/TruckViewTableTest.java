@@ -28,7 +28,8 @@ public class TruckViewTableTest extends DatabaseTableTestCase {
                 PublicContract.Truck.LONGITUDE,
                 PublicContract.Truck.DESCRIPTION,
                 PublicContract.Truck.PHONE_NUMBER,
-                PublicContract.Truck.WEBSITE
+                PublicContract.Truck.WEBSITE,
+                PublicContract.Truck.OWNER_ID
         };
         Cursor cursor = db.query(Tables.TRUCK, projection, null, null, null, null, null);
         assertThat(cursor).isNotNull();
