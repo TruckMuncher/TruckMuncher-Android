@@ -1,7 +1,6 @@
 package com.truckmuncher.app.common;
 
 import com.truckmuncher.app.BuildConfig;
-import com.volkhart.androidutil.reporting.CrashlyticsTree;
 
 import timber.log.Timber;
 

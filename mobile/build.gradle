@@ -149,13 +149,12 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.3.0'
 
     // Logging
-    compile 'com.jakewharton.timber:timber:2.7.1'
+    compile 'com.jakewharton.timber:timber:3.0.1'
     compile('com.crashlytics.sdk.android:crashlytics:2.2.3@aar') {
         transitive = true;
     }
 
     // UI Utils
-    compile 'com.volkhart:android-util:1.0.0-SNAPSHOT@aar'
     compile 'com.squareup.phrase:phrase:1.0.3'
     compile 'com.jakewharton:butterknife:6.0.0'
 
