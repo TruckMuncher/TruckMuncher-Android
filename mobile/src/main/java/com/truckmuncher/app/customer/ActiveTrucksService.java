@@ -63,6 +63,7 @@ public class ActiveTrucksService extends IntentService {
         try {
             ActiveTrucksResponse response = truckService.getActiveTrucks(request);
 
+            // TODO this is a temporary fix until the API has fixed this issue
             if (response == null) {
                 return;
             }

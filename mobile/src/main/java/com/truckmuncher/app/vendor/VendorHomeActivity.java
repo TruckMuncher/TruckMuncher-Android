@@ -201,19 +201,24 @@ public class VendorHomeActivity extends AppCompatActivity implements
 
     @Override
     public void showNoTrucksError() {
-        new SnackBar.Builder(this)
-                .withMessageId(R.string.error_no_vendor_trucks)
-                .withActionMessageId(R.string.action_add_truck)
-                .withStyle(SnackBar.Style.INFO)
-                .withOnClickListener(new SnackBar.OnMessageClickListener() {
-                    @Override
-                    public void onMessageClick(Parcelable parcelable) {
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setData(Uri.parse("https://www.truckmuncher.com/#/login"));
-                        startActivity(intent);
-                    }
-                })
-                .show();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                new SnackBar.Builder(VendorHomeActivity.this)
+                        .withMessageId(R.string.error_no_vendor_trucks)
+                        .withActionMessageId(R.string.action_add_truck)
+                        .withStyle(SnackBar.Style.INFO)
+                        .withOnClickListener(new SnackBar.OnMessageClickListener() {
+                            @Override
+                            public void onMessageClick(Parcelable parcelable) {
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                intent.setData(Uri.parse("https://www.truckmuncher.com/#/login"));
+                                startActivity(intent);
+                            }
+                        })
+                        .show();
+            }
+        });
     }
 
     @Override
