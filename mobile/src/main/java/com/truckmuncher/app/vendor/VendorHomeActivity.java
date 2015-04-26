@@ -43,8 +43,9 @@ import javax.inject.Inject;
 import static com.truckmuncher.app.data.sql.WhereClause.Operator.EQUALS;
 
 public class VendorHomeActivity extends ActionBarActivity implements
-        LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemSelectedListener,
-        VendorHomeFragment.OnServingModeChangedListener {
+        LoaderManager.LoaderCallbacks<Cursor>,
+        VendorHomeFragment.OnServingModeChangedListener,
+        VendorHomeController.VendorHomeUi {
 
     @Inject
     SharedPreferences sharedPreferences;
@@ -52,11 +53,12 @@ public class VendorHomeActivity extends ActionBarActivity implements
     UserAccount account;
     @Inject
     Bus bus;
+    @Inject
+    VendorHomeController controller;
 
     private Spinner actionBarSpinner;
-    private String selectedTruckId;
     private VendorHomeServiceHelper serviceHelper;
-    private String[] truckIds;
+    private SimpleCursorAdapter spinnerAdapter;
 
     public static Intent newIntent(Context context) {
         return new Intent(context, VendorHomeActivity.class);
@@ -73,8 +75,21 @@ public class VendorHomeActivity extends ActionBarActivity implements
 
         actionBarSpinner = new Spinner(getSupportActionBar().getThemedContext());
         toolbar.addView(actionBarSpinner);
+        actionBarSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Cursor cursor = (Cursor) spinnerAdapter.getItem(position);
+                String truckId = cursor.getString(TrucksOwnedByUserQuery.ID);
+                controller.setSelectedTruckId(truckId);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         App.get(this).inject(this);
+        controller.setVendorHomeUi(this);
 
         getSupportLoaderManager().initLoader(0, null, this);
 
@@ -110,7 +125,7 @@ public class VendorHomeActivity extends ActionBarActivity implements
             doLogout();
             return true;
         } else if (item.getItemId() == R.id.action_menu) {
-            showMenu();
+            controller.onEditMenuClicked();
             return true;
         } else if (item.getItemId() == R.id.action_settings) {
             startActivity(VendorSettingsActivity.newIntent(this));
@@ -128,6 +143,7 @@ public class VendorHomeActivity extends ActionBarActivity implements
 
     @Override
     public void onServingModeChanged(final boolean enabled, Location currentLocation) {
+        String selectedTruckId = controller.getSelectedTruckId();
         serviceHelper.changeServingState(this, selectedTruckId, enabled, currentLocation);
         actionBarSpinner.setEnabled(!enabled);
 
@@ -167,25 +183,12 @@ public class VendorHomeActivity extends ActionBarActivity implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        truckIds = new String[cursor.getCount()];
-
-        if (cursor.moveToFirst()) {
-            selectedTruckId = cursor.getString(TrucksOwnedByUserQuery.ID);
-
-            int counter = 0;
-            do {
-                truckIds[counter] = cursor.getString(TrucksOwnedByUserQuery.ID);
-                counter++;
-            } while (cursor.moveToNext());
-        }
-
         String[] adapterCols = {TrucksOwnedByUserQuery.PROJECTION[TrucksOwnedByUserQuery.NAME]};
         int[] adapterRowViews = new int[]{android.R.id.text1};
-        SimpleCursorAdapter spinnerAdapter = new SimpleCursorAdapter(getSupportActionBar().getThemedContext(),
+        spinnerAdapter = new SimpleCursorAdapter(getSupportActionBar().getThemedContext(),
                 android.R.layout.simple_spinner_item, cursor, adapterCols, adapterRowViews, 0);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         actionBarSpinner.setAdapter(spinnerAdapter);
-        actionBarSpinner.setOnItemSelectedListener(this);
         if (spinnerAdapter.getCount() > 0) {
             actionBarSpinner.setSelection(0, true);
         }
@@ -197,42 +200,34 @@ public class VendorHomeActivity extends ActionBarActivity implements
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        selectedTruckId = truckIds[position];
+    public void showNoTrucksError() {
+        new SnackBar.Builder(this)
+                .withMessageId(R.string.error_no_vendor_trucks)
+                .withActionMessageId(R.string.action_add_truck)
+                .withStyle(SnackBar.Style.INFO)
+                .withOnClickListener(new SnackBar.OnMessageClickListener() {
+                    @Override
+                    public void onMessageClick(Parcelable parcelable) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse("https://www.truckmuncher.com/#/login"));
+                        startActivity(intent);
+                    }
+                })
+                .show();
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        // no-op
+    public void showEditMenuUi(String truckId) {
+        getSupportFragmentManager().beginTransaction()
+                .add(android.R.id.content, MenuAdminFragment.newInstance(truckId), MenuAdminFragment.TAG)
+                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .commit();
     }
 
     @Subscribe
     public void onSyncCompleted(VendorTruckStateResolver.CompletedEvent event) {
         getSupportLoaderManager().restartLoader(0, null, this);
-    }
-
-    private void showMenu() {
-        if (selectedTruckId != null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(android.R.id.content, MenuAdminFragment.newInstance(selectedTruckId), MenuAdminFragment.TAG)
-                    .addToBackStack(null)
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                    .commit();
-        } else {
-            new SnackBar.Builder(this)
-                    .withMessageId(R.string.error_no_vendor_trucks)
-                    .withActionMessageId(R.string.action_add_truck)
-                    .withStyle(SnackBar.Style.INFO)
-                    .withOnClickListener(new SnackBar.OnMessageClickListener() {
-                        @Override
-                        public void onMessageClick(Parcelable parcelable) {
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setData(Uri.parse("https://www.truckmuncher.com/#/login"));
-                            startActivity(intent);
-                        }
-                    })
-                    .show();
-        }
     }
 
     private void showWarning(int numItems) {
@@ -247,7 +242,7 @@ public class VendorHomeActivity extends ActionBarActivity implements
                 }
 
                 if (id == AlertDialog.BUTTON_POSITIVE) {
-                    showMenu();
+                    showEditMenuUi(controller.getSelectedTruckId());
                 }
                 dialog.cancel();
             }
