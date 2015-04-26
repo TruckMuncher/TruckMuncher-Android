@@ -2,6 +2,8 @@ package com.truckmuncher.app.customer;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.annotation.UiThreadTest;
+import android.support.test.rule.UiThreadTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -10,6 +12,7 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -19,6 +22,9 @@ import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
 public class TruckClusterRendererTest {
+
+    @Rule
+    public UiThreadTestRule uiThreadTestRule = new UiThreadTestRule();
 
     private TruckClusterRenderer<TruckCluster> clusterRenderer;
 
@@ -32,6 +38,7 @@ public class TruckClusterRendererTest {
         clusterRenderer = new TruckClusterRenderer<>(context, map, clusterManager);
     }
 
+    @UiThreadTest
     @Test
     public void shouldRenderAsCluster() {
         Cluster<TruckCluster> cluster = mock(Cluster.class);
