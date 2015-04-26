@@ -1,6 +1,5 @@
 package com.truckmuncher.app.vendor;
 
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -30,16 +29,14 @@ public class VendorTruckStateResolver {
     private final ApiExceptionResolver exceptionResolver;
     private final SQLiteDatabase database;
     private final UserAccount userAccount;
-    private final ContentResolver contentResolver;
     private final Bus bus;
 
     @Inject
-    public VendorTruckStateResolver(TruckService truckService, ApiExceptionResolver exceptionResolver, SQLiteDatabase database, UserAccount userAccount, ContentResolver contentResolver, Bus bus) {
+    public VendorTruckStateResolver(TruckService truckService, ApiExceptionResolver exceptionResolver, SQLiteDatabase database, UserAccount userAccount, Bus bus) {
         this.truckService = truckService;
         this.exceptionResolver = exceptionResolver;
         this.database = database;
         this.userAccount = userAccount;
-        this.contentResolver = contentResolver;
         this.bus = bus;
     }
 

@@ -1,9 +1,9 @@
 package com.truckmuncher.app.vendor;
 
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.squareup.otto.Bus;
 import com.truckmuncher.api.trucks.Truck;
 import com.truckmuncher.api.trucks.TruckService;
 import com.truckmuncher.api.trucks.TrucksForVendorRequest;
@@ -42,13 +42,13 @@ public class VendorTruckStateResolverTest {
     @Mock
     UserAccount userAccount;
     @Mock
-    ContentResolver contentResolver;
+    Bus bus;
     VendorTruckStateResolver resolver;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        resolver = new VendorTruckStateResolver(truckService, exceptionResolver, database, userAccount, contentResolver, bus);
+        resolver = new VendorTruckStateResolver(truckService, exceptionResolver, database, userAccount, bus);
     }
 
     @Test

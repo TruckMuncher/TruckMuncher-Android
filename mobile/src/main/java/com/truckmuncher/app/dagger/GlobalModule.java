@@ -1,6 +1,5 @@
 package com.truckmuncher.app.dagger;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -145,11 +144,6 @@ public class GlobalModule {
     @Provides
     public SharedPreferences provideSharedPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
-    }
-
-    @Provides
-    ContentResolver provideContentResolver(Context context) {
-        return context.getContentResolver();
     }
 
     @Provides
