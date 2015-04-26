@@ -122,7 +122,9 @@ public class VendorHomeActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_logout) {
-            doLogout();
+            controller.onLogoutClicked();
+            startActivity(MainActivity.newIntent(this));
+            finish();
             return true;
         } else if (item.getItemId() == R.id.action_menu) {
             controller.onEditMenuClicked();
@@ -133,12 +135,6 @@ public class VendorHomeActivity extends AppCompatActivity implements
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void exitVendorMode() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
     }
 
     @Override
@@ -259,11 +255,6 @@ public class VendorHomeActivity extends AppCompatActivity implements
                 .setView(checkBoxView)
                 .setPositiveButton(getString(R.string.items_unavailable_positive_button), listener)
                 .setNegativeButton(getString(R.string.items_unavailable_negative_button), listener).show();
-    }
-
-    private void doLogout() {
-        account.logout();
-        exitVendorMode();
     }
 
     public interface TrucksOwnedByUserQuery {

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.truckmuncher.app.MainActivity;
 import com.truckmuncher.app.test.robots.VendorHomeRobot;
 import com.truckmuncher.app.test.rules.GraphReplacementRule;
 import com.truckmuncher.app.test.rules.InjectMocksRule;
@@ -25,6 +26,7 @@ import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAct
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasData;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.isInternal;
 import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.mockito.Mockito.verify;
 
@@ -65,6 +67,15 @@ public class VendorHomeActivityTest {
         new VendorHomeRobot(activityRule.getActivity())
                 .clickEditMenu();
         verify(controller).onEditMenuClicked();
+    }
+
+    @Test
+    public void logoutActionNotifiesControllerAndNavigates() {
+        new VendorHomeRobot(activityRule.getActivity())
+                .logout();
+        verify(controller).onLogoutClicked();
+
+        intending(is(MainActivity.newIntent(activityRule.getActivity())));
     }
 
     @Module(library = true, overrides = true)

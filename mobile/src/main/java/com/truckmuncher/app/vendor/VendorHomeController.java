@@ -1,14 +1,18 @@
 package com.truckmuncher.app.vendor;
 
+import com.truckmuncher.app.authentication.UserAccount;
+
 import javax.inject.Inject;
 
 public class VendorHomeController {
 
+    private final UserAccount userAccount;
     private String selectedTruckId;
     private VendorHomeUi ui;
 
     @Inject
-    public VendorHomeController() {
+    public VendorHomeController(UserAccount userAccount) {
+        this.userAccount = userAccount;
     }
 
     public void setVendorHomeUi(VendorHomeUi ui) {
@@ -33,6 +37,10 @@ public class VendorHomeController {
         } else {
             ui.showNoTrucksError();
         }
+    }
+
+    public void onLogoutClicked() {
+        userAccount.logout();
     }
 
     public interface VendorHomeUi {
