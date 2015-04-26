@@ -18,6 +18,7 @@
     <string name="title_items_unavailable">Menu items unavailable</string>
     <string name="items_unavailable_positive_button">View menu</string>
     <string name="items_unavailable_negative_button">Ignore</string>
+    <string name="all_trucks">All trucks</string>
 
     <string name="menu_item_tag_gluten">Gluten free</string>
     <string name="menu_item_tag_vegetarian">Vegetarian</string>
@@ -33,6 +34,7 @@
     <string name="action_vendor_mode">Vendor mode</string>
     <string name="action_logout">Log out</string>
     <string name="action_menu">Edit menu</string>
+    <string name="action_add_truck">ADD TRUCK</string>
 
     <!-- Accessibility -->
     <string name="access_vendor_marker_description">Your truck location</string>
@@ -52,7 +54,7 @@
     <string name="error_invalid_truck">Invalid truck</string>
     <string name="error_serving_no_location">We don\'t know where you are yet. Wait for GPS or use the map to set you location.</string>
     <string name="error_no_serving_trucks">No trucks are serving right now</string>
-    <string name="all_trucks">All trucks</string>
+    <string name="error_no_vendor_trucks">You don\'t own any trucks yet</string>
 
     <!-- Plurals-->
     <plurals name="items_unavailable_message">

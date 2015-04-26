@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -24,6 +25,7 @@ import android.widget.CheckBox;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 
+import com.github.mrengineer13.snackbar.SnackBar;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.truckmuncher.app.App;
@@ -210,11 +212,27 @@ public class VendorHomeActivity extends ActionBarActivity implements
     }
 
     private void showMenu() {
-        getSupportFragmentManager().beginTransaction()
-                .add(android.R.id.content, MenuAdminFragment.newInstance(selectedTruckId), MenuAdminFragment.TAG)
-                .addToBackStack(null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .commit();
+        if (selectedTruckId != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(android.R.id.content, MenuAdminFragment.newInstance(selectedTruckId), MenuAdminFragment.TAG)
+                    .addToBackStack(null)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commit();
+        } else {
+            new SnackBar.Builder(this)
+                    .withMessageId(R.string.error_no_vendor_trucks)
+                    .withActionMessageId(R.string.action_add_truck)
+                    .withStyle(SnackBar.Style.INFO)
+                    .withOnClickListener(new SnackBar.OnMessageClickListener() {
+                        @Override
+                        public void onMessageClick(Parcelable parcelable) {
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setData(Uri.parse("https://www.truckmuncher.com/#/login"));
+                            startActivity(intent);
+                        }
+                    })
+                    .show();
+        }
     }
 
     private void showWarning(int numItems) {
