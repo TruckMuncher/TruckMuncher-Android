@@ -1,7 +1,5 @@
 package com.truckmuncher.app.common;
 
-import android.content.Context;
-
 import com.truckmuncher.app.BuildConfig;
 import com.volkhart.androidutil.reporting.CrashlyticsTree;
 
@@ -20,10 +18,7 @@ public final class LoggerStarter {
         // No instances
     }
 
-    public static synchronized void start(Context context) {
-        if (context == null) {
-            throw new IllegalArgumentException("Context may not be null");
-        }
+    public static synchronized void start() {
         if (!hasStarted) {
             if (BuildConfig.DEBUG) {
                 Timber.plant(new Timber.DebugTree());
