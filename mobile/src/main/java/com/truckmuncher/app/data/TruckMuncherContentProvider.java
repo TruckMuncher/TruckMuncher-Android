@@ -60,7 +60,7 @@ public class TruckMuncherContentProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        LoggerStarter.start(getContext());
+        LoggerStarter.start();
         return true;
     }
 

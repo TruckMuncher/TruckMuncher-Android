@@ -1,33 +1,27 @@
 package com.truckmuncher.app.vendor;
 
-import android.content.Context;
-import android.test.ActivityInstrumentationTestCase2;
+import android.support.test.rule.ActivityTestRule;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.truckmuncher.app.MainActivity;
 import com.truckmuncher.app.test.robots.MainScreenRobot;
 
-import static com.truckmuncher.app.test.robots.RobotLoader.withRobot;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-public class ChangeToVendorModeTest extends ActivityInstrumentationTestCase2<MainActivity> {
+@RunWith(AndroidJUnit4.class)
+public class ChangeToVendorModeTest {
 
-    private Context context;
+    @Rule
+    public ActivityTestRule<MainActivity> activityRule = new ActivityTestRule<>(MainActivity.class);
 
-    public ChangeToVendorModeTest() {
-        super(MainActivity.class);
-    }
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        context = getInstrumentation().getTargetContext();
-        getActivity();
-    }
-
-    public void testLaunchVendorMode() {
-        withRobot(MainScreenRobot.class)
-                .verifyTitle(getActivity())
+    @Test
+    public void launchVendorMode() {
+        new MainScreenRobot(activityRule.getActivity())
+                .verifyTitle()
 
                         // TODO we need to figure out how to reset the app state, specifically whether or not we're logged in or not, between tests.
-                .launchVendorMode(context);
+                .launchVendorMode();
     }
 }

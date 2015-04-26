@@ -29,7 +29,7 @@ public class App extends Application {
         TwitterAuthConfig authConfig = new TwitterAuthConfig(BuildConfig.TWITTER_API_KEY, BuildConfig.TWITTER_API_SECRET);
         Fabric.with(this, FabricKits.list(authConfig));
 
-        LoggerStarter.start(this);
+        LoggerStarter.start();
 
         PRNGFixes.apply();
         objectGraph = ObjectGraph.create(Modules.list(this));

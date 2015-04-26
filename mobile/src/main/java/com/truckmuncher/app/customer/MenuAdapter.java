@@ -12,9 +12,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.truckmuncher.app.R;
+import com.truckmuncher.app.common.Truss;
 import com.truckmuncher.app.data.PublicContract;
 import com.twotoasters.sectioncursoradapter.SectionCursorAdapter;
-import com.volkhart.androidutil.text.Truss;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
