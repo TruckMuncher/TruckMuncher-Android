@@ -138,7 +138,7 @@ play {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:22.0.0'
+    compile 'com.android.support:appcompat-v7:22.1.1'
     compile 'com.google.android.gms:play-services-maps:7.0.0'
     compile 'com.google.android.gms:play-services-location:7.0.0'
     compile 'com.google.maps.android:android-maps-utils:0.3.3'
@@ -200,12 +200,12 @@ repositories {
 }
 
 // Makes espresso not complain
-//configurations.all {
-//    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-//        if (details.requested.group == 'com.android.support') {
-//            // The support test libraries depend on an older version of the support annotations. In order
-//            // to avoid NoClassDefFoundError being thrown we force all versions to the latest.
-//            details.useVersion '22.1.0'
-//        }
-//    }
-//}
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        if (details.requested.group == 'com.android.support') {
+            // The support test libraries depend on an older version of the support annotations. In order
+            // to avoid NoClassDefFoundError being thrown we force all versions to the latest.
+            details.useVersion '22.1.0'
+        }
+    }
+}

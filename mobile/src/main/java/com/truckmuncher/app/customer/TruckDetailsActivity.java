@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -24,7 +24,7 @@ import butterknife.InjectView;
 
 import static com.guava.common.base.Preconditions.checkNotNull;
 
-public class TruckDetailsActivity extends ActionBarActivity implements TruckDataLoaderHandler.OnTriedToLoadInvalidTruckListener {
+public class TruckDetailsActivity extends AppCompatActivity implements TruckDataLoaderHandler.OnTriedToLoadInvalidTruckListener {
 
     public static final String ARG_ENDING_TRUCK = "ending_truck";
     private static final String ARG_TRUCK_IDS = "truck_ids";
