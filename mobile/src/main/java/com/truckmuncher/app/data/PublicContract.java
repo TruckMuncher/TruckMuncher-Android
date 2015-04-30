@@ -141,6 +141,8 @@ public class PublicContract {
          * Type: String
          */
         String WEBSITE = "website";
+
+        String IS_FAVORITE = "is_favorite";
     }
 
     public interface Menu {

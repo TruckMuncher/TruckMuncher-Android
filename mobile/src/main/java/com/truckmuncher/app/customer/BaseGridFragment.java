@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,15 +15,13 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.truckmuncher.app.R;
-import com.truckmuncher.app.data.Contract;
-import com.truckmuncher.app.data.PublicContract;
 
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class AllTrucksFragment extends Fragment
+public abstract class BaseGridFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<Cursor>, GridView.OnItemClickListener {
 
     private static final int REQUEST_TRUCK_DETAILS = 0;
@@ -36,7 +33,7 @@ public class AllTrucksFragment extends Fragment
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_all_trucks, container, false);
+        View view = inflater.inflate(R.layout.fragment_truck_grid, container, false);
         ButterKnife.inject(this, view);
 
         gridAdapter = new TrucksGridAdapter(getActivity(), R.layout.grid_item_truck, null);
@@ -53,10 +50,13 @@ public class AllTrucksFragment extends Fragment
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), Contract.TRUCK_PROPERTIES_URI, TrucksGridAdapter.TruckQuery.PROJECTION,
-                null, new String[]{}, PublicContract.Truck.NAME);
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
     }
+
+    @Override
+    public abstract Loader<Cursor> onCreateLoader(int id, Bundle args);
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {

@@ -16,6 +16,9 @@ public abstract class ApiRequestInterceptor implements RequestInterceptor {
     public static final String HEADER_NONCE = "X-Nonce";
     public static final String HEADER_TIMESTAMP = "X-Timestamp";
     public static final String HEADER_AUTHORIZATION = "Authorization";
+    public static final String HEADER_ACCEPT = "Accept";
+
+    private static final String ACCEPT_TYPE = "application/x-protobuf";
 
     private final DateFormat formatter;
     private final SecureRandom generator;
@@ -37,5 +40,8 @@ public abstract class ApiRequestInterceptor implements RequestInterceptor {
         generator.nextBytes(bytes);
         String nonce = Base64.encodeToString(bytes, Base64.DEFAULT);
         request.addHeader(HEADER_NONCE, nonce);
+
+        // Accept
+        request.addHeader(HEADER_ACCEPT, ACCEPT_TYPE);
     }
 }

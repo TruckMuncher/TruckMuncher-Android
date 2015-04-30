@@ -18,6 +18,8 @@
         android:layout_height="match_parent"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:layout_weight="1"
         android:importantForAccessibility="no" />
 
@@ -50,10 +52,30 @@
             tools:text="Greek" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/distance_from_location"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        tools:text="1.4 mi" />
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/distance_from_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            tools:text="1.4 mi" />
+
+        <ImageView
+            android:id="@+id/favorited"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/btn_star_big_on"
+            android:visibility="visible"/>
+
+        <ImageView
+            android:id="@+id/not_favorited"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/btn_star_big_off"
+            android:visibility="gone"/>
+    </LinearLayout>
 </LinearLayout>

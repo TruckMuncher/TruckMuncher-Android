@@ -97,11 +97,12 @@ public class TruckDetailsActivity extends ActionBarActivity implements TruckData
             case android.R.id.home:
                 Intent parent = NavUtils.getParentActivityIntent(this);
                 if (NavUtils.shouldUpRecreateTask(this, parent)) {
-                    NavUtils.navigateUpTo(this, parent);
-                } else {
                     TaskStackBuilder.create(this)
                             .addParentStack(this)
                             .startActivities();
+                } else {
+                    parent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    NavUtils.navigateUpTo(this, parent);
                 }
                 return true;
             default:

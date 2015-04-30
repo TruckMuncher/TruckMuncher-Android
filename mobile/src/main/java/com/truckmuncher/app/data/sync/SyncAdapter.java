@@ -5,10 +5,12 @@ import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.SyncResult;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 
 import com.truckmuncher.api.menu.MenuService;
 import com.truckmuncher.api.trucks.TruckService;
+import com.truckmuncher.api.user.UserService;
 import com.truckmuncher.app.App;
 
 import javax.inject.Inject;
@@ -20,7 +22,11 @@ public final class SyncAdapter extends AbstractThreadedSyncAdapter {
     @Inject
     MenuService menuService;
     @Inject
+    UserService userService;
+    @Inject
     ApiExceptionResolver apiExceptionResolver;
+    @Inject
+    SQLiteOpenHelper openHelper;
 
     public SyncAdapter(Context context, boolean autoInitialize, boolean allowParallelSyncs) {
         super(context, autoInitialize, allowParallelSyncs);
@@ -29,8 +35,8 @@ public final class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
-
         new TruckServingModeSyncTask(provider, truckService, apiExceptionResolver).execute(syncResult);
         new MenuItemAvailabilitySyncTask(provider, menuService, apiExceptionResolver).execute(syncResult);
+        new FavoriteTruckSyncTask(openHelper, userService, apiExceptionResolver).execute(syncResult);
     }
 }

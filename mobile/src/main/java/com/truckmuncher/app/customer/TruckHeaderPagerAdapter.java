@@ -63,7 +63,7 @@ public class TruckHeaderPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     public interface Query {
-        static final String[] PROJECTION = new String[]{PublicContract.Truck.ID};
-        static final int TRUCK_ID = 0;
+        String[] PROJECTION = new String[]{PublicContract.Truck.ID};
+        int TRUCK_ID = 0;
     }
 }

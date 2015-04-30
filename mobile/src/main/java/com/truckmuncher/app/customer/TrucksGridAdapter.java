@@ -2,6 +2,7 @@ package com.truckmuncher.app.customer;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.media.Image;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
@@ -28,8 +29,13 @@ public class TrucksGridAdapter extends SimpleCursorAdapter {
                 .imageUrl(cursor.getString(TruckQuery.IMAGE_URL))
                 .build();
 
+        Boolean isServing = cursor.getInt(TruckQuery.IS_SERVING) == 1;
+
         TextView textView = (TextView) view.findViewById(R.id.truck_name);
         ImageView imageView = (ImageView) view.findViewById(R.id.truck_image);
+        ImageView activeIndicator = (ImageView) view.findViewById(R.id.truck_serving_indicator);
+
+        activeIndicator.setVisibility(isServing ? View.VISIBLE : View.INVISIBLE);
 
         textView.setText(truck.name);
 
@@ -72,11 +78,13 @@ public class TrucksGridAdapter extends SimpleCursorAdapter {
                 PublicContract.Truck._ID,
                 PublicContract.Truck.ID,
                 PublicContract.Truck.NAME,
-                PublicContract.Truck.IMAGE_URL
+                PublicContract.Truck.IMAGE_URL,
+                PublicContract.Truck.IS_SERVING
         };
         int _ID = 0;
         int ID = 1;
         int NAME = 2;
         int IMAGE_URL = 3;
+        int IS_SERVING = 4;
     }
 }

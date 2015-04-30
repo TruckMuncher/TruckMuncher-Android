@@ -2,7 +2,6 @@ package com.truckmuncher.app.customer;
 
 import android.database.Cursor;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,13 +19,16 @@ import android.widget.TextView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.SphericalUtil;
 import com.squareup.picasso.Picasso;
+import com.truckmuncher.app.App;
 import com.truckmuncher.app.R;
-import com.truckmuncher.app.data.Contract;
+import com.truckmuncher.app.authentication.UserAccount;
 import com.truckmuncher.app.data.PublicContract;
 import com.truckmuncher.app.data.sql.WhereClause;
 
 import java.text.DecimalFormat;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -41,6 +43,10 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
     private static final double METERS_TO_MILES = 0.000621371;
     private static final String ARG_TRUCK_ID = "truck_id";
     private static final String ARG_LOCATION = "location";
+
+    @Inject
+    UserAccount userAccount;
+
     @InjectView(R.id.truck_name)
     TextView truckName;
     @InjectView(R.id.truck_keywords)
@@ -51,6 +57,10 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
     ImageView truckImage;
     @InjectView(R.id.header)
     View headerView;
+    @InjectView(R.id.favorited)
+    ImageView favoritedView;
+    @InjectView(R.id.not_favorited)
+    ImageView notFavoritedView;
 
     private OnTruckHeaderClickListener truckHeaderClickListener;
     private LatLng referenceLocation;
@@ -69,6 +79,7 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_truck_header, container, false);
         ButterKnife.inject(this, view);
+        App.get(getActivity()).inject(this);
 
         referenceLocation = getArguments().getParcelable(ARG_LOCATION);
         return view;
@@ -92,20 +103,9 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
         WhereClause whereClause = new WhereClause.Builder()
                 .where(PublicContract.Truck.ID, EQUALS, truckId)
                 .build();
-        Uri uri;
-        String[] projection;
 
-        // Necessary for trucks that are approved by haven't gone into serving mode at all yet.
-        // This should only be when accessing a truck via deep linking or from the all trucks list,
-        // so the location isn't needed anyway.
-        if (referenceLocation == null) {
-            uri = Contract.TRUCK_PROPERTIES_URI;
-            projection = TruckQuery.PROJECTION;
-        } else {
-            uri = PublicContract.TRUCK_URI;
-            projection = TruckQueryWithLocation.PROJECTION;
-        }
-        return new CursorLoader(getActivity(), uri, projection, whereClause.selection, whereClause.selectionArgs, null);
+        return new CursorLoader(getActivity(), PublicContract.TRUCK_URI, TruckQuery.PROJECTION,
+                whereClause.selection, whereClause.selectionArgs, null);
     }
 
     @Override
@@ -126,11 +126,12 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
             String truckName = cursor.getString(TruckQuery.NAME);
             String truckKeywords = builder.toString();
             String imageUrl = cursor.getString(TruckQuery.IMAGE_URL);
-            String secondaryColor = cursor.getString(TruckQuery.COLOR_SECONDARY);
-            LatLng truckLocation = referenceLocation == null ? null :
-                    new LatLng(cursor.getDouble(TruckQueryWithLocation.LATITUDE),
-                            cursor.getDouble(TruckQueryWithLocation.LONGITUDE));
-            onTruckDataLoaded(truckName, truckKeywords, imageUrl, secondaryColor, truckLocation);
+            String primaryColor = cursor.getString(TruckQuery.COLOR_PRIMARY);
+            Double latitude = cursor.getDouble(TruckQuery.LATITUDE);
+            Double longitude = cursor.getDouble(TruckQuery.LONGITUDE);
+            Boolean isFavorite = cursor.getInt(TruckQuery.IS_FAVORITE) == 1;
+            LatLng truckLocation = new LatLng(latitude, longitude);
+            onTruckDataLoaded(truckName, truckKeywords, imageUrl, primaryColor, truckLocation, isFavorite);
         } else {
 
             // Invalid truck
@@ -151,11 +152,28 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
         }
     }
 
+    @OnClick(R.id.favorited)
+    void onFavoriteClick() {
+        getActivity().startService(RemoveFavoriteTruckService.newIntent(getActivity(), getArguments().getString(ARG_TRUCK_ID)));
+
+        favoritedView.setVisibility(View.GONE);
+        notFavoritedView.setVisibility(View.VISIBLE);
+    }
+
+    @OnClick(R.id.not_favorited)
+    void onUnfavoriteClick() {
+        getActivity().startService(AddFavoriteTruckService.newIntent(getActivity(), getArguments().getString(ARG_TRUCK_ID)));
+
+        favoritedView.setVisibility(View.VISIBLE);
+        notFavoritedView.setVisibility(View.GONE);
+    }
+
     public void setOnTruckHeaderClickListener(OnTruckHeaderClickListener listener) {
         truckHeaderClickListener = listener;
     }
 
-    private void onTruckDataLoaded(String name, String keywords, String imageUrl, String headerColor, LatLng truckLocation) {
+    private void onTruckDataLoaded(String name, String keywords, String imageUrl, String headerColor,
+                                   LatLng truckLocation, boolean isFavorite) {
         if (TextUtils.isEmpty(imageUrl)) {
             truckImage.setVisibility(View.GONE);
         } else {
@@ -176,6 +194,20 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
 
         truckName.setText(name);
         truckKeywords.setText(keywords);
+
+        // User is logged in. Show/allow favoriting of trucks
+        if (!TextUtils.isEmpty(userAccount.getAuthToken())) {
+            if (isFavorite) {
+                favoritedView.setVisibility(View.VISIBLE);
+                notFavoritedView.setVisibility(View.GONE);
+            } else {
+                favoritedView.setVisibility(View.GONE);
+                notFavoritedView.setVisibility(View.VISIBLE);
+            }
+        } else {
+            favoritedView.setVisibility(View.GONE);
+            notFavoritedView.setVisibility(View.GONE);
+        }
 
         if (referenceLocation != null) {
             // distance in meters
@@ -199,28 +231,17 @@ public class TruckHeaderFragment extends Fragment implements LoaderManager.Loade
                 PublicContract.Truck.NAME,
                 PublicContract.Truck.IMAGE_URL,
                 PublicContract.Truck.KEYWORDS,
-                PublicContract.Truck.COLOR_SECONDARY,
-        };
-        int NAME = 0;
-        int IMAGE_URL = 1;
-        int KEYWORDS = 2;
-        int COLOR_SECONDARY = 3;
-    }
-
-    interface TruckQueryWithLocation {
-        String[] PROJECTION = new String[]{
-                PublicContract.Truck.NAME,
-                PublicContract.Truck.IMAGE_URL,
-                PublicContract.Truck.KEYWORDS,
-                PublicContract.Truck.COLOR_SECONDARY,
+                PublicContract.Truck.COLOR_PRIMARY,
                 PublicContract.Truck.LATITUDE,
-                PublicContract.Truck.LONGITUDE
+                PublicContract.Truck.LONGITUDE,
+                PublicContract.Truck.IS_FAVORITE
         };
         int NAME = 0;
         int IMAGE_URL = 1;
         int KEYWORDS = 2;
-        int COLOR_SECONDARY = 3;
+        int COLOR_PRIMARY = 3;
         int LATITUDE = 4;
         int LONGITUDE = 5;
+        int IS_FAVORITE = 6;
     }
 }

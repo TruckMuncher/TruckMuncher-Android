@@ -4,6 +4,12 @@
 ALTER TABLE `truck_properties` ADD COLUMN `website` TEXT;
 ALTER TABLE `truck_properties` ADD COLUMN `is_dirty` INTEGER;
 
+CREATE TABLE `favorite_truck` (
+    `truck_id`      TEXT UNIQUE,
+    `is_favorite`   INTEGER,
+    `is_dirty`      INTEGER DEFAULT 0
+);
+
 DROP VIEW `truck`;
 
 CREATE VIEW `truck` AS SELECT
@@ -23,15 +29,13 @@ CREATE VIEW `truck` AS SELECT
     `latitude`,
     `longitude`,
     `truck_state`.`is_dirty` AS `is_dirty`,
-    `owned_by_current_user`
+    `owned_by_current_user`,
+
+    IFNULL(`is_favorite`, 0) as `is_favorite`
 
     FROM
-    `truck_properties`INNER JOIN `truck_state`
+    `truck_properties` LEFT JOIN `truck_state`
     ON `truck_properties`.`id` = `truck_state`.`id`
+    LEFT JOIN `favorite_truck`
+    ON `truck_properties`.`id` = `favorite_truck`.`truck_id`
 ;
-
-CREATE TABLE `favorite_truck` (
-    `truck_id`      TEXT PRIMARY KEY,
-    `is_favorite`   INTEGER,
-    `is_dirty`      INTEGER DEFAULT 0
-);

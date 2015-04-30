@@ -10,7 +10,7 @@
     <dimen name="list_item_two_line_height">72dp</dimen>
     <dimen name="list_item_text_padding">16dp</dimen>
 
-    <dimen name="menu_pull_up_header_height">68dp</dimen>
+    <dimen name="menu_pull_up_header_height">80dp</dimen>
 
     <dimen name="action_bar_spinner_text_size">20sp</dimen>
 

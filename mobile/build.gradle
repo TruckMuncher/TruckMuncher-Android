@@ -90,7 +90,7 @@ android {
             versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         }
         dev {
-            buildConfigField "String", "API_ENDPOINT", "\"http://truckmuncher:8443\""
+            buildConfigField "String", "API_ENDPOINT", "\"http://155.92.72.152:8443\""
             versionName "${versionMajor}.${versionMinor}.${versionPatch}.dev"
         }
 

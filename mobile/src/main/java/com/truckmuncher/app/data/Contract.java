@@ -81,6 +81,10 @@ public final class Contract {
 
     public interface FavoriteTruck {
         /**
+         * Type: int
+         */
+        String ID = "_id";
+        /**
          * Type: String
          */
         String TRUCK_ID = "truck_id";

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.facebook.stetho.Stetho;
+import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.truckmuncher.debug.RiseAndShine;
 
@@ -67,6 +68,7 @@ public class DebugModule {
     @Provides
     public OkHttpClient provideOkHttpClient() {
         OkHttpClient client = new OkHttpClient();
+        client.networkInterceptors().add(new StethoInterceptor());
         GlobalModule.configureHttpCache(context, client);
         configureSsl(client);
         return client;

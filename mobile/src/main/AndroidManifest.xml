@@ -139,6 +139,9 @@
             android:name=".customer.SimpleSearchService"
             android:exported="false" />
         <service
+            android:name=".customer.GetFavoriteTrucksService"
+            android:exported="false" />
+        <service
             android:name=".vendor.VendorTrucksService"
             android:exported="false" />
         <service
@@ -149,6 +152,12 @@
             android:exported="false" />
         <service
             android:name=".vendor.menuadmin.MenuItemDiffService"
+            android:exported="false" />
+        <service
+            android:name=".customer.AddFavoriteTruckService"
+            android:exported="false" />
+        <service
+            android:name=".customer.RemoveFavoriteTruckService"
             android:exported="false" />
 
         <provider

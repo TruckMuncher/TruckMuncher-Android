@@ -11,6 +11,8 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,7 +57,7 @@ public class CustomerMapFragment extends ApiClientFragment implements
 
     private static final String ARG_MAP_STATE = "map_state";
 
-    private static final int REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes
+    private static final int REFRESH_INTERVAL = 30 * 1000; // 5 minutes
     private static final int FASTEST_REFRESH_INTERVAL = 60 * 1000; // 1 minute
     private static final int MIN_LOCATION_CHANGE = 500; // meters
 

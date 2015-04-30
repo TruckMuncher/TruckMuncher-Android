@@ -11,12 +11,17 @@ import com.truckmuncher.api.auth.AuthService;
 import com.truckmuncher.api.menu.MenuService;
 import com.truckmuncher.api.search.SearchService;
 import com.truckmuncher.api.trucks.TruckService;
+import com.truckmuncher.api.user.UserService;
 import com.truckmuncher.app.BuildConfig;
 import com.truckmuncher.app.MainActivity;
 import com.truckmuncher.app.authentication.LoginFragment;
 import com.truckmuncher.app.customer.ActiveTrucksService;
+import com.truckmuncher.app.customer.AddFavoriteTruckService;
+import com.truckmuncher.app.customer.GetFavoriteTrucksService;
 import com.truckmuncher.app.customer.GetTruckProfilesService;
+import com.truckmuncher.app.customer.RemoveFavoriteTruckService;
 import com.truckmuncher.app.customer.SimpleSearchService;
+import com.truckmuncher.app.customer.TruckHeaderFragment;
 import com.truckmuncher.app.data.ApiErrorHandler;
 import com.truckmuncher.app.data.AuthErrorHandler;
 import com.truckmuncher.app.data.AuthRequestInterceptor;
@@ -39,13 +44,17 @@ import retrofit.client.OkClient;
 import retrofit.converter.WireConverter;
 
 @Module(injects = {
+        AddFavoriteTruckService.class,
         ActiveTrucksService.class,
+        GetFavoriteTrucksService.class,
         GetTruckProfilesService.class,
         LoginFragment.class,
         MainActivity.class,
         MenuUpdateService.class,
+        RemoveFavoriteTruckService.class,
         SimpleSearchService.class,
         SyncAdapter.class,
+        TruckHeaderFragment.class,
         TruckMuncherContentProvider.class,
         VendorHomeActivity.class,
         VendorTrucksService.class
@@ -111,6 +120,12 @@ public class GlobalModule {
     @Provides
     public MenuService provideMenuService(RestAdapter adapter) {
         return adapter.create(MenuService.class);
+    }
+
+    @Singleton
+    @Provides
+    public UserService provideUserService(RestAdapter adapter) {
+        return adapter.create(UserService.class);
     }
 
     @Singleton
