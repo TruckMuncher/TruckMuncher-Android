@@ -123,11 +123,6 @@ public class PublicContract {
          */
         String LONGITUDE = "longitude";
         /**
-         * Type: boolean
-         */
-        // TODO this mechanism is becoming really sketch now that we are getting user support for non-trucks. Should see if there is a better way of doing this.
-        String OWNED_BY_CURRENT_USER = "owned_by_current_user";
-        /**
          * Type: String
          */
         String DESCRIPTION = "description";
@@ -141,6 +136,10 @@ public class PublicContract {
          * Type: String
          */
         String WEBSITE = "website";
+        /**
+         * Type: String
+         */
+        String OWNER_ID = "owner_id";
     }
 
     public interface Menu {

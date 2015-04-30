@@ -4,6 +4,7 @@ import com.truckmuncher.api.auth.AuthRequest;
 import com.truckmuncher.api.auth.AuthResponse;
 import com.truckmuncher.api.auth.AuthService;
 import com.truckmuncher.app.authentication.SessionTokenPreference;
+import com.truckmuncher.app.authentication.UserAccount;
 import com.truckmuncher.app.data.ApiException;
 import com.truckmuncher.app.data.ExpiredSessionException;
 import com.truckmuncher.app.data.SocialCredentialsException;
@@ -13,15 +14,17 @@ import javax.inject.Inject;
 import retrofit.RetrofitError;
 import timber.log.Timber;
 
-public final class ApiExceptionResolver {
+public class ApiExceptionResolver {
 
     private final AuthService authService;
     private final SessionTokenPreference sessionTokenPreference;
+    private final UserAccount userAccount;
 
     @Inject
-    public ApiExceptionResolver(AuthService authService, SessionTokenPreference sessionTokenPreference) {
+    public ApiExceptionResolver(AuthService authService, SessionTokenPreference sessionTokenPreference, UserAccount userAccount) {
         this.authService = authService;
         this.sessionTokenPreference = sessionTokenPreference;
+        this.userAccount = userAccount;
     }
 
     public ApiResult resolve(ApiException exception) {
@@ -53,6 +56,7 @@ public final class ApiExceptionResolver {
         try {
             AuthResponse response = authService.getAuth(new AuthRequest());
             sessionTokenPreference.set(response.sessionToken);
+            userAccount.setUserId(response.userId);
             return ApiResult.SHOULD_RETRY;
         } catch (SocialCredentialsException e) {
             return resolve(e);

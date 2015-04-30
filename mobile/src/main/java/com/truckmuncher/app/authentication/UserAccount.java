@@ -7,24 +7,35 @@ import javax.inject.Inject;
 
 public class UserAccount {
 
-    private final AuthTokenPreference preference;
+    private final AuthTokenPreference authTokenPreference;
+    private final UserIdPreference userIdPreference;
 
     @Inject
-    public UserAccount(AuthTokenPreference preference) {
-        this.preference = preference;
+    public UserAccount(AuthTokenPreference authTokenPreference, UserIdPreference userIdPreference) {
+        this.authTokenPreference = authTokenPreference;
+        this.userIdPreference = userIdPreference;
     }
 
     public void login(String authToken) {
-        preference.set(authToken);
+        authTokenPreference.set(authToken);
     }
 
     public String getAuthToken() {
-        return preference.get();
+        return authTokenPreference.get();
+    }
+
+    public String getUserId() {
+        return userIdPreference.get();
+    }
+
+    public void setUserId(String id) {
+        userIdPreference.set(id);
     }
 
     public void logout() {
         Twitter.getSessionManager().clearActiveSession();
         LoginManager.getInstance().logOut();
-        preference.delete();
+        authTokenPreference.delete();
+        userIdPreference.delete();
     }
 }

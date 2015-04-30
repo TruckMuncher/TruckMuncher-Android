@@ -26,6 +26,7 @@ public class TruckPropertiesTableTest extends DatabaseTableTestCase {
         values.put(PublicContract.Truck.DESCRIPTION, "hello");
         values.put(PublicContract.Truck.PHONE_NUMBER, "hello");
         values.put(PublicContract.Truck.WEBSITE, "hello");
+        values.put(PublicContract.Truck.OWNER_ID, "hello");
         assertThat(db.insert(Tables.TRUCK_PROPERTIES, null, values)).isEqualTo(1);
     }
 

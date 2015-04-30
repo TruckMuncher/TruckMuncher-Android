@@ -2,11 +2,14 @@ package com.truckmuncher.app.dagger;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
 
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
+import com.squareup.otto.Bus;
+import com.squareup.otto.ThreadEnforcer;
 import com.truckmuncher.api.auth.AuthService;
 import com.truckmuncher.api.menu.MenuService;
 import com.truckmuncher.api.search.SearchService;
@@ -134,7 +137,18 @@ public class GlobalModule {
     }
 
     @Provides
+    public SQLiteDatabase provideSQLiteDatabase(SQLiteOpenHelper openHelper) {
+        return openHelper.getWritableDatabase();
+    }
+
+    @Provides
     public SharedPreferences provideSharedPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
+    }
+
+    @Provides
+    @Singleton
+    Bus provideBus() {
+        return new Bus(ThreadEnforcer.ANY);
     }
 }

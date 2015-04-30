@@ -68,6 +68,7 @@ public final class Contract {
      * Stores the temporary state. You must use this to do writes to the db, but should not use this for queries.
      */
     public interface TruckState {
+        // TODO drop the owned_by_current_user column
         String IS_DIRTY = "is_dirty";
     }
 

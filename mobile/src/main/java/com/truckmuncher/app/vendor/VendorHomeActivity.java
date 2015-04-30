@@ -24,6 +24,8 @@ import android.widget.CheckBox;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 import com.truckmuncher.app.App;
 import com.truckmuncher.app.MainActivity;
 import com.truckmuncher.app.R;
@@ -46,11 +48,12 @@ public class VendorHomeActivity extends AppCompatActivity implements
     SharedPreferences sharedPreferences;
     @Inject
     UserAccount account;
+    @Inject
+    Bus bus;
 
     private Spinner actionBarSpinner;
     private String selectedTruckId;
     private VendorHomeServiceHelper serviceHelper;
-    private ResetVendorTrucksServiceHelper resetServiceHelper;
     private String[] truckIds;
 
     public static Intent newIntent(Context context) {
@@ -71,10 +74,9 @@ public class VendorHomeActivity extends AppCompatActivity implements
 
         App.get(this).inject(this);
 
-        getSupportLoaderManager().initLoader(0, savedInstanceState, this);
+        getSupportLoaderManager().initLoader(0, null, this);
 
         serviceHelper = new VendorHomeServiceHelper();
-        resetServiceHelper = new ResetVendorTrucksServiceHelper();
 
         // Kick off a refresh of the vendor data
         startService(VendorTrucksService.newIntent(this));
@@ -86,6 +88,18 @@ public class VendorHomeActivity extends AppCompatActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.vendor_home, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        bus.register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        bus.unregister(this);
+        super.onStop();
     }
 
     @Override
@@ -102,14 +116,6 @@ public class VendorHomeActivity extends AppCompatActivity implements
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void doLogout() {
-        account.logout();
-
-        resetServiceHelper.resetVendorTrucks(this, truckIds);
-
-        exitVendorMode();
     }
 
     private void exitVendorMode() {
@@ -150,11 +156,11 @@ public class VendorHomeActivity extends AppCompatActivity implements
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         WhereClause whereClause = new WhereClause.Builder()
-                .where(PublicContract.Truck.OWNED_BY_CURRENT_USER, EQUALS, 1)
+                .where(PublicContract.Truck.OWNER_ID, EQUALS, account.getUserId())
                 .build();
         String[] projection = TrucksOwnedByUserQuery.PROJECTION;
         Uri uri = PublicContract.TRUCK_URI;
-        return new CursorLoader(this, uri, projection, whereClause.selection, whereClause.selectionArgs, null);
+        return new CursorLoader(this, uri, projection, whereClause.selection, whereClause.selectionArgs, "upper(" + PublicContract.Truck.NAME + ")");
     }
 
     @Override
@@ -178,6 +184,9 @@ public class VendorHomeActivity extends AppCompatActivity implements
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         actionBarSpinner.setAdapter(spinnerAdapter);
         actionBarSpinner.setOnItemSelectedListener(this);
+        if (spinnerAdapter.getCount() > 0) {
+            actionBarSpinner.setSelection(0, true);
+        }
     }
 
     @Override
@@ -193,6 +202,11 @@ public class VendorHomeActivity extends AppCompatActivity implements
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         // no-op
+    }
+
+    @Subscribe
+    public void onSyncCompleted(VendorTruckStateResolver.CompletedEvent event) {
+        getSupportLoaderManager().restartLoader(0, null, this);
     }
 
     private void showMenu() {
@@ -227,6 +241,11 @@ public class VendorHomeActivity extends AppCompatActivity implements
                 .setView(checkBoxView)
                 .setPositiveButton(getString(R.string.items_unavailable_positive_button), listener)
                 .setNegativeButton(getString(R.string.items_unavailable_negative_button), listener).show();
+    }
+
+    private void doLogout() {
+        account.logout();
+        exitVendorMode();
     }
 
     public interface TrucksOwnedByUserQuery {
