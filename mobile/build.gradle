@@ -161,6 +161,7 @@ dependencies {
     // UI Components
     compile 'com.twotoasters.SectionCursorAdapter:library:1.0.1'
     compile 'fr.nicolaspomepuy:discreetapprate:2.0.3@aar'
+    compile 'com.github.mrengineer13:snackbar:1.1.0'
 
     compile 'com.squareup.dagger:dagger:1.2.2'
     provided 'com.squareup.dagger:dagger-compiler:1.2.2'
@@ -184,6 +185,7 @@ dependencies {
     androidTestCompile 'com.android.support.test:runner:0.2'
     androidTestCompile 'com.android.support.test:rules:0.2'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.1'
+    androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.1'
     androidTestCompile('com.squareup.okhttp:mockwebserver:2.3.0') {
         exclude group: 'com.squareup.okhttp', module: 'okhttp'
     }

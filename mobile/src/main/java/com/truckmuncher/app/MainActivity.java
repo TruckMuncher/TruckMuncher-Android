@@ -59,6 +59,10 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
     private int currentPosition;
     private Fragment currentFragment;
 
+    public static Intent newIntent(Context context) {
+        return new Intent(context, MainActivity.class);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
