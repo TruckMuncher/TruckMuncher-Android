@@ -7,12 +7,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.truckmuncher.app.data.PublicContract;
 
-public class AuthenticatorActivity extends ActionBarActivity
+public class AuthenticatorActivity extends AppCompatActivity
         implements LoginFragment.LoginSuccessCallback {
 
     private Fragment fragment;

@@ -11,8 +11,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -36,7 +36,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-public class MainActivity extends ActionBarActivity implements ListView.OnItemClickListener {
+public class MainActivity extends AppCompatActivity implements ListView.OnItemClickListener {
 
     private static final int REQUEST_LOGIN = 1;
 

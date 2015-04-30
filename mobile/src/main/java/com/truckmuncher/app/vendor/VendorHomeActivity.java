@@ -14,7 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,7 +38,7 @@ import javax.inject.Inject;
 
 import static com.truckmuncher.app.data.sql.WhereClause.Operator.EQUALS;
 
-public class VendorHomeActivity extends ActionBarActivity implements
+public class VendorHomeActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemSelectedListener,
         VendorHomeFragment.OnServingModeChangedListener {
 

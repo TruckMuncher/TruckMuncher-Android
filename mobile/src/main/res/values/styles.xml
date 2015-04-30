@@ -12,7 +12,7 @@
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
-        <item name="android:windowNoTitle">true</item>
+        <item name="windowNoTitle">true</item>
         <item name="android:spinnerItemStyle">@style/ActionBarSpinnerItem</item>
     </style>
 
